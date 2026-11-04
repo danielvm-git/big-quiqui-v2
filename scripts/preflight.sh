@@ -49,6 +49,20 @@ stage "L0 · GDScript lint + format (addons excluded)"
 run "gdlint game/" gdlint "$GAME"/
 run "gdformat --check game/" gdformat --check "$GAME"/
 
+stage "L0a · engine import (game/.godot is gitignored)"
+# Both the type gate and GUT resolve `class_name` through
+# game/.godot/global_script_class_cache.cfg. On a fresh clone (CI, new machine)
+# the cache does not exist yet, and without it `extends GutTest` cannot resolve:
+# the type gate fails and GUT runs nothing while exiting 0. Import once, here.
+import_log=$(mktemp)
+if "$GODOT" --headless --path "$GAME" --import >"$import_log" 2>&1; then
+  pass "project imported"
+else
+  fail "godot --import"
+  tail -8 "$import_log" | sed 's/^/        /'
+fi
+rm -f "$import_log"
+
 stage "L0b · strict typing (debug/gdscript/warnings/untyped_declaration=2)"
 run "type_gate (every .gd must parse typed)" \
   "$GODOT" --headless --path "$GAME" -s res://tools/type_gate.gd
@@ -57,11 +71,6 @@ stage "L1 · GUT unit + integration"
 if [ "$MODE" = "fast" ]; then
   info "skipped by --fast (static gate for the pre-commit hook; CI runs the full chain)"
 else
-# GUT resolves its classes through game/.godot/global_script_class_cache.cfg, which is
-# gitignored. On a fresh clone (CI, new machine) the cache is absent, so GUT prints
-# "Some GUT class_names have not been imported" and exits 0 having run nothing.
-# Importing first is what makes the suite real; without it every GUT run is theatre.
-"$GODOT" --headless --path "$GAME" --import >/tmp/bq-godot-import.log 2>&1 || true
 gut_log=$(mktemp)
 if "$GODOT" --headless --path "$GAME" -s addons/gut/gut_cmdln.gd -gexit >"$gut_log" 2>&1; then
   gut_rc=0
