@@ -1,27 +1,26 @@
 # story: e01s01
-phase: discover_complete
-steps:
-  survey_context:
-    status: done
-    completed_at: "2026-11-04T16:45:00-03:00"
-    artifact: "specs/tech-architecture/tech-stack.md"
-  scope_work:
-    status: done
-    completed_at: "2026-11-04T16:55:00-03:00"
-    artifact: "specs/product/SCOPE_LATEST.yaml"
-  research_first:
-    status: done
-    completed_at: "2026-11-04T16:55:00-03:00"
-    artifact: "specs/tech-architecture/EXPLICIT_STATE_MACHINES.md"
-  elaborate_spec:
-    status: done
-    completed_at: "2026-11-04T16:56:00-03:00"
-    artifact: "specs/product/VISION_LATEST.yaml"
-  plan_release:
-    status: done
-    completed_at: "2026-11-04T16:58:00-03:00"
-    artifact: "specs/release-plan.yaml"
-  slice_tasks:
-    status: done
-    completed_at: "2026-11-04T16:58:00-03:00"
-    artifact: "specs/epics/"
+phase: plan_complete_ready_to_build
+context_capsule: null
+workflows:
+  survey-context: {required: true,  status: done, artifact: specs/tech-architecture/tech-stack.md}
+  scope-work: {required: true,  status: done, artifact: specs/product/SCOPE_LATEST.yaml}
+  research-first: {required: true,  status: done, artifact: specs/product/PRIOR_ART.md}
+  elaborate-spec: {required: true,  status: done, artifact: specs/product/VISION_LATEST.yaml}
+  define-language: {required: true,  status: done, artifact: specs/product/GLOSSARY_LATEST.yaml}
+  model-domain: {required: false, status: done, artifact: "specs/tech-architecture/tech-stack.md#6-domain-model"}
+  plan-release: {required: true,  status: done, artifact: specs/release-plan.yaml}
+  slice-tasks: {required: true,  status: done, artifact: specs/epics/}
+  plan-work: {required: true,  status: done, artifact: "specs/epics/*/e*s*-tasks.yaml",
+              note: "plan-consistency-check PASS on all 11 capsules (CRITICAL=0 HIGH=0 MED=0)"}
+  plan-tests: {required: true,  status: done, artifact: specs/tech-architecture/e01-TEST_PLAN_LATEST.md}
+  assess-impact: {required: true,  status: done, artifact: specs/IMPACT_LATEST.md}
+  security-review: {required: true,  status: done, artifact: specs/security/epics/e01/THREAT_MODEL.md}
+  run-evals: {required: true,  status: done, artifact: specs/benchmarks/e01.yaml}
+  grill-me: {required: false, status: done, artifact: specs/GRILL-e01-assumptions.md}
+  enforce-first: {required: true,  status: done, artifact: "specs/tech-architecture/e01-TEST_PLAN_LATEST.md#FIRST-audit-enforce-first"}
+  wire-ci: {required: true,  status: done, artifact: .github/workflows/ci-cd.yml,
+            note: "hand-built for Godot 4.7 + big-release; wire-ci templates are Node/Go only"}
+  wire-observability: {required: true,  status: done, artifact: scripts/logs.sh,
+                       note: "commands + PII redaction + self-test; Log autoload lands in e01s01"}
+  kickoff-branch: {required: true,  status: pending, artifact: null,
+                   note: "first action of e01s01"}

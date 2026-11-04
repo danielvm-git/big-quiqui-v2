@@ -18,3 +18,15 @@ story-tag gate with project semantics; bigpowers' is the coverage-matrix
 builder, add it as `scripts/trace-matrix.sh` only if gate-trace is adopted).
 
 Re-vendor: re-run the copy loop in the Phase 1 script after a bigpowers bump.
+
+## Added for pre-build compliance (2026-11-04)
+
+- `scripts/lib/plan-consistency-check.sh` — the `plan-work` pre-build gate
+  (CRITICAL/HIGH block code generation). Deps `fail-open-detect.sh` +
+  `python-env.sh` were already vendored.
+- `scripts/validate-specs-yaml.sh` — the bigpowers spec-schema validator.
+  Lives at `scripts/` (not `scripts/lib/`) because it resolves
+  `dirname $0/..` as the repo root and sources `lib/python-env.sh`.
+  Vendoring it removed CI's dependency on a global `npm i -g bigpowers`.
+- `scripts/compliance-pre-build.sh` + `scripts/compliance-capsules.sh` — project
+  wrappers that prove the pre-build compliance claims mechanically.

@@ -86,11 +86,19 @@ stage "L4 · story traceability"
 run "bash scripts/trace-stories.sh --strict" bash scripts/trace-stories.sh --strict
 
 stage "L5 · specs schema (bigpowers contract)"
-BP="$(npm root -g 2>/dev/null)/bigpowers"
-if [ -f "$BP/scripts/validate-specs-yaml.sh" ]; then
-  run "validate-specs-yaml.sh specs" bash "$BP/scripts/validate-specs-yaml.sh" specs
+if [ -f scripts/validate-specs-yaml.sh ]; then
+  run "scripts/validate-specs-yaml.sh (vendored)" bash scripts/validate-specs-yaml.sh
+elif [ -f "$(npm root -g 2>/dev/null)/bigpowers/scripts/validate-specs-yaml.sh" ]; then
+  run "validate-specs-yaml.sh specs" bash "$(npm root -g)/bigpowers/scripts/validate-specs-yaml.sh" specs
 else
-  info "skipped — bigpowers not installed globally (npm i -g bigpowers@latest)"
+  info "skipped — no vendored validator and bigpowers not installed globally"
+fi
+
+stage "L5b · release config (big-release)"
+if command -v big-release >/dev/null 2>&1; then
+  run "big-release validate" big-release validate
+else
+  info "skipped — big-release not on PATH (CI installs it in the release job)"
 fi
 
 printf '\n'

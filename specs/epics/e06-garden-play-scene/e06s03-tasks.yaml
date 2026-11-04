@@ -1,7 +1,8 @@
 story_id: e06s03
+spec: e06s03.md
 epic_id: e06
 title: GardenPlayScene E2E TouchSim & Dual-Aspect GeometryOracle Tests
-status: planned
+status: failing
 bcps: 2
 playable_scene: res://scenes/jardim.tscn
 tasks:
@@ -9,15 +10,24 @@ tasks:
   description: Write failing GUT unit & TouchSim/GeometryOracle tests for e06s03 (GardenPlayScene
     E2E TouchSim & Dual-Aspect GeometryOracle Tests)
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
-  status: planned
+  risk: P0
+  allure:
+    severity: critical
+  status: failing
 - id: e06s03-t02
   description: Implement minimal strict-typed GDScript & Control scene nodes for e06s03
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
     addons/gut/gut_cmdln.gd -gexit
-  status: planned
+  risk: P1
+  allure:
+    severity: high
+  status: failing
 - id: e06s03-t03
   description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
     story traceability for e06s03
   verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
     --strict
-  status: planned
+  risk: P2
+  allure:
+    severity: normal
+  status: failing

@@ -40,3 +40,22 @@
   - Four modes: `CONSUME_ON_DROP` (food/trash), `CONTINUOUS_SCRUB` (sponge/shower/towel), `SNAP_TO_SLOT` (puzzle), `FREE_PLACEMENT` (casinha furniture with normalized `0..1` coordinates).
 - **`TapButton` (`res://scripts/components/tap_button.gd`)**:
   - Enforces `>=120×120 px` hit box, filters `device == -1` mouse echo, plays jelly squash-and-stretch + `tap.ogg`.
+
+## 6. Domain Model (ubiquitous language)
+
+`model-domain` record — terms that a domain expert (the family) uses, and the one code
+identifier each maps to. Source of truth for the glossary: `specs/product/GLOSSARY_LATEST.yaml`.
+
+| Term (PT-BR) | Meaning | Code identifier | Never call it |
+|---|---|---|---|
+| Coelinha QuiQui | the protagonist rabbit | `QuiQuiRig` | "pet", "avatar" |
+| Casa da QuiQui | indoor care hub | `CasaScene` (`casa.tscn`) | "home screen", "menu" |
+| Ciclo de cuidado | FEED → BATH → DRESS → PLAY → SLEEP → CELEBRATE | `CareLoopManager` state names | "level" |
+| Moedinha | soft currency | `SaveData.coins` | "money", "cash" |
+| Bilhete da roda | wheel ticket | `SaveData.tickets` | "token" |
+| Casinha | decoratable house in the village | `CasinhaScene` | "house" (reserved for Casa) |
+| Vila QuiQui | outdoor economy hub | `VilaScene` (`vila.tscn`) | "map" |
+| Balão de desejo | the wish bubble telling the child what QuiQui wants | `WishBubble` | "tooltip" |
+| Nhami | the eating sound/word | `sfx_nhami` | "chomp" |
+| Careta | facial expression overlay | `ExpressionOverlay` | "sprite", "face" |
+| Diário | the local JSONL play diary | `Log` / `user://logs/` | "telemetry", "analytics" |
