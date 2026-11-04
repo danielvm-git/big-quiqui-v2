@@ -23,7 +23,8 @@ fi
 if [ -d node_modules/husky ]; then
   echo "ok: dependências npm já instaladas"
 else
-  npm install
+  git config core.hooksPath .githooks
+  echo "ok: git hooks -> .githooks (pre-commit, commit-msg)"
 fi
 
 mkdir -p build/captures

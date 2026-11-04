@@ -4,6 +4,8 @@
 #
 #   bash scripts/preflight.sh              full gate — a GUT run that executes 0
 #                                          scripts is a HARD FAILURE (Zero-Test Guard)
+#   bash scripts/preflight.sh --fast       static stages only (L0/L0b/L3/L4/L5); the
+#                                          pre-commit hook uses this, CI never does
 #   bash scripts/preflight.sh --bootstrap  one-time house gate, before the first
 #                                          story exists: 0 test scripts are allowed
 #                                          and reported loudly. Recorded in
@@ -16,8 +18,9 @@ cd "$(dirname "$0")/.."
 MODE="full"
 case "${1:-}" in
   --bootstrap) MODE="bootstrap" ;;
+  --fast)      MODE="fast" ;;
   "") ;;
-  *) echo "usage: bash scripts/preflight.sh [--bootstrap]" >&2; exit 2 ;;
+  *) echo "usage: bash scripts/preflight.sh [--fast|--bootstrap]" >&2; exit 2 ;;
 esac
 
 GODOT="${GODOT:-godot}"
@@ -51,6 +54,9 @@ run "type_gate (every .gd must parse typed)" \
   "$GODOT" --headless --path "$GAME" -s res://tools/type_gate.gd
 
 stage "L1 · GUT unit + integration"
+if [ "$MODE" = "fast" ]; then
+  info "skipped by --fast (static gate for the pre-commit hook; CI runs the full chain)"
+else
 gut_log=$(mktemp)
 if "$GODOT" --headless --path "$GAME" -s addons/gut/gut_cmdln.gd -gexit >"$gut_log" 2>&1; then
   gut_rc=0
@@ -71,6 +77,7 @@ else
 fi
 grep -E "^(Tests|Passing|Failing)|Scripts|Asserts" "$gut_log" | head -4 | sed 's/^/        /' || true
 rm -f "$gut_log"
+fi
 
 stage "L3 · observability + PII redaction"
 run "bash scripts/logs.sh audit --self-test" bash scripts/logs.sh audit --self-test
@@ -90,6 +97,8 @@ printf '\n'
 if [ "$rc_all" -eq 0 ]; then
   if [ "$MODE" = "bootstrap" ]; then
     printf '\033[1;32m✔ BOOTSTRAP GATE GREEN (mode: --bootstrap, 0 tests by design)\033[0m\n'
+  elif [ "$MODE" = "fast" ]; then
+    printf '\033[1;32m✔ STATIC GATE GREEN (mode: --fast, GUT skipped)\033[0m\n'
   else
     printf '\033[1;32m✔ PREFLIGHT GREEN\033[0m\n'
   fi

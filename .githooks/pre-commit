@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# story: e01s01
+# Static gate before every commit. The full chain (incl. GUT) runs in CI and in
+# `bash scripts/preflight.sh`; this hook stays fast enough to keep commits honest.
+set -uo pipefail
+cd "$(git rev-parse --show-toplevel)" || exit 1
+exec bash scripts/preflight.sh --fast

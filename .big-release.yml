@@ -1,0 +1,35 @@
+# big-release — Coelinha QuiQui
+# Version ladder: v0.1.0 (house) -> v0.2.0 (e01) -> ... -> v0.11.0 (e10) -> v1.0.0 (e11).
+# The ladder only holds if main receives ONE merge per epic; see CONVENTIONS.md §2.
+tagFormat: "v${version}"
+initialVersion: "0.1.0"
+
+branches:
+  - main
+
+# `github` alone creates the tag + GitHub Release through the API, so a protected
+# `main` never has to accept a release commit (no changelog/git plugins).
+plugins:
+  - github
+
+# The Godot publisher is disabled on purpose: it rewrites config/version in
+# project.godot but never commits it (plugins run before publishers), and its
+# Publish() creates a second GitHub Release for the same tag — silently, because
+# it ignores the HTTP status. CI syncs project.godot + export_presets.cfg from
+# the tag instead, and `github` owns the release.
+publishers:
+  godot:
+    enabled: false
+
+pluginConfigs:
+  github:
+    draftRelease: false
+    releaseName: "Coelinha QuiQui v${version}"
+    successComment: "Released in v${version}"
+    releasedLabels:
+      - released
+    assets:
+      # Missing globs are warnings, not failures (big-release #10 acceptance),
+      # so the IPA appears on the release as soon as e11 produces one.
+      - path: "build/ios/quiqui.ipa"
+        label: "iOS build (unsigned)"
