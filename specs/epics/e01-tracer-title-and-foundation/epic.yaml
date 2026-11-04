@@ -1,0 +1,38 @@
+epic_id: e01
+slug: e01-tracer-title-and-foundation
+title: 'Foundation Harness + Playable Scene 1: TitleScene (titulo.tscn)'
+playable_scene: res://scenes/titulo.tscn
+status: planned
+bcps: 16
+wsjf: 9.0
+stories:
+- id: e01s01
+  title: Godot 4.7 Expand Viewport, Fsm Core, Log JSONL & Test Helpers (TestReset,
+    FsmProbe, TouchSim, GeometryOracle)
+  bcps: 4
+  status: planned
+  delta: ADDED
+- id: e01s02
+  title: SceneManager (Fsm + Pending Queue + 2s Watchdog) & AudioManager (Buses, Crossfade,
+    Voice Ducking, 8-SFX Pool)
+  bcps: 3
+  status: planned
+  delta: ADDED
+- id: e01s03
+  title: ProgressManager Typed SaveData Resource, Atomic .tmp Write & Round-Trip Oracle
+    Tests
+  bcps: 3
+  status: planned
+  delta: ADDED
+- id: e01s04
+  title: Core QuiQuiRig (Control Box + Foot-Pivoted Node2D, Breathing, Natural Blink,
+    Tap Squash-and-Stretch) & TapButton
+  bcps: 3
+  status: planned
+  delta: ADDED
+- id: e01s05
+  title: 'Playable Scene 1: TitleScene (titulo.tscn) with bg_titulo, Waving QuiQui,
+    Main Theme, Play Button & Dual-Aspect E2E Tests'
+  bcps: 3
+  status: planned
+  delta: ADDED

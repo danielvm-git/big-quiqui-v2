@@ -1,0 +1,62 @@
+# story: e01s01
+name: CI/CD — Quality, Headless GUT & Semantic Release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+env:
+  GODOT_VERSION: "4.7"
+
+jobs:
+  quality-and-tests:
+    name: "L0–L4 Preflight (Lint, PII Audit, Network Ban, GUT & Story Trace)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install gdtoolkit (gdlint + gdformat)
+        run: pip install "gdtoolkit==4.*" pyyaml pillow
+
+      - name: Run GDScript Linter & Formatter Check (L0)
+        run: |
+          gdlint game/
+          gdformat --check game/
+
+      - name: Enforce 100% Offline / Zero-Network Security Gate
+        run: |
+          if grep -RInE '\b(HTTPRequest|HTTPClient|WebSocketPeer|TCPServer|StreamPeerTCP|UDPServer|PacketPeerUDP|ENetMultiplayerPeer)\b' game/scripts/; then
+            echo "FATAL: Network API detected in offline kids game!"
+            exit 1
+          fi
+
+      - name: Run Observability PII Redaction Self-Test (L3)
+        run: bash scripts/logs.sh audit --self-test
+
+      - name: Enforce Story Traceability Tags (L4)
+        run: bash scripts/trace-stories.sh --strict
+
+      - name: Enforce No AI Attribution in Commits
+        run: |
+          if git log -n 20 --format="%B" | grep -iE "co-authored-by:.*(claude|gemini|openai|copilot|anthropic|cursor)"; then
+            echo "FATAL: AI Co-authored-by attribution detected in commit history!"
+            exit 1
+          fi
+
+      - name: Create CLAUDE.md and GEMINI.md symlinks check
+        run: test -f AGENTS.md && test -f CONVENTIONS.md && test -f DESIGN.md

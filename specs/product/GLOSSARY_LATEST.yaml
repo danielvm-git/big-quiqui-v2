@@ -1,0 +1,36 @@
+# story: e01s01
+terms:
+  - term: "QuiQuiRig"
+    definition: >
+      The canonical character component (res://components/quiqui_rig.tscn) combining a Control layout box
+      with a foot-pivoted Node2D visual rig, layered sprites (Body + Outfit + Expression + Accessories),
+      local-space interaction zones (mouth_zone, scrub_hull), and a single-owner MotionController.
+  - term: "Fsm"
+    definition: >
+      Reusable table-driven finite state machine (res://scripts/core/fsm.gd) enforcing legal edges,
+      idempotent self-transitions, expected-from guards, max-dwell watchdogs, and structured Log emission.
+  - term: "TouchDraggable"
+    definition: >
+      Unified touch-first drag controller (res://scripts/components/touch_draggable.gd) supporting 4 modes
+      (CONSUME_ON_DROP, CONTINUOUS_SCRUB, SNAP_TO_SLOT, FREE_PLACEMENT), filtering device==-1 mouse echo,
+      and locking to a single owner touch_index.
+  - term: "Casa da QuiQui"
+    definition: >
+      The indoor care hub scene (res://scenes/casa.tscn) where QuiQui displays her current need via a
+      WishBubble and the child navigates to Cozinha, Banheiro, Closet, Jardim, or Quarto.
+  - term: "Vila QuiQui"
+    definition: >
+      The outdoor neighborhood scene (res://scenes/vila.tscn) connecting Casa da QuiQui, Roda da Fortuna,
+      Mercado de Moveis, Casinha Decoravel, Jardim dos Amigos, Album de Figurinhas, and Recycling.
+  - term: "Casinha Decoravel"
+    definition: >
+      The interior decoration scene (res://scenes/casinha.tscn) where furniture purchased at Mercado is
+      freely arranged using normalized (0..1) room coordinates; placing >=5 items unlocks Festa na Casinha.
+  - term: "TouchSim"
+    definition: >
+      Test helper (res://tests/helpers/touch_sim.gd) that injects real Viewport.push_input touch events
+      paired with synthesized mouse-echo events (device == -1) to prove single-fire touch safety.
+  - term: "GeometryOracle"
+    definition: >
+      Test helper (res://tests/helpers/geometry_oracle.gd) that asserts zero letterbox bars, >=120px tap
+      targets, and local hull containment across both 1920x1080 (16:9) and 2048x1536 (4:3 iPad).

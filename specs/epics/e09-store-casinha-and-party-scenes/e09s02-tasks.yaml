@@ -1,0 +1,25 @@
+story_id: e09s02
+epic_id: e09
+title: 'TouchDraggable FREE_PLACEMENT Mode & Playable Scene 12: CasinhaScene (casinha.tscn)
+  with Normalized (0..1) Coordinates'
+status: planned
+bcps: 4
+playable_scene: res://scenes/mercado.tscn + res://scenes/casinha.tscn + res://scenes/festa.tscn
+tasks:
+- id: e09s02-t01
+  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e09s02
+    (TouchDraggable FREE_PLACEMENT Mode & Playable Scene 12: CasinhaScene (casinha.tscn)
+    with Normalized (0..1) Coordinates)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  status: planned
+- id: e09s02-t02
+  description: Implement minimal strict-typed GDScript & Control scene nodes for e09s02
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
+    addons/gut/gut_cmdln.gd -gexit
+  status: planned
+- id: e09s02-t03
+  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
+    story traceability for e09s02
+  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
+    --strict
+  status: planned

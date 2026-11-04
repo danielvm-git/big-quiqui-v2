@@ -1,0 +1,34 @@
+epic_id: e10
+slug: e10-friends-minigames-and-album-scenes
+title: 'Playable Scenes 14–17: Duck Dance, Bear Puzzle, Penguin Catch & Sticker Album
+  (album.tscn)'
+playable_scene: res://scenes/pato_danca.tscn + res://scenes/urso_puzzle.tscn + res://scenes/pinguim_jogo.tscn
+  + res://scenes/album.tscn
+status: planned
+bcps: 14
+wsjf: 5.2
+stories:
+- id: e10s01
+  title: 'Playable Scene 14: DuckDanceScene (pato_danca.tscn) 3-Round Pose-Matching
+    Mini-Game Awarding Coins & Star'
+  bcps: 4
+  status: planned
+  delta: ADDED
+- id: e10s02
+  title: 'TouchDraggable SNAP_TO_SLOT Mode & Playable Scene 15: BearPuzzleScene (urso_puzzle.tscn)
+    Magnetic Jigsaw'
+  bcps: 4
+  status: planned
+  delta: ADDED
+- id: e10s03
+  title: 'Playable Scene 16: PenguinScene (pinguim_jogo.tscn) Interactive Ball/Bubble
+    Catch Mini-Game'
+  bcps: 3
+  status: planned
+  delta: ADDED
+- id: e10s04
+  title: 'Playable Scene 17: AlbumScene (album.tscn) Sticker & Star Collection with
+    Return-to-Origin Navigation'
+  bcps: 3
+  status: planned
+  delta: ADDED

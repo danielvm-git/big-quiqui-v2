@@ -1,0 +1,169 @@
+# story: e01s01
+release:
+  version: "1.0.0"
+  codename: "Repaginada TutoTOONS Vertical"
+  status: planned
+  tag_format: "v${version}"
+  version_policy: "epic_train"
+  baseline_tag: "v0.1.0"
+  ladder: "0.<epic+1> for e01..e10; BREAKING CHANGE at e11 => 1.0.0"
+  versions:
+    v0.1.0: e00 (harness only, no playable scene)
+    v0.2.0: e01
+    v0.3.0: e02
+    v0.4.0: e03
+    v0.5.0: e04
+    v0.6.0: e05
+    v0.7.0: e06
+    v0.8.0: e07
+    v0.9.0: e08
+    v0.10.0: e09
+    v0.11.0: e10
+    v1.0.0: e11
+title: "Coelinha QuiQui — Greenfield TutoTOONS Vertical-Slice Release Plan"
+slicing_strategy: "scene_by_scene_vertical"
+total_epics: 11
+total_stories: 43
+total_bcps: 138
+
+epics:
+  - id: e01
+    slug: e01-tracer-title-and-foundation
+    title: "Foundation Harness + Playable Scene 1: TitleScene (titulo.tscn)"
+    playable_scene: "res://scenes/titulo.tscn"
+    status: planned
+    bcps: 16
+    wsjf: 9.0
+    stories: [e01s01, e01s02, e01s03, e01s04, e01s05]
+    summary: >
+      Establishes the core Godot 4.7 project (1920x1080 expand), Fsm engine, Log JSONL diary + logs.sh,
+      SceneManager, AudioManager, ProgressManager (typed SaveData + TestReset), TouchSim, GeometryOracle,
+      98 glossy art + 35 audio assets, core QuiQuiRig + TapButton, and delivers the first complete playable
+      scene: TitleScene (bg_titulo, breathing/blinking/waving QuiQui, tap reaction, main theme, Play button).
+
+  - id: e02
+    slug: e02-casa-care-hub
+    title: "Playable Scene 2: Casa da QuiQui Care Hub (casa.tscn)"
+    playable_scene: "res://scenes/casa.tscn"
+    status: planned
+    bcps: 12
+    wsjf: 8.3
+    stories: [e02s01, e02s02, e02s03, e02s04]
+    summary: >
+      Adds CareLoopManager (table-driven Fsm IDLE..CELEBRATE with detour guard), WishBubble, CareDotsBar,
+      and CoinTicketHud, and delivers the playable CasaScene indoor hub connected to TitleScene.
+
+  - id: e03
+    slug: e03-kitchen-feed-scene
+    title: "Playable Scene 3: TutoTOONS Kitchen — FEED Step (cozinha.tscn)"
+    playable_scene: "res://scenes/cozinha.tscn"
+    status: planned
+    bcps: 12
+    wsjf: 7.8
+    stories: [e03s01, e03s02, e03s03, e03s04]
+    summary: >
+      Adds TouchDraggable (CONSUME_ON_DROP mode + device==-1 filter), ItemData food catalog (10 foods),
+      mouth proximity anticipation (<220px -> boca_aberta), and delivers playable KitchenScene (3 bites,
+      farelos + coracao particles, nhami SFX, advancing FEED -> BATH).
+
+  - id: e04
+    slug: e04-bathroom-bath-scene
+    title: "Playable Scene 4: TutoTOONS Bathroom — BATH Step (banheiro.tscn)"
+    playable_scene: "res://scenes/banheiro.tscn"
+    status: planned
+    bcps: 13
+    wsjf: 7.4
+    stories: [e04s01, e04s02, e04s03, e04s04]
+    summary: >
+      Adds TouchDraggable (CONTINUOUS_SCRUB mode) + QuiQuiRig.scrub_hull local-space polygon, and delivers
+      playable 3-stage BathScene (SOAP sponge/soaps spawning 8 aligned espuma_* -> RINSE showerhead with
+      gota stream -> DRY towel -> quiqui_brilhando, advancing BATH -> DRESS).
+
+  - id: e05
+    slug: e05-closet-dress-scene
+    title: "Playable Scene 5: Closet & Accessories — DRESS Step (closet.tscn)"
+    playable_scene: "res://scenes/closet.tscn"
+    status: planned
+    bcps: 11
+    wsjf: 7.0
+    stories: [e05s01, e05s02, e05s03]
+    summary: >
+      Extends QuiQuiRig with layered OutfitSprite + AccessorySprites under ExpressionSprite (solving
+      the legacy outfit-erases-expression defect), persists equipped items in ProgressManager, and delivers
+      playable ClosetScene (4 outfits + 6 accessories, pop_roupa + brilho, advancing DRESS -> PLAY).
+
+  - id: e06
+    slug: e06-garden-play-scene
+    title: "Playable Scene 6: Sunny Garden — PLAY Step (jardim.tscn)"
+    playable_scene: "res://scenes/jardim.tscn"
+    status: planned
+    bcps: 10
+    wsjf: 6.7
+    stories: [e06s01, e06s02, e06s03]
+    summary: >
+      Delivers playable GardenPlayScene (bg_jardim, interactive bola bounce, pelucia hug, cata_vento spin,
+      and tickling QuiQui with cocega_risada + quiqui_pulando, advancing PLAY -> SLEEP).
+
+  - id: e07
+    slug: e07-sleep-and-celebration-scenes
+    title: "Playable Scenes 7 & 8: Bedroom Sleep (quarto_sono.tscn) & Celebration (celebracao.tscn)"
+    playable_scene: "res://scenes/quarto_sono.tscn + res://scenes/celebracao.tscn"
+    status: planned
+    bcps: 12
+    wsjf: 6.5
+    stories: [e07s01, e07s02, e07s03, e07s04]
+    summary: >
+      Completes the 5-step Care Loop! Delivers playable SleepScene (abajur lamp dim to night tint, blanket
+      tuck, quiqui_sono + zzz particles) and CelebrationScene (confete burst, celebrate_parabens voice,
+      +5 Coins & +1 Wheel Ticket reward with safe detour auto-completion).
+
+  - id: e08
+    slug: e08-vila-recycling-and-wheel-scenes
+    title: "Playable Scenes 9 & 10: Vila QuiQui + Recycling (vila.tscn) & Wheel of Fortune (roda.tscn)"
+    playable_scene: "res://scenes/vila.tscn + res://scenes/roda.tscn"
+    status: planned
+    bcps: 12
+    wsjf: 6.1
+    stories: [e08s01, e08s02, e08s03, e08s04]
+    summary: >
+      Opens the outdoor world! Delivers playable VilaScene (bg_vila, POI doors, and saquinho_lixo recycling
+      drag-to-bin for +1 Coin) and WheelScene (roda_fortuna + ponteiro_roda, single-spin FSM lock spending
+      1 Ticket to win Coins or Stickers).
+
+  - id: e09
+    slug: e09-store-casinha-and-party-scenes
+    title: "Playable Scenes 11–13: Furniture Store (mercado.tscn), Casinha (casinha.tscn) & Party (festa.tscn)"
+    playable_scene: "res://scenes/mercado.tscn + res://scenes/casinha.tscn + res://scenes/festa.tscn"
+    status: planned
+    bcps: 13
+    wsjf: 5.7
+    stories: [e09s01, e09s02, e09s03, e09s04]
+    summary: >
+      Adds TouchDraggable (FREE_PLACEMENT mode with normalized 0..1 coordinates) + 12 FurnitureData items,
+      and delivers StoreScene (atomic coin purchase), CasinhaScene (drag & arrange furniture), and
+      HousePartyScene (festa_casinha_parabens unlocked at >=5 placed items).
+
+  - id: e10
+    slug: e10-friends-minigames-and-album-scenes
+    title: "Playable Scenes 14–17: Duck Dance, Bear Puzzle, Penguin Catch & Sticker Album (album.tscn)"
+    playable_scene: "res://scenes/pato_danca.tscn + res://scenes/urso_puzzle.tscn + res://scenes/pinguim_jogo.tscn + res://scenes/album.tscn"
+    status: planned
+    bcps: 14
+    wsjf: 5.2
+    stories: [e10s01, e10s02, e10s03, e10s04]
+    summary: >
+      Adds TouchDraggable (SNAP_TO_SLOT jigsaw mode), and delivers DuckDanceScene (pato.png),
+      BearPuzzleScene (urso.png + bg_puzzle), PenguinScene (pinguim.png), and AlbumScene (bg_album).
+
+  - id: e11
+    slug: e11-mbt-monkey-and-ipad-release
+    title: "Release Gate (v1.0.0): 500-Step MBT Walk, 3-Finger Monkey Fuzz, Visual Gallery & iPad Build"
+    playable_scene: "ALL (17 scenes verified)"
+    status: planned
+    bcps: 13
+    wsjf: 6.4
+    stories: [e11s01, e11s02, e11s03, e11s04]
+    summary: >
+      Executes 500-step Model-Based Testing random walk across all scenes, 1,000-event 3-finger Monkey
+      fuzz test, dual-aspect screenshot gallery (1920x1080 & 2048x1536), gate-trace sign-off, and iPad
+      Personal Team deployment script.

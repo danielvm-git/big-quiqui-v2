@@ -1,0 +1,34 @@
+# story: e01s01
+product_name: "Coelinha QuiQui"
+north_star: >
+  Deliver a 100% ad-free, 100% offline, TutoTOONS-grade virtual pet care and village adventure game
+  for pre-reading children (ages 4–7), starring Coelinha QuiQui with authentic family voice acting in
+  Brazilian Portuguese, where every single interaction responds within 50 ms with glossy candy visuals,
+  squash-and-stretch life, and loving feedback.
+
+target_audience:
+  primary: "Pre-reading children ages 4–7 (specifically designed with and for Olivia)"
+  secondary: "Parents and family members seeking a safe, zero-dark-pattern iPad game"
+
+design_pillars:
+  - id: P1_PERSONAGEM_COM_VIDA
+    title: "QuiQui Has Life"
+    description: >
+      QuiQui breathes continuously, blinks naturally, anticipates food with an open mouth, shivers/drips
+      when wet, sparkles when clean, yawns when sleepy, and reacts to every touch without outfits ever
+      hiding her 14 facial expressions.
+  - id: P2_TUTOTOONS_ONE_ACTIVITY_PER_SCREEN
+    title: "One Clear Activity Per Screen"
+    description: >
+      Giant character (55–65% viewport height), 1–3 oversized glossy props (>=120x120 px), zero text
+      required to play, and multi-sensory feedback (particles + comic SFX + family PT-BR voice).
+  - id: P3_OLIVIA_VILLAGE_LOOP
+    title: "Care -> Earn Coins & Ticket -> Spin Wheel / Clean Village -> Buy Furniture -> Decorate Casinha -> House Party"
+    description: >
+      Completing the 5-step care loop in Casa da QuiQui rewards Coins and a Wheel Ticket that fuel the
+      outdoor Vila QuiQui economy, furniture store, decoratable Casinha, and friend mini-games.
+  - id: P4_SAFE_BY_CONSTRUCTION
+    title: "100% Offline, Zero Ads, Zero Purchases, Zero PII"
+    description: >
+      Strict compliance with LGPD Art. 14 and Apple Kids Category. Local-only schema-validated JSONL
+      observability with automatic PII redaction.
