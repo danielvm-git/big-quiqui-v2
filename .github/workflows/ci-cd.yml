@@ -156,13 +156,31 @@ jobs:
           path: build/ios/quiqui.ipa
           retention-days: 14
 
+      # The release job does not wait for macOS: it tags and publishes from
+      # `gate`, and this job attaches the IPA afterwards to the release that
+      # already exists (a macOS queue delay must never delay a version).
+      - name: Attach IPA to the current release
+        if: steps.preset.outputs.enabled == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=$(git tag --sort=-v:refname | head -1)
+          test -n "$TAG" || { echo "no release tag to attach to"; exit 1; }
+          for i in 1 2 3 4 5 6; do
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              gh release upload "$TAG" build/ios/quiqui.ipa --clobber
+              exit 0
+            fi
+            echo "release $TAG not published yet (attempt $i) — waiting 30s"
+            sleep 30
+          done
+          echo "FATAL: release $TAG never appeared"
+          exit 1
+
   release:
     name: release
-    needs: [gate, package]
-    if: |
-      always() && github.event_name == 'push' && github.ref == 'refs/heads/main' &&
-      needs.gate.result == 'success' &&
-      (needs.package.result == 'success' || needs.package.result == 'skipped')
+    needs: [gate]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.gate.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -173,12 +191,6 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: true
-
-      - uses: actions/download-artifact@v4
-        if: needs.package.result == 'success'
-        with:
-          name: ios-ipa
-          path: build/ios
 
       - name: Install big-release
         run: |
