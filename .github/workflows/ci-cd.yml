@@ -1,14 +1,25 @@
 # story: e01s01
 name: CI/CD
 
-# Thin consumer of the portfolio's centralized CI/CD layer
-# (danielvm-git/.github discussion #32). No pipeline logic lives here: the
-# reusable Godot workflow owns gate -> verify -> build -> release, so all 28
-# repos stay in sync from one source.
+# Portfolio CI/CD — Option B of danielvm-git/.github discussion #32:
+# this file is a COPY of the central template
+#   danielvm-git/.github/.github/workflows/test-build-release-godot.yml
+#   (v4.4.0, sha b48b6e004b29a429b53458fed463d0d4b47e6386)
+# with the workflow_call inputs inlined for this repository.
 #
-# Replaces a ~200-line bespoke workflow. Two behaviours it inherits:
-#   - release never waits on a macOS runner (the export job runs in parallel)
-#   - a releasable commit that produces no tag fails the run
+# Why a copy and not `uses:` (ADR-007): invoking the reusable workflow cross-repo
+# from this private repository produced a startup failure with 0 jobs and no
+# diagnostic (actionlint is clean on both files). The guide sanctions the copy
+# path for exactly this case. Re-sync from the template when the upstream version
+# changes; the behaviour below is the template's, not a local invention.
+#
+# Inherited guarantees:
+#   - `test` runs this project's own scripts/preflight.sh (lint, format, strict
+#     typing, GUT, PII audit, trace, spec schema) — the gate lives in the repo
+#   - `build` emits deploy-meta.json (single-build boundary artifact) on ubuntu
+#   - the macOS `export` job runs in parallel and attaches its bundle afterwards,
+#     so a macOS queue delay can never delay a version
+#   - a feat/fix/perf commit that produces no tag fails the run
 
 on:
   push:
@@ -23,24 +34,228 @@ concurrency:
   group: pipeline-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+env:
+  GODOT_VERSION: "4.7.0"
+  PROJECT_DIR: "game"
+  APP_TYPE: "godot"
+  EXPORT_PATH: "build/ios/quiqui.ipa"
 
 jobs:
-  ci:
-    uses: danielvm-git/.github/.github/workflows/test-build-release-godot.yml@main
-    with:
-      project_dir: game
-      godot_version: "4.7.0"
-      release_tool: big-release
-      # e01s01 flips this to false: it lets scripts/preflight.sh run its one-time
-      # zero-test bootstrap gate while game/tests holds no test_*.gd yet.
-      bootstrap_gate: true
-      # Empty until e11 adds an iOS preset to game/export_presets.cfg. Setting
-      # export_preset: "iOS" then turns on the macOS export job, which attaches
-      # the build to the release after big-release publishes it.
-      export_preset: ""
-      export_path: "build/ios/quiqui.ipa"
-    secrets: inherit
+  test:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6.3.0
+        with:
+          python-version: "3.12"
+
+      - name: Install gdtoolkit (gdlint + gdformat)
+        run: pip install "gdtoolkit==4.*" pyyaml
+
+      - uses: chickensoft-games/setup-godot@ac93246ea68518a384c1c280a496e5989341f2f6  # v2.4.0
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: false
+
+      - name: Gate (project preflight)
+        run: |
+          FLAGS=""
+          if ! find "$PROJECT_DIR/tests" -name 'test_*.gd' 2>/dev/null | grep -q .; then
+            FLAGS="--bootstrap"
+            echo "::warning title=Zero-Test Guard pending::no $PROJECT_DIR/tests/**/test_*.gd yet — running the one-time --bootstrap gate. e01s01 removes this warning permanently."
+          fi
+          bash scripts/preflight.sh $FLAGS
+
+  verify:
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    needs: [test]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Check Conventional Commits
+        run: |
+          BASE="origin/main"
+          git rev-parse --verify "$BASE" >/dev/null 2>&1 || BASE=$(git rev-list --max-parents=0 HEAD)
+          git log "$BASE"..HEAD --format=%s | while IFS= read -r line; do
+            case "$line" in Merge*) continue ;; esac
+            echo "$line" | grep -qE "^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?!?: " \
+              || { echo "FAIL: Non-conventional commit: $line"; exit 1; }
+          done
+          echo "PASS: All commits follow Conventional Commits"
+
+      - name: Check no AI agent attribution
+        run: |
+          BASE="origin/main"
+          git rev-parse --verify "$BASE" >/dev/null 2>&1 || BASE=$(git rev-list --max-parents=0 HEAD)
+          if git log "$BASE"..HEAD --format="%B" | grep -qiE '^co[- ]authored[- ]by:'; then
+            echo "FAIL: Co-authored-by: footer found"
+            exit 1
+          fi
+          echo "PASS: No AI agent attribution"
+
+      - name: Offline-only guard (no network APIs in game code)
+        run: |
+          if grep -RInE '\b(HTTPRequest|HTTPClient|WebSocketPeer|TCPServer|StreamPeerTCP|UDPServer|PacketPeerUDP|ENetMultiplayerPeer)\b' \
+              "$PROJECT_DIR/scripts" "$PROJECT_DIR/components" "$PROJECT_DIR/scenes" 2>/dev/null; then
+            echo "FATAL: network API detected in an offline game"
+            exit 1
+          fi
+          echo "OK: no network APIs"
+
+  build:
+    needs: [verify]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+
+      - name: Write deploy-meta
+        run: |
+          jq -n \
+            --arg sha "${{ github.sha }}" \
+            --arg ref "${{ github.ref_name }}" \
+            --arg app_type "$APP_TYPE" \
+            '{sha: $sha, ref: $ref, app_type: $app_type}' > deploy-meta.json
+          cat deploy-meta.json
+
+      - name: Upload deploy-meta artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: deploy-meta
+          path: deploy-meta.json
+          retention-days: 30
+          if-no-files-found: error
+
+  export:
+    # Self-enables at e11 when game/export_presets.cfg gains an iOS preset.
+    needs: [test]
+    runs-on: macos-14
+    timeout-minutes: 40
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Detect export preset
+        id: preset
+        run: |
+          if grep -q 'name="iOS"' game/export_presets.cfg 2>/dev/null; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=iOS export skipped::game/export_presets.cfg has no iOS preset yet (arrives with e11)."
+          fi
+
+      - uses: chickensoft-games/setup-godot@ac93246ea68518a384c1c280a496e5989341f2f6  # v2.4.0
+        if: steps.preset.outputs.enabled == 'true'
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: true
+
+      - name: Export iOS
+        if: steps.preset.outputs.enabled == 'true'
+        run: |
+          mkdir -p "$(dirname "$EXPORT_PATH")"
+          godot --headless --path "$PROJECT_DIR" --import
+          godot --headless --path "$PROJECT_DIR" --export-release "iOS" "$PWD/$EXPORT_PATH"
+          ls -lh "$EXPORT_PATH"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        if: steps.preset.outputs.enabled == 'true'
+        with:
+          name: godot-export
+          path: ${{ env.EXPORT_PATH }}
+          retention-days: 30
+          if-no-files-found: error
+
+  release:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [verify, build]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Install big-release
+        run: |
+          curl -sSL https://github.com/danielvm-git/big-release/releases/latest/download/big-release-linux-amd64 -o big-release
+          chmod +x big-release
+          sudo mv big-release /usr/local/bin/
+          big-release health
+
+      - name: Validate release config
+        run: big-release validate
+
+      - name: Run big-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: big-release-bot
+          GIT_AUTHOR_EMAIL: big-release-bot@danielvm-git.github.io
+          GIT_COMMITTER_NAME: big-release-bot
+          GIT_COMMITTER_EMAIL: big-release-bot@danielvm-git.github.io
+        run: |
+          BEFORE=$(git describe --tags --abbrev=0 2>/dev/null || echo none)
+          SUBJECT=$(git log -1 --format=%s)
+          echo "head: $SUBJECT"
+          big-release release --verbose
+          AFTER=$(git describe --tags --abbrev=0 2>/dev/null || echo none)
+          echo "tag before=$BEFORE after=$AFTER"
+          # A releasable commit must move the tag; a silent no-op is the failure mode
+          # this guard exists for (branch not configured, wrong fetch-depth, dry-run).
+          if [ "$BEFORE" = "$AFTER" ] && printf '%s' "$SUBJECT" | grep -qE '^(feat|fix|perf)(\(.+\))?!?: '; then
+            echo "FATAL: releasable commit produced no new tag"
+            exit 1
+          fi
+          echo "OK: release step honest"
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: godot-export
+          path: build/ios
+        continue-on-error: true
+
+      - name: Attach export to the published release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ ! -f "$EXPORT_PATH" ]; then
+            echo "no export artifact yet (iOS preset arrives with e11) — nothing to attach"
+            exit 0
+          fi
+          TAG=$(git tag --sort=-v:refname | head -1)
+          test -n "$TAG" || { echo "no release tag to attach to"; exit 1; }
+          for i in 1 2 3 4 5 6; do
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              gh release upload "$TAG" "$EXPORT_PATH" --clobber
+              exit 0
+            fi
+            echo "release $TAG not published yet (attempt $i) — waiting 30s"
+            sleep 30
+          done
+          echo "FATAL: release $TAG never appeared"
+          exit 1

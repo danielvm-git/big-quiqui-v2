@@ -17,7 +17,7 @@ Stack: GDScript / Godot 4.7 / GUT 9.x / iPadOS (4:3) & 16:9 Responsive Canvas
 | Preflight | `bash scripts/preflight.sh` (single entry point; `--bootstrap` only before the first story) |
 | Setup | `bash scripts/setup.sh` |
 | Logs | `bash scripts/logs.sh summary --sessions 3` |
-| CI | `gh pr checks` — runs the portfolio reusable `test-build-release-godot.yml` (ADR-007) |
+| CI | `gh pr checks` — portfolio Godot template copy: gate → verify → build → export → release (ADR-007) |
 | Release | `big-release release --dry-run --verbose` (real releases run in CI on `main` via the central workflow) |
 
 ## Architecture

@@ -29,9 +29,14 @@ measured on it, and one gap in the portfolio was found:
    `test-build-release-godot.yml` (template + reusable mirror, v4.4.0) with inputs
    `godot_version`, `project_dir`, `export_preset`, `export_path`, `release_tool`,
    `bootstrap_gate`.
-2. **This repo consumes it** — `.github/workflows/ci-cd.yml` is a thin caller
-   (`uses: danielvm-git/.github/.github/workflows/test-build-release-godot.yml@main`).
-   No pipeline logic is duplicated locally.
+2. **This repo consumes it by copy (Option B), not by `uses:` (Option A).**
+   `uses: danielvm-git/.github/.github/workflows/test-build-release-godot.yml@main`
+   was tried first and produced a **startup failure with 0 jobs and no diagnostic**
+   (run 41930344368; `actionlint` is clean on both the caller and the reusable file).
+   `.github/workflows/ci-cd.yml` is therefore the template copied in with its
+   `workflow_call` inputs inlined (v4.4.0, upstream sha `b48b6e00`), which the guide
+   explicitly sanctions as the dual-consumption pattern. Re-sync when the upstream
+   version bumps.
 3. **The project keeps its gate.** The shared workflow runs `bash scripts/preflight.sh`
    when present, so gdlint/gdformat/strict-typing/GUT/PII/trace stay in this repo where
    they belong. The shared workflow never learns a project's conventions.
@@ -52,7 +57,9 @@ measured on it, and one gap in the portfolio was found:
   and Zero-Test Guard already live.
 - `bootstrap_gate: true` is a visible, one-line, self-expiring switch: e01s01 flips it to
   `false` and CI then enforces the Zero-Test Guard permanently.
-- Duplication is now **one file of 45 lines** instead of ~200.
+- Duplication is now one file (~230 lines) that mirrors the upstream template instead of a
+  bespoke pipeline; the copy is pinned to the upstream version in its header comment and
+  re-synced on template bumps.
 
 ## Findings from the two sources
 
@@ -66,9 +73,9 @@ measured on it, and one gap in the portfolio was found:
 
 ## Alternatives rejected
 
-- **Copy the template into the repo (Option B of disc #32).** Works, but duplicates 250
-  lines across the portfolio and drifts. Reusable invocation (Option A) is what the
-  guide recommends for standard repos.
+- **`uses:` cross-repo invocation (Option A).** Preferred by the guide, tried first, and it
+  does not start from this private repository: the run is created and immediately fails with
+  zero jobs. Until that is understood upstream, Option B is the working path.
 - **Keep the bespoke pipeline and "port" fixes later.** That is how the macOS-coupling
   bug happened in the first place.
 - **Gate the release on the export artifact.** Delays every version by the macOS queue.
@@ -76,8 +83,9 @@ measured on it, and one gap in the portfolio was found:
 ## Verification
 
 ```bash
-# consumer is thin and points at the central layer
-grep -q 'uses: danielvm-git/.github/.github/workflows/test-build-release-godot.yml@main' .github/workflows/ci-cd.yml
+# the workflow is the upstream template copy, not a bespoke pipeline
+grep -q 'danielvm-git/.github' .github/workflows/ci-cd.yml
+actionlint .github/workflows/ci-cd.yml
 # release engine + rails
 big-release validate
 # the gate the shared workflow calls
