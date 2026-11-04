@@ -19,9 +19,13 @@ const ROOTS: Array[String] = [
 
 var _checked: int = 0
 var _failed: int = 0
+var _class_name_re: RegEx = RegEx.new()
+var _decl_re: RegEx = RegEx.new()
 
 
 func _init() -> void:
+	_decl_re.compile("(?m)^class_name ([A-Za-z0-9_]+).*$")
+	_class_name_re = _decl_re
 	for root: String in ROOTS:
 		_walk(root)
 	print("type_gate: %d scripts checked, %d failed" % [_checked, _failed])
@@ -47,8 +51,17 @@ func _walk(path: String) -> void:
 
 func _check(path: String) -> void:
 	_checked += 1
+	var source: String = FileAccess.get_file_as_string(path)
+	# A fresh GDScript that re-declares a registered `class_name` collides with it
+	# ("Class X hides a global script class"), which is not a defect of the file.
+	# Rename the declaration AND every self-reference so the copy stays internally
+	# consistent (otherwise `-> FsmProbe` no longer matches the renamed class).
+	var match_result: RegExMatch = _decl_re.search(source)
+	if match_result != null:
+		var class_name_text: String = match_result.get_string(1)
+		source = source.replace(class_name_text, class_name_text + "__probe")
 	var script: GDScript = GDScript.new()
-	script.source_code = FileAccess.get_file_as_string(path)
+	script.source_code = source
 	var err: int = script.reload()
 	if err != OK:
 		_failed += 1

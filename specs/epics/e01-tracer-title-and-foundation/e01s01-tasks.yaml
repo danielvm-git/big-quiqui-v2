@@ -3,7 +3,7 @@ spec: e01s01.md
 epic_id: e01
 title: Godot 4.7 Expand Viewport, Fsm Core, Log JSONL & Test Helpers (TestReset, FsmProbe,
   TouchSim, GeometryOracle)
-status: failing
+status: passing
 bcps: 4
 playable_scene: res://scenes/titulo.tscn
 tasks:
@@ -15,7 +15,7 @@ tasks:
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e01s01-t02
   description: Implement minimal strict-typed GDScript & Control scene nodes for e01s01
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
@@ -23,7 +23,7 @@ tasks:
   risk: P1
   allure:
     severity: high
-  status: failing
+  status: passing
 - id: e01s01-t03
   description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
     story traceability for e01s01
@@ -32,4 +32,4 @@ tasks:
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing

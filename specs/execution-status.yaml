@@ -1,8 +1,10 @@
-# story: e01s01
 development_status:
   downgrade_applied: false
-  e01: planned
-  e01s01: planned
+  e01: in_progress
+  e01s01:
+    status: done
+    started_at: '2026-11-04T23:20:00-03:00'
+    completed_at: '2026-11-04T20:32:47-03:00'
   e01s02: planned
   e01s03: planned
   e01s04: planned
@@ -55,18 +57,55 @@ development_status:
   e11s02: planned
   e11s03: planned
   e11s04: planned
-
 active_epic: e01
 active_story: e01s01
 epics:
-  e01: { status: planned, completed_stories: 0, total_stories: 5 }
-  e02: { status: planned, completed_stories: 0, total_stories: 4 }
-  e03: { status: planned, completed_stories: 0, total_stories: 4 }
-  e04: { status: planned, completed_stories: 0, total_stories: 4 }
-  e05: { status: planned, completed_stories: 0, total_stories: 3 }
-  e06: { status: planned, completed_stories: 0, total_stories: 3 }
-  e07: { status: planned, completed_stories: 0, total_stories: 4 }
-  e08: { status: planned, completed_stories: 0, total_stories: 4 }
-  e09: { status: planned, completed_stories: 0, total_stories: 4 }
-  e10: { status: planned, completed_stories: 0, total_stories: 4 }
-  e11: { status: planned, completed_stories: 0, total_stories: 4 }
+  e01:
+    status: planned
+    completed_stories: 0
+    total_stories: 5
+  e02:
+    status: planned
+    completed_stories: 0
+    total_stories: 4
+  e03:
+    status: planned
+    completed_stories: 0
+    total_stories: 4
+  e04:
+    status: planned
+    completed_stories: 0
+    total_stories: 4
+  e05:
+    status: planned
+    completed_stories: 0
+    total_stories: 3
+  e06:
+    status: planned
+    completed_stories: 0
+    total_stories: 3
+  e07:
+    status: planned
+    completed_stories: 0
+    total_stories: 4
+  e08:
+    status: planned
+    completed_stories: 0
+    total_stories: 4
+  e09:
+    status: planned
+    completed_stories: 0
+    total_stories: 4
+  e10:
+    status: planned
+    completed_stories: 0
+    total_stories: 4
+  e11:
+    status: planned
+    completed_stories: 0
+    total_stories: 4
+stories:
+  e01s01:
+    effort_hours: 0.0
+    lead_time_minutes: 4
+    bcp_per_hour: 0.0

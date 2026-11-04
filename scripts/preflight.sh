@@ -93,6 +93,13 @@ fi
 stage "L3 · observability + PII redaction"
 run "bash scripts/logs.sh audit --self-test" bash scripts/logs.sh audit --self-test
 
+DIARY_DIR="$(bash scripts/logs.sh path 2>/dev/null || true)"
+if [ -n "$DIARY_DIR" ] && [ -n "$(find "$DIARY_DIR" -name 'quiqui-*.jsonl' -maxdepth 1 2>/dev/null)" ]; then
+  run "diary audit (real sessions)" bash scripts/logs.sh --dir "$DIARY_DIR" audit
+else
+  info "no local diary yet — the writer's contract is asserted by game/tests/unit/test_log.gd"
+fi
+
 stage "L4 · story traceability"
 run "bash scripts/trace-stories.sh --strict" bash scripts/trace-stories.sh --strict
 

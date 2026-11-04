@@ -22,5 +22,5 @@ workflows:
             note: "hand-built for Godot 4.7 + big-release; wire-ci templates are Node/Go only"}
   wire-observability: {required: true,  status: done, artifact: scripts/logs.sh,
                        note: "commands + PII redaction + self-test; Log autoload lands in e01s01"}
-  kickoff-branch: {required: true,  status: pending, artifact: null,
-                   note: "first action of e01s01"}
+  kickoff-branch: {required: true,  status: done, artifact: "epic/e01-tracer-title-and-foundation",
+                   note: "story branch landed on the epic branch (epic release train, CONVENTIONS §2)"}

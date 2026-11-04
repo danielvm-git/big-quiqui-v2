@@ -1,2 +1,15 @@
 # story: e01s01
-entries: []
+# Project ledger. `scripts/record-cycle-time.sh append` writes an OKF bundle whose
+# second document is Markdown prose — not parseable as YAML — so its numbers are
+# transcribed here instead of appended (see VENDORED.md → known upstream defect).
+entries:
+  - story: e01s01
+    epic: e01
+    bcps: 4
+    commits: 1
+    effort_hours: 0.0        # git-hours model: one burst of work under the 120-min idle threshold
+    lead_time_minutes: 4     # first commit → branch push
+    tests_passed: 29
+    asserts: 102
+    verify_status: pass
+    source: scripts/record-cycle-time.sh append (transcribed)

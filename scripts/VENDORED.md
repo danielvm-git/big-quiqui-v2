@@ -30,3 +30,11 @@ Re-vendor: re-run the copy loop in the Phase 1 script after a bigpowers bump.
   Vendoring it removed CI's dependency on a global `npm i -g bigpowers`.
 - `scripts/compliance-pre-build.sh` + `scripts/compliance-capsules.sh` — project
   wrappers that prove the pre-build compliance claims mechanically.
+
+## Known upstream defect (found during e01s01)
+
+`record-cycle-time.sh append --file <path>` appends an OKF bundle whose second
+document is Markdown prose after a `---` separator. PyYAML rejects the result
+("mapping values are not allowed here"), so any `specs/**/*.yaml` it writes fails
+the vendored spec-schema gate. Workaround: transcribe the tool's reported numbers
+into the project ledger (`specs/cycle-times.yaml`) instead of appending.

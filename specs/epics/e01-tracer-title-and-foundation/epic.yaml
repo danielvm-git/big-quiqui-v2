@@ -10,7 +10,7 @@ stories:
   title: Godot 4.7 Expand Viewport, Fsm Core, Log JSONL & Test Helpers (TestReset,
     FsmProbe, TouchSim, GeometryOracle)
   bcps: 4
-  status: planned
+  status: done
   delta: ADDED
 - id: e01s02
   title: SceneManager (Fsm + Pending Queue + 2s Watchdog) & AudioManager (Buses, Crossfade,
