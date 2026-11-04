@@ -16,8 +16,11 @@ release_target:
 
 handoff:
   next_skill: build-epic
-  context: "House Phase 1 green: bootstrap gate passed (lint, format, strict-type gate, GUT configured, PII audit, trace, specs schema). Baseline v0.1.0 tagged. Remaining house work: .githooks, big-release, CI pipeline, GitHub remote + branch protection. Then build-epic e01s01."
+  context: "House complete. Baseline v0.1.0 tagged and pushed; CI gate/release live on main (chore merges produce no version); hooks installed; bigpowers scripts vendored; preflight gate green in --bootstrap mode until e01s01 writes the first test. Ladder: v0.2.0 e01 -> v0.11.0 e10 -> v1.0.0 e11 via feat(e11)!."
   epic: null
+  open_decisions:
+    - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."
+    - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."
 epic_cycle: null
 metrics:
   story_start: null
