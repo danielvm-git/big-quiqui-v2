@@ -57,6 +57,11 @@ stage "L1 · GUT unit + integration"
 if [ "$MODE" = "fast" ]; then
   info "skipped by --fast (static gate for the pre-commit hook; CI runs the full chain)"
 else
+# GUT resolves its classes through game/.godot/global_script_class_cache.cfg, which is
+# gitignored. On a fresh clone (CI, new machine) the cache is absent, so GUT prints
+# "Some GUT class_names have not been imported" and exits 0 having run nothing.
+# Importing first is what makes the suite real; without it every GUT run is theatre.
+"$GODOT" --headless --path "$GAME" --import >/tmp/bq-godot-import.log 2>&1 || true
 gut_log=$(mktemp)
 if "$GODOT" --headless --path "$GAME" -s addons/gut/gut_cmdln.gd -gexit >"$gut_log" 2>&1; then
   gut_rc=0
