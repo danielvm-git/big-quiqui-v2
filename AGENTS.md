@@ -17,8 +17,8 @@ Stack: GDScript / Godot 4.7 / GUT 9.x / iPadOS (4:3) & 16:9 Responsive Canvas
 | Preflight | `bash scripts/preflight.sh` (single entry point; `--bootstrap` only before the first story) |
 | Setup | `bash scripts/setup.sh` |
 | Logs | `bash scripts/logs.sh summary --sessions 3` |
-| CI | `gh pr checks` |
-| Release | `big-release release --dry-run --verbose` (real releases run in CI on `main`) |
+| CI | `gh pr checks` — portfolio Godot template copy: gate → verify → build → export → release (ADR-007) |
+| Release | `big-release release --dry-run --verbose` (real releases run in CI on `main` via the central workflow) |
 
 ## Architecture
 Five autoload singletons coordinate the game: `Log` (schema-validated JSONL local diary with PII redaction), `SceneManager` (table-driven FSM transitions with 1-slot pending queue and 2.0s watchdog), `CareLoopManager` (table-driven FSM `IDLE -> FEED -> BATH -> DRESS -> PLAY -> SLEEP -> CELEBRATE`), `AudioManager` (music crossfade, 8-channel SFX pool, `-9 dB` voice ducking), and `ProgressManager` (typed `SaveData` resource with atomic `.tmp` rename). Every scene uses a `Control` root (`PRESET_FULL_RECT`) under `stretch/aspect="expand"` and composes `QuiQuiRig` (layered body + outfit + facial expression + accessories) and `TouchDraggable` (4 interaction modes with `device == -1` mouse-echo filtering).

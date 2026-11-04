@@ -14,9 +14,18 @@ release_target:
   target_platform: "iPadOS (4:3 2048x1536) & Desktop/Landscape (16:9 1920x1080)"
   engine: "Godot 4.7"
 
+project_cycle:
+  mode: standard
+  current_phase: 4
+  completed_phases: [1, 2, 3]
+  phase_artifacts:
+    discover: specs/tech-architecture/tech-stack.md
+    elaborate: specs/adr/
+    plan: specs/release-plan.yaml
+  next_phase_artifact: specs/EVALS-e01.md
 handoff:
   next_skill: build-epic
-  context: "House complete. Baseline v0.1.0 tagged and pushed; CI gate/release live on main (chore merges produce no version); hooks installed; bigpowers scripts vendored; preflight gate green in --bootstrap mode until e01s01 writes the first test. Ladder: v0.2.0 e01 -> v0.11.0 e10 -> v1.0.0 e11 via feat(e11)!."
+  context: "Pre-build compliance complete (22/22 checks). House complete. Baseline v0.1.0 tagged and pushed; CI gate/release live on main (chore merges produce no version); hooks installed; bigpowers scripts vendored; preflight gate green in --bootstrap mode until e01s01 writes the first test. Ladder: v0.2.0 e01 -> v0.11.0 e10 -> v1.0.0 e11 via feat(e11)!."
   epic: null
   open_decisions:
     - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."

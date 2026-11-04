@@ -57,13 +57,24 @@ stage "L1 · GUT unit + integration"
 if [ "$MODE" = "fast" ]; then
   info "skipped by --fast (static gate for the pre-commit hook; CI runs the full chain)"
 else
+# GUT resolves its classes through game/.godot/global_script_class_cache.cfg, which is
+# gitignored. On a fresh clone (CI, new machine) the cache is absent, so GUT prints
+# "Some GUT class_names have not been imported" and exits 0 having run nothing.
+# Importing first is what makes the suite real; without it every GUT run is theatre.
+"$GODOT" --headless --path "$GAME" --import >/tmp/bq-godot-import.log 2>&1 || true
 gut_log=$(mktemp)
 if "$GODOT" --headless --path "$GAME" -s addons/gut/gut_cmdln.gd -gexit >"$gut_log" 2>&1; then
   gut_rc=0
 else
   gut_rc=$?
 fi
-if grep -q "Nothing was run" "$gut_log"; then
+# Positive evidence of execution, not just the absence of a failure: GUT can exit 0
+# having printed nothing at all (observed on the ubuntu runner), which is exactly the
+# silent-green mode this stage exists to prevent.
+if ! grep -qE "Nothing was run|^(Tests|Passing|Failing|Scripts|Asserts)|Scripts[[:space:]]+[0-9]+" "$gut_log"; then
+  fail "GUT produced no recognizable summary — cannot prove the suite ran (Zero-Test Guard, CONVENTIONS.md §1)"
+  tail -6 "$gut_log" | sed 's/^/        /'
+elif grep -q "Nothing was run" "$gut_log"; then
   if [ "$MODE" = "bootstrap" ]; then
     info "GUT executed 0 scripts — allowed once by --bootstrap (first story turns this into a failure)"
   else
@@ -86,11 +97,19 @@ stage "L4 · story traceability"
 run "bash scripts/trace-stories.sh --strict" bash scripts/trace-stories.sh --strict
 
 stage "L5 · specs schema (bigpowers contract)"
-BP="$(npm root -g 2>/dev/null)/bigpowers"
-if [ -f "$BP/scripts/validate-specs-yaml.sh" ]; then
-  run "validate-specs-yaml.sh specs" bash "$BP/scripts/validate-specs-yaml.sh" specs
+if [ -f scripts/validate-specs-yaml.sh ]; then
+  run "scripts/validate-specs-yaml.sh (vendored)" bash scripts/validate-specs-yaml.sh
+elif [ -f "$(npm root -g 2>/dev/null)/bigpowers/scripts/validate-specs-yaml.sh" ]; then
+  run "validate-specs-yaml.sh specs" bash "$(npm root -g)/bigpowers/scripts/validate-specs-yaml.sh" specs
 else
-  info "skipped — bigpowers not installed globally (npm i -g bigpowers@latest)"
+  info "skipped — no vendored validator and bigpowers not installed globally"
+fi
+
+stage "L5b · release config (big-release)"
+if command -v big-release >/dev/null 2>&1; then
+  run "big-release validate" big-release validate
+else
+  info "skipped — big-release not on PATH (CI installs it in the release job)"
 fi
 
 printf '\n'

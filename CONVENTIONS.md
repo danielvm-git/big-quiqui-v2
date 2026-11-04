@@ -15,6 +15,7 @@ All human and AI contributors MUST follow these rules without exception.
   ```
   It runs every stage and prints PASS/FAIL per stage: `L0` `gdlint` + `gdformat --check` (addons excluded), `L0b` strict-typing type gate (`game/tools/type_gate.gd`), `L1` GUT unit + integration, `L3` PII log audit, `L4` story traceability, `L5` bigpowers spec schema.
 - **Zero-Test Guard:** A test run that executes `0` scripts or `0` assertions is a HARD FAILURE (`preflight.sh` greps GUT's `Nothing was run` and exits non-zero).
+- **CI is centralized:** `.github/workflows/ci-cd.yml` is a copy of the portfolio template `danielvm-git/.github` → `test-build-release-godot.yml` (Option B, ADR-007), with inputs inlined. Pipeline logic belongs upstream — never invent a local stage; project-specific gates belong in `scripts/preflight.sh`, which the workflow calls. Re-sync the copy when the template version bumps.
 - **Bootstrap Exception:** `bash scripts/preflight.sh --bootstrap` is the ONLY sanctioned way to pass Preflight with `0` test scripts. It may be used exactly once, before the first story lands, and is recorded as `lifecycle_phase` in `specs/state.yaml`. It never suppresses a real failure — only the zero-test verdict. CI selects it automatically **only** while `game/tests/**/test_*.gd` is empty; the first test file disables it permanently.
 
 ### Discovered Defects & Banned Dismissive Phrases
@@ -78,7 +79,7 @@ When any gate fails, you MUST either fix it immediately (`quick-fix` if data-onl
 
 ---
 
-## 5. Testing Standards (F.I.R.S.T. + 9-Layer Pyramid)
+## Tests (F.I.R.S.T. + 9-Layer Pyramid)
 
 - **Fast, Isolated, Repeatable, Self-Validating, Timely (TDD Red → Green → Refactor).**
 - Every test script MUST extend `GutTest` (or `QuiQuiTestCase` which runs `TestReset.reset_all()` in `before_each`).

@@ -1,0 +1,55 @@
+# story: e01s01
+# Evals — e01 (Foundation + TitleScene). Schema: specs/benchmarks/SCHEMA.md
+# Skill: run-evals · kind: capability · baseline: none (first playable scene)
+epic: e01
+kind: capability
+evals:
+  - id: EV-E01-01
+    claim: "Every stateful behaviour goes through Fsm with declared edges only"
+    story: e01s01
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "SC-E01-P0-01"
+    pass_when: "exit==0 and SC-E01-P0-01 among passing scenarios"
+
+  - id: EV-E01-02
+    claim: "The play diary is valid JSONL and contains no PII"
+    story: e01s01
+    grader: code
+    run: bash scripts/logs.sh audit --self-test
+    pass_when: "exit==0 (1 valid line accepted, 6 PII cases rejected)"
+
+  - id: EV-E01-03
+    claim: "Tests cannot touch the production save file"
+    story: e01s01
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "SC-E01-P0-06"
+    pass_when: "exit==0 and SC-E01-P0-06 among passing scenarios"
+
+  - id: EV-E01-04
+    claim: "An empty test suite cannot pass the gate (anti-vacuity)"
+    story: e01s01
+    grader: code
+    run: bash scripts/preflight.sh
+    pass_when: "exit==0 with >=1 discovered GUT script; exit==1 when scripts are removed"
+
+  - id: EV-E01-05
+    claim: "The game boots on a 4:3 iPad canvas with no letterbox bars"
+    story: e01s05
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "SC-E01-P1-08"
+    pass_when: "exit==0 (GeometryOracle passes at 1920x1080 and 2048x1536)"
+
+  - id: EV-E01-06
+    claim: "A pre-reading child can start play with one tap and no text"
+    story: e01s05
+    grader: model
+    rubric:
+      1: "Tapping the Play button enters TitleScene's action with no textual instruction"
+      2: "The Play button hit box is >= 120x120 px in both aspects"
+      3: "Family PT-BR voice or music begins within one frame of the tap"
+      4: "No prompt requires reading to proceed"
+    pass_when: "all rubric items yes"
+    k: 3
