@@ -15,7 +15,7 @@ All human and AI contributors MUST follow these rules without exception.
   ```
   It runs every stage and prints PASS/FAIL per stage: `L0` `gdlint` + `gdformat --check` (addons excluded), `L0b` strict-typing type gate (`game/tools/type_gate.gd`), `L1` GUT unit + integration, `L3` PII log audit, `L4` story traceability, `L5` bigpowers spec schema.
 - **Zero-Test Guard:** A test run that executes `0` scripts or `0` assertions is a HARD FAILURE (`preflight.sh` greps GUT's `Nothing was run` and exits non-zero).
-- **Bootstrap Exception:** `bash scripts/preflight.sh --bootstrap` is the ONLY sanctioned way to pass Preflight with `0` test scripts. It may be used exactly once, before the first story lands, and is recorded as `lifecycle_phase` in `specs/state.yaml`. It never suppresses a real failure — only the zero-test verdict.
+- **Bootstrap Exception:** `bash scripts/preflight.sh --bootstrap` is the ONLY sanctioned way to pass Preflight with `0` test scripts. It may be used exactly once, before the first story lands, and is recorded as `lifecycle_phase` in `specs/state.yaml`. It never suppresses a real failure — only the zero-test verdict. CI selects it automatically **only** while `game/tests/**/test_*.gd` is empty; the first test file disables it permanently.
 
 ### Discovered Defects & Banned Dismissive Phrases
 When any gate fails, you MUST either fix it immediately (`quick-fix` if data-only, or separate `fix:` commit) or log a structured blocker in `specs/bugs/registry.yaml`.
@@ -34,7 +34,9 @@ When any gate fails, you MUST either fix it immediately (`quick-fix` if data-onl
 - **Conventional Commits:** Every commit title MUST match `^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9_-]+\))?!?: .+`.
 - **Story Traceability:** Include the story ID in commit scopes or bodies (e.g., `feat(e01s02): implement table-driven Fsm and FsmProbe`).
 - **No AI Attribution:** NEVER include `Co-authored-by`, `Co-Authored-By`, or any AI footer in commits.
-- **Branch Protection:** Work on feature branches (`feat/eNNsYY-slug`) when running `build-epic`; merge only when Preflight is green.
+- **Branch Protection:** Work on feature branches (`feat/eNNsYY-slug`); merge only when Preflight is green. Direct commits to `main` are blocked by the agent harness and by branch protection.
+- **Hooks:** `git config core.hooksPath .githooks` (done by `scripts/setup.sh`). `pre-commit` runs `bash scripts/preflight.sh --fast`; `commit-msg` enforces Conventional Commits, the 72-char subject limit, and bans AI attribution.
+- **Epic release train (version ladder):** `main` takes **exactly one squash-merge per epic** — `feat(eNN): <scene>` — which is what makes `big-release` cut one version per epic: `v0.1.0` (house) → `v0.2.0` (e01) → … → `v0.11.0` (e10) → `v1.0.0` (e11, via `feat(e11)!:`). Story commits (`feat(eNNsYY): …`) land on `epic/eNN-slug` and produce **no** release, because `big-release` only releases from `main`. Hotfixes land as `fix(...)`: patch bump (`v0.5.1`), ladder intact. `chore`/`docs`/`test`/`refactor`/`ci` never release. `specs/release-plan.yaml` → `release.versions` is the source of truth for the ladder.
 
 ---
 

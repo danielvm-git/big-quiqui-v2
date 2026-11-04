@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# story: e01s01
+# Enforces CONVENTIONS.md §2: Conventional Commits + no AI attribution.
+set -uo pipefail
+MSG_FILE="${1:?missing commit message file}"
+SUBJECT=$(head -1 "$MSG_FILE")
+
+if ! printf '%s' "$SUBJECT" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9_.-]+\))?!?: .+'; then
+	printf '\033[1;31m✘ commit-msg\033[0m: not a Conventional Commit: %s\n' "$SUBJECT" >&2
+	printf '   expected: <type>(<scope>): <subject>  e.g. feat(e01s02): add table-driven Fsm\n' >&2
+	exit 1
+fi
+
+if [ ${#SUBJECT} -gt 72 ]; then
+	printf '\033[1;31m✘ commit-msg\033[0m: subject is %s chars (max 72)\n' "${#SUBJECT}" >&2
+	exit 1
+fi
+
+if grep -qiE '^co[- ]authored[- ]by:' "$MSG_FILE"; then
+	printf '\033[1;31m✘ commit-msg\033[0m: Co-authored-by is banned (CONVENTIONS.md §2)\n' >&2
+	exit 1
+fi
+
+if grep -qiE '(generated with|written by|assisted by).*(claude|codex|gemini|copilot|gpt|anthropic|openai|pi)' "$MSG_FILE"; then
+	printf '\033[1;31m✘ commit-msg\033[0m: AI attribution footer is banned (CONVENTIONS.md §2)\n' >&2
+	exit 1
+fi
+
+exit 0
