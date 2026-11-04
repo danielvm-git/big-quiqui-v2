@@ -1,0 +1,25 @@
+story_id: e08s02
+epic_id: e08
+title: 'Vila Recycling Mini-Activity: Spawning saquinho_lixo Drag-to-Bin Awarding
+  +1 Coin & Sparkle'
+status: planned
+bcps: 3
+playable_scene: res://scenes/vila.tscn + res://scenes/roda.tscn
+tasks:
+- id: e08s02-t01
+  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e08s02
+    (Vila Recycling Mini-Activity: Spawning saquinho_lixo Drag-to-Bin Awarding +1
+    Coin & Sparkle)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  status: planned
+- id: e08s02-t02
+  description: Implement minimal strict-typed GDScript & Control scene nodes for e08s02
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
+    addons/gut/gut_cmdln.gd -gexit
+  status: planned
+- id: e08s02-t03
+  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
+    story traceability for e08s02
+  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
+    --strict
+  status: planned

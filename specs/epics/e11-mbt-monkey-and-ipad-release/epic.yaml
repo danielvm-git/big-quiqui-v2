@@ -1,0 +1,33 @@
+epic_id: e11
+slug: e11-mbt-monkey-and-ipad-release
+title: 'Release Gate (v1.0.0): 500-Step MBT Walk, 3-Finger Monkey Fuzz, Visual Gallery
+  & iPad Build'
+playable_scene: ALL (17 scenes verified)
+status: planned
+bcps: 13
+wsjf: 6.4
+stories:
+- id: e11s01
+  title: 500-Step Model-Based Testing (MBT) Random Walk Across All 17 Scenes Verifying
+    FSM & Economy Invariants
+  bcps: 4
+  status: planned
+  delta: ADDED
+- id: e11s02
+  title: 1,000-Event 3-Finger Concurrent Monkey Fuzz Test with Zero Engine Errors,
+    Orphans, or Stuck States
+  bcps: 3
+  status: planned
+  delta: ADDED
+- id: e11s03
+  title: Dual-Aspect Visual Screenshot Gallery (1920x1080 & 2048x1536) & gate-trace
+    Full Traceability Sign-Off
+  bcps: 3
+  status: planned
+  delta: ADDED
+- id: e11s04
+  title: iPadOS Export Preset (export_presets.cfg), scripts/ios-deploy.sh Personal
+    Team Signing & v1.0.0 Release
+  bcps: 3
+  status: planned
+  delta: ADDED

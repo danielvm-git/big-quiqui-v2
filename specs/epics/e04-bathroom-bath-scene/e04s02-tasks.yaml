@@ -1,0 +1,25 @@
+story_id: e04s02
+epic_id: e04
+title: 'BathScene Stage 1 (SOAP): Sponge & Scented Soaps Spawning 8 Aligned Foam Blobs
+  Strictly Inside ScrubHull'
+status: planned
+bcps: 4
+playable_scene: res://scenes/banheiro.tscn
+tasks:
+- id: e04s02-t01
+  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e04s02
+    (BathScene Stage 1 (SOAP): Sponge & Scented Soaps Spawning 8 Aligned Foam Blobs
+    Strictly Inside ScrubHull)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  status: planned
+- id: e04s02-t02
+  description: Implement minimal strict-typed GDScript & Control scene nodes for e04s02
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
+    addons/gut/gut_cmdln.gd -gexit
+  status: planned
+- id: e04s02-t03
+  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
+    story traceability for e04s02
+  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
+    --strict
+  status: planned

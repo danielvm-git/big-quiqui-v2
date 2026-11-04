@@ -1,0 +1,25 @@
+story_id: e11s02
+epic_id: e11
+title: 1,000-Event 3-Finger Concurrent Monkey Fuzz Test with Zero Engine Errors, Orphans,
+  or Stuck States
+status: planned
+bcps: 3
+playable_scene: ALL (17 scenes verified)
+tasks:
+- id: e11s02-t01
+  description: Write failing GUT unit & TouchSim/GeometryOracle tests for e11s02 (1,000-Event
+    3-Finger Concurrent Monkey Fuzz Test with Zero Engine Errors, Orphans, or Stuck
+    States)
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  status: planned
+- id: e11s02-t02
+  description: Implement minimal strict-typed GDScript & Control scene nodes for e11s02
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
+    addons/gut/gut_cmdln.gd -gexit
+  status: planned
+- id: e11s02-t03
+  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
+    story traceability for e11s02
+  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
+    --strict
+  status: planned

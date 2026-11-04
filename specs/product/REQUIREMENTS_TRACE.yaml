@@ -1,0 +1,57 @@
+# story: e01s01
+requirements:
+  - id: REQ-01
+    title: "Explicit FSM & Observability Foundation + Playable TitleScene (titulo.tscn)"
+    epic: e01
+    stories: [e01s01, e01s02, e01s03, e01s04, e01s05]
+    scenes: ["res://scenes/titulo.tscn"]
+  - id: REQ-02
+    title: "Indoor Care Hub (CasaScene / casa.tscn)"
+    epic: e02
+    stories: [e02s01, e02s02, e02s03, e02s04]
+    scenes: ["res://scenes/casa.tscn"]
+  - id: REQ-03
+    title: "Kitchen Feeding Scene (KitchenScene / cozinha.tscn)"
+    epic: e03
+    stories: [e03s01, e03s02, e03s03, e03s04]
+    scenes: ["res://scenes/cozinha.tscn"]
+  - id: REQ-04
+    title: "Bathroom 3-Stage Scene (BathScene / banheiro.tscn)"
+    epic: e04
+    stories: [e04s01, e04s02, e04s03, e04s04]
+    scenes: ["res://scenes/banheiro.tscn"]
+  - id: REQ-05
+    title: "Closet Dress-Up Scene (ClosetScene / closet.tscn)"
+    epic: e05
+    stories: [e05s01, e05s02, e05s03]
+    scenes: ["res://scenes/closet.tscn"]
+  - id: REQ-06
+    title: "Garden Play Scene (GardenPlayScene / jardim.tscn)"
+    epic: e06
+    stories: [e06s01, e06s02, e06s03]
+    scenes: ["res://scenes/jardim.tscn"]
+  - id: REQ-07
+    title: "Bedroom Sleep & Celebration Scenes (quarto_sono.tscn, celebracao.tscn)"
+    epic: e07
+    stories: [e07s01, e07s02, e07s03, e07s04]
+    scenes: ["res://scenes/quarto_sono.tscn", "res://scenes/celebracao.tscn"]
+  - id: REQ-08
+    title: "Vila QuiQui, Recycling & Wheel of Fortune (vila.tscn, roda.tscn)"
+    epic: e08
+    stories: [e08s01, e08s02, e08s03, e08s04]
+    scenes: ["res://scenes/vila.tscn", "res://scenes/roda.tscn"]
+  - id: REQ-09
+    title: "Furniture Store, Decoratable Casinha & House Party (mercado.tscn, casinha.tscn, festa.tscn)"
+    epic: e09
+    stories: [e09s01, e09s02, e09s03, e09s04]
+    scenes: ["res://scenes/mercado.tscn", "res://scenes/casinha.tscn", "res://scenes/festa.tscn"]
+  - id: REQ-10
+    title: "Village Friends Mini-Games & Sticker Album (pato_danca.tscn, urso_puzzle.tscn, pinguim_jogo.tscn, album.tscn)"
+    epic: e10
+    stories: [e10s01, e10s02, e10s03, e10s04]
+    scenes: ["res://scenes/pato_danca.tscn", "res://scenes/urso_puzzle.tscn", "res://scenes/pinguim_jogo.tscn", "res://scenes/album.tscn"]
+  - id: REQ-11
+    title: "MBT Random Walk, Multi-Touch Monkey Fuzz, Visual Gallery & iPad Release"
+    epic: e11
+    stories: [e11s01, e11s02, e11s03, e11s04]
+    scenes: ["ALL"]

@@ -1,0 +1,20 @@
+# Vendored bigpowers scripts
+
+Source: bigpowers@2.93.1 (npm) — `scripts/` + `scripts/lib/` (transitive closure only).
+
+We vendor instead of `bigpowers init` symlinking because `scripts/` here is
+project-owned (`logs.sh`, `log_tool.py`, `setup.sh`, `trace-stories.sh`).
+`bigpowers init` refuses to replace a user-owned `scripts/` dir, and the
+scripts compute `REPO_ROOT` as `dirname $0/..` — so they must live in
+`scripts/` for $REPO_ROOT to be this project.
+
+Vendored: bp-yaml-set, bp-timing, record-cycle-time, sync-status-from-epics,
+run-story-verify, land-branch + lib/{python-env,skill-common,fail-open-detect,
+story-verify-memo,git-hours,record-cycle-time-lib,land-branch-push,
+extract-story-verify}.
+
+Deliberately NOT vendored: `trace-stories.sh` (name collision — ours is the
+story-tag gate with project semantics; bigpowers' is the coverage-matrix
+builder, add it as `scripts/trace-matrix.sh` only if gate-trace is adopted).
+
+Re-vendor: re-run the copy loop in the Phase 1 script after a bigpowers bump.

@@ -1,0 +1,72 @@
+# story: e01s01
+development_status:
+  downgrade_applied: false
+  e01: planned
+  e01s01: planned
+  e01s02: planned
+  e01s03: planned
+  e01s04: planned
+  e01s05: planned
+  e02: planned
+  e02s01: planned
+  e02s02: planned
+  e02s03: planned
+  e02s04: planned
+  e03: planned
+  e03s01: planned
+  e03s02: planned
+  e03s03: planned
+  e03s04: planned
+  e04: planned
+  e04s01: planned
+  e04s02: planned
+  e04s03: planned
+  e04s04: planned
+  e05: planned
+  e05s01: planned
+  e05s02: planned
+  e05s03: planned
+  e06: planned
+  e06s01: planned
+  e06s02: planned
+  e06s03: planned
+  e07: planned
+  e07s01: planned
+  e07s02: planned
+  e07s03: planned
+  e07s04: planned
+  e08: planned
+  e08s01: planned
+  e08s02: planned
+  e08s03: planned
+  e08s04: planned
+  e09: planned
+  e09s01: planned
+  e09s02: planned
+  e09s03: planned
+  e09s04: planned
+  e10: planned
+  e10s01: planned
+  e10s02: planned
+  e10s03: planned
+  e10s04: planned
+  e11: planned
+  e11s01: planned
+  e11s02: planned
+  e11s03: planned
+  e11s04: planned
+
+active_epic: e01
+active_story: e01s01
+epics:
+  e01: { status: planned, completed_stories: 0, total_stories: 5 }
+  e02: { status: planned, completed_stories: 0, total_stories: 4 }
+  e03: { status: planned, completed_stories: 0, total_stories: 4 }
+  e04: { status: planned, completed_stories: 0, total_stories: 4 }
+  e05: { status: planned, completed_stories: 0, total_stories: 3 }
+  e06: { status: planned, completed_stories: 0, total_stories: 3 }
+  e07: { status: planned, completed_stories: 0, total_stories: 4 }
+  e08: { status: planned, completed_stories: 0, total_stories: 4 }
+  e09: { status: planned, completed_stories: 0, total_stories: 4 }
+  e10: { status: planned, completed_stories: 0, total_stories: 4 }
+  e11: { status: planned, completed_stories: 0, total_stories: 4 }

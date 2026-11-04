@@ -1,0 +1,227 @@
+# story: e01s01
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: pipeline-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.7.0"
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  gate:
+    name: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install gdtoolkit
+        run: pip install "gdtoolkit==4.*" pyyaml
+
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: false
+
+      - name: Install bigpowers (spec schema gate)
+        run: npm install -g bigpowers@latest
+
+      - name: Detect test suite (auto-disables --bootstrap once a test exists)
+        id: tests
+        run: |
+          if find game/tests -name 'test_*.gd' 2>/dev/null | grep -q .; then
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=bootstrap" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Zero-Test Guard pending::no game/tests/**/test_*.gd yet — running the one-time bootstrap gate. e01s01 disables this permanently."
+          fi
+
+      - name: Preflight
+        run: bash scripts/preflight.sh ${{ steps.tests.outputs.mode == 'bootstrap' && '--bootstrap' || '' }}
+
+      - name: Offline-only security gate (no network APIs in game code)
+        run: |
+          if grep -RInE '\b(HTTPRequest|HTTPClient|WebSocketPeer|TCPServer|StreamPeerTCP|UDPServer|PacketPeerUDP|ENetMultiplayerPeer)\b' game/scripts/ game/components/ game/scenes/ 2>/dev/null; then
+            echo "FATAL: network API detected in an offline kids game"
+            exit 1
+          fi
+          echo "OK: no network APIs"
+
+      - name: No AI attribution in history
+        run: |
+          RANGE="${{ github.event_name == 'pull_request' && format('{0}..HEAD', github.event.pull_request.base.sha) || 'HEAD~20..HEAD' }}"
+          if git log "$RANGE" --format="%B" 2>/dev/null | grep -qiE '^co[- ]authored[- ]by:'; then
+            echo "FATAL: Co-authored-by footer found (CONVENTIONS.md §2)"
+            exit 1
+          fi
+          echo "OK: no AI attribution"
+
+      - name: Conventional commits (PR only)
+        if: github.event_name == 'pull_request'
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          git log "$BASE"..HEAD --no-merges --format="%s" | while IFS= read -r subject; do
+            if ! printf '%s' "$subject" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9_.-]+\))?!?: .+'; then
+              echo "FATAL: not a Conventional Commit: $subject"
+              exit 1
+            fi
+          done
+          echo "OK: all commits conventional"
+
+      - name: Spec schema (bigpowers contract)
+        run: bash "$(npm root -g)/bigpowers/scripts/validate-specs-yaml.sh" specs
+
+  package:
+    name: package-ios
+    needs: [gate]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect export preset
+        id: preset
+        run: |
+          if grep -q 'name="iOS"' game/export_presets.cfg 2>/dev/null; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=iOS export skipped::game/export_presets.cfg has no iOS preset yet (arrives with e11)."
+          fi
+
+      - uses: chickensoft-games/setup-godot@v2
+        if: steps.preset.outputs.enabled == 'true'
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: true
+
+      - name: Sync version from tag
+        if: steps.preset.outputs.enabled == 'true'
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          VER=${TAG#v}
+          python3 - "$VER" <<'PY'
+          import re, sys
+          ver = sys.argv[1]
+          p = 'game/project.godot'
+          s = open(p).read()
+          s, n = re.subn(r'^config/version=.*$', f'config/version="{ver}"', s, flags=re.M)
+          assert n == 1, 'config/version not found in project.godot'
+          open(p, 'w').write(s)
+          p = 'game/export_presets.cfg'
+          s = open(p).read()
+          s = re.sub(r'^version/name=.*$', f'version/name="{ver}"', s, flags=re.M)
+          s = re.sub(r'^version/code=.*$', f'version/code={int(ver.replace(".", ""))}', s, flags=re.M)
+          open(p, 'w').write(s)
+          print(f'version synced to {ver}')
+          PY
+
+      - name: Export iOS (unsigned)
+        if: steps.preset.outputs.enabled == 'true'
+        run: |
+          mkdir -p build/ios
+          godot --headless --path game --import
+          godot --headless --path game --export-release "iOS" "$PWD/build/ios/quiqui.ipa"
+
+      - uses: actions/upload-artifact@v4
+        if: steps.preset.outputs.enabled == 'true'
+        with:
+          name: ios-ipa
+          path: build/ios/quiqui.ipa
+          retention-days: 14
+
+      # The release job does not wait for macOS: it tags and publishes from
+      # `gate`, and this job attaches the IPA afterwards to the release that
+      # already exists (a macOS queue delay must never delay a version).
+      - name: Attach IPA to the current release
+        if: steps.preset.outputs.enabled == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=$(git tag --sort=-v:refname | head -1)
+          test -n "$TAG" || { echo "no release tag to attach to"; exit 1; }
+          for i in 1 2 3 4 5 6; do
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              gh release upload "$TAG" build/ios/quiqui.ipa --clobber
+              exit 0
+            fi
+            echo "release $TAG not published yet (attempt $i) — waiting 30s"
+            sleep 30
+          done
+          echo "FATAL: release $TAG never appeared"
+          exit 1
+
+  release:
+    name: release
+    needs: [gate]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.gate.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Install big-release
+        run: |
+          curl -sSL https://github.com/danielvm-git/big-release/releases/latest/download/big-release-linux-amd64 -o /tmp/big-release
+          chmod +x /tmp/big-release
+          sudo mv /tmp/big-release /usr/local/bin/big-release
+          big-release --help >/dev/null
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+          GIT_AUTHOR_NAME: quiqui-release-bot
+          GIT_AUTHOR_EMAIL: quiqui-release-bot@users.noreply.github.com
+          GIT_COMMITTER_NAME: quiqui-release-bot
+          GIT_COMMITTER_EMAIL: quiqui-release-bot@users.noreply.github.com
+        run: |
+          BEFORE=$(git describe --tags --abbrev=0 2>/dev/null || echo none)
+          SUBJECT=$(git log -1 --format=%s)
+          echo "head: $SUBJECT"
+          echo "last tag before: $BEFORE"
+          big-release release --verbose
+          AFTER=$(git describe --tags --abbrev=0 2>/dev/null || echo none)
+          echo "last tag after: $AFTER"
+          # A releasable commit MUST move the tag; silent no-runs are the failure
+          # mode this guard exists for (branch not configured, dry-run, fetch-depth 0).
+          if [ "$BEFORE" = "$AFTER" ] && printf '%s' "$SUBJECT" | grep -qE '^(feat|fix|perf)(\([a-z0-9_.-]+\))?!?: '; then
+            echo "FATAL: releasable commit produced no new tag"
+            exit 1
+          fi
+          echo "OK: release step honest"
+          echo "ladder: $(python3 -c "import yaml;print(yaml.safe_load(open('specs/release-plan.yaml'))['release']['versions'])")"
