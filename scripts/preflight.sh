@@ -63,7 +63,13 @@ if "$GODOT" --headless --path "$GAME" -s addons/gut/gut_cmdln.gd -gexit >"$gut_l
 else
   gut_rc=$?
 fi
-if grep -q "Nothing was run" "$gut_log"; then
+# Positive evidence of execution, not just the absence of a failure: GUT can exit 0
+# having printed nothing at all (observed on the ubuntu runner), which is exactly the
+# silent-green mode this stage exists to prevent.
+if ! grep -qE "Nothing was run|^(Tests|Passing|Failing|Scripts|Asserts)|Scripts[[:space:]]+[0-9]+" "$gut_log"; then
+  fail "GUT produced no recognizable summary — cannot prove the suite ran (Zero-Test Guard, CONVENTIONS.md §1)"
+  tail -6 "$gut_log" | sed 's/^/        /'
+elif grep -q "Nothing was run" "$gut_log"; then
   if [ "$MODE" = "bootstrap" ]; then
     info "GUT executed 0 scripts — allowed once by --bootstrap (first story turns this into a failure)"
   else
