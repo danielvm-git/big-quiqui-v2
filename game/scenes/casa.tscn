@@ -1,0 +1,198 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/scenes/casa.gd" id="1_uum25"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_sala.jpg" id="2_lgdna"]
+[ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_wui1u"]
+[ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="4_g3anh"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/porta.png" id="5_3kn8t"]
+[ext_resource type="Script" path="res://scripts/components/wish_bubble.gd" id="6_2ix5r"]
+[ext_resource type="Script" path="res://scripts/components/care_dots_bar.gd" id="7_qil8m"]
+[ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="8_dgbb3"]
+
+[node name="Casa" type="Control" unique_id=421439980]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("1_uum25")
+
+[node name="Background" type="TextureRect" parent="." unique_id=152068057 groups=["background"]]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_lgdna")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="QuiQuiRig" type="Control" parent="." unique_id=1278287244]
+anchors_preset = 0
+offset_left = 640.0
+offset_top = 222.0
+offset_right = 1280.0
+offset_bottom = 842.0
+script = ExtResource("3_wui1u")
+
+[node name="DoorFEED" type="Control" parent="." unique_id=1205953520 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 64.0
+offset_top = 220.0
+offset_right = 232.0
+offset_bottom = 388.0
+script = ExtResource("4_g3anh")
+
+[node name="Visual" type="Control" parent="DoorFEED" unique_id=1154388239]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="DoorFEED/Visual" unique_id=1135987303]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("5_3kn8t")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DoorPLAY" type="Control" parent="." unique_id=445572492 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 1688.0
+offset_top = 220.0
+offset_right = 1856.0
+offset_bottom = 388.0
+script = ExtResource("4_g3anh")
+
+[node name="Visual" type="Control" parent="DoorPLAY" unique_id=2058372802]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="DoorPLAY/Visual" unique_id=1922499632]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("5_3kn8t")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DoorBATH" type="Control" parent="." unique_id=1028353735 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 64.0
+offset_top = 460.0
+offset_right = 232.0
+offset_bottom = 628.0
+script = ExtResource("4_g3anh")
+
+[node name="Visual" type="Control" parent="DoorBATH" unique_id=887421526]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="DoorBATH/Visual" unique_id=1535320629]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("5_3kn8t")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DoorSLEEP" type="Control" parent="." unique_id=1518894805 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 1688.0
+offset_top = 460.0
+offset_right = 1856.0
+offset_bottom = 628.0
+script = ExtResource("4_g3anh")
+
+[node name="Visual" type="Control" parent="DoorSLEEP" unique_id=1067647927]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="DoorSLEEP/Visual" unique_id=211306106]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("5_3kn8t")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DoorDRESS" type="Control" parent="." unique_id=1003913140 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 64.0
+offset_top = 700.0
+offset_right = 232.0
+offset_bottom = 868.0
+script = ExtResource("4_g3anh")
+
+[node name="Visual" type="Control" parent="DoorDRESS" unique_id=336060768]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="DoorDRESS/Visual" unique_id=476869798]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("5_3kn8t")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DoorVILA" type="Control" parent="." unique_id=2007680231 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 1688.0
+offset_top = 700.0
+offset_right = 1856.0
+offset_bottom = 868.0
+script = ExtResource("4_g3anh")
+
+[node name="Visual" type="Control" parent="DoorVILA" unique_id=1443702650]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="DoorVILA/Visual" unique_id=1529964254]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("5_3kn8t")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WishBubble" type="Control" parent="." unique_id=366303824]
+anchors_preset = 0
+offset_left = 850.0
+offset_top = 30.0
+offset_right = 1070.0
+offset_bottom = 250.0
+script = ExtResource("6_2ix5r")
+
+[node name="CareDotsBar" type="Control" parent="." unique_id=622177387]
+anchors_preset = 0
+offset_left = 732.0
+offset_top = 972.0
+offset_right = 1188.0
+offset_bottom = 1044.0
+script = ExtResource("7_qil8m")
+
+[node name="CoinTicketHud" type="Control" parent="." unique_id=1274554945]
+anchors_preset = 0
+offset_left = 1504.0
+offset_top = 36.0
+offset_right = 1884.0
+offset_bottom = 124.0
+script = ExtResource("8_dgbb3")

@@ -3,7 +3,7 @@ spec: e02s03.md
 epic_id: e02
 title: 'Playable Scene 2: CasaScene (casa.tscn) Indoor Hub with Reactive QuiQui, 5
   Room Doors & Vila Door'
-status: failing
+status: passing
 bcps: 4
 playable_scene: res://scenes/casa.tscn
 tasks:
@@ -15,7 +15,7 @@ tasks:
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e02s03-t02
   description: Implement minimal strict-typed GDScript & Control scene nodes for e02s03
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
@@ -23,7 +23,7 @@ tasks:
   risk: P1
   allure:
     severity: high
-  status: failing
+  status: passing
 - id: e02s03-t03
   description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
     story traceability for e02s03
@@ -32,4 +32,4 @@ tasks:
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing

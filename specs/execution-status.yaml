@@ -1,31 +1,7 @@
 development_status:
   downgrade_applied: false
   e01: done
-  e01s01:
-    status: done
-    started_at: '2026-11-04T23:20:00-03:00'
-    completed_at: '2026-11-04T20:32:47-03:00'
-  e01s02:
-    status: done
-    started_at: "2026-11-04T23:50:00-03:00"
-    completed_at: "2026-11-04T21:10:31-03:00"
-  e01s03:
-    status: done
-    started_at: "2026-11-04T21:12:00-03:00"
-    completed_at: "2026-11-04T21:16:34-03:00"
-  e01s04:
-    status: done
-    started_at: "2026-11-04T21:18:00-03:00"
-    completed_at: "2026-11-04T21:56:51-03:00"
-  e01s05:
-    status: done
-    started_at: "2026-11-04T21:58:00-03:00"
-    completed_at: "2026-11-04T22:01:14-03:00"
-  e02: planned
-  e02s01: planned
-  e02s02: planned
-  e02s03: planned
-  e02s04: planned
+  e02: done
   e03: planned
   e03s01: planned
   e03s02: planned
@@ -69,55 +45,7 @@ development_status:
   e11s02: planned
   e11s03: planned
   e11s04: planned
-active_epic: e01
-active_story: e01s01
+
 epics:
-  e01:
-    status: planned
-    completed_stories: 0
-    total_stories: 5
-  e02:
-    status: planned
-    completed_stories: 0
-    total_stories: 4
-  e03:
-    status: planned
-    completed_stories: 0
-    total_stories: 4
-  e04:
-    status: planned
-    completed_stories: 0
-    total_stories: 4
-  e05:
-    status: planned
-    completed_stories: 0
-    total_stories: 3
-  e06:
-    status: planned
-    completed_stories: 0
-    total_stories: 3
-  e07:
-    status: planned
-    completed_stories: 0
-    total_stories: 4
-  e08:
-    status: planned
-    completed_stories: 0
-    total_stories: 4
-  e09:
-    status: planned
-    completed_stories: 0
-    total_stories: 4
-  e10:
-    status: planned
-    completed_stories: 0
-    total_stories: 4
-  e11:
-    status: planned
-    completed_stories: 0
-    total_stories: 4
+
 stories:
-  e01s01:
-    effort_hours: 0.0
-    lead_time_minutes: 4
-    bcp_per_hour: 0.0

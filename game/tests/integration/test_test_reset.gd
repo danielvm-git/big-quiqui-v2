@@ -30,8 +30,9 @@ func test_reset_removes_a_leftover_test_save() -> void:
 
 
 func test_reset_survives_managers_that_do_not_exist_yet() -> void:
-	# e01s03 added ProgressManager; a manager that is still missing must be a no-op.
-	assert_null(TestReset.manager_node("CareLoopManager"), "not built yet")
+	# e01s03 added ProgressManager; e02s01 added CareLoopManager. A manager that
+	# is still missing must remain a no-op, so the probe is a name nothing plans.
+	assert_null(TestReset.manager_node("HubManagerThatDoesNotExist"), "not built and never will be")
 	TestReset.reset_all()
 	assert_true(true, "reset_all must not error when a manager is absent")
 

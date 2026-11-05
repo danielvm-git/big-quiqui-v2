@@ -44,6 +44,14 @@ var pending_scene: String = ""
 var current_scene: String = ""
 ## Injected so tests never swap the scene under GUT; the game sets `change_scene`.
 var loader: Callable = Callable()
+## Test seam for the production swap itself: when set, it is called instead of
+## `change_scene_to_file` (same injection discipline as `loader`).
+var production_swap: Callable = Callable()
+## The path of the last production swap — test observable (stays "" under GUT).
+var production_swap_path: String = ""
+## TestReset seam: when true, the manager never touches the real scene tree,
+## so a GUT run can complete a transition without swapping the runner scene.
+var test_mode: bool = false
 
 var _progress: float = 0.0
 ## Test-stepped clock: the FSM's dwell watchdog reads this instead of wall time,
@@ -135,6 +143,10 @@ func is_busy() -> bool:
 	return fsm != null and fsm.state != STATE_IDLE
 
 
+func set_test_mode(enabled: bool) -> void:
+	test_mode = enabled
+
+
 func reset() -> void:
 	_clock_ms = 0
 	fsm = Fsm.new(STATE_IDLE, LEGAL_EDGES, MAX_DWELL_SEC, Callable(self, "_clock"))
@@ -142,6 +154,7 @@ func reset() -> void:
 	current_scene = ""
 	_progress = 0.0
 	_swapped = false
+	production_swap_path = ""
 	_set_curtain_alpha(0.0)
 
 
@@ -161,10 +174,24 @@ func _enter_swapping() -> void:
 func _load_pending_or_current() -> void:
 	if loader.is_valid():
 		loader.call(current_scene)
+	elif not test_mode:
+		_swap_production(current_scene)
 	scene_changed.emit(current_scene)
 	_emit("scene.changed", {"path": _slug(current_scene)})
 	fsm.transition_to(STATE_FADING_IN)
 	_progress = 0.0
+
+
+## The real navigation: swaps the running scene. Reached only outside test mode
+## and only when no loader was injected.
+func _swap_production(path: String) -> void:
+	production_swap_path = path
+	if production_swap.is_valid():
+		production_swap.call(path)
+		return
+	var err: Error = get_tree().change_scene_to_file(path)
+	if err != OK:
+		_emit("scene.swap_failed", {"path": _slug(path)})
 
 
 func _finish() -> void:

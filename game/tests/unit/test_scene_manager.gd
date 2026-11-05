@@ -12,6 +12,7 @@ var loaded: Array[String] = []
 var queued_signals: Array[bool] = []
 var rejections: Array[String] = []
 var recoveries: Array[String] = []
+var production_swaps: Array[String] = []
 
 
 func before_all() -> void:
@@ -33,12 +34,16 @@ func before_each() -> void:
 	queued_signals = []
 	rejections = []
 	recoveries = []
+	production_swaps = []
 	sm.loader = func(path: String) -> void: loaded.append(path)
+	sm.production_swap = func(path: String) -> void: production_swaps.append(path)
 
 
 func after_each() -> void:
 	sm.reset()
 	sm.loader = Callable()
+	sm.production_swap = Callable()
+	sm.set_test_mode(false)
 	sm.manual_step = false
 
 
@@ -142,3 +147,44 @@ func test_reset_returns_a_busy_manager_to_idle() -> void:
 func test_logged_paths_are_id_shaped() -> void:
 	assert_eq(sm._slug("res://scenes/casa.tscn"), "scene.casa")
 	assert_eq(sm._slug("res://scenes/quarto_sono.tscn"), "scene.quarto_sono")
+
+
+# SC-E02-P0-09 — the production swap fires exactly once, outside test mode
+func test_production_mode_swaps_the_real_scene_once() -> void:
+	sm.loader = Callable()  # no injected loader: the production branch must run
+	sm.set_test_mode(false)
+	sm.production_swap_path = ""
+
+	sm.request_scene(SCENE_A)
+	_drive(2.0)
+
+	assert_eq(sm.fsm.state, "IDLE")
+	assert_eq(sm.production_swap_path, SCENE_A, "the swap is recorded")
+	assert_eq(production_swaps, [SCENE_A], "change_scene_to_file is reached exactly once")
+	assert_eq(loaded, [], "no test loader runs in production mode")
+
+
+# SC-E02-P0-09b — an injected loader always wins over the production swap
+func test_injected_loader_takes_precedence_over_the_production_swap() -> void:
+	sm.set_test_mode(false)
+
+	sm.request_scene(SCENE_A)
+	_drive(2.0)
+
+	assert_eq(loaded, [SCENE_A])
+	assert_eq(sm.production_swap_path, "", "the production branch never runs beside a loader")
+
+
+# SC-E02-P0-10 — test mode must never touch the real scene tree (T-E02-02)
+func test_test_mode_never_swaps_the_real_scene() -> void:
+	sm.loader = Callable()
+	sm.set_test_mode(true)
+	sm.production_swap_path = ""
+
+	sm.request_scene(SCENE_A)
+	_drive(2.0)
+
+	assert_eq(sm.fsm.state, "IDLE")
+	assert_true(production_swaps.is_empty(), "no production swap under TestReset")
+	assert_eq(sm.production_swap_path, "")
+	assert_eq(queued_signals, [false], "the request still flows — only the swap is suppressed")

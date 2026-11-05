@@ -62,19 +62,23 @@ func test_the_scene_has_a_rig_that_is_alive_and_a_giant_play_button() -> void:
 	assert_true(scene.play_button.is_in_group(GeometryOracle.HIT_GROUP))
 
 
-# SC-E01-P1-07
-func test_tapping_play_fires_once_and_does_not_crash_without_the_next_scene() -> void:
+# SC-E01-P1-07 (updated by e02s04: casa now exists)
+func test_tapping_play_fires_once_and_requests_casa() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as TituloScene
 	await wait_frames(3)
 	var requested: Array[bool] = []
 	scene.play_requested.connect(func() -> void: requested.append(true))
+	var navigations: Array[String] = []
+	var manager: Node = get_node("/root/SceneManager")
+	manager.scene_requested.connect(func(path: String, _queued: bool) -> void: navigations.append(path))
 
 	for event: InputEvent in TouchSim.tap_events(scene.play_button, true):
 		scene.play_button._gui_input(event)
 
 	assert_eq(requested.size(), 1, "one tap, one request")
 	assert_eq(scene.play_presses, 1)
-	assert_true(scene.is_inside_tree(), "casa.tscn does not exist yet — the scene stays up")
+	assert_eq(navigations, ["res://scenes/casa.tscn"], "casa exists — Play navigates for real")
+	assert_true(scene.is_inside_tree(), "under GUT the swap is suppressed (test mode), so the stage stays up")
 
 
 func test_the_main_theme_starts_with_the_scene() -> void:

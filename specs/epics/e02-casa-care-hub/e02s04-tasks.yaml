@@ -3,7 +3,7 @@ spec: e02s04.md
 epic_id: e02
 title: TitleScene -> CasaScene E2E Navigation, FsmProbe & Dual-Aspect GeometryOracle
   Verification
-status: failing
+status: passing
 bcps: 2
 playable_scene: res://scenes/casa.tscn
 tasks:
@@ -14,7 +14,7 @@ tasks:
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e02s04-t02
   description: Implement minimal strict-typed GDScript & Control scene nodes for e02s04
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
@@ -22,7 +22,7 @@ tasks:
   risk: P1
   allure:
     severity: high
-  status: failing
+  status: passing
 - id: e02s04-t03
   description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
     story traceability for e02s04
@@ -31,4 +31,4 @@ tasks:
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing
