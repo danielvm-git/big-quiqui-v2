@@ -123,11 +123,15 @@ func advance(delta: float) -> String:
 	return fsm.state
 
 
-## Forces the machine back to IDLE after a stuck transition (2.0 s watchdog).
+## Forces the machine back to IDLE after a stuck transition (2.0 s watchdog). A long
+## frame during a fade lands here too. `current_scene` already names the target, so
+## a swap that has not run must still run, or the manager names a scene never loaded.
 func recover_from_watchdog() -> void:
 	var stuck: String = fsm.state
 	watchdog_recovered.emit(stuck)
 	_emit("scene.watchdog", {"stuck_state": stuck.to_lower()})
+	if not _swapped and (stuck == STATE_FADING_OUT or stuck == STATE_SWAPPING):
+		_swap_to_current()
 	_progress = 0.0
 	_swapped = false
 	_set_curtain_alpha(0.0)
@@ -173,14 +177,18 @@ func _enter_swapping() -> void:
 
 
 func _load_pending_or_current() -> void:
+	_swap_to_current()
+	fsm.transition_to(STATE_FADING_IN)
+	_progress = 0.0
+
+
+func _swap_to_current() -> void:
 	if loader.is_valid():
 		loader.call(current_scene)
 	elif not test_mode:
 		_swap_production(current_scene)
 	scene_changed.emit(current_scene)
 	_emit("scene.changed", {"path": _slug(current_scene)})
-	fsm.transition_to(STATE_FADING_IN)
-	_progress = 0.0
 
 
 ## The real navigation: swaps the running scene. Reached only outside test mode

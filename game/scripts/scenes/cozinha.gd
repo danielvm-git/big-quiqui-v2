@@ -12,12 +12,13 @@ const CASA_PATH: String = "res://scenes/casa.tscn"
 const MUSIC_PATH: String = "res://assets/audio/music/cozinha.ogg"
 const VOICE_PATH: String = "res://assets/audio/voice/feed_hora_de_comer.ogg"
 const BITE_SFX_PATH: String = "res://assets/audio/sfx/nhami.ogg"
-const WISH_ICON: String = "res://assets/art/items/cenoura.png"
 
 const DROP_MARGIN: float = 120.0
 const IDLE_WISH_SEC: float = 8.0
 const CHEW_SEC: float = 0.9
 const PLEASURE_SEC: float = 0.9
+## Foods that cannot be picked up look it, so a pre-reader sees they are not ready.
+const DISABLED_FOOD_ALPHA: float = 0.5
 
 const STATE_READY: String = "READY"
 const STATE_CHEWING: String = "CHEWING"
@@ -145,9 +146,13 @@ func _end_bite() -> void:
 
 
 ## In FINISHED this does nothing: FEED is already credited and the Casa requested.
+## During the last bite every food is eaten, so the step is earned, not abandoned.
 func _on_home_tapped() -> void:
 	if _care_state() == CareSteps.FEED:
-		_care_loop().call("abandon_step")
+		if bites >= BITES_TO_FINISH:
+			_care_loop().call("complete_step", CareSteps.FEED)
+		else:
+			_care_loop().call("abandon_step")
 	_request_casa()
 
 
@@ -170,7 +175,15 @@ func _advance_idle(step: float) -> void:
 	_idle_sec = 0.0
 	if not bubble.is_showing():
 		rig.set_expression("carente")
-		bubble.show_wish(WISH_ICON)
+		bubble.show_wish(_next_wish_art())
+
+
+## The first food still on the tray: she only asks for what the child can give her.
+func _next_wish_art() -> String:
+	for index: int in range(tray.size()):
+		if food(index).state_id() != TouchDraggable.STATE_CONSUMED:
+			return tray[index].art_path
+	return ""
 
 
 func _reset_idle() -> void:
@@ -191,6 +204,7 @@ func _is_holding_food() -> bool:
 func _set_foods_enabled(value: bool) -> void:
 	for index: int in range(BITES_TO_FINISH):
 		food(index).enabled = value
+		food(index).modulate.a = 1.0 if value else DISABLED_FOOD_ALPHA
 
 
 func _burst(particles: CPUParticles2D) -> void:

@@ -158,6 +158,50 @@ func test_a_resize_moves_the_feet_to_the_new_bottom_edge() -> void:
 	assert_almost_eq(rig.pivot.position.y, 700.0, 0.01, "the feet stay on the bottom edge")
 
 
+# Review F1: missing art must not write a diary line on every motion. The subclass
+# is the seam, so production code gains no switch.
+class RigWithoutOpenMouth:
+	extends QuiQuiRig
+
+	func _load_art(id: String) -> Texture2D:
+		return null if id == ANTICIPATION_EXPRESSION else super(id)
+
+
+func _rig_without_open_mouth() -> QuiQuiRig:
+	var broken: QuiQuiRig = RigWithoutOpenMouth.new()
+	broken.size = Vector2(400.0, 600.0)
+	broken.manual_step = true
+	add_child_autofree(broken)
+	return broken
+
+
+func test_missing_mouth_art_logs_once_over_thirty_near_motions() -> void:
+	var broken: QuiQuiRig = _rig_without_open_mouth()
+	var near: Vector2 = broken.mouth_global_center() + Vector2(100.0, 0.0)
+	var diary: Node = get_node("/root/Log")
+	var before: int = diary.call("write_count")
+
+	for motion: int in range(30):
+		broken.update_food_proximity(near)
+
+	assert_eq(diary.call("write_count") - before, 1, "one rig.missing_art, not one per motion")
+	assert_eq(broken.expression_id, QuiQuiRig.NEUTRAL_EXPRESSION, "she keeps her face")
+
+
+func test_missing_mouth_art_is_retried_on_the_next_approach_and_keeps_her_face() -> void:
+	var broken: QuiQuiRig = _rig_without_open_mouth()
+	var near: Vector2 = broken.mouth_global_center() + Vector2(100.0, 0.0)
+	var diary: Node = get_node("/root/Log")
+	var before: int = diary.call("write_count")
+
+	broken.update_food_proximity(near)
+	broken.clear_food_proximity()
+	broken.update_food_proximity(near)
+
+	assert_eq(diary.call("write_count") - before, 2, "one line per approach")
+	assert_eq(broken.expression_id, QuiQuiRig.NEUTRAL_EXPRESSION)
+
+
 # SC-E03-P0-08: the 220 px boundary, both sides.
 func test_a_point_under_the_threshold_opens_the_mouth_on_that_call() -> void:
 	rig.update_food_proximity(_point_at(219.99))

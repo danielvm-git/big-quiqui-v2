@@ -25,6 +25,8 @@ stories:
   bcps: 3
   status: planned
   delta: ADDED
+# Advisory from the e03 security review: when game/export_presets.cfg gains the iOS
+# preset, exclude tests/, because test_feed_e2e.gd uses OS.execute.
 - id: e11s04
   title: iPadOS Export Preset (export_presets.cfg), scripts/ios-deploy.sh Personal
     Team Signing & v1.0.0 Release

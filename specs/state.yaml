@@ -31,7 +31,7 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: develop-tdd
+  next_skill: release-branch
   context: "e01 (v0.2.0) and e02 (v0.3.0) shipped as playable scenes; the AUDIT-e01-e02 fix cycle landed via PR #7 as v0.3.1 (fix commit -> patch bump, ladder intact). Ladder: v0.4.0 e03 -> v0.11.0 e10 -> v1.0.0 e11 via feat(e11)!."
   epic: e03-kitchen-feed-scene
   bug_fix: "CLOSED. 11 of 12 bugs fixed and merged; BUG-004 is a documented wontfix (PII policy). Gate GREEN: 19 scripts / 143 tests / 567 asserts."
@@ -40,13 +40,14 @@ handoff:
     - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."
     - "request-review for the e01/e02 fix cycle was never run: REVIEW-BRIEF-e01-e02-2026-11-04.md is committed, no REVIEW-* report exists. Carry the reviewer pass into e03 or dispatch it against 328a94c."
 epic_cycle:
-  step: 6
+  step: 8
   story: e03s04
   story_bcps: 2
   epic_epic_bcps: 12
   fast_mode: true
   started_at: "2026-11-05T13:50:00-03:00"
-  completed_at: null
+  completed_at: "2026-11-05T18:44:20-03:00"
+  audit_result: pass
 metrics:
   story_start: null
   story_end: null

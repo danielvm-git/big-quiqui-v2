@@ -222,9 +222,9 @@ func update_food_proximity(global_point: Vector2) -> void:
 	if global_point.distance_to(mouth_global_center()) >= MOUTH_ANTICIPATION_PX:
 		clear_food_proximity()
 	elif _face_before_anticipation.is_empty():
-		var face: String = NEUTRAL_EXPRESSION if expression_id == BLINK_EXPRESSION else expression_id
-		if set_expression(ANTICIPATION_EXPRESSION):
-			_face_before_anticipation = face
+		# Remembered before the attempt: missing art logs once per approach, not per motion.
+		_face_before_anticipation = NEUTRAL_EXPRESSION if expression_id == BLINK_EXPRESSION else expression_id
+		set_expression(ANTICIPATION_EXPRESSION)
 
 
 func clear_food_proximity() -> void:

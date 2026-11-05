@@ -2,7 +2,7 @@ development_status:
   downgrade_applied: false
   e01: done
   e02: done
-  e03: in_progress
+  e03: done
   e03s01: done
   e03s02: done
   e03s03: done
@@ -60,8 +60,8 @@ stories:
   e03s03:
     status: done
     started_at: "2026-11-05T14:06:00-03:00"
-    completed_at: "2026-11-05T14:45:00-03:00"
+    completed_at: "2026-11-05T14:35:00-03:00"
   e03s04:
     status: done
-    started_at: "2026-11-05T14:46:00-03:00"
+    started_at: "2026-11-05T14:35:00-03:00"
     completed_at: "2026-11-05T14:45:04-03:00"

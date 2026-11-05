@@ -3,6 +3,9 @@ extends GutTest
 ## SC-E01-P1-03 — four buses, 8-player SFX pool, 0.4 s crossfade and −9 dB
 ## voice ducking that restores the exact previous level.
 
+const MUSIC_DIR: String = "res://assets/audio/music/"
+const MUSIC_TRACK_COUNT: int = 5
+
 var am: Node = null
 var stream: AudioStreamWAV = null
 
@@ -19,6 +22,20 @@ func before_each() -> void:
 func after_each() -> void:
 	am.reset()
 	am.manual_step = false
+
+
+# Review M1: looping is an import setting, and AudioManager never sets it.
+func test_every_music_track_is_imported_to_loop() -> void:
+	var tracks: Array[String] = []
+	for file_name: String in ResourceLoader.list_directory(MUSIC_DIR):
+		if file_name.ends_with(".ogg"):
+			tracks.append(file_name)
+	assert_eq(tracks.size(), MUSIC_TRACK_COUNT, "the test must see every track")
+
+	for file_name: String in tracks:
+		var music: AudioStreamOggVorbis = load(MUSIC_DIR + file_name) as AudioStreamOggVorbis
+		assert_not_null(music, file_name)
+		assert_true(music.loop, "%s must loop" % file_name)
 
 
 func test_the_four_buses_exist_and_feed_master() -> void:

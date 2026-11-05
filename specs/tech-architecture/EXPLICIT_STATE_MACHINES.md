@@ -13,7 +13,7 @@ Every stateful subsystem in `big-quiqui-v2` is powered by `Fsm` (`res://scripts/
   - `FADING_OUT -> [SWAPPING, IDLE]`
   - `SWAPPING -> [FADING_IN, IDLE]`
   - `FADING_IN -> [IDLE]`
-- **Max Dwell Deadlines:** `FADING_OUT: 2.0s`, `SWAPPING: 1.0s`, `FADING_IN: 2.0s` (watchdog forces `-> IDLE` and logs `fsm.dwell_timeout`).
+- **Max Dwell Deadlines:** `FADING_OUT: 2.0s`, `SWAPPING: 1.0s`, `FADING_IN: 2.0s` (watchdog forces `-> IDLE` and logs `fsm.dwell_timeout`; from `FADING_OUT` or `SWAPPING` it runs the swap first if it has not run, so `current_scene` never names a scene that did not load).
 - **Pending Target Queue:** If `change_scene(next_path)` is called while state is `FADING_OUT`, `SWAPPING`, or `FADING_IN`, `_pending_scene_path = next_path` is queued and executed upon reaching `IDLE`.
 
 ---

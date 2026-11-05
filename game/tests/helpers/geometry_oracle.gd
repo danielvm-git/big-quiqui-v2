@@ -31,7 +31,9 @@ const EDGE_INSET_TOLERANCE: float = 24.0
 
 const DESKTOP_16_9: Vector2i = Vector2i(1920, 1080)
 const IPAD_4_3: Vector2i = Vector2i(2048, 1536)
-const ASPECTS: Array[Vector2i] = [DESKTOP_16_9, IPAD_4_3]
+## The canvas a 4:3 screen really gets under `expand` (ADR-008).
+const CANVAS_4_3: Vector2i = Vector2i(1920, 1440)
+const ASPECTS: Array[Vector2i] = [DESKTOP_16_9, IPAD_4_3, CANVAS_4_3]
 
 ## DESIGN.md §layout: care rooms put QuiQui at 55–65 % of the height with her
 ## feet on the 78 % line, the dots 36 px above the bottom, the HUD 36 px in.

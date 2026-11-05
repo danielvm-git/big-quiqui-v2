@@ -110,6 +110,29 @@ func test_the_feed_door_navigates_to_the_kitchen() -> void:
 	assert_eq(requested_scenes, [COZINHA_PATH])
 
 
+# Review H1: without the swap, the Casa stayed on screen and every later tap on the
+# door was refused as same_scene.
+func test_a_long_frame_during_the_fade_still_opens_the_kitchen() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_frames(3)
+	var manager: Node = get_node("/root/SceneManager")
+	var swapped: Array[String] = []
+	manager.manual_step = true
+	manager.loader = func(path: String) -> void: swapped.append(path)
+
+	var feed_door: TapButton = scene.door("FEED")
+	for event: InputEvent in TouchSim.tap_events(feed_door, true):
+		feed_door._gui_input(event)
+	manager.advance(2.1)
+	var seen: Array[String] = swapped.duplicate()
+	var busy: bool = manager.is_busy()
+	manager.manual_step = false
+	manager.loader = Callable()
+
+	assert_eq(seen, [COZINHA_PATH])
+	assert_false(busy)
+
+
 # e03s03: a 4-year-old double-taps, and the door now navigates.
 func test_a_double_tap_on_the_feed_door_asks_for_the_kitchen_once() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
@@ -156,13 +179,14 @@ func test_arriving_with_silence_starts_the_main_theme() -> void:
 	assert_true(get_node("/root/AudioManager").is_music_playing(load(THEME_PATH) as AudioStream))
 
 
+# Asserted before any frame passes, so a short clip cannot end first: Casa decides
+# in `_ready`.
 func test_arriving_from_the_title_does_not_restart_the_main_theme() -> void:
 	var audio: Node = get_node("/root/AudioManager")
 	audio.play_music(load(THEME_PATH) as AudioStream)
 	var active: AudioStreamPlayer = audio._active_music
 
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
-	await wait_frames(3)
 
 	assert_eq(audio._active_music, active, "play_music always swaps players: it was not called")
 	assert_true(audio.is_music_playing(load(THEME_PATH) as AudioStream))

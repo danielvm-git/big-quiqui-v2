@@ -221,6 +221,10 @@ func test_full_journey_at_4_3() -> void:
 	await _assert_full_journey(GeometryOracle.IPAD_4_3)
 
 
+func test_full_journey_at_the_real_4_3_canvas() -> void:
+	await _assert_full_journey(GeometryOracle.CANVAS_4_3)
+
+
 func _assert_full_journey(size: Vector2i) -> void:
 	await _open_casa(size)
 	var door: TapButton = (stage as CasaScene).door(CareSteps.FEED)

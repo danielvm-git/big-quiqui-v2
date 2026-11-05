@@ -44,6 +44,7 @@ func before_each() -> void:
 
 func after_each() -> void:
 	sm.manual_step = false
+	sm.loader = Callable()
 	am.reset()
 	scene = null
 
@@ -131,6 +132,10 @@ func _tap_home() -> void:
 	var home: TapButton = scene.get_node("HomeButton") as TapButton
 	for event: InputEvent in TouchSim.tap_events(home, true):
 		home._gui_input(event)
+
+
+func _art_name(index: int) -> String:
+	return scene.tray[index].art_path.get_file().get_basename()
 
 
 func _ids(items: Array[ItemData]) -> Array[String]:
@@ -358,6 +363,25 @@ func test_a_disabled_food_cannot_be_picked_up_during_the_reaction() -> void:
 	assert_eq(scene.food(1).state_id(), "REST")
 
 
+# Review L2: a press during a reaction does nothing, so the foods must look it.
+func test_foods_dim_during_the_reaction_and_come_back_on_ready() -> void:
+	await _enter()
+	assert_eq(scene.food(1).modulate.a, 1.0, "bright while she waits for food")
+
+	_feed(0)
+	assert_lt(scene.food(1).modulate.a, 1.0, "dim while she chews")
+	assert_eq(scene.food(1).modulate.a, KitchenScene.DISABLED_FOOD_ALPHA)
+	assert_eq(scene.food(2).modulate.a, KitchenScene.DISABLED_FOOD_ALPHA)
+
+	scene.advance(STEP_SEC)
+	assert_eq(scene.food(1).modulate.a, KitchenScene.DISABLED_FOOD_ALPHA, "and while she enjoys it")
+
+	scene.advance(STEP_SEC)
+	assert_eq(scene.fsm.state, "READY")
+	assert_eq(scene.food(1).modulate.a, 1.0)
+	assert_eq(scene.food(2).modulate.a, 1.0)
+
+
 func test_a_short_step_does_not_end_the_chewing_early() -> void:
 	await _enter()
 	_feed(0)
@@ -486,8 +510,48 @@ func test_home_during_free_play_keeps_the_cycle_where_it_is() -> void:
 	assert_eq(requested, [CASA_PATH])
 
 
-func test_home_during_the_last_bite_requests_once_and_credits_nothing() -> void:
+# Review L1: all three foods are eaten, so Home must not throw the step away.
+func test_home_during_the_last_bite_credits_the_step_and_requests_once() -> void:
 	await _enter()
+	var probe: FsmProbe = FsmProbe.new().attach(clm.fsm)
+	_feed(0)
+	_finish_reactions()
+	_feed(1)
+	_finish_reactions()
+	_feed(2)
+
+	_tap_home()
+
+	assert_eq(clm.state_id(), "BATH", "the finished step is credited at once")
+	assert_eq(loop_state_at_request, ["BATH"], "credited before the scene request")
+
+	_finish_reactions()
+
+	assert_eq(scene.fsm.state, "FINISHED")
+	assert_eq(clm.completed_steps(), 1, "credited once, not again on FINISHED")
+	assert_eq(requested, [CASA_PATH])
+	assert_eq(refused_requests, [], "FINISHED and Home share one request")
+	assert_true(probe.is_clean(), probe.summary())
+
+
+func test_home_during_the_second_bite_still_abandons_the_step() -> void:
+	await _enter()
+	_feed(0)
+	_finish_reactions()
+	_feed(1)
+
+	_tap_home()
+
+	assert_eq(clm.state_id(), "IDLE")
+	assert_eq(clm.completed_steps(), 0)
+	assert_eq(requested, [CASA_PATH])
+
+
+func test_home_during_the_last_bite_of_free_play_credits_nothing() -> void:
+	clm.begin_step(clm.STATE_FEED)
+	clm.complete_step(clm.STATE_FEED)
+	await _enter()
+	var probe: FsmProbe = FsmProbe.new().attach(clm.fsm)
 	_feed(0)
 	_finish_reactions()
 	_feed(1)
@@ -497,17 +561,45 @@ func test_home_during_the_last_bite_requests_once_and_credits_nothing() -> void:
 	_tap_home()
 	_finish_reactions()
 
-	assert_eq(scene.fsm.state, "FINISHED")
-	assert_eq(clm.state_id(), "IDLE", "home won: the step was abandoned")
+	assert_eq(clm.state_id(), "BATH")
+	assert_eq(probe.transition_count(), 0)
 	assert_eq(requested, [CASA_PATH])
-	assert_eq(refused_requests, [], "FINISHED and Home share one request")
+
+
+# Review H1: the kitchen latches its one way out, so the swap must not be lost.
+func test_a_long_frame_during_the_fade_home_still_reaches_the_casa() -> void:
+	await _enter()
+	var swapped: Array[String] = []
+	sm.manual_step = true
+	sm.loader = func(path: String) -> void: swapped.append(path)
+
+	_tap_home()
+	sm.advance(2.1)
+
+	assert_eq(swapped, [CASA_PATH])
+	assert_false(sm.is_busy())
+
+
+func test_a_long_frame_after_the_last_bite_still_reaches_the_casa() -> void:
+	await _enter()
+	var swapped: Array[String] = []
+	sm.manual_step = true
+	sm.loader = func(path: String) -> void: swapped.append(path)
+
+	_feed_all()
+	sm.advance(2.1)
+
+	assert_eq(swapped, [CASA_PATH])
+	assert_eq(clm.state_id(), "BATH")
 
 
 # ── audio ────────────────────────────────────────────────────────────────────
 
 
+# Asserted before any frame passes: the voice prompt is a very short clip, and it
+# ends the duck when it finishes.
 func test_entry_plays_the_kitchen_theme_and_the_voice_prompt() -> void:
-	await _enter()
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
 
 	assert_true(am.is_music_playing(load(MUSIC_PATH) as AudioStream))
 	assert_true(am.is_ducked, "the voice prompt ducks the music")
@@ -532,7 +624,7 @@ func test_eight_seconds_of_quiet_show_the_wish_and_any_drag_clears_it() -> void:
 
 	scene.advance(0.6)
 	assert_true(scene.bubble.is_showing())
-	assert_eq(scene.bubble.wish_id(), "cenoura")
+	assert_eq(scene.bubble.wish_id(), _art_name(0), "she asks for a food that is on the tray")
 	assert_eq(scene.rig.expression_id, "carente")
 	scene.bubble.manual_step = true
 	scene.bubble.advance(0.5)
@@ -542,6 +634,31 @@ func test_eight_seconds_of_quiet_show_the_wish_and_any_drag_clears_it() -> void:
 
 	assert_false(scene.bubble.is_showing())
 	assert_eq(scene.rig.expression_id, "base")
+
+
+# Review M2: she never asks for food she has already eaten.
+func test_the_wish_moves_to_the_next_food_after_each_bite() -> void:
+	await _enter()
+
+	_feed(0)
+	_finish_reactions()
+	scene.advance(8.1)
+	assert_eq(scene.bubble.wish_id(), _art_name(1))
+
+	_feed(1)
+	_finish_reactions()
+	scene.advance(8.1)
+	assert_eq(scene.bubble.wish_id(), _art_name(2))
+
+
+func test_the_wish_can_skip_a_food_eaten_out_of_order() -> void:
+	await _enter()
+
+	_feed(1)
+	_finish_reactions()
+	scene.advance(8.1)
+
+	assert_eq(scene.bubble.wish_id(), _art_name(0))
 
 
 func test_a_held_food_is_a_touch_so_no_wish_appears() -> void:

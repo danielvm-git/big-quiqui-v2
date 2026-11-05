@@ -6,6 +6,7 @@ extends GutTest
 const SCENE_A: String = "res://scenes/casa.tscn"
 const SCENE_B: String = "res://scenes/cozinha.tscn"
 const SCENE_C: String = "res://scenes/banheiro.tscn"
+const SCENE_MISSING: String = "res://scenes/nao_existe_nunca.tscn"
 
 var sm: Node = null
 var loaded: Array[String] = []
@@ -146,7 +147,9 @@ func test_empty_path_is_rejected() -> void:
 	assert_false(sm.is_busy())
 
 
-func test_watchdog_recovers_a_stuck_fade() -> void:
+# Review H1: `current_scene` already names the target, so a recovery that did not
+# swap left the manager naming a scene that never loaded.
+func test_watchdog_during_the_fade_out_still_swaps_to_the_requested_scene() -> void:
 	sm.fade_duration_sec = 10.0
 	sm.request_scene(SCENE_A)
 	assert_eq(sm.fsm.state, "FADING_OUT")
@@ -155,7 +158,49 @@ func test_watchdog_recovers_a_stuck_fade() -> void:
 
 	assert_eq(sm.fsm.state, "IDLE", "the 2.0 s watchdog must force IDLE")
 	assert_eq(recoveries, ["FADING_OUT"])
-	assert_true(loaded.is_empty(), "a stuck fade must not load anything")
+	assert_eq(loaded, [SCENE_A], "the requested scene loads, once")
+	assert_eq(sm.current_scene, SCENE_A)
+
+
+func test_watchdog_during_swapping_still_swaps_to_the_requested_scene() -> void:
+	sm.fade_duration_sec = 0.1
+	sm.request_scene(SCENE_A)
+	sm.advance(0.2)
+	assert_eq(sm.fsm.state, "SWAPPING")
+
+	sm.advance(2.1)
+
+	assert_eq(recoveries, ["SWAPPING"])
+	assert_eq(sm.fsm.state, "IDLE")
+	assert_eq(loaded, [SCENE_A])
+
+
+func test_watchdog_during_the_fade_in_does_not_swap_again() -> void:
+	sm.fade_duration_sec = 0.1
+	sm.request_scene(SCENE_A)
+	sm.advance(0.2)
+	sm.advance(0.1)
+	assert_eq(sm.fsm.state, "FADING_IN")
+
+	sm.advance(2.1)
+
+	assert_eq(recoveries, ["FADING_IN"])
+	assert_eq(sm.fsm.state, "IDLE")
+	assert_eq(loaded, [SCENE_A], "the swap already ran before the stall")
+
+
+func test_a_watchdog_recovery_leaves_later_trips_working() -> void:
+	sm.request_scene(SCENE_B)
+	sm.advance(2.1)
+	assert_eq(loaded, [SCENE_B], "the child is really in the room")
+
+	assert_true(sm.request_scene(SCENE_A), "the way back starts")
+	_drive(2.0)
+	assert_true(sm.request_scene(SCENE_B), "and the door opens again")
+	_drive(2.0)
+
+	assert_eq(loaded, [SCENE_B, SCENE_A, SCENE_B])
+	assert_eq(rejections, [])
 
 
 func test_watchdog_then_pending_scene_starts() -> void:
@@ -166,8 +211,55 @@ func test_watchdog_then_pending_scene_starts() -> void:
 	sm.advance(2.1)
 
 	assert_eq(recoveries, ["FADING_OUT"])
+	assert_eq(loaded, [SCENE_A], "the stuck scene loaded before the pending one starts")
 	assert_eq(sm.fsm.state, "FADING_OUT", "the pending scene starts right after recovery")
 	assert_eq(sm.current_scene, SCENE_B)
+
+
+func test_watchdog_outside_test_mode_swaps_the_real_scene_once() -> void:
+	sm.loader = Callable()
+	sm.set_test_mode(false)
+
+	sm.request_scene(SCENE_A)
+	sm.advance(2.1)
+
+	assert_eq(production_swaps, [SCENE_A])
+	assert_eq(sm.production_swap_path, SCENE_A)
+
+
+# T-E03-04: the recovery path keeps the guarantee of the normal path.
+func test_watchdog_in_test_mode_never_swaps_the_real_scene() -> void:
+	sm.loader = Callable()
+	sm.set_test_mode(true)
+
+	sm.request_scene(SCENE_A)
+	sm.advance(2.1)
+
+	assert_eq(sm.fsm.state, "IDLE")
+	assert_eq(production_swaps, [])
+	assert_eq(sm.production_swap_path, "")
+
+
+# The real `change_scene_to_file` runs here: it fails on a path that does not
+# exist and leaves the runner scene alone.
+func test_a_missing_scene_during_a_watchdog_recovery_cannot_brick_the_app() -> void:
+	sm.loader = Callable()
+	sm.production_swap = Callable()
+	sm.set_test_mode(false)
+
+	sm.request_scene(SCENE_MISSING)
+	sm.advance(2.1)
+
+	assert_engine_error("Cannot open file", "the swap was really attempted")
+	assert_engine_error("Failed loading resource")
+	assert_eq(sm.fsm.state, "IDLE")
+	assert_false(sm.is_busy())
+	assert_eq(sm._curtain.color.a, 0.0, "the curtain is not left over the screen")
+
+	sm.production_swap = func(path: String) -> void: production_swaps.append(path)
+	assert_true(sm.request_scene(SCENE_A), "navigation still works")
+	_drive(2.0)
+	assert_eq(production_swaps, [SCENE_A])
 
 
 func test_reset_returns_a_busy_manager_to_idle() -> void:
