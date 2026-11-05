@@ -96,3 +96,27 @@ func test_the_machine_never_rejects_or_times_out() -> void:
 	assert_true(probe.is_clean(), "show/hide cycles are all legal edges: %s" % probe.summary())
 	assert_eq(probe.transition_count(), 6, "three show->show-swap stays put, three hides")
 	probe.detach()
+
+
+# BUG-005: hidden means rest, in the transform as well as in the getter.
+func test_hiding_mid_pulse_returns_the_visual_to_rest() -> void:
+	var bubble: WishBubble = _mounted()
+	bubble.manual_step = true
+	bubble.show_wish("res://assets/art/items/cenoura.png")
+	bubble.advance(0.3)
+	assert_ne(bubble.get_node("Visual").scale, Vector2.ONE, "the pulse must actually move the art")
+
+	bubble.hide_wish()
+	bubble.advance(0.1)
+
+	assert_almost_eq(bubble.pulse_scale(), 1.0, 0.0001)
+	assert_eq(bubble.get_node("Visual").scale, Vector2.ONE, "hidden art is exactly 1.0")
+
+
+# BUG-012: prefix and suffix are not a path validation.
+func test_a_traversal_path_is_refused() -> void:
+	var bubble: WishBubble = _mounted()
+
+	assert_false(bubble.show_wish("res://assets/art/../../secret.png"), "no '..' may escape the art root")
+	assert_false(bubble.show_wish("res://assets/art/items/CENOURA.png"), "ids are lowercase")
+	assert_false(bubble.show_wish("https://example.com/x.png"))

@@ -2,11 +2,15 @@
 project: big-quiqui-v2
 version: 0.1.0-dev
 workflow_mode: solo-git
-active_flow: build_epic
+active_flow: fix_bug
 lifecycle_phase: build
 current_epic: e02-casa-care-hub
 current_story: e02s04
-last_updated: "2026-11-04T22:01:14-03:00"
+bug_cycle:
+  current_step: 5
+  completed_steps: [1, 2, 3, 4]
+  ids: [BUG-001, BUG-002, BUG-003, BUG-004, BUG-005, BUG-006, BUG-007, BUG-008, BUG-009, BUG-010, BUG-011, BUG-012]
+last_updated: "2026-11-04T23:58:00-03:00"
 
 release_target:
   version: "1.0.0"
@@ -24,9 +28,10 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: build-epic
+  next_skill: release-branch
   context: "Pre-build compliance complete (22/22 checks). House complete. Baseline v0.1.0 tagged and pushed; CI gate/release live on main (chore merges produce no version); hooks installed; bigpowers scripts vendored; preflight gate green in --bootstrap mode until e01s01 writes the first test. Ladder: v0.2.0 e01 -> v0.11.0 e10 -> v1.0.0 e11 via feat(e11)!."
   epic: null
+  bug_fix: "AUDIT-e01-e02 closed 11 of 12 bugs; BUG-004 is a documented wontfix (PII policy). Gate GREEN: 19 scripts / 143 tests / 567 asserts. Next: land the fix cycle (release-branch) before e03."
   open_decisions:
     - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."
     - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."

@@ -117,3 +117,20 @@ func test_probe_detach_stops_recording() -> void:
 
 	fsm.transition_to("FEED")
 	assert_eq(probe.transition_count(), 0, "detached probe records nothing")
+
+
+# BUG-003: the diary payload is part of the contract, not decoration.
+func test_dwell_timeout_logs_milliseconds_truthfully() -> void:
+	var log: Node = get_node_or_null("/root/Log")
+	assert_not_null(log, "the Log autoload must exist")
+	var clock: FakeClock = FakeClock.new()
+	var fsm: Fsm = _make(clock)
+
+	fsm.transition_to("FEED")
+	clock.advance(2100)
+	assert_true(fsm.check_dwell())
+
+	var line: Dictionary = log.get("last_line") as Dictionary
+	assert_eq(line.get("ev"), "fsm.dwell_timeout")
+	assert_eq(int(line.get("limit_ms", -1)), 2000, "2000 ms, not 2 ms and not a 'sec' key: %s" % line)
+	assert_false(line.has("limit_sec"), "a key that lies about its unit must not ship: %s" % line)

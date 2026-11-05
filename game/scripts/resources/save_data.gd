@@ -6,8 +6,9 @@ extends Resource
 ## Every value that reaches disk is validated here first — the manager never
 ## trusts the file it loaded.
 
-const ID_PATTERN: String = "^[a-z0-9_]{2,32}$"
 const MAX_COINS: int = 999_999
+const MAX_TICKETS: int = 9_999
+const MAX_CYCLES: int = 999_999
 const MAX_STARS: int = 5
 
 @export var version: int = 1
@@ -19,14 +20,10 @@ const MAX_STARS: int = 5
 @export var placed_furniture: Array[Dictionary] = []
 @export var friend_stars: Dictionary = {}
 
-static var _id_re: RegEx = null
 
-
+## Ids come from the one owner (`Ids`), never from a local pattern.
 static func is_valid_id(value: String) -> bool:
-	if _id_re == null:
-		_id_re = RegEx.new()
-		_id_re.compile(ID_PATTERN)
-	return _id_re.search(value) != null
+	return Ids.is_valid(value)
 
 
 func to_dictionary() -> Dictionary:
@@ -47,8 +44,8 @@ static func from_dictionary(raw: Dictionary) -> SaveData:
 	var data: SaveData = SaveData.new()
 	data.version = maxi(int(raw.get("version", 1)), 1)
 	data.coins = clampi(int(raw.get("coins", 0)), 0, MAX_COINS)
-	data.tickets = clampi(int(raw.get("tickets", 0)), 0, MAX_COINS)
-	data.completed_cycles = maxi(int(raw.get("completed_cycles", 0)), 0)
+	data.tickets = clampi(int(raw.get("tickets", 0)), 0, MAX_TICKETS)
+	data.completed_cycles = clampi(int(raw.get("completed_cycles", 0)), 0, MAX_CYCLES)
 	data.equipped_outfits = _clean_id_map(raw.get("equipped_outfits", {}))
 	data.owned_furniture = _clean_id_array(raw.get("owned_furniture", []))
 	data.placed_furniture = _clean_placement(raw.get("placed_furniture", []))
@@ -58,8 +55,8 @@ static func from_dictionary(raw: Dictionary) -> SaveData:
 
 func clamp_to_rules() -> void:
 	coins = clampi(coins, 0, MAX_COINS)
-	tickets = clampi(tickets, 0, MAX_COINS)
-	completed_cycles = maxi(completed_cycles, 0)
+	tickets = clampi(tickets, 0, MAX_TICKETS)
+	completed_cycles = clampi(completed_cycles, 0, MAX_CYCLES)
 	equipped_outfits = _clean_id_map(equipped_outfits)
 	owned_furniture = _clean_id_array(owned_furniture)
 	placed_furniture = _clean_placement(placed_furniture)

@@ -3,16 +3,16 @@ class_name QuiQuiRig
 extends Control
 ## Layered character rig (ADR-003): a `Control` box owns the layout, an inner
 ## foot-pivoted `Node2D` owns the art, so breathing/scaling never moves the feet
-## and never fights the anchors.
+## and never fights the anchors (ADR-008 re-anchors the pivot on resize).
 ##
 ## Layer order is fixed by DESIGN §4.5 — an outfit must never hide the face:
-##   Body(0) → Outfit(10) → Expression(20) → Headwear(30) → Neck(40) → Glasses(50)
+## Body(0) → Outfit(10) → Expression(20) → Headwear(30) → Neck(40) → Glasses(50).
+## The accessory layers are the ADR-003 contract (art lands in e10).
 ##
-## Everything is stepped by `advance(delta)` so tests are deterministic; the
-## blink interval is the only randomness and it comes from an injectable RNG.
+## Stepped by `advance(delta)` so tests are deterministic; the blink interval is
+## the only randomness and it comes from an injectable RNG.
 
 const ART_ROOT: String = "res://assets/art/quiqui/"
-const ID_PATTERN: String = "^[a-z0-9_]{2,32}$"
 
 const NEUTRAL_EXPRESSION: String = "base"
 const BLINK_EXPRESSION: String = "pisca"
@@ -24,10 +24,6 @@ const BREATH_Y: float = 0.022
 const BLINK_MIN_SEC: float = 2.8
 const BLINK_MAX_SEC: float = 5.2
 const BLINK_HOLD_SEC: float = 0.130
-
-## DESIGN §4.4 — same spring as TapButton.
-const SQUASH_STEPS: Array[Vector2] = [Vector2(1.14, 0.88), Vector2(0.94, 1.07), Vector2.ONE]
-const SQUASH_STEP_SEC: Array[float] = [0.07, 0.09, 0.11]
 
 const Z_BODY: int = 0
 const Z_OUTFIT: int = 10
@@ -58,21 +54,27 @@ var seed_value: int = 20261104
 var taps: int = 0
 
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var _spring: SquashSpring = SquashSpring.new()
 var _time: float = 0.0
 var _next_blink_at: float = 0.0
 var _blink_until: float = -1.0
-var _squash_step: int = -1
-var _squash_elapsed: float = 0.0
-var _id_re: RegEx = RegEx.new()
 
 
 func _ready() -> void:
-	_id_re.compile(ID_PATTERN)
 	_rng.seed = seed_value
 	_reset_blink_schedule()
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build_rig()
 	set_expression(NEUTRAL_EXPRESSION)
+
+
+## A responsive box (ADR-008) may be laid out after `_ready`: re-anchor the feet
+## and re-fit the art instead of keeping the first frame's geometry.
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_RESIZED or pivot == null:
+		return
+	pivot.position = Vector2(size.x * 0.5, size.y)
+	_update_layout()
 
 
 func _process(delta: float) -> void:
@@ -104,13 +106,10 @@ func advance(delta: float) -> void:
 
 
 func _apply_breathing() -> void:
-	if pivot == null:
-		return
-	var wave: float = sin(_time * BREATH_PERIOD_SEC)
-	var breathing: Vector2 = Vector2(1.0 - BREATH_X * wave, 1.0 + BREATH_Y * wave)
-	if _squash_step >= 0:
+	if pivot == null or _spring.is_running():
 		return  # the tap spring owns the transform while it runs
-	pivot.scale = breathing
+	var wave: float = sin(_time * BREATH_PERIOD_SEC)
+	pivot.scale = Vector2(1.0 - BREATH_X * wave, 1.0 + BREATH_Y * wave)
 
 
 func _advance_blink() -> void:
@@ -134,37 +133,24 @@ func _reset_blink_schedule() -> void:
 
 
 func _advance_squash(delta: float) -> void:
-	var remaining: float = delta
-	while _squash_step >= 0 and remaining > 0.0:
-		var limit: float = SQUASH_STEP_SEC[_squash_step]
-		if _squash_elapsed + remaining < limit:
-			_squash_elapsed += remaining
-			remaining = 0.0
-			break
-		remaining -= limit - _squash_elapsed
-		_squash_elapsed = 0.0
-		_squash_step += 1
-		if _squash_step >= SQUASH_STEPS.size():
-			_squash_step = -1
-			if pivot != null:
-				pivot.scale = Vector2.ONE
-			break
-		if pivot != null:
-			pivot.scale = SQUASH_STEPS[_squash_step]
+	if not _spring.is_running():
+		return
+	_spring.advance(delta)
+	if pivot != null:
+		pivot.scale = _spring.scale
 
 
 # ── public API ───────────────────────────────────────────────────────────────
 
 
 func play_squash() -> void:
-	_squash_step = 0
-	_squash_elapsed = 0.0
+	_spring.start()
 	if pivot != null:
-		pivot.scale = SQUASH_STEPS[0]
+		pivot.scale = _spring.scale
 
 
 func is_squashing() -> bool:
-	return _squash_step >= 0
+	return _spring.is_running()
 
 
 func is_blinking() -> bool:
@@ -173,7 +159,7 @@ func is_blinking() -> bool:
 
 ## Returns false and keeps the current art when the id does not exist.
 func set_expression(id: String) -> bool:
-	if not _valid_id(id):
+	if not Ids.is_valid(id):
 		_emit("rig.invalid_expression", {"expression": "invalid"})
 		return false
 	if id == expression_id and expression != null:
@@ -190,10 +176,11 @@ func set_outfit(id: String) -> bool:
 	if id.is_empty():
 		if outfit != null:
 			outfit.visible = false
+			outfit.texture = null
 		outfit_id = ""
 		outfit_changed.emit("")
 		return true
-	if not _valid_id(id):
+	if not Ids.is_valid(id):
 		_emit("rig.invalid_outfit", {"outfit": "invalid"})
 		return false
 	var texture: Texture2D = _load_art(id)
@@ -228,10 +215,10 @@ func reset() -> void:
 	taps = 0
 	_time = 0.0
 	_blink_until = -1.0
-	_squash_step = -1
-	outfit_id = ""
+	_spring.stop()
 	_rng.seed = seed_value
 	_reset_blink_schedule()
+	set_outfit("")  # the outfit layer is owned by set_outfit, never by a flag
 	if pivot != null:
 		pivot.scale = Vector2.ONE
 	set_expression(NEUTRAL_EXPRESSION)
@@ -274,7 +261,7 @@ func _make_sprite(sprite_name: String, layer: int) -> Sprite2D:
 
 func _apply_expression(id: String) -> void:
 	var texture: Texture2D = _load_art(id)
-	if texture == null:
+	if texture == null or expression == null:
 		return
 	expression.texture = texture
 	expression.visible = true
@@ -286,12 +273,14 @@ func _apply_expression(id: String) -> void:
 ## Feet-anchored layout: the art is drawn upward from the pivot, and the visual
 ## stack is sized against the control box.
 func _update_layout() -> void:
-	if expression.texture == null:
+	if expression == null or expression.texture == null:
 		return
 	var art: Vector2 = expression.texture.get_size()
 	var box: Vector2 = size if size.x > 1.0 else art
 	var factor: float = minf(box.x / art.x, box.y / art.y) if art.x > 0.0 and art.y > 0.0 else 1.0
 	for sprite: Sprite2D in [body, outfit, expression, headwear, neck, glasses]:
+		if sprite == null:
+			continue
 		sprite.scale = Vector2.ONE * factor
 		sprite.position = Vector2(0.0, -art.y * factor * 0.5)
 	if mouth_zone != null:
@@ -309,12 +298,6 @@ func _load_art(id: String) -> Texture2D:
 	return load(path) as Texture2D
 
 
-func _valid_id(id: String) -> bool:
-	if id.is_empty() or id.length() > 32:
-		return false
-	return _id_re.search(id) != null
-
-
 func _tap() -> void:
 	taps += 1
 	play_squash()
@@ -323,6 +306,4 @@ func _tap() -> void:
 
 
 func _emit(ev: String, data: Dictionary) -> void:
-	var sink: Node = get_node_or_null("/root/Log")
-	if sink != null and sink.has_method("event"):
-		sink.call("event", ev, data)
+	LogSink.emit_from(self, ev, data)

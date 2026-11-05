@@ -112,7 +112,7 @@ func _make_player(player_name: String, bus_name: String) -> AudioStreamPlayer:
 
 ## Crossfades to `stream`. Returns false (and logs) when there is nothing to play.
 func play_music(stream: AudioStream) -> bool:
-	if stream == null:
+	if stream == null or _music_a == null or _music_b == null:
 		_emit("audio.missing_stream", {"bus": "music"})
 		return false
 	var outgoing: AudioStreamPlayer = _active_music
@@ -130,7 +130,8 @@ func play_music(stream: AudioStream) -> bool:
 
 
 func advance(delta: float) -> void:
-	if not _crossfading:
+	if not _crossfading or _active_music == null:
+		_crossfading = false
 		return
 	_crossfade_elapsed += maxf(delta, 0.0)
 	var span: float = CROSSFADE_SEC if CROSSFADE_SEC > 0.0 else 0.0001
@@ -179,7 +180,7 @@ func sfx_cursor() -> int:
 
 
 func play_voice(stream: AudioStream) -> bool:
-	if stream == null:
+	if stream == null or _voice == null:
 		_emit("audio.missing_stream", {"bus": "voice"})
 		return false
 	_voice.stream = stream
@@ -230,13 +231,18 @@ func reset() -> void:
 	_apply_bus_volumes()
 
 
+## Never null: a manager asked to reset before `_ready` built its players has
+## none, and that must be a no-op rather than a crash (BUG-012).
 func _all_players() -> Array[AudioStreamPlayer]:
-	var players: Array[AudioStreamPlayer] = [_music_a, _music_b, _voice]
-	players.append_array(_sfx_pool)
+	var players: Array[AudioStreamPlayer] = []
+	for candidate: AudioStreamPlayer in [_music_a, _music_b, _voice]:
+		if candidate != null:
+			players.append(candidate)
+	for slot: AudioStreamPlayer in _sfx_pool:
+		if slot != null:
+			players.append(slot)
 	return players
 
 
 func _emit(ev: String, data: Dictionary) -> void:
-	var sink: Node = get_node_or_null("/root/Log")
-	if sink != null and sink.has_method("event"):
-		sink.call("event", ev, data)
+	LogSink.emit_from(self, ev, data)

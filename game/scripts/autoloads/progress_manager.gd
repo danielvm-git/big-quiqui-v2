@@ -116,14 +116,16 @@ func add_coins(amount: int) -> void:
 
 
 func add_tickets(amount: int) -> void:
-	data.tickets = clampi(data.tickets + amount, 0, SaveData.MAX_COINS)
+	data.tickets = clampi(data.tickets + amount, 0, SaveData.MAX_TICKETS)
 	progress_changed.emit()
 
 
+## One logical change, one `progress_changed`: the mutators above are for the
+## HUD's incremental updates, a full cycle is a single event.
 func complete_cycle(coins: int = 5, tickets: int = 1) -> void:
-	add_coins(coins)
-	add_tickets(tickets)
-	data.completed_cycles += 1
+	data.coins = clampi(data.coins + coins, 0, SaveData.MAX_COINS)
+	data.tickets = clampi(data.tickets + tickets, 0, SaveData.MAX_TICKETS)
+	data.completed_cycles = clampi(data.completed_cycles + 1, 0, SaveData.MAX_CYCLES)
 	progress_changed.emit()
 
 
@@ -137,6 +139,4 @@ func reset() -> void:
 
 
 func _emit(ev: String, data_in: Dictionary) -> void:
-	var sink: Node = get_node_or_null("/root/Log")
-	if sink != null and sink.has_method("event"):
-		sink.call("event", ev, data_in)
+	LogSink.emit_from(self, ev, data_in)

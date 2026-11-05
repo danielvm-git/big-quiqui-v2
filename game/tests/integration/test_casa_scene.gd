@@ -54,7 +54,7 @@ func test_both_aspects_pass_the_geometry_oracle() -> void:
 		await wait_frames(3)
 
 		var oracle: GeometryOracle = GeometryOracle.new()
-		var findings: Array[String] = oracle.audit(stage, size)
+		var findings: Array[String] = oracle.audit(stage, size, GeometryOracle.CARE_ROOM_SPEC)
 		assert_true(findings.is_empty(), "%dx%d: %s" % [size.x, size.y, oracle.summary()])
 
 		stage.get_parent().queue_free()
@@ -172,3 +172,18 @@ func test_the_hub_voice_welcomes_the_child() -> void:
 	await wait_frames(3)
 
 	assert_true(scene.voice_started, "hub_bem_vindo.ogg must greet on arrival")
+
+
+# BUG-009: the Vila door is a destination, not a waiting care step — dimming it
+# says "disabled" to a child who can tap it.
+func test_the_vila_door_is_never_dimmed() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_frames(3)
+
+	assert_eq(scene.door("VILA").modulate.a, 1.0, "the recycling door always looks tappable")
+
+	var clm: Node = get_node("/root/CareLoopManager")
+	clm.begin_step(clm.STATE_FEED)
+	clm.complete_step(clm.STATE_FEED)
+	assert_eq(scene.door("VILA").modulate.a, 1.0, "and stays that way as the cycle advances")
+	TestReset.reset_all()

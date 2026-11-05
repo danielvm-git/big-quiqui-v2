@@ -10,13 +10,15 @@ extends Node
 
 signal loop_state_changed(from_state: String, to_state: String)
 
-const STATE_IDLE: String = "IDLE"
-const STATE_FEED: String = "FEED"
-const STATE_BATH: String = "BATH"
-const STATE_DRESS: String = "DRESS"
-const STATE_PLAY: String = "PLAY"
-const STATE_SLEEP: String = "SLEEP"
-const STATE_CELEBRATE: String = "CELEBRATE"
+## Vocabulary comes from `CareSteps`, so a rename cannot desynchronise the
+## machine from the hub that reports on it.
+const STATE_IDLE: String = CareSteps.IDLE
+const STATE_FEED: String = CareSteps.FEED
+const STATE_BATH: String = CareSteps.BATH
+const STATE_DRESS: String = CareSteps.DRESS
+const STATE_PLAY: String = CareSteps.PLAY
+const STATE_SLEEP: String = CareSteps.SLEEP
+const STATE_CELEBRATE: String = CareSteps.CELEBRATE
 
 const LEGAL_EDGES: Dictionary = {
 	STATE_IDLE: [STATE_FEED],
@@ -30,17 +32,10 @@ const LEGAL_EDGES: Dictionary = {
 
 ## The five in-cycle care steps, in order. Care states carry no dwell limit:
 ## a child may take as long as they like inside a step.
-const STEP_ORDER: Array[String] = [
-	STATE_FEED,
-	STATE_BATH,
-	STATE_DRESS,
-	STATE_PLAY,
-	STATE_SLEEP,
-]
+const STEP_ORDER: Array[String] = CareSteps.ORDER
 
 var fsm: Fsm = null
 var cycle_id: int = 0
-var test_mode: bool = false
 
 var _rewarded_cycle_id: int = -1
 
@@ -52,6 +47,8 @@ func _ready() -> void:
 ## Enters the first care step. Only IDLE -> FEED is legal; every other call is
 ## rejected by the FSM's edge table.
 func begin_step(step: String) -> bool:
+	if fsm == null:
+		return false
 	var started: bool = fsm.transition_to(step)
 	if started:
 		_emit("care.begin", {"step": step.to_lower()})
@@ -61,6 +58,8 @@ func begin_step(step: String) -> bool:
 ## Completes the step the caller expects to be in, using transition_from so a
 ## duplicate (stale) call after the transition already happened returns false.
 func complete_step(expected_state: String) -> bool:
+	if fsm == null:
+		return false
 	var next_state: String = _successor(expected_state)
 	if next_state.is_empty():
 		return false
@@ -72,20 +71,25 @@ func complete_step(expected_state: String) -> bool:
 
 ## Bails out of any step to IDLE (the detour path). A no-op when already IDLE.
 func abandon_step() -> bool:
-	if fsm.state == STATE_IDLE:
+	if fsm == null or fsm.state == STATE_IDLE:
 		return false
+	# Capture the step before the transition: reading it afterwards always
+	# logged "idle", which made the diary useless for exactly this event.
+	var abandoned_step: String = fsm.state
 	var abandoned: bool = fsm.transition_to(STATE_IDLE)
 	if abandoned:
-		_emit("care.abandon", {"step": fsm.state.to_lower()})
+		_emit("care.abandon", {"step": abandoned_step.to_lower()})
 	return abandoned
 
 
 func state_id() -> String:
-	return fsm.state
+	return "" if fsm == null else fsm.state
 
 
 ## How many of the five steps are done in the current cycle (0..5).
 func completed_steps() -> int:
+	if fsm == null:
+		return 0
 	var index: int = STEP_ORDER.find(fsm.state)
 	if index >= 0:
 		return index
@@ -96,18 +100,14 @@ func completed_steps() -> int:
 
 ## The step the child should be playing now ("" while celebrating).
 func next_step() -> String:
+	if fsm == null:
+		return ""
 	if fsm.state == STATE_CELEBRATE:
 		return ""
 	var done: int = completed_steps()
 	if done >= STEP_ORDER.size():
 		return ""
 	return STEP_ORDER[done]
-
-
-## TestReset seam. The manager writes nothing itself; ProgressManager owns the
-## test-path redirect, so this only records the mode for diagnostics.
-func set_test_mode(enabled: bool) -> void:
-	test_mode = enabled
 
 
 func reset() -> void:
@@ -132,7 +132,11 @@ func _on_transitioned(from_state: String, to_state: String) -> void:
 		_emit("care.cycle_closed", {"cycle": cycle_id})
 
 
+## The successor of an in-cycle step. IDLE is not a step: completing it would
+## silently begin the cycle, so it has no successor.
 func _successor(state: String) -> String:
+	if state == STATE_IDLE:
+		return ""
 	var targets: Array = LEGAL_EDGES.get(state, [])
 	for candidate: String in targets:
 		if candidate != STATE_IDLE:
@@ -149,13 +153,18 @@ func _grant_cycle_reward() -> void:
 	if _rewarded_cycle_id == cycle_id:
 		return
 	_rewarded_cycle_id = cycle_id
-	var sink: Node = get_node_or_null("/root/ProgressManager")
+	var sink: Node = _progress_manager()
 	if sink != null and sink.has_method("complete_cycle"):
 		sink.call("complete_cycle")
 	_emit("care.reward", {"cycle": cycle_id})
 
 
+## A manager that is not in the tree yet has no siblings: degrade, do not crash.
+func _progress_manager() -> Node:
+	if not is_inside_tree():
+		return null
+	return get_node_or_null("/root/ProgressManager")
+
+
 func _emit(ev: String, data: Dictionary) -> void:
-	var sink: Node = get_node_or_null("/root/Log")
-	if sink != null and sink.has_method("event"):
-		sink.call("event", ev, data)
+	LogSink.emit_from(self, ev, data)

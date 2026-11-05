@@ -5,6 +5,11 @@ extends SceneTree
 ## hand-write UIDs or sub-resources).
 ##
 ## Usage: godot --headless --path game -s res://tools/build_casa_scene.gd
+##
+## Layout is expressed as ratios of the canvas (ADR-008). Reference frame is the
+## approved 1920×1080 design from e02s03: QuiQui 640×620 with her feet at 78 %,
+## doors 168² on the edges at rows 304/544/784, dots 36 px above the bottom,
+## HUD 36 px from the top-right corner, wish bubble on the feet line.
 
 const SCENE_PATH: String = "res://scenes/casa.tscn"
 const SCENE_SCRIPT: String = "res://scripts/scenes/casa.gd"
@@ -16,24 +21,31 @@ const HUD_SCRIPT: String = "res://scripts/components/coin_ticket_hud.gd"
 const BG_PATH: String = "res://assets/art/backgrounds/bg_sala.jpg"
 const DOOR_ART: String = "res://assets/art/moveis/porta.png"
 
-const DOOR_SIZE: Vector2 = Vector2(168.0, 168.0)
-const LEFT_DOORS: Array[String] = ["FEED", "BATH", "DRESS"]
-const RIGHT_DOORS: Array[String] = ["PLAY", "SLEEP", "VILA"]
-const DOOR_X_LEFT: float = 64.0
-const DOOR_X_RIGHT: float = 1688.0
-const DOOR_YS: Array[float] = [220.0, 460.0, 700.0]
+const RIG_WIDTH: float = 640.0
+const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0
+const FEET_RATIO: float = 0.78
+const DOOR_SIZE: float = 168.0
+const DOOR_INSET: float = 64.0
+const DOOR_ROWS: Array[float] = [304.0 / 1080.0, 544.0 / 1080.0, 784.0 / 1080.0]
+const DOTS_SIZE: Vector2 = Vector2(456.0, 72.0)
+const DOTS_BOTTOM_INSET: float = 36.0
+const HUD_SIZE: Vector2 = Vector2(380.0, 88.0)
+const HUD_INSET: float = 36.0
+const BUBBLE_SIZE: Vector2 = Vector2(220.0, 220.0)
+## Reference frame: bubble 30 px from the top while the feet are at 842.4.
+const BUBBLE_TOP_FROM_FEET: float = -812.0
+const VILA: String = "VILA"
 
 
 func _init() -> void:
 	var root: Control = Control.new()
 	root.name = "Casa"
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.size = Vector2(1920.0, 1080.0)
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.set_script(load(SCENE_SCRIPT))
 
 	var background: TextureRect = TextureRect.new()
 	background.name = "Background"
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	background.texture = load(BG_PATH) as Texture2D
@@ -41,80 +53,71 @@ func _init() -> void:
 	background.add_to_group("background", true)
 	root.add_child(background)
 
-	# QuiQui: ~57% of viewport height, centered, feet at 78% of stage height.
+	_add_rig(root)
+	_add_door_columns(root)
+	_add_bubble(root)
+	_add_dots(root)
+	_add_hud(root)
+
+	var saved: bool = SceneBuilder.pack_and_save(root, SCENE_PATH, "build_casa_scene")
+	root.free()
+	quit(0 if saved else 1)
+
+
+## QuiQui: 55–65 % of the canvas height, centred, feet on the 78 % line.
+func _add_rig(root: Control) -> void:
 	var rig: Control = Control.new()
 	rig.name = "QuiQuiRig"
 	rig.set_script(load(RIG_SCRIPT))
-	rig.size = Vector2(640.0, 620.0)
-	rig.position = Vector2(640.0, 222.0)
 	rig.mouse_filter = Control.MOUSE_FILTER_STOP
+	rig.add_to_group("rig", true)
+	(
+		SceneBuilder
+		. pin(
+			rig,
+			Vector4(0.5, FEET_RATIO - RIG_HEIGHT_RATIO, 0.5, FEET_RATIO),
+			Vector4(-RIG_WIDTH * 0.5, 0.0, RIG_WIDTH * 0.5, 0.0),
+		)
+	)
 	root.add_child(rig)
 
-	for column_index: int in range(DOOR_YS.size()):
-		_add_door(root, LEFT_DOORS[column_index], Vector2(DOOR_X_LEFT, DOOR_YS[column_index]))
-		_add_door(root, RIGHT_DOORS[column_index], Vector2(DOOR_X_RIGHT, DOOR_YS[column_index]))
 
-	var bubble: Control = Control.new()
-	bubble.name = "WishBubble"
-	bubble.set_script(load(BUBBLE_SCRIPT))
-	bubble.size = Vector2(220.0, 220.0)
-	bubble.position = Vector2(850.0, 30.0)
-	root.add_child(bubble)
-
-	var dots: Control = Control.new()
-	dots.name = "CareDotsBar"
-	dots.set_script(load(DOTS_SCRIPT))
-	dots.size = Vector2(456.0, 72.0)
-	dots.position = Vector2(732.0, 972.0)
-	root.add_child(dots)
-
-	var hud: Control = Control.new()
-	hud.name = "CoinTicketHud"
-	hud.set_script(load(HUD_SCRIPT))
-	hud.size = Vector2(380.0, 88.0)
-	hud.position = Vector2(1504.0, 36.0)
-	root.add_child(hud)
-
-	# PackedScene only serialises nodes whose `owner` is the scene root; without this
-	# every child is silently dropped and the .tscn contains just the root node.
-	_set_owner_recursive(root, root)
-
-	var packed: PackedScene = PackedScene.new()
-	var pack_error: int = packed.pack(root)
-	if pack_error != OK:
-		printerr("build_casa_scene: pack failed (%s)" % error_string(pack_error))
-		quit(1)
-		return
-
-	var save_error: int = ResourceSaver.save(packed, SCENE_PATH)
-	if save_error != OK:
-		printerr("build_casa_scene: save failed (%s)" % error_string(save_error))
-		quit(1)
-		return
-
-	print("build_casa_scene: wrote %s (%d nodes)" % [SCENE_PATH, _count(root)])
-	root.free()
-	quit(0)
+## Three care doors down each edge; the Vila door rides the right column.
+func _add_door_columns(root: Control) -> void:
+	var right_steps: Array[String] = []
+	for index: int in range(3, CareSteps.ORDER.size()):
+		right_steps.append(CareSteps.ORDER[index])
+	right_steps.append(VILA)
+	for row: int in range(DOOR_ROWS.size()):
+		_add_door(root, CareSteps.ORDER[row], DOOR_ROWS[row], true)
+		_add_door(root, right_steps[row], DOOR_ROWS[row], false)
 
 
-func _add_door(root: Control, step: String, at: Vector2) -> void:
+func _add_door(root: Control, step: String, row_ratio: float, on_left: bool) -> void:
 	var door: Control = Control.new()
 	door.name = "Door" + step
 	door.set_script(load(BUTTON_SCRIPT))
-	door.size = DOOR_SIZE
-	door.position = at
 	door.add_to_group("hit_target", true)
+	var anchors: Vector4 = (
+		Vector4(0.0, row_ratio, 0.0, row_ratio) if on_left else Vector4(1.0, row_ratio, 1.0, row_ratio)
+	)
+	var offsets: Vector4 = (
+		Vector4(DOOR_INSET, -DOOR_SIZE * 0.5, DOOR_INSET + DOOR_SIZE, DOOR_SIZE * 0.5)
+		if on_left
+		else Vector4(-DOOR_INSET - DOOR_SIZE, -DOOR_SIZE * 0.5, -DOOR_INSET, DOOR_SIZE * 0.5)
+	)
+	SceneBuilder.pin(door, anchors, offsets)
 	root.add_child(door)
 
 	var visual: Control = Control.new()
 	visual.name = "Visual"
-	visual.set_anchors_preset(Control.PRESET_FULL_RECT)
+	visual.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	door.add_child(visual)
 
 	var art: TextureRect = TextureRect.new()
 	art.name = "Art"
-	art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	art.texture = load(DOOR_ART) as Texture2D
@@ -122,14 +125,61 @@ func _add_door(root: Control, step: String, at: Vector2) -> void:
 	visual.add_child(art)
 
 
-func _set_owner_recursive(node: Node, owner_node: Node) -> void:
-	for child: Node in node.get_children():
-		child.owner = owner_node
-		_set_owner_recursive(child, owner_node)
+## The bubble sits above QuiQui's head and follows her feet line.
+func _add_bubble(root: Control) -> void:
+	var bubble: Control = Control.new()
+	bubble.name = "WishBubble"
+	bubble.set_script(load(BUBBLE_SCRIPT))
+	(
+		SceneBuilder
+		. pin(
+			bubble,
+			Vector4(0.5, FEET_RATIO, 0.5, FEET_RATIO),
+			Vector4(
+				-BUBBLE_SIZE.x * 0.5,
+				BUBBLE_TOP_FROM_FEET,
+				BUBBLE_SIZE.x * 0.5,
+				BUBBLE_TOP_FROM_FEET + BUBBLE_SIZE.y,
+			),
+		)
+	)
+	root.add_child(bubble)
 
 
-func _count(node: Node) -> int:
-	var total: int = 1
-	for child: Node in node.get_children():
-		total += _count(child)
-	return total
+## Five cycle dots, centred, 36 px above the bottom edge.
+func _add_dots(root: Control) -> void:
+	var dots: Control = Control.new()
+	dots.name = "CareDotsBar"
+	dots.set_script(load(DOTS_SCRIPT))
+	dots.add_to_group("ui_bottom", true)
+	(
+		SceneBuilder
+		. pin(
+			dots,
+			Vector4(0.5, 1.0, 0.5, 1.0),
+			Vector4(
+				-DOTS_SIZE.x * 0.5,
+				-DOTS_BOTTOM_INSET - DOTS_SIZE.y,
+				DOTS_SIZE.x * 0.5,
+				-DOTS_BOTTOM_INSET,
+			),
+		)
+	)
+	root.add_child(dots)
+
+
+## Coins and tickets, 36 px from the top-right corner.
+func _add_hud(root: Control) -> void:
+	var hud: Control = Control.new()
+	hud.name = "CoinTicketHud"
+	hud.set_script(load(HUD_SCRIPT))
+	hud.add_to_group("ui_top_right", true)
+	(
+		SceneBuilder
+		. pin(
+			hud,
+			Vector4(1.0, 0.0, 1.0, 0.0),
+			Vector4(-HUD_INSET - HUD_SIZE.x, HUD_INSET, -HUD_INSET, HUD_INSET + HUD_SIZE.y),
+		)
+	)
+	root.add_child(hud)

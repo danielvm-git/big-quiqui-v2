@@ -89,7 +89,7 @@ func test_the_navigation_target_passes_the_geometry_oracle_on_both_aspects() -> 
 		await wait_frames(3)
 
 		var oracle: GeometryOracle = GeometryOracle.new()
-		var findings: Array[String] = oracle.audit(stage, size)
+		var findings: Array[String] = oracle.audit(stage, size, GeometryOracle.CARE_ROOM_SPEC)
 		assert_true(findings.is_empty(), "%dx%d: %s" % [size.x, size.y, oracle.summary()])
 
 		stage.get_parent().queue_free()

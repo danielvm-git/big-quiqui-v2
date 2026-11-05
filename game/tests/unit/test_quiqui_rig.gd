@@ -124,3 +124,24 @@ func _mouse_echo_event() -> InputEventMouseButton:
 	event.position = rig.get_global_rect().get_center()
 	event.device = -1
 	return event
+
+
+# BUG-006: reset is the neutral pose, outfit included.
+func test_reset_takes_the_outfit_off() -> void:
+	assert_true(rig.set_outfit("macacao_verde"))
+	assert_true(rig.outfit.visible)
+
+	rig.reset()
+
+	assert_eq(rig.outfit_id, "")
+	assert_false(rig.outfit.visible, "a reset rig wears nothing")
+	assert_null(rig.outfit.texture, "and keeps no stale art")
+
+
+# BUG-002: a responsive box must re-anchor the feet after a layout pass.
+func test_a_resize_moves_the_feet_to_the_new_bottom_edge() -> void:
+	rig.reset()
+	rig.size = Vector2(500.0, 700.0)
+
+	assert_almost_eq(rig.pivot.position.x, 250.0, 0.01, "the pivot follows the box centre")
+	assert_almost_eq(rig.pivot.position.y, 700.0, 0.01, "the feet stay on the bottom edge")
