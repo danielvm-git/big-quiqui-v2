@@ -24,7 +24,8 @@ publishers:
 pluginConfigs:
   github:
     draftRelease: false
-    releaseName: "Coelinha QuiQui v${version}"
+    # Go text/template (big-release renders it with text/template, not ${version})
+    releaseName: "Coelinha QuiQui v{{ .Version }}"
     successComment: "Released in v${version}"
     releasedLabels:
       - released
