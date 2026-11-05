@@ -31,7 +31,8 @@ epics:
     slug: e01-tracer-title-and-foundation
     title: "Foundation Harness + Playable Scene 1: TitleScene (titulo.tscn)"
     playable_scene: "res://scenes/titulo.tscn"
-    status: planned
+    status: shipped
+    released: v0.2.0
     bcps: 16
     wsjf: 9.0
     stories: [e01s01, e01s02, e01s03, e01s04, e01s05]
@@ -45,7 +46,8 @@ epics:
     slug: e02-casa-care-hub
     title: "Playable Scene 2: Casa da QuiQui Care Hub (casa.tscn)"
     playable_scene: "res://scenes/casa.tscn"
-    status: planned
+    status: shipped
+    released: v0.3.0
     bcps: 12
     wsjf: 8.3
     stories: [e02s01, e02s02, e02s03, e02s04]
