@@ -1,16 +1,19 @@
 # story: e01s01
 project: big-quiqui-v2
-version: 0.1.0-dev
+version: 0.3.1-dev
 workflow_mode: solo-git
-active_flow: fix_bug
+active_flow: build_epic
 lifecycle_phase: build
-current_epic: e02-casa-care-hub
-current_story: e02s04
+current_epic: e03-kitchen-feed-scene
+current_story: e03s01
 bug_cycle:
-  current_step: 5
-  completed_steps: [1, 2, 3, 4]
+  status: closed
+  current_step: null
+  completed_steps: [1, 2, 3, 4, 5]
   ids: [BUG-001, BUG-002, BUG-003, BUG-004, BUG-005, BUG-006, BUG-007, BUG-008, BUG-009, BUG-010, BUG-011, BUG-012]
-last_updated: "2026-11-04T23:58:00-03:00"
+  closed_in: "PR #7 (squash 328a94c) -> v0.3.1"
+  outcome: "11 fixed, BUG-004 wontfix (PII policy, pinned by test)"
+last_updated: "2026-11-05T13:35:00-03:00"
 
 release_target:
   version: "1.0.0"
@@ -28,20 +31,22 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: release-branch
-  context: "Pre-build compliance complete (22/22 checks). House complete. Baseline v0.1.0 tagged and pushed; CI gate/release live on main (chore merges produce no version); hooks installed; bigpowers scripts vendored; preflight gate green in --bootstrap mode until e01s01 writes the first test. Ladder: v0.2.0 e01 -> v0.11.0 e10 -> v1.0.0 e11 via feat(e11)!."
-  epic: null
-  bug_fix: "AUDIT-e01-e02 closed 11 of 12 bugs; BUG-004 is a documented wontfix (PII policy). Gate GREEN: 19 scripts / 143 tests / 567 asserts. Next: land the fix cycle (release-branch) before e03."
+  next_skill: build-epic
+  context: "e01 (v0.2.0) and e02 (v0.3.0) shipped as playable scenes; the AUDIT-e01-e02 fix cycle landed via PR #7 as v0.3.1 (fix commit -> patch bump, ladder intact). Ladder: v0.4.0 e03 -> v0.11.0 e10 -> v1.0.0 e11 via feat(e11)!."
+  epic: e03-kitchen-feed-scene
+  bug_fix: "CLOSED. 11 of 12 bugs fixed and merged; BUG-004 is a documented wontfix (PII policy). Gate GREEN: 19 scripts / 143 tests / 567 asserts."
   open_decisions:
     - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."
     - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."
+    - "request-review for the e01/e02 fix cycle was never run: REVIEW-BRIEF-e01-e02-2026-11-04.md is committed, no REVIEW-* report exists. Carry the reviewer pass into e03 or dispatch it against 328a94c."
 epic_cycle:
-  step: 8
-  story: e02s04
-  story_bcps: 2
-  epic_epic_bcps: 12
-  started_at: "2026-11-04T22:31:37-03:00"
-  completed_at: "2026-11-04T23:33:00-03:00"
+  step: 0
+  story: null
+  story_bcps: 0
+  epic_epic_bcps: 0
+  next_epic: e03-kitchen-feed-scene
+  started_at: null
+  completed_at: "2026-11-05T13:31:00-03:00"
 metrics:
   story_start: null
   story_end: null
