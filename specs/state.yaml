@@ -2,17 +2,35 @@
 project: big-quiqui-v2
 version: 0.3.1-dev
 workflow_mode: solo-git
-active_flow: build_epic
+active_flow: fix_bug
 lifecycle_phase: build
 current_epic: e03-kitchen-feed-scene
 current_story: e03s01
+review_gate:
+  skill: request-review
+  method: "dual-blind AND gate: 2 reviewers, different agents, no shared context"
+  round: 1
+  max_rounds: 5
+  verdict: FAIL
+  scores:
+    reviewer_a: 72
+    reviewer_b: 62
+  reports:
+    - specs/verifications/REVIEW-A-e01-e02-2026-11-04.md
+    - specs/verifications/REVIEW-B-e01-e02-2026-11-04.md
+  must_fix: [BUG-013, BUG-014]
 bug_cycle:
-  status: closed
-  current_step: null
-  completed_steps: [1, 2, 3, 4, 5]
-  ids: [BUG-001, BUG-002, BUG-003, BUG-004, BUG-005, BUG-006, BUG-007, BUG-008, BUG-009, BUG-010, BUG-011, BUG-012]
-  closed_in: "PR #7 (squash 328a94c) -> v0.3.1"
-  outcome: "11 fixed, BUG-004 wontfix (PII policy, pinned by test)"
+  status: reopened
+  round: 1
+  current_step: 0
+  completed_steps: []
+  ids: [BUG-013, BUG-014]
+  previous:
+    status: closed
+    closed_in: "PR #7 (squash 328a94c) -> v0.3.1"
+    completed_steps: [1, 2, 3, 4, 5]
+    ids: [BUG-001, BUG-002, BUG-003, BUG-004, BUG-005, BUG-006, BUG-007, BUG-008, BUG-009, BUG-010, BUG-011, BUG-012]
+    outcome: "11 fixed, BUG-004 wontfix (PII policy, pinned by test)"
 last_updated: "2026-11-05T13:35:00-03:00"
 
 release_target:
@@ -31,14 +49,14 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: build-epic
-  context: "e01 (v0.2.0) and e02 (v0.3.0) shipped as playable scenes; the AUDIT-e01-e02 fix cycle landed via PR #7 as v0.3.1 (fix commit -> patch bump, ladder intact). Ladder: v0.4.0 e03 -> v0.11.0 e10 -> v1.0.0 e11 via feat(e11)!."
-  epic: e03-kitchen-feed-scene
-  bug_fix: "CLOSED. 11 of 12 bugs fixed and merged; BUG-004 is a documented wontfix (PII policy). Gate GREEN: 19 scripts / 143 tests / 567 asserts."
+  next_skill: fix-bug
+  context: "Review gate is RED: request-review round 1/5 failed the AND gate (reviewer A 72 %, reviewer B 62 %) on BUG-013 (on 4:3 the character is painted at 0.418 of the viewport height while the oracle proves the empty Control box) and BUG-014 (the closure records overclaim it). e03 is blocked until round 2 passes; do not copy the fixed-pixel rig width into e03-e10."
+  epic: e03-kitchen-feed-scene (blocked by BUG-013)
+  bug_fix: "OPEN. BUG-013 (high, P0) + BUG-014 (medium, P1) from review round 1/5. The suite itself stays GREEN: 19 scripts / 143 tests / 567 asserts - the green suite does not cover the painted-art requirement."
   open_decisions:
     - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."
     - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."
-    - "request-review for the e01/e02 fix cycle was never run: REVIEW-BRIEF-e01-e02-2026-11-04.md is committed, no REVIEW-* report exists. Carry the reviewer pass into e03 or dispatch it against 328a94c."
+    - "Hero-scale contract decision inside BUG-013: drive the art from height (DESIGN says 55-65 % of viewport height) or restate DESIGN section 3 as an absolute 600-700 px character. The two readings cannot both hold, and ADR-008's ratio rule assumes the first."
 epic_cycle:
   step: 0
   story: null
