@@ -3,7 +3,7 @@ spec: e03s01.md
 epic_id: e03
 title: TouchDraggable Component (CONSUME_ON_DROP Mode, device==-1 Mouse-Echo Filter & Single-Finger
   Lock)
-status: failing
+status: passing
 bcps: 3
 playable_scene: res://scenes/cozinha.tscn
 tasks:
@@ -14,7 +14,7 @@ tasks:
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e03s01-t02
   description: Implement TouchDraggable (CONSUME_ON_DROP) and TouchSim.gui_event, strict-typed,
     with the touch_draggable Fsm
@@ -23,7 +23,7 @@ tasks:
   risk: P1
   allure:
     severity: high
-  status: failing
+  status: passing
 - id: e03s01-t03
   description: Verify hit box, FsmProbe clean walk, PII log audit and story traceability for
     e03s01
@@ -31,4 +31,4 @@ tasks:
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing

@@ -73,6 +73,12 @@ static func drag_control_to(
 		viewport.push_input(event)
 
 
+## A copy of `event` with the local position GUI dispatch would give `control`.
+## Call it at delivery time: the control moves during a drag.
+static func gui_event(control: Control, event: InputEvent) -> InputEvent:
+	return event.xformed_by(control.get_global_transform_with_canvas().affine_inverse())
+
+
 static func _touch(point: Vector2, pressed: bool) -> InputEventScreenTouch:
 	var event: InputEventScreenTouch = InputEventScreenTouch.new()
 	event.index = 0
