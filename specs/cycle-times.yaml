@@ -53,3 +53,23 @@ entries:
     asserts: 294
     verify_status: pass
     source: manual entry (record-cycle-time.sh OKF output is not valid YAML)
+  - story: e03s01
+    epic: e03
+    bcps: 3
+    commits: 1
+    effort_hours: 0.0
+    lead_time_minutes: 12     # parallel worktree agent, wall clock
+    tests_passed: 180
+    asserts: 694
+    verify_status: pass
+    source: manual entry (record-cycle-time.sh OKF output is not valid YAML)
+  - story: e03s02
+    epic: e03
+    bcps: 3
+    commits: 1
+    effort_hours: 0.0
+    lead_time_minutes: 7      # parallel worktree agent, wall clock
+    tests_passed: 173
+    asserts: 706
+    verify_status: pass
+    source: manual entry (record-cycle-time.sh OKF output is not valid YAML)

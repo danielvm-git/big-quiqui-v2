@@ -5,7 +5,7 @@ workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: build
 current_epic: e03-kitchen-feed-scene
-current_story: e03s01
+current_story: e03s03
 bug_cycle:
   status: closed
   current_step: null
@@ -41,11 +41,11 @@ handoff:
     - "request-review for the e01/e02 fix cycle was never run: REVIEW-BRIEF-e01-e02-2026-11-04.md is committed, no REVIEW-* report exists. Carry the reviewer pass into e03 or dispatch it against 328a94c."
 epic_cycle:
   step: 4
-  story: e03s01
-  story_bcps: 3
+  story: e03s03
+  story_bcps: 4
   epic_epic_bcps: 12
   fast_mode: true
-  started_at: "2026-11-05T14:00:00-03:00"
+  started_at: "2026-11-05T13:50:00-03:00"
   completed_at: null
 metrics:
   story_start: null

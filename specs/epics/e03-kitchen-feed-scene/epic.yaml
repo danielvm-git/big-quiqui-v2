@@ -10,13 +10,13 @@ stories:
   title: TouchDraggable Component (CONSUME_ON_DROP Mode, device==-1 Mouse-Echo Filter
     & Single-Finger Lock)
   bcps: 3
-  status: planned
+  status: done
   delta: ADDED
 - id: e03s02
   title: ItemData Resource & 10-Food Glossy Catalog + QuiQuiRig Mouth Proximity Anticipation
     (<220px -> boca_aberta)
   bcps: 3
-  status: planned
+  status: done
   delta: ADDED
 - id: e03s03
   title: 'Playable Scene 3: KitchenScene (cozinha.tscn) with 3-Item Tray, Chewing/Pleasure
