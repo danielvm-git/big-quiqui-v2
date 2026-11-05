@@ -66,6 +66,5 @@ cycle's own documentation.
 
 ## Verification
 
-`bash scripts/preflight.sh` → PREFLIGHT GREEN (19 scripts, 162 tests, 633 asserts). Every number quoted
-in these records comes from `game/tools/measure_hero_scale.gd`, which is committed and pins the rest pose
+`bash scripts/preflight.sh` → PREFLIGHT GREEN (19 scripts, 163 tests, 637 asserts). Every number quoted in these records **for the current layout** comes from `game/tools/measure_hero_scale.gd`, which is committed and pins the rest pose
 (`manual_step` + `pivot.scale = ONE`), so a reviewer reproduces 0.574 exactly.

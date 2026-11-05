@@ -9,9 +9,9 @@ current_story: e03s01
 review_gate:
   skill: request-review
   method: "dual-blind AND gate: 2 reviewers, different agents, no shared context"
-  round: 3
+  round: 5
   max_rounds: 5
-  verdict: FAIL
+  verdict: CAP_EXHAUSTED
   history:
     - round: 1
       verdict: FAIL
@@ -28,6 +28,17 @@ review_gate:
       scores: {reviewer_a: 60, reviewer_b: 76}
       reports: [specs/verifications/REVIEW-A3-e01-e02-round3-2026-11-05.md, specs/verifications/REVIEW-B3-e01-e02-round3-2026-11-05.md]
       must_fix: "wish bubble covered her face on 4:3; newline test did not discriminate; opaque_rect still failed open; records' rest numbers"
+    - round: 4
+      verdict: FAIL
+      scores: {reviewer_a: 99, reviewer_b: 70}
+      reports: [specs/verifications/REVIEW-A4-e01-e02-round4-2026-11-05.md, specs/verifications/REVIEW-B4-e01-e02-round4-2026-11-05.md]
+      must_fix: "two records quoted the pre-manual_step breathing phase as tool output"
+    - round: 5
+      verdict: CAP_EXHAUSTED
+      scores: {reviewer_a: PASS_92, reviewer_b: 72}
+      reports: [specs/verifications/REVIEW-A5-e01-e02-round5-2026-11-05.md, specs/verifications/REVIEW-B5-e01-e02-round5-2026-11-05.md]
+      must_fix: "nothing distinguished get_visual_global_rect() from the box (mutation stayed green); RED recipe, mechanism and universal claims were wrong"
+      note: "5/5 rounds used. Reviewer A passed; reviewer B's must-fix and its should-fixes were closed in the follow-up commit on this branch. Dual pass is not available inside the cap: a human decision is required before merging."
   must_fix: [BUG-013, BUG-014]
   must_fix_status: "fixed in the round-2 input commit; both reviewers must re-pass before e03 lands"
 bug_cycle:
@@ -60,10 +71,10 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: request-review
+  next_skill: human-decision
   context: "Review round 3 failed (A3 60 %, B3 76 %) with four concrete must-fixes; all are fixed in 180d4b9..HEAD: opaque-pixel hero scale, oracle fails closed, the wish bubble repinned to the head line on every aspect (it covered her face on 4:3), and the records corrected. Round 4 is the gate; e03 stays blocked until it passes."
   epic: e03-kitchen-feed-scene (blocked until the review gate passes)
-  bug_fix: "BUG-013 + BUG-014 fixed and pending review round 4. Suite: 19 scripts / 162 tests / 633 asserts. The green suite does not by itself prove the hero-scale requirement; the opaque measurement does."
+  bug_fix: "BUG-013 + BUG-014 fixed and pending review round 4. Suite: 19 scripts / 163 tests / 637 asserts. The green suite does not by itself prove the hero-scale requirement; the opaque measurement does."
   open_decisions:
     - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."
     - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."

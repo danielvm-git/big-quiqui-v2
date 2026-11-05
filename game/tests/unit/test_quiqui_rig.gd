@@ -213,3 +213,35 @@ func test_unreadable_art_reports_no_painted_geometry() -> void:
 
 	assert_false(rig.opaque_rect(placeholder).has_area(), "cannot measure is empty, not the frame")
 	assert_true(rig.get_visual_global_rect().has_area(), "and the shipped art still measures")
+
+
+# Round 5: the suite must be able to tell `get_visual_global_rect()` from the
+# `Control` box, or the gate could be "fixed" back to measuring the box by
+# replacing the getter with `get_global_rect()` and nothing would notice.
+# A stretched column disables the width fit, so the two rects must diverge.
+func test_the_painted_rect_is_not_the_control_box() -> void:
+	var viewport: SubViewport = SubViewport.new()
+	viewport.size = Vector2i(2048, 1536)
+	viewport.disable_3d = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	add_child_autofree(viewport)
+	var stage: Control = Control.new()
+	stage.set_anchors_preset(Control.PRESET_FULL_RECT)
+	viewport.add_child(stage)
+
+	var stretched: QuiQuiRig = QuiQuiRig.new()
+	stretched.manual_step = true
+	stretched.anchor_left = 0.0
+	stretched.anchor_right = 1.0
+	stretched.anchor_top = 0.78 - 620.0 / 1080.0
+	stretched.anchor_bottom = 0.78
+	stage.add_child(stretched)
+	await wait_frames(2)
+
+	var box: Rect2 = stretched.get_global_rect()
+	var painted: Rect2 = stretched.get_visual_global_rect()
+
+	assert_true(painted.has_area(), "the character is visible")
+	assert_almost_eq(painted.size.y, box.size.y, box.size.y * 0.03, "the seen height still fills the box")
+	assert_lt(painted.size.x, box.size.x * 0.5, "but the seen width is the art, not the column")
+	assert_ne(painted, box, "a getter that echoed the box would fail here")

@@ -45,10 +45,11 @@ Consequences the reviewers found from the same cause:
 
 ## Resolution (TDD: red first, then green)
 
-Before the fix the new oracle test reported (rerun by reverting `_fit_box_to_art` in review round 2):
-`rig QuiQuiRig is 0.42 of the canvas height, expected 0.55-0.65 (painted character)` and
-`box is 0.57 of the canvas but the character is only 0.42 (0.16 of empty space above her head)`, and
-`test_the_painted_character_keeps_the_design_height_on_ipad` failed at 0.418.
+RED state, reproduced independently by review round 1 (their measured table: 0.418 / 0.446 on 4:3) and
+by round 3's probe. To rerun it, restore **both** pre-fix conditions: `_update_layout`'s width-limited
+`minf(box.x/art.x, box.y/art.y)` **and** a `get_visual_global_rect()` that returns the 1024x1024 frame
+(pre-`cd97e88`). Reverting only `_fit_box_to_art` is not enough and prints 0.574 — the width fit shapes
+the box and the tap surface, while the height-driven factor below delivers the requirement.
 
 1. `QuiQuiRig._fit_box_to_art()` — the builder's ratio anchors own the **height**; the width now follows
    the art aspect (`offset_left/right = ±size.y * art_aspect / 2`), only for the centred `0.5/0.5`
@@ -93,7 +94,7 @@ Not done, deliberately: the tap filter reviewer B suggested is unnecessary once 
 
 ## Verification
 
-`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **162 tests, 633 asserts** (was 143/567).
+`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **163 tests, 637 asserts** (was 143/567).
 New guards: `test_a_character_that_paints_smaller_than_its_box_is_caught`,
 `test_a_character_that_fills_its_box_passes`, `test_an_oversized_scene_root_is_caught`,
 `test_a_scene_that_forgets_a_declared_group_is_caught`,
@@ -102,4 +103,9 @@ New guards: `test_a_character_that_paints_smaller_than_its_box_is_caught`,
 `test_a_rig_that_cannot_report_painted_geometry_is_caught`,
 `test_the_painted_character_keeps_the_design_height_on_ipad` (casa and titulo),
 `test_a_trailing_newline_is_refused`, `test_reset_mid_pulse_returns_the_visual_to_rest`,
-`test_last_line_never_survives_a_closed_diary`.
+`test_last_line_never_survives_a_closed_diary`, `test_the_painted_rect_is_not_the_control_box`.
+
+**Mutation-checked (round 5):** replacing the body of `get_visual_global_rect()` with
+`return get_global_rect()` — the natural "cleanup" — now fails
+`test_the_painted_rect_is_not_the_control_box` (`2048.0 expected to be < 1024.0`); before that test the
+suite stayed 162/162 green.
