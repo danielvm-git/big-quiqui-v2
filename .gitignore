@@ -25,3 +25,6 @@ allure-report/
 
 # Agent scratch (plans, tool state)
 .zcode/
+
+# Public-reference frames (measured, never committed): specs/product/TUTOTOONS_REFERENCE.md
+reference/
