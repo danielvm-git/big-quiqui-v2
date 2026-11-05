@@ -226,12 +226,20 @@ jobs:
           SUBJECT=$(git log -1 --format=%s)
           echo "head: $SUBJECT"
           big-release release --verbose
+          # big-release creates the tag through the GitHub API, so the local ref only
+          # exists after a fetch — without this the guard reads a stale tag and cries
+          # failure on a release that actually published.
+          git fetch --tags --quiet origin || true
           AFTER=$(git describe --tags --abbrev=0 2>/dev/null || echo none)
           echo "tag before=$BEFORE after=$AFTER"
-          # A releasable commit must move the tag; a silent no-op is the failure mode
-          # this guard exists for (branch not configured, wrong fetch-depth, dry-run).
-          if [ "$BEFORE" = "$AFTER" ] && printf '%s' "$SUBJECT" | grep -qE '^(feat|fix|perf)(\(.+\))?!?: '; then
-            echo "FATAL: releasable commit produced no new tag"
+          HEAD_SHA=$(git rev-parse HEAD)
+          AFTER_SHA=$(git rev-list -n1 "$AFTER" 2>/dev/null || echo none)
+          # A releasable commit must be released: either a new tag appeared, or the
+          # newest tag already points at this commit (a re-run of an already released
+          # merge). Anything else is the silent no-op this guard exists for.
+          if [ "$BEFORE" = "$AFTER" ] && [ "$AFTER_SHA" != "$HEAD_SHA" ] \
+             && printf '%s' "$SUBJECT" | grep -qE '^(feat|fix|perf)(\(.+\))?!?: '; then
+            echo "FATAL: releasable commit produced no new tag (head $HEAD_SHA, tag $AFTER at $AFTER_SHA)"
             exit 1
           fi
           echo "OK: release step honest"
