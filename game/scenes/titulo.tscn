@@ -1,0 +1,56 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/scenes/titulo.gd" id="1_7vp8q"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_titulo.jpg" id="2_pww10"]
+[ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_70cxj"]
+[ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="4_4big2"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/botao_play.png" id="5_2h6je"]
+
+[node name="Titulo" type="Control" unique_id=1014504577]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("1_7vp8q")
+
+[node name="Background" type="TextureRect" parent="." unique_id=905077891 groups=["background"]]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_pww10")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="QuiQuiRig" type="Control" parent="." unique_id=1508702230]
+anchors_preset = 0
+offset_left = 610.0
+offset_top = 380.0
+offset_right = 1310.0
+offset_bottom = 1000.0
+script = ExtResource("3_70cxj")
+
+[node name="PlayButton" type="Control" parent="." unique_id=12158458 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 876.0
+offset_top = 840.0
+offset_right = 1044.0
+offset_bottom = 1008.0
+script = ExtResource("4_4big2")
+
+[node name="Visual" type="Control" parent="PlayButton" unique_id=440289719]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="PlayButton/Visual" unique_id=1022272161]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("5_2h6je")
+expand_mode = 1
+stretch_mode = 5

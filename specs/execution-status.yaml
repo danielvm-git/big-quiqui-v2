@@ -1,6 +1,6 @@
 development_status:
   downgrade_applied: false
-  e01: in_progress
+  e01: done
   e01s01:
     status: done
     started_at: '2026-11-04T23:20:00-03:00'
@@ -17,7 +17,10 @@ development_status:
     status: done
     started_at: "2026-11-04T21:18:00-03:00"
     completed_at: "2026-11-04T21:56:51-03:00"
-  e01s05: planned
+  e01s05:
+    status: done
+    started_at: "2026-11-04T21:58:00-03:00"
+    completed_at: "2026-11-04T22:01:14-03:00"
   e02: planned
   e02s01: planned
   e02s02: planned
