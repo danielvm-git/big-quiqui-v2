@@ -22,11 +22,11 @@ stories:
   title: 'Playable Scene 3: KitchenScene (cozinha.tscn) with 3-Item Tray, Chewing/Pleasure
     Reactions, Particles & nhami SFX'
   bcps: 4
-  status: planned
+  status: done
   delta: ADDED
 - id: e03s04
   title: KitchenScene E2E TouchSim Drag-to-Mouth, Double-Drop Idempotency & Dual-Aspect
     GeometryOracle Tests
   bcps: 2
-  status: planned
+  status: done
   delta: ADDED

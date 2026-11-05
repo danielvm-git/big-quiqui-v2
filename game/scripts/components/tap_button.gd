@@ -2,8 +2,8 @@
 class_name TapButton
 extends Control
 ## The only tap surface in the game (ADR-004): fires exactly once per finger tap,
-## never twice from the mouse echo Godot synthesizes for touch
-## (`emulate_touch_from_mouse` marks it `device == -1`).
+## never twice from the echo Godot synthesizes for the other input kind
+## (`emulate_mouse_from_touch` and `emulate_touch_from_mouse` mark it `device == -1`).
 ##
 ## Squash-and-stretch happens on an inner `Visual` child so the button's own
 ## layout rect never moves — the hit target stays 120×120 for GeometryOracle
@@ -50,16 +50,15 @@ func _process(delta: float) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if not enabled:
 		return
-	# The echo carries device -1; a real mouse reports 0 and is a legitimate tap.
-	if event is InputEventMouse:
-		var mouse: InputEventMouse = event as InputEventMouse
-		if mouse.device == -1:
-			return
-		if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
-			if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
-				_activate()
+	# Device -1 is an echo in either direction: a mouse from a touch, or a touch from
+	# a mouse. The real event reports its own device and is the one legitimate tap.
+	if event.device == -1:
 		return
-	if event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
+	if event is InputEventMouseButton:
+		var button: InputEventMouseButton = event as InputEventMouseButton
+		if button.pressed and button.button_index == MOUSE_BUTTON_LEFT:
+			_activate()
+	elif event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
 		_activate()
 
 

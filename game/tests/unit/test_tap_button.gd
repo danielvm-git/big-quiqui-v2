@@ -45,6 +45,22 @@ func test_a_real_mouse_click_is_a_legitimate_tap() -> void:
 	assert_eq(taps, 1, "device 0 is a real mouse, not an echo")
 
 
+func test_a_real_mouse_with_its_emulated_touch_fires_exactly_once() -> void:
+	_deliver(TouchSim.mouse_click_events(button))
+
+	assert_eq(taps, 1, "the device -1 touch is the echo of the click")
+	assert_eq(button.taps, 1)
+
+
+func test_a_real_touch_on_any_real_device_still_fires() -> void:
+	var touch: InputEventScreenTouch = InputEventScreenTouch.new()
+	touch.pressed = true
+	touch.device = 1
+	button._gui_input(touch)
+
+	assert_eq(taps, 1)
+
+
 func test_disabled_button_ignores_input() -> void:
 	button.enabled = false
 	_deliver(TouchSim.tap_events(button, true))

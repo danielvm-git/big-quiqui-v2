@@ -87,13 +87,13 @@ func _process(delta: float) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouse:
-		if (event as InputEventMouse).device == -1:
-			return
-		if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
-			_tap()
+	# Device -1 is an echo in either direction: a mouse from a touch, or a touch from
+	# a mouse.
+	if event.device == -1:
 		return
-	if event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
+	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
+		_tap()
+	elif event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
 		_tap()
 
 

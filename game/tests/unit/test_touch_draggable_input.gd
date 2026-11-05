@@ -169,6 +169,16 @@ func test_a_right_click_does_not_pick_it_up() -> void:
 	assert_eq(food.state_id(), "REST")
 
 
+func test_a_real_mouse_drag_with_device_minus_one_touches_consumes_once() -> void:
+	_deliver(food, TouchSim.mouse_drag_events(food, ON_TARGET))
+
+	assert_eq(started, 1)
+	assert_eq(consumed, 1)
+	assert_eq(ended, 1)
+	assert_eq(food.state_id(), "CONSUMED")
+	assert_true(probe.is_clean(), probe.summary())
+
+
 func test_a_mouse_with_an_emulated_touch_is_one_gesture_mouse_first() -> void:
 	var point: Vector2 = _center(food)
 	_send(food, _mouse(point, true))

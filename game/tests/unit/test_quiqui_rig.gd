@@ -99,6 +99,17 @@ func test_a_tap_springs_once_and_fires_once() -> void:
 	assert_false(rig.is_squashing(), "the spring ends on its own")
 
 
+func test_a_real_mouse_with_its_emulated_touch_taps_once() -> void:
+	fired = 0
+	rig.tapped.connect(func() -> void: fired += 1)
+
+	for event: InputEvent in TouchSim.mouse_click_events(rig):
+		rig._gui_input(event)
+
+	assert_eq(fired, 1, "the device -1 touch is the echo of the click")
+	assert_eq(rig.taps, 1)
+
+
 func test_the_mouth_zone_lives_inside_the_visible_art() -> void:
 	var visual: Rect2 = rig.get_visual_global_rect()
 

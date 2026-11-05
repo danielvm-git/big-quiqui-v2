@@ -3,7 +3,7 @@ spec: e03s03.md
 epic_id: e03
 title: 'Playable Scene 3: KitchenScene (cozinha.tscn) with 3-Item Tray, Chewing/Pleasure Reactions,
   Particles & nhami SFX'
-status: failing
+status: passing
 bcps: 4
 playable_scene: res://scenes/cozinha.tscn
 tasks:
@@ -30,4 +30,4 @@ tasks:
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing
