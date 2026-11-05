@@ -45,7 +45,7 @@ Consequences the reviewers found from the same cause:
 
 ## Resolution (TDD: red first, then green)
 
-The RED runs are in the log of this cycle: before the fix, the new oracle test reported
+Before the fix the new oracle test reported (rerun by reverting `_fit_box_to_art` in review round 2):
 `rig QuiQuiRig is 0.42 of the canvas height, expected 0.55-0.65 (painted character)` and
 `box is 0.57 of the canvas but the character is only 0.42 (0.16 of empty space above her head)`, and
 `test_the_painted_character_keeps_the_design_height_on_ipad` failed at 0.418.
@@ -55,8 +55,7 @@ The RED runs are in the log of this cycle: before the fix, the new oracle test r
    anchor column every builder pins. `_refit()` runs from `_ready`, `_apply_expression` and
    `NOTIFICATION_RESIZED`, so the box is art-shaped on every layout pass and `_update_layout`'s
    `minf` fit becomes height-driven.
-2. `GeometryOracle` measures `get_visual_global_rect()` when the node offers it, keeps the box check as
-   a second assertion (`box is N of the canvas but the character is only M` when dead space > 3 %), and
+2. `GeometryOracle` measures `get_visual_global_rect()`, keeps the box check as a second assertion (`box is N of the canvas but the character is only M` when dead space > 3 %), and
    now audits the **scene root** rect and optional `required_groups` — the two ways a scene could still
    opt out of its own layout gate.
 3. **Round 2** found the same defect one level down: `get_visual_global_rect()` returned the
@@ -69,9 +68,16 @@ The RED runs are in the log of this cycle: before the fix, the new oracle test r
    pulsing between poses.
 4. Measured after (`game/tools/measure_hero_scale.gd`, opaque): casa 0.578 / 0.575 / 0.575 and titulo
    0.575 / 0.575 / 0.575 at 16:9, 1920×1440 and 2048×1536; feet on 0.780 / 0.926 everywhere.
-5. **The oracle now fails closed**: a node in the `rig` group that is not a `Control`, or a rig that
+5. **Round 3** found the visible consequence of the size change: the wish bubble was pinned with an
+   absolute `-812 px` offset tuned for a 620 px character, so on 4:3 her correct size put her head
+   *through* the bubble (213–269 px of overlap, 26–30 % of her height) exactly when `casa.gd` shows the
+   sad face. The bubble is now anchored to the head line (`feet - rig height`) and
+   `test_casa_scene.test_the_bubble_never_covers_the_character_on_either_aspect` pins it on both
+   aspects.
+6. **The oracle now fails closed**: a node in the `rig` group that is not a `Control`, or a rig that
    cannot report painted geometry (missing art, a renamed layer), is a *finding*, not a silent fall
-   back to the box. `required_groups` moved into `CARE_ROOM_SPEC` / `TITLE_SPEC`, so a scene that
+   back to the box. `opaque_rect()` returns an empty rect and logs `rig.opaque_unreadable` when an
+   image cannot be read, so an unmeasurable texture cannot pass as a frame. `required_groups` moved into `CARE_ROOM_SPEC` / `TITLE_SPEC`, so a scene that
    forgets `add_to_group` can no longer opt out.
 
 Deferred reviewer items closed in the same commits: `Ids.PATTERN` and `WishBubble.ART_PATH_PATTERN` are
@@ -85,7 +91,7 @@ Not done, deliberately: the tap filter reviewer B suggested is unnecessary once 
 
 ## Verification
 
-`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **158 tests, 620 asserts** (was 143/567).
+`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **162 tests, 633 asserts** (was 143/567).
 New guards: `test_a_character_that_paints_smaller_than_its_box_is_caught`,
 `test_a_character_that_fills_its_box_passes`, `test_an_oversized_scene_root_is_caught`,
 `test_a_scene_that_forgets_a_declared_group_is_caught`,

@@ -64,5 +64,5 @@ cycle's own documentation.
 
 ## Verification
 
-`bash scripts/preflight.sh` → PREFLIGHT GREEN (19 scripts, 158 tests, 620 asserts). The numbers in all
+`bash scripts/preflight.sh` → PREFLIGHT GREEN (19 scripts, 162 tests, 633 asserts). The numbers in all
 four records come from the same probe run, which is committed as a tool.

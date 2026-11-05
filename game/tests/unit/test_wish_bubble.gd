@@ -140,5 +140,10 @@ func test_reset_mid_pulse_returns_the_visual_to_rest() -> void:
 func test_a_newline_suffixed_path_is_refused() -> void:
 	var bubble: WishBubble = _mounted()
 
-	assert_false(bubble.show_wish("res://assets/art/items/cenoura.png\n"), "^…$ accepted this")
-	assert_false(bubble.show_wish("res://assets/art/items/cenoura.png\r\n"))
+	# `ResourceLoader.exists` would also refuse it, so assert the *pattern* itself:
+	# reverting `\A…\z` to `^…$` must fail this line (round 3, review A).
+	assert_false(bubble.call("_is_valid_art_path", "res://assets/art/items/cenoura.png\n") as bool, "PCRE `$`")
+	assert_false(bubble.call("_is_valid_art_path", "res://assets/art/items/cenoura.png\r\n") as bool)
+	assert_true(bubble.call("_is_valid_art_path", "res://assets/art/items/cenoura.png") as bool)
+	assert_false(bubble.show_wish("res://assets/art/items/cenoura.png\n"))
+	assert_false(bubble.is_showing(), "and the bubble stays hidden")

@@ -36,8 +36,9 @@ const Z_GLASSES: int = 50
 ## the *painted* character keeps DESIGN §3's 55-65 % on every canvas instead of
 ## the box keeping it while the art shrinks (BUG-013).
 const DEFAULT_ART_ASPECT: float = 1.0
-## A box that keeps this much canvas height above the art is a taller frame than
-## the character: `GeometryOracle` fails it (BUG-013).
+## Re-entrancy guard for `_fit_box_to_art`, which rewrites offsets inside
+## `NOTIFICATION_RESIZED`: a second pass is a no-op, so the fit converges in one
+## pass and cannot loop. (The oracle's dead-space rule lives in `GeometryOracle`.)
 const BOX_FIT_EPSILON: float = 0.5
 
 ## Legacy composition: these are full-body images, so only one may be visible at
@@ -66,7 +67,6 @@ var _spring: SquashSpring = SquashSpring.new()
 var _time: float = 0.0
 var _next_blink_at: float = 0.0
 var _blink_until: float = -1.0
-var _art_aspect: float = DEFAULT_ART_ASPECT
 ## texture instance id -> opaque rect in frame pixels. The shipped art carries an
 ## 8 % transparent margin; DESIGN §3 measures the character the child sees, so the
 ## layout and the oracle both work on the opaque rect (round-2 review, BUG-013).
@@ -252,35 +252,45 @@ func _opaque_global_rect(sprite: Sprite2D) -> Rect2:
 		sprite.texture.get_size() * sprite.global_scale,
 	)
 	var used: Rect2 = opaque_rect(sprite.texture)
+	if used.size.x <= 0.0 or used.size.y <= 0.0:
+		return Rect2()  # cannot measure: contributes nothing, so the gate fails closed
 	return Rect2(frame.position + used.position * sprite.global_scale, used.size * sprite.global_scale)
 
 
-## The opaque box of a texture in frame pixels, cached. Falls back to the whole
-## frame when the image cannot be read.
+## The opaque box of a texture in frame pixels, cached. Returns an **empty** rect
+## when the image cannot be read: the caller must treat "cannot measure" as a
+## failure, never as "the frame is the character" (round 3, BUG-013).
 func opaque_rect(texture: Texture2D) -> Rect2:
 	if texture == null:
 		return Rect2()
 	var key: int = texture.get_instance_id()
 	if _opaque.has(key):
 		return _opaque[key] as Rect2
-	var used: Rect2 = Rect2(Vector2.ZERO, texture.get_size())
+	var used: Rect2 = Rect2()
 	var image: Image = texture.get_image()
 	if image != null and not image.is_empty():
 		var opaque: Rect2i = image.get_used_rect()
 		if opaque.size.x > 0 and opaque.size.y > 0:
 			used = Rect2(Vector2(opaque.position), Vector2(opaque.size))
+	if used.size.x <= 0.0 or used.size.y <= 0.0:
+		_emit("rig.opaque_unreadable", {"art": texture.resource_path.get_file()})
 	_opaque[key] = used
 	return used
 
 
 ## Width over height of the opaque character: the design unit, not the frame.
 func _visible_aspect() -> float:
+	var seen: Rect2 = _visible_box()
+	if seen.size.x <= 0.0 or seen.size.y <= 0.0:
+		return DEFAULT_ART_ASPECT
+	return seen.size.x / seen.size.y
+
+
+## The character's opaque box in frame pixels, or an empty rect when unreadable.
+func _visible_box() -> Rect2:
 	if expression == null or expression.texture == null:
-		return DEFAULT_ART_ASPECT
-	var used: Rect2 = opaque_rect(expression.texture)
-	if used.size.x <= 0.0 or used.size.y <= 0.0:
-		return DEFAULT_ART_ASPECT
-	return used.size.x / used.size.y
+		return Rect2()
+	return opaque_rect(expression.texture)
 
 
 func reset() -> void:
@@ -338,8 +348,7 @@ func _apply_expression(id: String) -> void:
 	expression.texture = texture
 	expression.visible = true
 	expression_id = id
-	_fit_box_to_art()
-	_update_layout()
+	_refit()
 	expression_changed.emit(id)
 
 
@@ -351,9 +360,10 @@ func _update_layout() -> void:
 	if expression == null or expression.texture == null:
 		return
 	var art: Vector2 = expression.texture.get_size()
-	var used: Rect2 = opaque_rect(expression.texture)
+	var used: Rect2 = _visible_box()
+	# Unreadable art still renders (the frame is all we have) but reports nothing,
+	# so `GeometryOracle` says "no painted geometry" instead of measuring a frame.
 	var seen: Vector2 = used.size if used.size.x > 0.0 and used.size.y > 0.0 else art
-	_art_aspect = seen.x / seen.y
 	var box: Vector2 = size if size.y > 1.0 else seen
 	var factor: float = box.y / seen.y if seen.y > 0.0 else 1.0
 	# The frame is centred on the sprite position; shift it so the opaque rect's

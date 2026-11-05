@@ -23,6 +23,10 @@ func _go() -> void:
 			await process_frame
 			await process_frame
 			var rig: Control = inst.get_node_or_null("QuiQuiRig") as Control
+			# At rest: three frames of idle breathing would otherwise add up to +-2 %.
+			rig.set("manual_step", true)
+			(rig.get("pivot") as Node2D).scale = Vector2.ONE
+			rig.call("_refit")
 			var box: Rect2 = rig.get_global_rect()
 			var painted: Rect2 = rig.call("get_visual_global_rect") as Rect2
 			print(

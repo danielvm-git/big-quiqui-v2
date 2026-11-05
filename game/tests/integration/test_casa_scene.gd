@@ -220,3 +220,24 @@ func test_the_painted_character_keeps_the_design_height_on_ipad() -> void:
 		painted.size.y * 0.03,
 		"the box is the character, with no dead space above her head"
 	)
+
+
+# Round 3 (BUG-013): the bubble hangs above the head line, so the character growing
+# to her design height must not push her head through the bubble. The face is a
+# pre-reading child's only feedback channel.
+func test_the_bubble_never_covers_the_character_on_either_aspect() -> void:
+	for size: Vector2i in GeometryOracle.ASPECTS:
+		scene = _mount(size) as CasaScene
+		await wait_frames(3)
+		scene.bubble.show_wish(scene.WISH_ICONS["FEED"])
+		await wait_frames(2)
+
+		var head: float = scene.rig.get_visual_global_rect().position.y
+		var bubble_bottom: float = scene.bubble.get_global_rect().end.y
+		assert_true(
+			bubble_bottom <= head + 1.0,
+			"%dx%d: the bubble ends at %.1f but her head starts at %.1f" % [size.x, size.y, bubble_bottom, head],
+		)
+		scene.bubble.hide_wish()
+		scene.get_parent().queue_free()
+		scene = null

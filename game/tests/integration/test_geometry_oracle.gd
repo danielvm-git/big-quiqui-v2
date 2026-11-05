@@ -276,3 +276,37 @@ func test_an_oversized_scene_root_is_caught() -> void:
 
 	assert_false(findings.is_empty(), "a 2x scene root must fail on its own")
 	assert_true(oracle.summary().contains("scene root"), oracle.summary())
+
+
+func test_a_rig_that_is_not_a_control_is_caught() -> void:
+	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
+	_add_edges(stage, GeometryOracle.IPAD_4_3)
+	var rig: Node2D = Node2D.new()
+	rig.name = "Rig"
+	rig.add_to_group(GeometryOracle.RIG_GROUP, false)
+	stage.add_child(rig)
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, GeometryOracle.CARE_ROOM_SPEC)
+
+	assert_false(findings.is_empty(), "a Node2D in the rig group cannot be measured")
+	assert_true(oracle.summary().contains("is not a Control"), oracle.summary())
+
+
+func test_a_rig_whose_art_failed_to_load_is_caught() -> void:
+	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
+	_add_edges(stage, GeometryOracle.IPAD_4_3)
+	var rig: QuiQuiRig = QuiQuiRig.new()
+	rig.name = "QuiQuiRig"
+	rig.add_to_group(GeometryOracle.RIG_GROUP, false)
+	stage.add_child(rig)
+	await wait_frames(2)
+	rig.expression.texture = null  # what a renamed or missing art file produces
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, GeometryOracle.CARE_ROOM_SPEC)
+
+	assert_false(findings.is_empty(), "missing art must not fall back to measuring the box")
+	assert_true(oracle.summary().contains("no painted geometry"), oracle.summary())

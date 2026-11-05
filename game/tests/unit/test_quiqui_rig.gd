@@ -204,3 +204,12 @@ func test_every_base_pose_keeps_the_height_and_the_feet() -> void:
 		var box: Rect2 = rig.get_global_rect()
 		assert_almost_eq(painted.size.y, box.size.y, box.size.y * 0.02, "%s keeps the box height" % expression_id)
 		assert_almost_eq(painted.end.y, box.end.y, 2.0, "%s keeps the feet on the line" % expression_id)
+
+
+# Round 3: an unreadable image must not silently become "the frame is the character".
+func test_unreadable_art_reports_no_painted_geometry() -> void:
+	var placeholder: PlaceholderTexture2D = PlaceholderTexture2D.new()
+	placeholder.size = Vector2(1024.0, 1024.0)
+
+	assert_false(rig.opaque_rect(placeholder).has_area(), "cannot measure is empty, not the frame")
+	assert_true(rig.get_visual_global_rect().has_area(), "and the shipped art still measures")
