@@ -1,34 +1,33 @@
 story_id: e03s01
 spec: e03s01.md
 epic_id: e03
-title: TouchDraggable Component (CONSUME_ON_DROP Mode, device==-1 Mouse-Echo Filter
-  & Single-Finger Lock)
+title: TouchDraggable Component (CONSUME_ON_DROP Mode, device==-1 Mouse-Echo Filter & Single-Finger
+  Lock)
 status: failing
 bcps: 3
 playable_scene: res://scenes/cozinha.tscn
 tasks:
 - id: e03s01-t01
-  description: Write failing GUT unit & TouchSim/GeometryOracle tests for e03s01 (TouchDraggable
-    Component (CONSUME_ON_DROP Mode, device==-1 Mouse-Echo Filter & Single-Finger
-    Lock))
+  description: Write failing test_touch_draggable.gd for SC-E03-P0-01..P1-06 and the TouchSim.gui_event
+    helper
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
   status: failing
 - id: e03s01-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e03s01
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  description: Implement TouchDraggable (CONSUME_ON_DROP) and TouchSim.gui_event, strict-typed,
+    with the touch_draggable Fsm
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s addons/gut/gut_cmdln.gd
+    -gexit
   risk: P1
   allure:
     severity: high
   status: failing
 - id: e03s01-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e03s01
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  description: Verify hit box, FsmProbe clean walk, PII log audit and story traceability for
+    e03s01
+  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal

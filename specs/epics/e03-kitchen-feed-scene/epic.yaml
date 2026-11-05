@@ -2,7 +2,7 @@ epic_id: e03
 slug: e03-kitchen-feed-scene
 title: 'Playable Scene 3: TutoTOONS Kitchen — FEED Step (cozinha.tscn)'
 playable_scene: res://scenes/cozinha.tscn
-status: planned
+status: in_progress
 bcps: 12
 wsjf: 7.8
 stories:

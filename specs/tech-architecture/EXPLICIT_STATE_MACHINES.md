@@ -61,3 +61,15 @@ Every stateful subsystem in `big-quiqui-v2` is powered by `Fsm` (`res://scripts/
   - `READY -> [SPINNING]` (requires `ProgressManager.spend_ticket() == true`)
   - `SPINNING -> [REWARD_PRESENTATION]` (max dwell `5.0s`)
   - `REWARD_PRESENTATION -> [READY]` (max dwell `3.0s`)
+
+---
+
+## 6. `KitchenScene` Feeding Machine (`fsm_id = "kitchen_feed"`)
+<!-- story: e03s03 -->
+- **States:** `READY`, `CHEWING`, `PLEASURE`, `FINISHED`
+- **Legal Edges:**
+  - `READY -> [CHEWING]` (a food was consumed; uses `transition_from`)
+  - `CHEWING -> [PLEASURE]`
+  - `PLEASURE -> [READY, FINISHED]` (`FINISHED` after the third bite)
+  - `FINISHED -> []` (terminal; the scene requests the Casa once)
+- **Max Dwell Deadlines:** `CHEWING: 2.0s`, `PLEASURE: 2.0s`
