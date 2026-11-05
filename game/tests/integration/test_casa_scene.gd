@@ -284,3 +284,57 @@ func test_the_vila_door_is_never_dimmed() -> void:
 	clm.complete_step(clm.STATE_FEED)
 	assert_eq(scene.door("VILA").modulate.a, 1.0, "and stays that way as the cycle advances")
 	TestReset.reset_all()
+
+
+# BUG-013: the layout gate must measure the character the child sees, and the
+# scene must actually declare the groups the spec asserts.
+func test_the_hub_declares_every_group_its_spec_asserts() -> void:
+	for size: Vector2i in GeometryOracle.ASPECTS:
+		var stage: Control = _mount(size)
+		await wait_frames(3)
+
+		var oracle: GeometryOracle = GeometryOracle.new()
+		var findings: Array[String] = oracle.audit(stage, size, GeometryOracle.CARE_ROOM_SPEC)
+		assert_true(findings.is_empty(), "%dx%d: %s" % [size.x, size.y, oracle.summary()])
+
+		stage.get_parent().queue_free()
+
+
+func test_the_painted_character_keeps_the_design_height_on_ipad() -> void:
+	scene = _mount(GeometryOracle.IPAD_4_3) as CasaScene
+	await wait_frames(3)
+
+	var painted: Rect2 = scene.rig.get_visual_global_rect()
+	var canvas: Vector2 = Vector2(GeometryOracle.IPAD_4_3)
+	var height_ratio: float = painted.size.y / canvas.y
+	var feet_ratio: float = painted.end.y / canvas.y
+
+	assert_between(height_ratio, 0.55, 0.65, "DESIGN §3: 55-65 % of the viewport height, not 42 %")
+	assert_almost_eq(feet_ratio, 0.78, 0.02, "and the feet stay on the 78 % line")
+	assert_almost_eq(
+		scene.rig.size.y,
+		painted.size.y,
+		painted.size.y * 0.03,
+		"the box is the character, with no dead space above her head"
+	)
+
+
+# Round 3 (BUG-013): the bubble hangs above the head line, so the character growing
+# to her design height must not push her head through the bubble. The face is a
+# pre-reading child's only feedback channel.
+func test_the_bubble_never_covers_the_character_on_either_aspect() -> void:
+	for size: Vector2i in GeometryOracle.ASPECTS:
+		scene = _mount(size) as CasaScene
+		await wait_frames(3)
+		scene.bubble.show_wish(scene.WISH_ICONS["FEED"])
+		await wait_frames(2)
+
+		var head: float = scene.rig.get_visual_global_rect().position.y
+		var bubble_bottom: float = scene.bubble.get_global_rect().end.y
+		assert_true(
+			bubble_bottom <= head + 1.0,
+			"%dx%d: the bubble ends at %.1f but her head starts at %.1f" % [size.x, size.y, bubble_bottom, head],
+		)
+		scene.bubble.hide_wish()
+		scene.get_parent().queue_free()
+		scene = null

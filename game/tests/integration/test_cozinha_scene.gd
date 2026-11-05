@@ -243,10 +243,25 @@ func test_both_aspects_pass_the_oracle_and_the_tray_rules() -> void:
 	for size: Vector2i in GeometryOracle.ASPECTS:
 		await _enter(size)
 		var oracle: GeometryOracle = GeometryOracle.new()
-		var findings: Array[String] = oracle.audit(scene, size, GeometryOracle.CARE_ROOM_SPEC)
+		var findings: Array[String] = oracle.audit(scene, size, GeometryOracle.STEP_ROOM_SPEC)
 		assert_true(findings.is_empty(), "%s: %s" % [size, oracle.summary()])
 		_assert_food_layout(size)
 		_assert_tray_layout(size)
+		scene.get_parent().queue_free()
+
+
+func test_the_bubble_never_covers_the_character_on_any_aspect() -> void:
+	for size: Vector2i in GeometryOracle.ASPECTS:
+		await _enter(size)
+		scene.advance(8.1)
+		await wait_frames(2)
+
+		var head: float = scene.rig.get_visual_global_rect().position.y
+		var bubble_bottom: float = scene.bubble.get_global_rect().end.y
+		assert_true(
+			bubble_bottom <= head + 1.0,
+			"%dx%d: the bubble ends at %.1f but her head starts at %.1f" % [size.x, size.y, bubble_bottom, head],
+		)
 		scene.get_parent().queue_free()
 
 
@@ -270,7 +285,9 @@ func _assert_tray_layout(size: Vector2i) -> void:
 	assert_eq(tray.stretch_mode, TextureRect.STRETCH_KEEP_ASPECT_CENTERED, "the art keeps its proportions")
 	assert_eq(tray.mouse_filter, Control.MOUSE_FILTER_IGNORE)
 	assert_almost_eq(float(size.y) - tray.get_global_rect().get_center().y, TRAY_CENTRE_ABOVE_BOTTOM, 1.0)
-	assert_eq(scene.rig.get_global_rect().size.x, 640.0)
+	var painted: Rect2 = scene.rig.get_visual_global_rect()
+	assert_almost_eq(scene.rig.size.x, painted.size.x, painted.size.x * 0.03, "box width fits the painted character")
+	assert_between(painted.size.y / float(size.y), 0.55, 0.65, "painted character keeps DESIGN §3 height")
 
 
 func test_the_home_button_is_a_safe_top_left_hit_target() -> void:

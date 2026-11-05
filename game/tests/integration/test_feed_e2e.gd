@@ -238,7 +238,7 @@ func _assert_full_journey(size: Vector2i) -> void:
 	assert_true(stage is KitchenScene, "the kitchen is on stage")
 	assert_eq(clm.state_id(), "FEED", "entering from IDLE begins the step")
 	var oracle: GeometryOracle = GeometryOracle.new()
-	var findings: Array[String] = oracle.audit(stage, size, GeometryOracle.CARE_ROOM_SPEC)
+	var findings: Array[String] = oracle.audit(stage, size, GeometryOracle.STEP_ROOM_SPEC)
 	assert_true(findings.is_empty(), "%s: %s" % [size, oracle.summary()])
 
 	for index: int in range(FOOD_COUNT):

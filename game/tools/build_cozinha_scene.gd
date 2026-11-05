@@ -33,7 +33,9 @@ const FOOD_GAP: float = 24.0
 const HOME_SIZE: float = 148.0
 const HOME_INSET: float = 36.0
 const BUBBLE_SIZE: Vector2 = Vector2(220.0, 220.0)
-const BUBBLE_TOP_FROM_FEET: float = -812.0
+## The bubble hangs above the character's head line (`FEET_RATIO - RIG_HEIGHT_RATIO`),
+## never at a fixed pixel offset from the floor (BUG-013).
+const BUBBLE_GAP: float = 8.0
 ## QuiQui's top sprite layer is 50: a held food and the bursts must draw above her.
 const ABOVE_RIG_Z: int = 60
 
@@ -162,21 +164,24 @@ func _add_home_button(root: Control) -> void:
 	visual.add_child(art)
 
 
-## Same place as in the Casa: above QuiQui's head, following her feet line.
+## Same place as in the Casa: anchored to QuiQui's head line (`FEET_RATIO - RIG_HEIGHT_RATIO`)
+## so it stays above her head on every aspect (BUG-013).
 func _add_bubble(root: Control) -> void:
 	var bubble: Control = Control.new()
 	bubble.name = "WishBubble"
 	bubble.set_script(load(BUBBLE_SCRIPT))
+	var head_ratio: float = FEET_RATIO - RIG_HEIGHT_RATIO
+	bubble.add_to_group("wish_bubble", true)
 	(
 		SceneBuilder
 		. pin(
 			bubble,
-			Vector4(0.5, FEET_RATIO, 0.5, FEET_RATIO),
+			Vector4(0.5, head_ratio, 0.5, head_ratio),
 			Vector4(
 				-BUBBLE_SIZE.x * 0.5,
-				BUBBLE_TOP_FROM_FEET,
+				-BUBBLE_SIZE.y - BUBBLE_GAP,
 				BUBBLE_SIZE.x * 0.5,
-				BUBBLE_TOP_FROM_FEET + BUBBLE_SIZE.y,
+				-BUBBLE_GAP,
 			),
 		)
 	)

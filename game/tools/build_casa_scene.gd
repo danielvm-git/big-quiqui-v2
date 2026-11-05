@@ -21,6 +21,8 @@ const HUD_SCRIPT: String = "res://scripts/components/coin_ticket_hud.gd"
 const BG_PATH: String = "res://assets/art/backgrounds/bg_sala.jpg"
 const DOOR_ART: String = "res://assets/art/moveis/porta.png"
 
+## Initial box width only: `QuiQuiRig._refit()` rewrites it from the
+## opaque art aspect on every layout pass, so the packed value is a placeholder.
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0
 const FEET_RATIO: float = 0.78
@@ -32,8 +34,10 @@ const DOTS_BOTTOM_INSET: float = 36.0
 const HUD_SIZE: Vector2 = Vector2(380.0, 88.0)
 const HUD_INSET: float = 36.0
 const BUBBLE_SIZE: Vector2 = Vector2(220.0, 220.0)
-## Reference frame: bubble 30 px from the top while the feet are at 842.4.
-const BUBBLE_TOP_FROM_FEET: float = -812.0
+## The bubble hangs above the character's head line (`FEET_RATIO - RIG_HEIGHT_RATIO`),
+## not at a fixed distance from the floor: an absolute offset was tuned for a 620 px
+## character and covered her face on 4:3 once she was correctly sized (round 3, BUG-013).
+const BUBBLE_GAP: float = 8.0
 const VILA: String = "VILA"
 
 
@@ -85,7 +89,7 @@ func _add_rig(root: Control) -> void:
 ## Three care doors down each edge; the Vila door rides the right column.
 func _add_door_columns(root: Control) -> void:
 	var right_steps: Array[String] = []
-	for index: int in range(3, CareSteps.ORDER.size()):
+	for index: int in range(DOOR_ROWS.size(), CareSteps.ORDER.size()):
 		right_steps.append(CareSteps.ORDER[index])
 	right_steps.append(VILA)
 	for row: int in range(DOOR_ROWS.size()):
@@ -125,21 +129,24 @@ func _add_door(root: Control, step: String, row_ratio: float, on_left: bool) -> 
 	visual.add_child(art)
 
 
-## The bubble sits above QuiQui's head and follows her feet line.
+## The bubble hangs above the character's head on every aspect: anchored to the
+## head line (`FEET_RATIO - RIG_HEIGHT_RATIO`), not to a pixel offset from the floor.
 func _add_bubble(root: Control) -> void:
 	var bubble: Control = Control.new()
 	bubble.name = "WishBubble"
 	bubble.set_script(load(BUBBLE_SCRIPT))
+	var head_ratio: float = FEET_RATIO - RIG_HEIGHT_RATIO
+	bubble.add_to_group("wish_bubble", true)
 	(
 		SceneBuilder
 		. pin(
 			bubble,
-			Vector4(0.5, FEET_RATIO, 0.5, FEET_RATIO),
+			Vector4(0.5, head_ratio, 0.5, head_ratio),
 			Vector4(
 				-BUBBLE_SIZE.x * 0.5,
-				BUBBLE_TOP_FROM_FEET,
+				-BUBBLE_SIZE.y - BUBBLE_GAP,
 				BUBBLE_SIZE.x * 0.5,
-				BUBBLE_TOP_FROM_FEET + BUBBLE_SIZE.y,
+				-BUBBLE_GAP,
 			),
 		)
 	)

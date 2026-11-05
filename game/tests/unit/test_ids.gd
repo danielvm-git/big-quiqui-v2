@@ -6,7 +6,19 @@ extends GutTest
 
 
 func test_the_contract_is_the_conventions_pattern() -> void:
-	assert_eq(Ids.PATTERN, "^[a-z0-9_]{1,64}$", "CONVENTIONS.md §4 is the source")
+	# `\A…\z`, not `^…$`: PCRE's `$` also matches before a trailing newline.
+	assert_eq(Ids.PATTERN, "\\A[a-z0-9_]{1,64}\\z", "CONVENTIONS.md §4 is the source")
+
+
+func test_a_trailing_newline_is_refused() -> void:
+	# ^…$ accepted this, and a tampered save could carry it (review A on BUG-008).
+	for value: String in ["mesa\n", "mesa\r\n", "mesa\n\n"]:
+		assert_false(Ids.is_valid(value), value)
+		assert_false(SaveData.is_valid_id(value), value)
+	assert_false(
+		SaveData.from_dictionary({"owned_furniture": ["mesa\n"]}).owned_furniture.has("mesa\n"),
+		"a newline id never reaches the save"
+	)
 
 
 func test_valid_ids_pass() -> void:

@@ -369,3 +369,139 @@ func _record_faces() -> Array[String]:
 	var faces: Array[String] = []
 	rig.expression_changed.connect(func(id: String) -> void: faces.append(id))
 	return faces
+
+
+# BUG-013: the box height is a ratio, so the box has to be art-shaped or the
+# width-limited fit shrinks the character as the canvas gets taller.
+func test_the_box_widens_with_the_height_on_a_centre_anchored_rig() -> void:
+	var viewport: SubViewport = SubViewport.new()
+	viewport.size = Vector2i(1920, 1440)
+	viewport.disable_3d = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	add_child_autofree(viewport)
+	var stage: Control = Control.new()
+	stage.set_anchors_preset(Control.PRESET_FULL_RECT)
+	viewport.add_child(stage)
+
+	var mounted: QuiQuiRig = QuiQuiRig.new()
+	mounted.manual_step = true
+	# The builder's contract: a centred column, height from the feet line ratio.
+	mounted.anchor_left = 0.5
+	mounted.anchor_right = 0.5
+	mounted.anchor_top = 0.78 - 620.0 / 1080.0
+	mounted.anchor_bottom = 0.78
+	mounted.offset_left = -320.0
+	mounted.offset_right = 320.0
+	stage.add_child(mounted)
+	await wait_frames(2)
+
+	var painted: Rect2 = mounted.get_visual_global_rect()
+
+	assert_almost_eq(mounted.size.y, 620.0 / 1080.0 * 1440.0, 1.0, "the height still comes from the ratio")
+	assert_almost_eq(painted.size.y, mounted.size.y, mounted.size.y * 0.03, "the art fills the box height")
+	assert_almost_eq(mounted.size.x, painted.size.x, mounted.size.x * 0.03, "and the box widens with the art")
+	assert_almost_eq(painted.get_center().x, mounted.global_position.x + mounted.size.x * 0.5, 1.0)
+	assert_almost_eq(painted.end.y, mounted.global_position.y + mounted.size.y, 1.0)
+	assert_gt(painted.size.y / 1440.0, 0.55, "the painted character keeps DESIGN §3 on a 4:3 canvas")
+
+
+# BUG-013 / round-2 must-fix: the design unit is the opaque character, not the
+# 1024x1024 frame that carries an ~8 % transparent margin.
+func test_the_character_is_measured_on_its_opaque_pixels() -> void:
+	var sprite: Sprite2D = rig.expression
+	var frame_height: float = sprite.texture.get_size().y * sprite.global_scale.y
+	var painted: Rect2 = rig.get_visual_global_rect()
+	var box: Rect2 = rig.get_global_rect()
+
+	assert_true(painted.has_area(), "QuiQui is visible")
+	assert_lt(painted.size.y, frame_height * 0.95, "the art frame carries transparent margin")
+	assert_almost_eq(painted.end.y, box.end.y, 2.0, "the visible feet sit on the pivot line")
+	assert_almost_eq(painted.get_center().x, box.get_center().x, 2.0, "the visible centre is the box centre")
+
+
+# Every shipped base pose must stay in the design band: fitting each pose on its
+# own opaque rect keeps the seen height constant even though `carente` and `sono`
+# are shorter in frame pixels than `base`.
+func test_every_base_pose_keeps_the_height_and_the_feet() -> void:
+	for expression_id: String in ["base", "pisca", "rindo", "carente", "sono", "pulando"]:
+		if not rig.set_expression(expression_id):
+			continue
+		var painted: Rect2 = rig.get_visual_global_rect()
+		var box: Rect2 = rig.get_global_rect()
+		assert_almost_eq(painted.size.y, box.size.y, box.size.y * 0.02, "%s keeps the box height" % expression_id)
+		assert_almost_eq(painted.end.y, box.end.y, 2.0, "%s keeps the feet on the line" % expression_id)
+
+
+# Round 3: an unreadable image must not silently become "the frame is the character".
+func test_unreadable_art_reports_no_painted_geometry() -> void:
+	var placeholder: PlaceholderTexture2D = PlaceholderTexture2D.new()
+	placeholder.size = Vector2(1024.0, 1024.0)
+
+	assert_false(rig.opaque_rect(placeholder).has_area(), "cannot measure is empty, not the frame")
+	assert_true(rig.get_visual_global_rect().has_area(), "and the shipped art still measures")
+
+
+# Round 5: the suite must be able to tell `get_visual_global_rect()` from the
+# `Control` box, or the gate could be "fixed" back to measuring the box by
+# replacing the getter with `get_global_rect()` and nothing would notice.
+# A stretched column disables the width fit, so the two rects must diverge.
+func test_the_painted_rect_is_not_the_control_box() -> void:
+	var viewport: SubViewport = SubViewport.new()
+	viewport.size = Vector2i(2048, 1536)
+	viewport.disable_3d = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	add_child_autofree(viewport)
+	var stage: Control = Control.new()
+	stage.set_anchors_preset(Control.PRESET_FULL_RECT)
+	viewport.add_child(stage)
+
+	var stretched: QuiQuiRig = QuiQuiRig.new()
+	stretched.manual_step = true
+	stretched.anchor_left = 0.0
+	stretched.anchor_right = 1.0
+	stretched.anchor_top = 0.78 - 620.0 / 1080.0
+	stretched.anchor_bottom = 0.78
+	stage.add_child(stretched)
+	await wait_frames(2)
+
+	var box: Rect2 = stretched.get_global_rect()
+	var painted: Rect2 = stretched.get_visual_global_rect()
+
+	assert_true(painted.has_area(), "the character is visible")
+	assert_almost_eq(painted.size.y, box.size.y, box.size.y * 0.03, "the seen height still fills the box")
+	assert_lt(painted.size.x, box.size.x * 0.5, "but the seen width is the art, not the column")
+	assert_ne(painted, box, "a getter that echoed the box would fail here")
+
+
+# BUG-013: even when a layout leaves dead space around the character, tapping the
+# empty box outside `get_visual_global_rect()` must not trigger affection.
+func test_taps_outside_the_painted_character_are_ignored() -> void:
+	var viewport: SubViewport = SubViewport.new()
+	viewport.size = Vector2i(2048, 1536)
+	viewport.disable_3d = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	add_child_autofree(viewport)
+	var stage: Control = Control.new()
+	stage.set_anchors_preset(Control.PRESET_FULL_RECT)
+	viewport.add_child(stage)
+
+	var stretched: QuiQuiRig = QuiQuiRig.new()
+	stretched.manual_step = true
+	stretched.anchor_left = 0.0
+	stretched.anchor_right = 1.0
+	stretched.anchor_top = 0.78 - 620.0 / 1080.0
+	stretched.anchor_bottom = 0.78
+	stage.add_child(stretched)
+	await wait_frames(2)
+
+	var miss: InputEventScreenTouch = InputEventScreenTouch.new()
+	miss.position = Vector2(12.0, 12.0)
+	miss.pressed = true
+	stretched._gui_input(miss)
+	assert_eq(stretched.taps, 0, "blank box outside the character is not tappable")
+
+	var hit: InputEventScreenTouch = InputEventScreenTouch.new()
+	hit.position = stretched.get_visual_global_rect().get_center()
+	hit.pressed = true
+	stretched._gui_input(hit)
+	assert_eq(stretched.taps, 1, "tapping the painted character still fires")

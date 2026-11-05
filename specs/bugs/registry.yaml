@@ -98,3 +98,21 @@ bugs:
     summary: "Managers dereference fsm/players before _ready and show_wish validates paths by prefix/suffix"
     file: specs/bugs/BUG-012-pre-ready-and-path-validation.md
     status: fixed
+  - bug_id: BUG-013
+    date: "2026-11-05"
+    severity: high
+    priority: P0
+    scope: ui
+    summary: "On 4:3 QuiQui is painted at 42% of the height while the oracle proves the empty Control box"
+    file: specs/bugs/BUG-013-hero-scale-measures-box-not-art.md
+    status: fixed
+    found_by: "request-review round 1/5 (both reviewers, must-fix)"
+  - bug_id: BUG-014
+    date: "2026-11-05"
+    severity: medium
+    priority: P1
+    scope: docs
+    summary: "BUG-002 closure evidence mixes art-before with box-after; DESIGN section 3 states an offsets rule both shipped scenes break"
+    file: specs/bugs/BUG-014-records-overclaim-4x3-closure.md
+    status: fixed
+    found_by: "request-review round 1/5 (reviewer A should-fix 3, reviewer B must-fix 2)"

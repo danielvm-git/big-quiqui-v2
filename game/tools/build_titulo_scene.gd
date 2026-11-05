@@ -18,6 +18,8 @@ const BG_PATH: String = "res://assets/art/backgrounds/bg_titulo.jpg"
 const PLAY_ART: String = "res://assets/art/ui/botao_play.png"
 
 ## Reference frame: QuiQui 700×620 with her feet at y=1000, Play 168² at y=840.
+## Initial box width only: `QuiQuiRig._refit()` rewrites it from the
+## opaque art aspect on every layout pass, so the packed value is a placeholder.
 const RIG_WIDTH: float = 700.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0
 const FEET_RATIO: float = 1000.0 / 1080.0

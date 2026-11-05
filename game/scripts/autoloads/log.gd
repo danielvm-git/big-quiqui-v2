@@ -53,6 +53,7 @@ func _exit_tree() -> void:
 
 
 func event(ev: String, data: Dictionary = {}, level: String = "info") -> void:
+	last_line = {}  # never mirror a stale line when the diary is closed
 	if _file == null:
 		return
 	var dropped: int = 0

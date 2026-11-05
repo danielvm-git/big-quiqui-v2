@@ -81,13 +81,13 @@ func test_squash_runs_its_three_steps_and_returns_to_rest() -> void:
 	button.press()
 
 	assert_true(button.is_squashing())
-	assert_eq(button.visual.scale, TapButton.SQUASH_STEPS[0], "first spring keyframe")
+	assert_eq(button.visual.scale, SquashSpring.STEPS[0], "first spring keyframe")
 
 	button.advance(0.08)
-	assert_eq(button.visual.scale, TapButton.SQUASH_STEPS[1], "second keyframe")
+	assert_eq(button.visual.scale, SquashSpring.STEPS[1], "second keyframe")
 
 	button.advance(0.10)
-	assert_eq(button.visual.scale, TapButton.SQUASH_STEPS[2], "third keyframe")
+	assert_eq(button.visual.scale, SquashSpring.STEPS[2], "third keyframe")
 
 	button.advance(0.12)
 	assert_false(button.is_squashing(), "the spring ends")
@@ -99,7 +99,7 @@ func test_squash_never_changes_the_hit_box() -> void:
 	button.advance(0.01)
 
 	assert_eq(button.size, Vector2(148.0, 148.0), "the layout rect is untouched")
-	assert_eq(button.visual.scale, TapButton.SQUASH_STEPS[0], "only the art pops")
+	assert_eq(button.visual.scale, SquashSpring.STEPS[0], "only the art pops")
 
 
 func test_reset_restores_counters_and_rest_pose() -> void:

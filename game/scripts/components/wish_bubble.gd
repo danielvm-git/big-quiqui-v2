@@ -17,7 +17,7 @@ const FRAME_PATH: String = "res://assets/art/ui/balao_desejo.png"
 const ART_ROOT: String = "res://assets/art/"
 ## Only a literal art path may be loaded: no `.`, `..` or scheme tricks. Prefix
 ## and suffix checks alone accepted `res://assets/art/../../x.png`.
-const ART_PATH_PATTERN: String = "^res://assets/art/([a-z0-9_]+/)*[a-z0-9_]+\\.png$"
+const ART_PATH_PATTERN: String = "\\Ares://assets/art/([a-z0-9_]+/)*[a-z0-9_]+\\.png\\z"
 
 const PULSE_AMPLITUDE: float = 0.04
 const PULSE_SPEED: float = 3.0
@@ -124,6 +124,8 @@ func reset() -> void:
 	_wish_id = ""
 	_pulse_time = 0.0
 	_pulse_scale = 1.0
+	if _visual != null:
+		_visual.scale = Vector2.ONE  # the getter and the transform must agree (BUG-005)
 	if _icon != null:
 		_icon.texture = null
 	if fsm != null and fsm.state != STATE_HIDDEN:
