@@ -3,7 +3,7 @@ spec: e01s03.md
 epic_id: e01
 title: ProgressManager Typed SaveData Resource, Atomic .tmp Write & Round-Trip Oracle
   Tests
-status: failing
+status: passing
 bcps: 3
 playable_scene: res://scenes/titulo.tscn
 tasks:
@@ -14,7 +14,7 @@ tasks:
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e01s03-t02
   description: Implement minimal strict-typed GDScript & Control scene nodes for e01s03
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
@@ -22,7 +22,7 @@ tasks:
   risk: P1
   allure:
     severity: high
-  status: failing
+  status: passing
 - id: e01s03-t03
   description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
     story traceability for e01s03
@@ -31,4 +31,4 @@ tasks:
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing

@@ -19,13 +19,9 @@ const ROOTS: Array[String] = [
 
 var _checked: int = 0
 var _failed: int = 0
-var _class_name_re: RegEx = RegEx.new()
-var _decl_re: RegEx = RegEx.new()
 
 
 func _init() -> void:
-	_decl_re.compile("(?m)^class_name ([A-Za-z0-9_]+).*$")
-	_class_name_re = _decl_re
 	for root: String in ROOTS:
 		_walk(root)
 	print("type_gate: %d scripts checked, %d failed" % [_checked, _failed])
@@ -51,17 +47,21 @@ func _walk(path: String) -> void:
 
 func _check(path: String) -> void:
 	_checked += 1
-	var source: String = FileAccess.get_file_as_string(path)
-	# A fresh GDScript that re-declares a registered `class_name` collides with it
-	# ("Class X hides a global script class"), which is not a defect of the file.
-	# Rename the declaration AND every self-reference so the copy stays internally
-	# consistent (otherwise `-> FsmProbe` no longer matches the renamed class).
-	var match_result: RegExMatch = _decl_re.search(source)
-	if match_result != null:
-		var class_name_text: String = match_result.get_string(1)
-		source = source.replace(class_name_text, class_name_text + "__probe")
-	var script: GDScript = GDScript.new()
-	script.source_code = source
+	# Load the REAL script and re-parse it. A compiled copy cannot work: keeping the
+	# declaration collides with the registered global class, and rewriting it breaks
+	# the file's own `-> SelfName` return types. `load()` also survives a parse error
+	# here (it returns the broken script, `reload()` reports 43), so the loop keeps
+	# counting instead of aborting on the first bad file.
+	var loaded: Variant = load(path)
+	if loaded == null:
+		_failed += 1
+		printerr("type_gate: FAILED %s (not loadable)" % path)
+		return
+	var script: GDScript = loaded as GDScript
+	if script == null:
+		_failed += 1
+		printerr("type_gate: FAILED %s (not a GDScript)" % path)
+		return
 	var err: int = script.reload()
 	if err != OK:
 		_failed += 1

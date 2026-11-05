@@ -30,10 +30,20 @@ func test_reset_removes_a_leftover_test_save() -> void:
 
 
 func test_reset_survives_managers_that_do_not_exist_yet() -> void:
-	# ProgressManager arrives in e01s03; today the lookup must be a safe no-op.
-	assert_null(TestReset.manager_node("ProgressManager"))
+	# e01s03 added ProgressManager; a manager that is still missing must be a no-op.
+	assert_null(TestReset.manager_node("CareLoopManager"), "not built yet")
 	TestReset.reset_all()
 	assert_true(true, "reset_all must not error when a manager is absent")
+
+
+func test_reset_reaches_the_manager_that_exists() -> void:
+	var manager: Node = TestReset.manager_node("ProgressManager")
+	assert_not_null(manager, "ProgressManager exists since e01s03")
+
+	TestReset.reset_all()
+
+	assert_true(bool(manager.is_test_mode()), "reset_all must call set_test_mode(true)")
+	assert_eq(str(manager.save_path), TestReset.TEST_SAVE_PATH)
 
 
 func test_production_save_is_never_created_by_reset() -> void:
