@@ -13,3 +13,13 @@ entries:
     asserts: 102
     verify_status: pass
     source: scripts/record-cycle-time.sh append (transcribed)
+  - story: e01s02
+    epic: e01
+    bcps: 3
+    commits: 1
+    effort_hours: 0.0        # one burst under the 120-min idle threshold
+    lead_time_minutes: 3
+    tests_passed: 47
+    asserts: 177
+    verify_status: pass
+    source: manual entry (record-cycle-time.sh OKF output is not valid YAML)

@@ -42,3 +42,5 @@ gdscript/warnings/inferred_declaration=1
 [autoload]
 
 Log="*res://scripts/autoloads/log.gd"
+AudioManager="*res://scripts/autoloads/audio_manager.gd"
+SceneManager="*res://scripts/autoloads/scene_manager.gd"
