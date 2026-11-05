@@ -25,8 +25,6 @@ var max_dwell_sec: Dictionary = {}
 var _now: Callable = Callable()
 var _state_since_ms: int = 0
 var _timed_out: Dictionary = {}
-var _log_sink: Object = null
-var _log_resolved: bool = false
 
 
 func _init(
@@ -102,7 +100,7 @@ func check_dwell() -> bool:
 	if elapsed_sec() < limit:
 		return false
 	_timed_out[state] = true
-	_emit("fsm.dwell_timeout", {"state": _id(state), "limit_sec": int(limit * 1000)})
+	_emit("fsm.dwell_timeout", {"state": _id(state), "limit_ms": int(limit * 1000)})
 	dwell_timeout.emit(state)
 	return true
 
@@ -141,9 +139,4 @@ func _id(value: String) -> String:
 
 ## Optional coupling: the game registers `Log` as an autoload, a unit test does not.
 func _emit(ev: String, data: Dictionary) -> void:
-	if not _log_resolved:
-		_log_resolved = true
-		if Engine.get_main_loop() is SceneTree:
-			_log_sink = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("Log")
-	if _log_sink != null and _log_sink.has_method("event"):
-		_log_sink.call("event", ev, data)
+	LogSink.emit_to_diary(ev, data)

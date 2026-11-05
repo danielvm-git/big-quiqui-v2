@@ -1,7 +1,7 @@
 # story: e01s01
 extends SceneTree
-## Type gate — compiles every GDScript under res://scripts, res://components,
-## res://scenes and res://tests so Godot's strict-typing warnings
+## Type gate — compiles every first-party GDScript under res://scripts,
+## res://tests and res://tools so Godot's strict-typing warnings
 ## (debug/gdscript/warnings/untyped_declaration=2) fail the build.
 ##
 ## Uses GDScript.reload() instead of ResourceLoader.load(): a parse error inside
@@ -10,12 +10,17 @@ extends SceneTree
 ## Usage: godot --headless --path game -s res://tools/type_gate.gd
 ## Exit:  0 = every script compiles under strict typing, 1 = at least one failed.
 
+## Every first-party directory, and nothing else: a root that does not exist
+## (`res://components` used to be listed) hides the one that is missing.
 const ROOTS: Array[String] = [
 	"res://scripts",
-	"res://components",
-	"res://scenes",
 	"res://tests",
+	"res://tools",
 ]
+
+## The runner cannot reload itself while it is executing; it compiles as it
+## runs, so a broken gate fails loudly at startup instead of silently.
+const SELF_PATH: String = "res://tools/type_gate.gd"
 
 var _checked: int = 0
 var _failed: int = 0
@@ -46,6 +51,8 @@ func _walk(path: String) -> void:
 
 
 func _check(path: String) -> void:
+	if path == SELF_PATH:
+		return
 	_checked += 1
 	# Load the REAL script and re-parse it. A compiled copy cannot work: keeping the
 	# declaration collides with the registered global class, and rewriting it breaks

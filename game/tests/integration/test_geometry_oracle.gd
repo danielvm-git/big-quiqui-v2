@@ -71,3 +71,81 @@ func test_letterboxed_background_is_caught() -> void:
 
 	assert_false(findings.is_empty(), "a half-size background must be reported as bars")
 	assert_true(oracle.summary().contains("letterbox"), oracle.summary())
+
+
+# ── ADR-008 regression guards (BUG-001 / BUG-002) ────────────────────────────
+#
+# The oracle earned these because the first two scenes shipped green with a 2x
+# scene root (a `>=` coverage test passes for any oversized node) and with
+# 16:9 pixel coordinates on the 4:3 canvas (nothing asserted the ratios).
+
+
+func test_an_oversized_background_is_caught() -> void:
+	var stage: Control = _build_stage(GeometryOracle.DESKTOP_16_9, Vector2(148.0, 148.0))[1] as Control
+	await wait_frames(2)
+	var background: TextureRect = stage.get_node("Background") as TextureRect
+	# Same failure the builders produced: full-rect anchors + a packed size.
+	background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	background.offset_right = 1920.0
+	background.offset_bottom = 1080.0
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.DESKTOP_16_9)
+
+	assert_false(findings.is_empty(), "a 2x background must fail the oracle")
+	assert_true(oracle.summary().contains("oversized"), oracle.summary())
+
+
+func test_a_rig_off_the_feet_line_is_caught() -> void:
+	var stage: Control = _build_stage(GeometryOracle.DESKTOP_16_9, Vector2(148.0, 148.0))[1] as Control
+	var rig: Control = _add_group_control(stage, "Rig", GeometryOracle.RIG_GROUP)
+	rig.position = Vector2(640.0, 222.0)
+	rig.size = Vector2(640.0, 400.0)
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.DESKTOP_16_9, GeometryOracle.CARE_ROOM_SPEC)
+
+	assert_false(findings.is_empty(), "622 px of feet instead of 842 must fail: %s" % oracle.summary())
+	assert_true(oracle.summary().contains("feet at"), oracle.summary())
+
+
+func test_a_bottom_bar_that_floats_is_caught() -> void:
+	var stage: Control = _build_stage(GeometryOracle.DESKTOP_16_9, Vector2(148.0, 148.0))[1] as Control
+	var dots: Control = _add_group_control(stage, "Dots", GeometryOracle.BOTTOM_GROUP)
+	dots.position = Vector2(732.0, 600.0)
+	dots.size = Vector2(456.0, 72.0)
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.DESKTOP_16_9, GeometryOracle.CARE_ROOM_SPEC)
+
+	assert_false(findings.is_empty(), "a bottom strip 400 px up must fail: %s" % oracle.summary())
+	assert_true(oracle.summary().contains("bottom edge"), oracle.summary())
+
+
+func test_a_correctly_anchored_rig_passes_the_care_room_spec() -> void:
+	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
+	var rig: Control = _add_group_control(stage, "Rig", GeometryOracle.RIG_GROUP)
+	# 620 / 1080 of the height, feet on 78 %, centred: the ADR-008 contract.
+	rig.anchor_left = 0.5
+	rig.anchor_right = 0.5
+	rig.anchor_top = 0.78 - 620.0 / 1080.0
+	rig.anchor_bottom = 0.78
+	rig.offset_left = -320.0
+	rig.offset_right = 320.0
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, GeometryOracle.CARE_ROOM_SPEC)
+
+	assert_true(findings.is_empty(), oracle.summary())
+
+
+func _add_group_control(stage: Control, node_name: String, group: String) -> Control:
+	var control: Control = Control.new()
+	control.name = node_name
+	control.add_to_group(group, false)
+	stage.add_child(control)
+	return control

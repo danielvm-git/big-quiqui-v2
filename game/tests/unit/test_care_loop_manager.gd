@@ -163,3 +163,63 @@ func test_test_reset_reaches_care_loop_manager() -> void:
 	TestReset.reset_all()
 
 	assert_eq(clm.state_id(), "IDLE", "TestReset must reset the 5th autoload too")
+
+
+# BUG-003: the abandoned step must be the one that was left, not IDLE.
+func test_abandon_event_names_the_step_it_left() -> void:
+	var log: Node = get_node_or_null("/root/Log")
+	assert_not_null(log)
+	clm.begin_step(clm.STATE_FEED)
+	clm.complete_step(clm.STATE_FEED)
+
+	assert_true(clm.abandon_step())
+
+	var line: Dictionary = log.get("last_line") as Dictionary
+	assert_eq(line.get("ev"), "care.abandon")
+	assert_eq(line.get("step"), "bath", "the diary must name the abandoned step: %s" % line)
+
+
+# BUG-009: "complete" must never start a cycle.
+func test_complete_step_from_idle_is_refused() -> void:
+	assert_eq(clm.state_id(), "IDLE")
+
+	assert_false(clm.complete_step(clm.STATE_IDLE), "IDLE has no successor to complete")
+	assert_eq(clm.state_id(), "IDLE", "and the machine must not move")
+
+
+# BUG-010: one vocabulary for the machine and the hub that reports on it.
+func test_the_cycle_vocabulary_has_a_single_owner() -> void:
+	assert_eq(clm.STEP_ORDER, CareSteps.ORDER)
+	assert_eq(clm.STATE_IDLE, CareSteps.IDLE)
+	assert_eq(clm.STATE_FEED, CareSteps.FEED)
+	assert_eq(clm.STATE_BATH, CareSteps.BATH)
+	assert_eq(clm.STATE_DRESS, CareSteps.DRESS)
+	assert_eq(clm.STATE_PLAY, CareSteps.PLAY)
+	assert_eq(clm.STATE_SLEEP, CareSteps.SLEEP)
+	assert_eq(clm.STATE_CELEBRATE, CareSteps.CELEBRATE)
+
+
+# BUG-012: reads before _ready must degrade, never crash the caller.
+func test_reads_do_not_crash_before_ready() -> void:
+	var fresh: Node = load("res://scripts/autoloads/care_loop_manager.gd").new()
+
+	assert_eq(fresh.call("state_id"), "", "no FSM yet means no state, not an error")
+	assert_eq(fresh.call("completed_steps"), 0)
+	assert_eq(fresh.call("next_step"), "")
+	assert_false(bool(fresh.call("begin_step", CareSteps.FEED)))
+	assert_false(bool(fresh.call("complete_step", CareSteps.FEED)))
+	assert_false(bool(fresh.call("abandon_step")))
+	fresh.free()
+
+
+# T-E02-03: the reward must not be lost (nor crash) without ProgressManager.
+func test_the_reward_degrades_when_progress_manager_is_unreachable() -> void:
+	var fresh: Node = load("res://scripts/autoloads/care_loop_manager.gd").new()
+	fresh.call("_build_fsm")
+	fresh.call("begin_step", CareSteps.FEED)
+	for step: String in CareSteps.ORDER:
+		fresh.call("complete_step", step)
+
+	assert_eq(fresh.call("state_id"), CareSteps.CELEBRATE, "the cycle still completes with no sink")
+	assert_eq(int(fresh.get("_rewarded_cycle_id")), 0, "the ledger advances, so a late grant is not double-paid")
+	fresh.free()

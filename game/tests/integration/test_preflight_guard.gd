@@ -69,3 +69,20 @@ func _read_preflight() -> String:
 	if not FileAccess.file_exists(absolute):
 		absolute = project_root.path_join(PREFLIGHT_RELATIVE)
 	return FileAccess.get_file_as_string(absolute)
+
+
+# BUG-011: the builders produced the 2x-canvas scene, and neither gate looked at
+# game/tools at all.
+func test_type_gate_covers_the_tools_directory() -> void:
+	var source: String = FileAccess.get_file_as_string("res://tools/type_gate.gd")
+
+	assert_true(source.contains('"res://tools"'), "scene builders must pass the strict-typing gate")
+	assert_false(source.contains('"res://components"'), "a root that does not exist hides a missing one")
+
+
+func test_trace_stories_covers_the_tools_directory() -> void:
+	var project_root: String = ProjectSettings.globalize_path("res://")
+	var script_path: String = project_root.path_join("..").path_join("scripts").path_join("trace-stories.sh")
+	var source: String = FileAccess.get_file_as_string(script_path)
+
+	assert_true(source.contains("game/tools"), "every first-party .gd must carry a story tag: %s" % script_path)

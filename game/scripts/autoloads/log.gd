@@ -9,18 +9,22 @@ extends Node
 ##   - missing context fields / bad `ts` / `session` not 8 hex / bad `lvl`
 ##   - composed values (dict/list)
 ##   - absolute paths, e-mails and digit runs of 6+
-##   - any value that is not id-shaped, except `msg` and `<redacted>`
+##   - any value that is not id-shaped, except `<redacted>`
 ## So every value this writer emits is flattened, redacted and id-checked.
+## Stricter than the auditor on purpose: `msg` carries a message *id*, never
+## prose, because a bare first name cannot be caught by a PII pattern.
 
 const LEVELS: Array[String] = ["info", "warn", "error"]
 const REDACTED: String = "<redacted>"
 const PREFIX: String = "quiqui-"
 const MAX_VALUE_CHARS: int = 64
-const MSG_MAX_CHARS: int = 200
 
 var session_id: String = ""
 var log_dir: String = "user://logs"
 var log_path: String = ""
+## Mirror of the last line written — payload assertions read this instead of
+## re-parsing the file, and a crashed session still shows its final event.
+var last_line: Dictionary = {}
 
 var _file: FileAccess = null
 var _seq: int = 0
@@ -71,6 +75,7 @@ func event(ev: String, data: Dictionary = {}, level: String = "info") -> void:
 		line[name] = _safe_value(name, value)
 	if dropped > 0:
 		line["dropped"] = dropped
+	last_line = line
 	_file.store_line(JSON.stringify(line))
 	_file.flush()
 	_seq += 1
@@ -153,15 +158,11 @@ func _safe_id(value: String, fallback: String) -> String:
 	return cleaned
 
 
-func _safe_value(key: String, value: Variant) -> Variant:
+func _safe_value(_key: String, value: Variant) -> Variant:
 	if value is int or value is float or value is bool:
 		return value
 	var text: String = redact_pii(str(value))
-	if key == "msg":
-		if text.length() > MSG_MAX_CHARS:
-			text = text.substr(0, MSG_MAX_CHARS)
-		if not is_safe_id(text):
-			return REDACTED
-		return REDACTED if text == REDACTED else text
-	var candidate: String = _safe_id(text, REDACTED)
-	return candidate
+	# Policy (stricter than the auditor, which exempts `msg`): the diary records
+	# message *ids*, never prose. A bare first name is invisible to the PII
+	# patterns, so any free text under `msg` is refused rather than risk it.
+	return _safe_id(text, REDACTED)

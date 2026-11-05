@@ -108,3 +108,16 @@ func test_reset_clears_duck_and_cursor() -> void:
 	assert_false(am.is_ducked)
 	assert_eq(am.sfx_cursor(), 0)
 	assert_almost_eq(am.bus_volume_db("Music"), am.music_db, 0.01)
+
+
+# BUG-012: calls before _ready degrade like every other autoload.
+func test_calls_before_ready_degrade() -> void:
+	var fresh: Node = load("res://scripts/autoloads/audio_manager.gd").new()
+
+	assert_false(bool(fresh.call("play_music", stream)), "no players yet, no crash")
+	assert_false(bool(fresh.call("play_voice", stream)))
+	assert_eq(int(fresh.call("play_sfx", stream)), -1)
+	fresh.call("apply_duck", true)
+	fresh.call("apply_duck", false)
+	fresh.call("reset")
+	fresh.free()

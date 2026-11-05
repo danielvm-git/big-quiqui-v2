@@ -12,9 +12,8 @@ extends Control
 signal tapped
 
 const MIN_HIT_SIZE: Vector2 = Vector2(120.0, 120.0)
-## 1.14,0.88 (70 ms) → 0.94,1.07 (90 ms) → 1,1 (110 ms), DESIGN §4.4
-const SQUASH_STEPS: Array[Vector2] = [Vector2(1.14, 0.88), Vector2(0.94, 1.07), Vector2.ONE]
-const SQUASH_STEP_SEC: Array[float] = [0.07, 0.09, 0.11]
+## DESIGN §4.4 spring, owned by `SquashSpring` and shared with `QuiQuiRig`.
+const SQUASH_STEPS: Array[Vector2] = SquashSpring.STEPS
 
 var visual: Control = null
 var enabled: bool = true
@@ -23,8 +22,7 @@ var manual_step: bool = false
 
 var taps: int = 0
 
-var _squash_step: int = -1
-var _squash_elapsed: float = 0.0
+var _spring: SquashSpring = SquashSpring.new()
 
 
 func _ready() -> void:
@@ -72,39 +70,26 @@ func press() -> void:
 
 
 func is_squashing() -> bool:
-	return _squash_step >= 0
+	return _spring.is_running()
 
 
 func advance(delta: float) -> void:
-	var remaining: float = maxf(delta, 0.0)
-	while _squash_step >= 0 and remaining > 0.0:
-		var limit: float = SQUASH_STEP_SEC[_squash_step]
-		if _squash_elapsed + remaining < limit:
-			_squash_elapsed += remaining
-			remaining = 0.0
-			break
-		remaining -= limit - _squash_elapsed
-		_squash_elapsed = 0.0
-		_squash_step += 1
-		if _squash_step >= SQUASH_STEPS.size():
-			_squash_step = -1
-			_apply_scale(Vector2.ONE)
-			break
-		_apply_scale(SQUASH_STEPS[_squash_step])
+	if not _spring.is_running():
+		return
+	_spring.advance(delta)
+	_apply_scale(_spring.scale)
 
 
 func reset() -> void:
 	taps = 0
-	_squash_step = -1
-	_squash_elapsed = 0.0
+	_spring.stop()
 	_apply_scale(Vector2.ONE)
 
 
 func _activate() -> void:
 	taps += 1
-	_squash_step = 0
-	_squash_elapsed = 0.0
-	_apply_scale(SQUASH_STEPS[0])
+	_spring.start()
+	_apply_scale(_spring.scale)
 	tapped.emit()
 	_emit("ui.tap", {"widget": name.to_lower()})
 
@@ -116,6 +101,4 @@ func _apply_scale(value: Vector2) -> void:
 
 
 func _emit(ev: String, data: Dictionary) -> void:
-	var sink: Node = get_node_or_null("/root/Log")
-	if sink != null and sink.has_method("event"):
-		sink.call("event", ev, data)
+	LogSink.emit_from(self, ev, data)

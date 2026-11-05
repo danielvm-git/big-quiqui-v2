@@ -66,6 +66,4 @@ func _start_music() -> void:
 
 
 func _log(ev: String, data: Dictionary) -> void:
-	var sink: Node = get_node_or_null("/root/Log")
-	if sink != null and sink.has_method("event"):
-		sink.call("event", ev, data)
+	LogSink.emit_from(self, ev, data)

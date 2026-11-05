@@ -22,3 +22,6 @@ __pycache__/
 .pytest_cache/
 allure-results/
 allure-report/
+
+# Agent scratch (plans, tool state)
+.zcode/

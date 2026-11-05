@@ -101,7 +101,7 @@ func test_negative_and_out_of_range_values_are_clamped() -> void:
 	var data: SaveData = SaveData.from_dictionary(raw)
 
 	assert_eq(data.coins, 0)
-	assert_eq(data.tickets, SaveData.MAX_COINS)
+	assert_eq(data.tickets, SaveData.MAX_TICKETS)
 	assert_eq(data.completed_cycles, 0)
 	assert_eq(data.friend_stars["pato"], SaveData.MAX_STARS)
 
@@ -148,3 +148,26 @@ func test_test_reset_wires_the_redirect() -> void:
 
 	assert_true(pm.is_test_mode(), "TestReset must put ProgressManager in test mode")
 	assert_eq(pm.save_path, pm.TEST_PATH)
+
+
+# BUG-007: per-currency ceilings and one signal per logical change.
+func test_tickets_use_their_own_ceiling() -> void:
+	pm.add_tickets(9_999_999)
+
+	assert_eq(pm.data.tickets, SaveData.MAX_TICKETS, "tickets are not coins")
+	assert_lt(SaveData.MAX_TICKETS, SaveData.MAX_COINS, "the two ceilings are distinct on purpose")
+
+
+func test_cycles_are_clamped() -> void:
+	var raw: Dictionary = {"completed_cycles": 99_999_999}
+
+	assert_eq(SaveData.from_dictionary(raw).completed_cycles, SaveData.MAX_CYCLES)
+
+
+func test_complete_cycle_announces_once() -> void:
+	var announced: Array[int] = []
+	pm.progress_changed.connect(func() -> void: announced.append(1))
+
+	pm.complete_cycle()
+
+	assert_eq(announced.size(), 1, "one cycle, one signal — the HUD repaints once")

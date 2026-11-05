@@ -2,7 +2,7 @@
 # story: e01s01
 set -euo pipefail
 
-# Verify that every GDScript file in game/scripts/ and game/tests/ carries a # story: eNNsYY tag
+# Verify that every GDScript file in game/scripts/, game/tests/ and game/tools/ carries a # story: eNNsYY tag
 STRICT="${1:-}"
 MISSING=0
 
@@ -12,7 +12,7 @@ if [ -d "game/scripts" ]; then
       echo "MISSING STORY TAG: $file"
       MISSING=$((MISSING + 1))
     fi
-  done < <(find game/scripts game/tests -type f -name "*.gd" -print0 2>/dev/null || true)
+  done < <(find game/scripts game/tests game/tools -type f -name "*.gd" -print0 2>/dev/null || true)
 fi
 
 if [ "$MISSING" -gt 0 ] && [ "$STRICT" = "--strict" ]; then

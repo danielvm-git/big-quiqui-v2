@@ -112,3 +112,14 @@ func _raw_last_line() -> String:
 			last = line
 	file.close()
 	return last
+
+
+# BUG-004 — documented policy, not an accident: the diary stores message *ids*.
+# A bare first name is invisible to the PII patterns, so prose is refused
+# outright instead of being half-redacted.
+func test_prose_under_msg_is_refused_by_policy() -> void:
+	log.call("event", "test.prose", {"msg": "hora do banho"})
+	assert_eq(_last_line()["msg"], Log.REDACTED)
+
+	log.call("event", "test.msg_id", {"msg": "hora_do_banho"})
+	assert_eq(_last_line()["msg"], "hora_do_banho", "an id survives, and that is the contract")

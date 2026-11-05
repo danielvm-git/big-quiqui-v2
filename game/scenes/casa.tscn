@@ -9,16 +9,14 @@
 [ext_resource type="Script" path="res://scripts/components/care_dots_bar.gd" id="7_qil8m"]
 [ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="8_dgbb3"]
 
-[node name="Casa" type="Control" unique_id=421439980]
+[node name="Casa" type="Control" unique_id=2055796685]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 1920.0
-offset_bottom = 1080.0
 script = ExtResource("1_uum25")
 
-[node name="Background" type="TextureRect" parent="." unique_id=152068057 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=398836350 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -27,29 +25,33 @@ texture = ExtResource("2_lgdna")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=1278287244]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=1439617027 groups=["rig"]]
 anchors_preset = 0
-offset_left = 640.0
-offset_top = 222.0
-offset_right = 1280.0
-offset_bottom = 842.0
+anchor_left = 0.5
+anchor_top = 0.20592593
+anchor_right = 0.5
+anchor_bottom = 0.78
+offset_left = -320.0
+offset_right = 320.0
 script = ExtResource("3_wui1u")
 
-[node name="DoorFEED" type="Control" parent="." unique_id=1205953520 groups=["hit_target"]]
+[node name="DoorFEED" type="Control" parent="." unique_id=1182230378 groups=["hit_target"]]
 anchors_preset = 0
+anchor_top = 0.28148147
+anchor_bottom = 0.28148147
 offset_left = 64.0
-offset_top = 220.0
+offset_top = -84.0
 offset_right = 232.0
-offset_bottom = 388.0
+offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorFEED" unique_id=1154388239]
+[node name="Visual" type="Control" parent="DoorFEED" unique_id=1777148653]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorFEED/Visual" unique_id=1135987303]
+[node name="Art" type="TextureRect" parent="DoorFEED/Visual" unique_id=1988084885]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -58,21 +60,25 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DoorPLAY" type="Control" parent="." unique_id=445572492 groups=["hit_target"]]
+[node name="DoorPLAY" type="Control" parent="." unique_id=748125372 groups=["hit_target"]]
 anchors_preset = 0
-offset_left = 1688.0
-offset_top = 220.0
-offset_right = 1856.0
-offset_bottom = 388.0
+anchor_left = 1.0
+anchor_top = 0.28148147
+anchor_right = 1.0
+anchor_bottom = 0.28148147
+offset_left = -232.0
+offset_top = -84.0
+offset_right = -64.0
+offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorPLAY" unique_id=2058372802]
+[node name="Visual" type="Control" parent="DoorPLAY" unique_id=503608678]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorPLAY/Visual" unique_id=1922499632]
+[node name="Art" type="TextureRect" parent="DoorPLAY/Visual" unique_id=1437421511]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -81,21 +87,23 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DoorBATH" type="Control" parent="." unique_id=1028353735 groups=["hit_target"]]
+[node name="DoorBATH" type="Control" parent="." unique_id=896661437 groups=["hit_target"]]
 anchors_preset = 0
+anchor_top = 0.5037037
+anchor_bottom = 0.5037037
 offset_left = 64.0
-offset_top = 460.0
+offset_top = -84.0
 offset_right = 232.0
-offset_bottom = 628.0
+offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorBATH" unique_id=887421526]
+[node name="Visual" type="Control" parent="DoorBATH" unique_id=1358416152]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorBATH/Visual" unique_id=1535320629]
+[node name="Art" type="TextureRect" parent="DoorBATH/Visual" unique_id=158098595]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -104,21 +112,25 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DoorSLEEP" type="Control" parent="." unique_id=1518894805 groups=["hit_target"]]
+[node name="DoorSLEEP" type="Control" parent="." unique_id=1120238779 groups=["hit_target"]]
 anchors_preset = 0
-offset_left = 1688.0
-offset_top = 460.0
-offset_right = 1856.0
-offset_bottom = 628.0
+anchor_left = 1.0
+anchor_top = 0.5037037
+anchor_right = 1.0
+anchor_bottom = 0.5037037
+offset_left = -232.0
+offset_top = -84.0
+offset_right = -64.0
+offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorSLEEP" unique_id=1067647927]
+[node name="Visual" type="Control" parent="DoorSLEEP" unique_id=924633097]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorSLEEP/Visual" unique_id=211306106]
+[node name="Art" type="TextureRect" parent="DoorSLEEP/Visual" unique_id=1777330438]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -127,21 +139,23 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DoorDRESS" type="Control" parent="." unique_id=1003913140 groups=["hit_target"]]
+[node name="DoorDRESS" type="Control" parent="." unique_id=1375035357 groups=["hit_target"]]
 anchors_preset = 0
+anchor_top = 0.7259259
+anchor_bottom = 0.7259259
 offset_left = 64.0
-offset_top = 700.0
+offset_top = -84.0
 offset_right = 232.0
-offset_bottom = 868.0
+offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorDRESS" unique_id=336060768]
+[node name="Visual" type="Control" parent="DoorDRESS" unique_id=1337516661]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorDRESS/Visual" unique_id=476869798]
+[node name="Art" type="TextureRect" parent="DoorDRESS/Visual" unique_id=952309489]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -150,21 +164,25 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DoorVILA" type="Control" parent="." unique_id=2007680231 groups=["hit_target"]]
+[node name="DoorVILA" type="Control" parent="." unique_id=209192382 groups=["hit_target"]]
 anchors_preset = 0
-offset_left = 1688.0
-offset_top = 700.0
-offset_right = 1856.0
-offset_bottom = 868.0
+anchor_left = 1.0
+anchor_top = 0.7259259
+anchor_right = 1.0
+anchor_bottom = 0.7259259
+offset_left = -232.0
+offset_top = -84.0
+offset_right = -64.0
+offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorVILA" unique_id=1443702650]
+[node name="Visual" type="Control" parent="DoorVILA" unique_id=824892918]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorVILA/Visual" unique_id=1529964254]
+[node name="Art" type="TextureRect" parent="DoorVILA/Visual" unique_id=1828371444]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -173,26 +191,36 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="WishBubble" type="Control" parent="." unique_id=366303824]
+[node name="WishBubble" type="Control" parent="." unique_id=1548607575]
 anchors_preset = 0
-offset_left = 850.0
-offset_top = 30.0
-offset_right = 1070.0
-offset_bottom = 250.0
+anchor_left = 0.5
+anchor_top = 0.78
+anchor_right = 0.5
+anchor_bottom = 0.78
+offset_left = -110.0
+offset_top = -812.0
+offset_right = 110.0
+offset_bottom = -592.0
 script = ExtResource("6_2ix5r")
 
-[node name="CareDotsBar" type="Control" parent="." unique_id=622177387]
+[node name="CareDotsBar" type="Control" parent="." unique_id=1963274773 groups=["ui_bottom"]]
 anchors_preset = 0
-offset_left = 732.0
-offset_top = 972.0
-offset_right = 1188.0
-offset_bottom = 1044.0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -228.0
+offset_top = -108.0
+offset_right = 228.0
+offset_bottom = -36.0
 script = ExtResource("7_qil8m")
 
-[node name="CoinTicketHud" type="Control" parent="." unique_id=1274554945]
+[node name="CoinTicketHud" type="Control" parent="." unique_id=1931223503 groups=["ui_top_right"]]
 anchors_preset = 0
-offset_left = 1504.0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -416.0
 offset_top = 36.0
-offset_right = 1884.0
+offset_right = -36.0
 offset_bottom = 124.0
 script = ExtResource("8_dgbb3")

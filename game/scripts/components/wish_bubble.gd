@@ -15,6 +15,9 @@ const LEGAL_EDGES: Dictionary = {
 
 const FRAME_PATH: String = "res://assets/art/ui/balao_desejo.png"
 const ART_ROOT: String = "res://assets/art/"
+## Only a literal art path may be loaded: no `.`, `..` or scheme tricks. Prefix
+## and suffix checks alone accepted `res://assets/art/../../x.png`.
+const ART_PATH_PATTERN: String = "^res://assets/art/([a-z0-9_]+/)*[a-z0-9_]+\\.png$"
 
 const PULSE_AMPLITUDE: float = 0.04
 const PULSE_SPEED: float = 3.0
@@ -30,10 +33,12 @@ var _visual: Control = null
 var _wish_id: String = ""
 var _pulse_time: float = 0.0
 var _pulse_scale: float = 1.0
+var _art_path_re: RegEx = RegEx.new()
 
 
 func _ready() -> void:
 	mouse_filter = MOUSE_FILTER_IGNORE
+	_art_path_re.compile(ART_PATH_PATTERN)
 	fsm = Fsm.new(STATE_HIDDEN, LEGAL_EDGES, {})
 	_build_visual()
 	_apply_visibility()
@@ -49,8 +54,13 @@ func _process(delta: float) -> void:
 ## always exactly 1.0 and replaying a timeline reproduces it (pure function of
 ## accumulated time).
 func advance(delta: float) -> void:
+	if fsm == null or _visual == null:
+		return
 	if fsm.state != STATE_SHOWN:
+		# Hidden means rest: the reported scale and the actual transform must
+		# agree, or a hide mid-pulse leaves the bubble permanently off-size.
 		_pulse_scale = 1.0
+		_visual.scale = Vector2.ONE
 		return
 	_pulse_time += maxf(delta, 0.0)
 	_pulse_scale = 1.0 + PULSE_AMPLITUDE * sin(_pulse_time * PULSE_SPEED)
@@ -61,7 +71,7 @@ func advance(delta: float) -> void:
 ## Shows the bubble with the icon at `icon_path` (under `res://assets/art/`).
 ## Returns false (and stays hidden) when the art is missing.
 func show_wish(icon_path: String) -> bool:
-	if not icon_path.begins_with(ART_ROOT) or not icon_path.ends_with(".png"):
+	if not _is_valid_art_path(icon_path):
 		_emit("ui.wish_rejected", {"path": _slug(icon_path)})
 		return false
 	if not ResourceLoader.exists(icon_path) or not ResourceLoader.exists(FRAME_PATH):
@@ -80,7 +90,12 @@ func show_wish(icon_path: String) -> bool:
 
 func hide_wish() -> bool:
 	_wish_id = ""
-	_icon.texture = null
+	_pulse_time = 0.0
+	_pulse_scale = 1.0
+	if _icon != null:
+		_icon.texture = null
+	if _visual != null:
+		_visual.scale = Vector2.ONE
 	var hidden: bool = fsm.transition_to(STATE_HIDDEN)
 	_apply_visibility()
 	if hidden:
@@ -146,6 +161,12 @@ func _build_visual() -> void:
 	_visual.add_child(_icon)
 
 
+func _is_valid_art_path(path: String) -> bool:
+	if path.is_empty() or not path.begins_with(ART_ROOT):
+		return false
+	return _art_path_re.search(path) != null
+
+
 func _apply_visibility() -> void:
 	visible = fsm.state == STATE_SHOWN
 
@@ -156,6 +177,4 @@ func _slug(path: String) -> String:
 
 
 func _emit(ev: String, data: Dictionary) -> void:
-	var sink: Node = get_node_or_null("/root/Log")
-	if sink != null and sink.has_method("event"):
-		sink.call("event", ev, data)
+	LogSink.emit_from(self, ev, data)

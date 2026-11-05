@@ -11,23 +11,28 @@ extends Control
 
 signal door_requested(step: String)
 
+const VILA: String = "VILA"
+
+## Door ids come from the shared vocabulary (`CareSteps`); only the paths are
+## local. VILA is a destination, not a care step: it never carries the
+## "waiting" dim.
 const DOOR_SCENES: Dictionary = {
-	"FEED": "res://scenes/cozinha.tscn",
-	"BATH": "res://scenes/banheiro.tscn",
-	"DRESS": "res://scenes/closet.tscn",
-	"PLAY": "res://scenes/jardim.tscn",
-	"SLEEP": "res://scenes/quarto_sono.tscn",
-	"VILA": "res://scenes/vila.tscn",
+	CareSteps.FEED: "res://scenes/cozinha.tscn",
+	CareSteps.BATH: "res://scenes/banheiro.tscn",
+	CareSteps.DRESS: "res://scenes/closet.tscn",
+	CareSteps.PLAY: "res://scenes/jardim.tscn",
+	CareSteps.SLEEP: "res://scenes/quarto_sono.tscn",
+	VILA: "res://scenes/vila.tscn",
 }
 
 ## What QuiQui asks for in each step (DESIGN.md: the wish bubble carries the
 ## prompt, not words).
 const WISH_ICONS: Dictionary = {
-	"FEED": "res://assets/art/items/cenoura.png",
-	"BATH": "res://assets/art/items/sabonete.png",
-	"DRESS": "res://assets/art/items/tiara_flores.png",
-	"PLAY": "res://assets/art/items/bola.png",
-	"SLEEP": "res://assets/art/efeitos/zzz.png",
+	CareSteps.FEED: "res://assets/art/items/cenoura.png",
+	CareSteps.BATH: "res://assets/art/items/sabonete.png",
+	CareSteps.DRESS: "res://assets/art/items/tiara_flores.png",
+	CareSteps.PLAY: "res://assets/art/items/bola.png",
+	CareSteps.SLEEP: "res://assets/art/efeitos/zzz.png",
 }
 
 const VOICE_PATH: String = "res://assets/audio/voice/hub_bem_vindo.ogg"
@@ -132,7 +137,9 @@ func _refresh_from_care_loop() -> void:
 	if dots != null:
 		dots.set_completed_steps(completed)
 	var next: String = _care_next_step()
-	for step: String in DOOR_SCENES:
+	# Only the five care steps express "not your turn yet". Dimming VILA would
+	# tell a child that a tappable door is disabled.
+	for step: String in CareSteps.ORDER:
 		var door_node: TapButton = door(step)
 		if door_node == null:
 			continue
@@ -150,7 +157,7 @@ func _care_next_step() -> String:
 	var manager: Node = get_node_or_null("/root/CareLoopManager")
 	if manager != null and manager.has_method("next_step"):
 		return str(manager.call("next_step"))
-	return "FEED"
+	return CareSteps.FEED
 
 
 func _play_voice() -> void:
@@ -168,6 +175,4 @@ func _play_voice() -> void:
 
 
 func _log(ev: String, data: Dictionary) -> void:
-	var sink: Node = get_node_or_null("/root/Log")
-	if sink != null and sink.has_method("event"):
-		sink.call("event", ev, data)
+	LogSink.emit_from(self, ev, data)
