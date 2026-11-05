@@ -9,6 +9,7 @@ config_version=5
 config/name="Coelinha QuiQui"
 config/version="0.1.0"
 config/features=PackedStringArray("4.7", "Mobile")
+run/main_scene="res://scenes/titulo.tscn"
 config/icon="res://assets/art/ui/moedinha.png"
 
 [display]
@@ -38,3 +39,10 @@ gdscript/warnings/unsafe_method_access=1
 gdscript/warnings/unsafe_cast=1
 gdscript/warnings/unsafe_call_argument=1
 gdscript/warnings/inferred_declaration=1
+
+[autoload]
+
+Log="*res://scripts/autoloads/log.gd"
+ProgressManager="*res://scripts/autoloads/progress_manager.gd"
+AudioManager="*res://scripts/autoloads/audio_manager.gd"
+SceneManager="*res://scripts/autoloads/scene_manager.gd"

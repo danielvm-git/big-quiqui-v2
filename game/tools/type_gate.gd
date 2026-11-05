@@ -47,8 +47,21 @@ func _walk(path: String) -> void:
 
 func _check(path: String) -> void:
 	_checked += 1
-	var script: GDScript = GDScript.new()
-	script.source_code = FileAccess.get_file_as_string(path)
+	# Load the REAL script and re-parse it. A compiled copy cannot work: keeping the
+	# declaration collides with the registered global class, and rewriting it breaks
+	# the file's own `-> SelfName` return types. `load()` also survives a parse error
+	# here (it returns the broken script, `reload()` reports 43), so the loop keeps
+	# counting instead of aborting on the first bad file.
+	var loaded: Variant = load(path)
+	if loaded == null:
+		_failed += 1
+		printerr("type_gate: FAILED %s (not loadable)" % path)
+		return
+	var script: GDScript = loaded as GDScript
+	if script == null:
+		_failed += 1
+		printerr("type_gate: FAILED %s (not a GDScript)" % path)
+		return
 	var err: int = script.reload()
 	if err != OK:
 		_failed += 1

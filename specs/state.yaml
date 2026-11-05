@@ -3,10 +3,10 @@ project: big-quiqui-v2
 version: 0.1.0-dev
 workflow_mode: solo-git
 active_flow: orchestrate_project
-lifecycle_phase: house_ready
-current_epic: e01-tracer-title-and-foundation
-current_story: e01s01
-last_updated: "2026-11-04T16:58:00-03:00"
+lifecycle_phase: build
+current_epic: e02-casa-care-hub
+current_story: e02s01
+last_updated: "2026-11-04T22:01:14-03:00"
 
 release_target:
   version: "1.0.0"
@@ -30,7 +30,13 @@ handoff:
   open_decisions:
     - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."
     - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."
-epic_cycle: null
+epic_cycle:
+  step: 8
+  story: e01s05
+  story_bcps: 3
+  epic_epic_bcps: 16
+  started_at: "2026-11-04T23:20:00-03:00"
+  completed_at: "2026-11-04T22:01:14-03:00"
 metrics:
   story_start: null
   story_end: null

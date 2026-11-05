@@ -23,7 +23,10 @@ name: CI/CD
 
 on:
   push:
-    branches: [main]
+    # `epic/**` gets the full gate too: stories land on the epic branch, and a
+    # broken story must be visible there, not only when the epic merges to main.
+    # Releases still only run on main (the `release` job checks the ref).
+    branches: [main, "epic/**"]
     tags: ["v*"]
   pull_request:
     branches: [main]
