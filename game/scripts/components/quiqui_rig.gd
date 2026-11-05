@@ -16,6 +16,8 @@ const ART_ROOT: String = "res://assets/art/quiqui/"
 
 const NEUTRAL_EXPRESSION: String = "base"
 const BLINK_EXPRESSION: String = "pisca"
+const MOUTH_ANTICIPATION_PX: float = 220.0
+const ANTICIPATION_EXPRESSION: String = "boca_aberta"
 
 ## DESIGN §4.1/§4.2
 const BREATH_PERIOD_SEC: float = 2.2
@@ -58,6 +60,7 @@ var _spring: SquashSpring = SquashSpring.new()
 var _time: float = 0.0
 var _next_blink_at: float = 0.0
 var _blink_until: float = -1.0
+var _face_before_anticipation: String = ""
 
 
 func _ready() -> void:
@@ -211,7 +214,28 @@ func get_visual_global_rect() -> Rect2:
 	return rect
 
 
+func mouth_global_center() -> Vector2:
+	return mouth_zone.get_global_rect().get_center()
+
+
+func update_food_proximity(global_point: Vector2) -> void:
+	if global_point.distance_to(mouth_global_center()) >= MOUTH_ANTICIPATION_PX:
+		clear_food_proximity()
+	elif _face_before_anticipation.is_empty():
+		var face: String = NEUTRAL_EXPRESSION if expression_id == BLINK_EXPRESSION else expression_id
+		if set_expression(ANTICIPATION_EXPRESSION):
+			_face_before_anticipation = face
+
+
+func clear_food_proximity() -> void:
+	var face: String = _face_before_anticipation
+	_face_before_anticipation = ""
+	if not face.is_empty() and expression_id == ANTICIPATION_EXPRESSION:
+		set_expression(face)
+
+
 func reset() -> void:
+	_face_before_anticipation = ""
 	taps = 0
 	_time = 0.0
 	_blink_until = -1.0
