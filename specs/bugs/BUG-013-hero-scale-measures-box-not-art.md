@@ -86,16 +86,21 @@ the box and the tap surface, while the height-driven factor below delivers the r
 Deferred reviewer items closed in the same commits: `Ids.PATTERN` and `WishBubble.ART_PATH_PATTERN` are
 `\A…\z` with trailing-newline tests (`test_a_newline_suffixed_path_is_refused` for the art path); `GeometryOracle`'s dead `EDGE_INSET_TOLERANCE` and
 `get_tree_nodes_in_group` are gone; `WishBubble.reset()` resets `_visual.scale`; `Log.event()` clears
-`last_line` so a closed diary cannot leave a stale mirror.
+`last_line` so a closed diary cannot leave a stale mirror (and `test_log.gd` reopens the diary in
+`after_each()` so later suites never inherit a closed session); `QuiQuiRig._hits_character()` filters
+`_gui_input` to `get_visual_global_rect()` so taps outside the painted character are ignored even on a
+stretched box; `GeometryOracle._audit_rig_box_is_the_character` checks both vertical and horizontal
+dead space; `LogSink`, `ProgressManager`, and `TapButton` deduplicate their helpers; and `quiqui_rig.gd`
+is trimmed under the 300-line ceiling.
 
-Not done, deliberately: the tap filter reviewer B suggested is unnecessary once the box **is** the art
-(the dead space is what made blank pixels tappable), and `SceneBuilder.pin`'s `Vector4` slots keep their
-`scene_builder.gd` docstring rather than a typed record — both are recorded here as accepted.
+Not done, deliberately: `SceneBuilder.pin`'s `Vector4` slots keep their
+`scene_builder.gd` docstring rather than a typed record — recorded here as accepted.
 
 ## Verification
 
-`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **163 tests, 637 asserts** (was 143/567).
+`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **165 tests, 645 asserts** (was 143/567).
 New guards: `test_a_character_that_paints_smaller_than_its_box_is_caught`,
+`test_a_character_with_horizontal_dead_space_in_its_box_is_caught`,
 `test_a_character_that_fills_its_box_passes`, `test_an_oversized_scene_root_is_caught`,
 `test_a_scene_that_forgets_a_declared_group_is_caught`,
 `test_the_box_widens_with_the_height_on_a_centre_anchored_rig`,
@@ -103,7 +108,8 @@ New guards: `test_a_character_that_paints_smaller_than_its_box_is_caught`,
 `test_a_rig_that_cannot_report_painted_geometry_is_caught`,
 `test_the_painted_character_keeps_the_design_height_on_ipad` (casa and titulo),
 `test_a_trailing_newline_is_refused`, `test_reset_mid_pulse_returns_the_visual_to_rest`,
-`test_last_line_never_survives_a_closed_diary`, `test_the_painted_rect_is_not_the_control_box`.
+`test_last_line_never_survives_a_closed_diary`, `test_the_painted_rect_is_not_the_control_box`,
+`test_taps_outside_the_painted_character_are_ignored`.
 
 **Mutation-checked (round 5):** replacing the body of `get_visual_global_rect()` with
 `return get_global_rect()` — the natural "cleanup" — now fails

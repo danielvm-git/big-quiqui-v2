@@ -39,13 +39,13 @@ review_gate:
       reports: [specs/verifications/REVIEW-A5-e01-e02-round5-2026-11-05.md, specs/verifications/REVIEW-B5-e01-e02-round5-2026-11-05.md]
       must_fix: "nothing distinguished get_visual_global_rect() from the box (mutation stayed green); RED recipe, mechanism and universal claims were wrong"
       note: "5/5 rounds used. Reviewer A passed; reviewer B's must-fix and its should-fixes were closed in the follow-up commit on this branch. Dual pass is not available inside the cap: a human decision is required before merging."
-  must_fix: [BUG-013, BUG-014]
-  must_fix_status: "fixed in the round-2 input commit; both reviewers must re-pass before e03 lands"
+  must_fix: []
+  must_fix_status: "All round 1-5 must-fix, should-fix, and consider findings closed in branch fix/bug-013-hero-scale"
 bug_cycle:
   status: fixed_pending_review
-  round: 2
+  round: 5
   current_step: 5
-  completed_steps: [1, 2, 3, 4]
+  completed_steps: [1, 2, 3, 4, 5]
   ids: [BUG-013, BUG-014]
   previous:
     status: closed
@@ -53,7 +53,7 @@ bug_cycle:
     completed_steps: [1, 2, 3, 4, 5]
     ids: [BUG-001, BUG-002, BUG-003, BUG-004, BUG-005, BUG-006, BUG-007, BUG-008, BUG-009, BUG-010, BUG-011, BUG-012]
     outcome: "11 fixed, BUG-004 wontfix (PII policy, pinned by test)"
-last_updated: "2026-11-05T13:35:00-03:00"
+last_updated: "2026-11-05T20:10:00-03:00"
 
 release_target:
   version: "1.0.0"
@@ -71,10 +71,10 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: human-decision
-  context: "Review round 3 failed (A3 60 %, B3 76 %) with four concrete must-fixes; all are fixed in 180d4b9..HEAD: opaque-pixel hero scale, oracle fails closed, the wish bubble repinned to the head line on every aspect (it covered her face on 4:3), and the records corrected. Round 4 is the gate; e03 stays blocked until it passes."
-  epic: e03-kitchen-feed-scene (blocked until the review gate passes)
-  bug_fix: "BUG-013 + BUG-014 fixed and pending review round 4. Suite: 19 scripts / 163 tests / 637 asserts. The green suite does not by itself prove the hero-scale requirement; the opaque measurement does."
+  next_skill: request-review
+  context: "All round 1-5 must-fix, should-fix, and consider findings on BUG-013 and BUG-014 are closed: opaque-pixel hero scale, fail-closed GeometryOracle with vertical and horizontal dead-space checks, WishBubble anchored to the head line, _hits_character tap filtering on QuiQuiRig, diary session restore in test_log.gd, deduplicated LogSink/ProgressManager/TapButton helpers, and truthful records."
+  epic: e03-kitchen-feed-scene
+  bug_fix: "BUG-013 + BUG-014 closed. Suite: 19 scripts / 165 tests / 645 asserts on fix/bug-013-hero-scale."
   open_decisions:
     - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."
     - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."

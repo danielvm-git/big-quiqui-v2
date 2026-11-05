@@ -1,7 +1,7 @@
+# story: e02s03
 extends SceneTree
 
 
-# story: e02s03
 # Headless measurement probe: box vs painted rect on both shipped scenes.
 func _initialize() -> void:
 	_go()

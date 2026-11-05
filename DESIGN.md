@@ -29,10 +29,10 @@
   - Interactive UI and trays anchor to the viewport edges with a `36 px` safe inset. There is **no**
     centred `SafeStage` container; composition is fixed by [ADR-008](specs/adr/ADR-008-edge-anchored-responsive-composition.md):
     **anchors are ratios of the canvas** (positions and the rig's height), **offsets are absolute pixels**
-    (36 px insets, fixed hit-target sizes, the rig's feet-line offset) — insets and 120×120 px targets must
-    not scale with the canvas. The rig scales the **painted** character to its box height, so the seen
-    height is the box height; the box width follows the art aspect, so the tap surface is the character.
-    `GeometryOracle` asserts the painted rect, the feet line and the insets.
+    (36 px insets, fixed hit-target sizes, and the rig's art-fitted half-width) — insets and 120×120 px targets must
+    not scale with the canvas. The rig scales the **painted** character to its box height on every pose (`_apply_expression` → `_refit()`), so the seen
+    height is the box height; the box width follows the art aspect, and `_hits_character` restricts taps to `get_visual_global_rect()`.
+    `GeometryOracle` asserts the painted rect, vertical and horizontal box fit, the feet line and the insets.
 - **Hero Scale (`QuiQuiRig`):**
   - In care rooms (`Casa`, `Cozinha`, `Banheiro`, `Closet`, `Jardim`, `Quarto`), QuiQui occupies **`55%–65%` of viewport height** (`~620 px` tall at rest on the 16:9 canvas, `~827 px` on `1920×1440`, `~882 px` on `2048×1536`; the **ratio** is the contract on every aspect), centered horizontally with visible feet anchored at `78%` of viewport height. **Measured on the opaque character**, not on the art frame or the `Control` box: the shipped art carries a ~8 % transparent margin.
 - **Hit Targets:**

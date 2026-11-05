@@ -194,10 +194,10 @@ func test_the_character_is_measured_on_its_opaque_pixels() -> void:
 
 
 # Every shipped base pose must stay in the design band: fitting each pose on its
-# own opaque rect keeps the seen height constant even though `carente` is wider
-# and shorter than `base`.
+# own opaque rect keeps the seen height constant even though `carente` and `sono`
+# are shorter in frame pixels than `base`.
 func test_every_base_pose_keeps_the_height_and_the_feet() -> void:
-	for expression_id: String in ["base", "pisca", "rindo", "carente"]:
+	for expression_id: String in ["base", "pisca", "rindo", "carente", "sono", "pulando"]:
 		if not rig.set_expression(expression_id):
 			continue
 		var painted: Rect2 = rig.get_visual_global_rect()
@@ -245,3 +245,37 @@ func test_the_painted_rect_is_not_the_control_box() -> void:
 	assert_almost_eq(painted.size.y, box.size.y, box.size.y * 0.03, "the seen height still fills the box")
 	assert_lt(painted.size.x, box.size.x * 0.5, "but the seen width is the art, not the column")
 	assert_ne(painted, box, "a getter that echoed the box would fail here")
+
+
+# BUG-013: even when a layout leaves dead space around the character, tapping the
+# empty box outside `get_visual_global_rect()` must not trigger affection.
+func test_taps_outside_the_painted_character_are_ignored() -> void:
+	var viewport: SubViewport = SubViewport.new()
+	viewport.size = Vector2i(2048, 1536)
+	viewport.disable_3d = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	add_child_autofree(viewport)
+	var stage: Control = Control.new()
+	stage.set_anchors_preset(Control.PRESET_FULL_RECT)
+	viewport.add_child(stage)
+
+	var stretched: QuiQuiRig = QuiQuiRig.new()
+	stretched.manual_step = true
+	stretched.anchor_left = 0.0
+	stretched.anchor_right = 1.0
+	stretched.anchor_top = 0.78 - 620.0 / 1080.0
+	stretched.anchor_bottom = 0.78
+	stage.add_child(stretched)
+	await wait_frames(2)
+
+	var miss: InputEventScreenTouch = InputEventScreenTouch.new()
+	miss.position = Vector2(12.0, 12.0)
+	miss.pressed = true
+	stretched._gui_input(miss)
+	assert_eq(stretched.taps, 0, "blank box outside the character is not tappable")
+
+	var hit: InputEventScreenTouch = InputEventScreenTouch.new()
+	hit.position = stretched.get_visual_global_rect().get_center()
+	hit.pressed = true
+	stretched._gui_input(hit)
+	assert_eq(stretched.taps, 1, "tapping the painted character still fires")

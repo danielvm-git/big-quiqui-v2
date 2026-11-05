@@ -12,8 +12,6 @@ extends Control
 signal tapped
 
 const MIN_HIT_SIZE: Vector2 = Vector2(120.0, 120.0)
-## DESIGN §4.4 spring, owned by `SquashSpring` and shared with `QuiQuiRig`.
-const SQUASH_STEPS: Array[Vector2] = SquashSpring.STEPS
 
 var visual: Control = null
 var enabled: bool = true

@@ -111,21 +111,23 @@ func has_orphan_tmp() -> bool:
 
 
 func add_coins(amount: int) -> void:
-	data.coins = clampi(data.coins + amount, 0, SaveData.MAX_COINS)
-	progress_changed.emit()
+	_apply(amount, 0)
 
 
 func add_tickets(amount: int) -> void:
-	data.tickets = clampi(data.tickets + amount, 0, SaveData.MAX_TICKETS)
-	progress_changed.emit()
+	_apply(0, amount)
 
 
 ## One logical change, one `progress_changed`: the mutators above are for the
 ## HUD's incremental updates, a full cycle is a single event.
 func complete_cycle(coins: int = 5, tickets: int = 1) -> void:
-	data.coins = clampi(data.coins + coins, 0, SaveData.MAX_COINS)
-	data.tickets = clampi(data.tickets + tickets, 0, SaveData.MAX_TICKETS)
-	data.completed_cycles = clampi(data.completed_cycles + 1, 0, SaveData.MAX_CYCLES)
+	_apply(coins, tickets, 1)
+
+
+func _apply(coins_delta: int, tickets_delta: int, cycles_delta: int = 0) -> void:
+	data.coins = clampi(data.coins + coins_delta, 0, SaveData.MAX_COINS)
+	data.tickets = clampi(data.tickets + tickets_delta, 0, SaveData.MAX_TICKETS)
+	data.completed_cycles = clampi(data.completed_cycles + cycles_delta, 0, SaveData.MAX_CYCLES)
 	progress_changed.emit()
 
 

@@ -199,15 +199,23 @@ static func _painted_rect(control: Control) -> Rect2:
 	return painted if painted is Rect2 else Rect2()
 
 
-## A box much taller than the art is dead space: the child sees a smaller
-## character than the spec claims, and taps above her head still land on her.
+## A box much larger than the art is dead space: the child sees a smaller or
+## narrower character than the box claims, and empty space around her is exposed.
 func _audit_rig_box_is_the_character(control: Control, box: Rect2, painted: Rect2, canvas: Rect2) -> void:
-	var dead: float = maxf(box.size.y - painted.size.y, 0.0) / canvas.size.y
-	if dead > BOX_DEAD_SPACE_TOLERANCE:
+	var dead_y: float = maxf(box.size.y - painted.size.y, 0.0) / canvas.size.y
+	if dead_y > BOX_DEAD_SPACE_TOLERANCE:
 		findings.append(
 			(
 				"rig %s box is %.2f of the canvas but the character is only %.2f (%.2f of empty space above her head)"
-				% [control.name, box.size.y / canvas.size.y, painted.size.y / canvas.size.y, dead]
+				% [control.name, box.size.y / canvas.size.y, painted.size.y / canvas.size.y, dead_y]
+			)
+		)
+	var dead_x: float = maxf(box.size.x - painted.size.x, 0.0) / canvas.size.x
+	if dead_x > BOX_DEAD_SPACE_TOLERANCE:
+		findings.append(
+			(
+				"rig %s box width is %.2f of the canvas but the character is only %.2f (%.2f of empty horizontal space)"
+				% [control.name, box.size.x / canvas.size.x, painted.size.x / canvas.size.x, dead_x]
 			)
 		)
 

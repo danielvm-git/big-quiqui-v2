@@ -38,7 +38,6 @@ const BUBBLE_SIZE: Vector2 = Vector2(220.0, 220.0)
 ## not at a fixed distance from the floor: an absolute offset was tuned for a 620 px
 ## character and covered her face on 4:3 once she was correctly sized (round 3, BUG-013).
 const BUBBLE_GAP: float = 8.0
-const BUBBLE_HEAD_CLEARANCE: float = 0.0  # the bubble's bottom sits on the head line
 const VILA: String = "VILA"
 
 
@@ -90,7 +89,7 @@ func _add_rig(root: Control) -> void:
 ## Three care doors down each edge; the Vila door rides the right column.
 func _add_door_columns(root: Control) -> void:
 	var right_steps: Array[String] = []
-	for index: int in range(3, CareSteps.ORDER.size()):
+	for index: int in range(DOOR_ROWS.size(), CareSteps.ORDER.size()):
 		right_steps.append(CareSteps.ORDER[index])
 	right_steps.append(VILA)
 	for row: int in range(DOOR_ROWS.size()):
@@ -136,7 +135,7 @@ func _add_bubble(root: Control) -> void:
 	var bubble: Control = Control.new()
 	bubble.name = "WishBubble"
 	bubble.set_script(load(BUBBLE_SCRIPT))
-	var head_ratio: float = FEET_RATIO - RIG_HEIGHT_RATIO + BUBBLE_HEAD_CLEARANCE
+	var head_ratio: float = FEET_RATIO - RIG_HEIGHT_RATIO
 	bubble.add_to_group("wish_bubble", true)
 	(
 		SceneBuilder

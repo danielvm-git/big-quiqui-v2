@@ -310,3 +310,20 @@ func test_a_rig_whose_art_failed_to_load_is_caught() -> void:
 
 	assert_false(findings.is_empty(), "missing art must not fall back to measuring the box")
 	assert_true(oracle.summary().contains("no painted geometry"), oracle.summary())
+
+
+func test_a_character_with_horizontal_dead_space_in_its_box_is_caught() -> void:
+	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
+	_add_edges(stage, GeometryOracle.IPAD_4_3)
+	_add_painted_rig(
+		stage,
+		Rect2(704.0, 316.0, 640.0, 882.0),
+		Rect2(815.0, 316.0, 418.0, 882.0),
+	)
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, GeometryOracle.CARE_ROOM_SPEC)
+
+	assert_false(findings.is_empty(), "a 640 px box around a 418 px character has horizontal dead space")
+	assert_true(oracle.summary().contains("empty horizontal space"), oracle.summary())
