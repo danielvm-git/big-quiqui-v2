@@ -134,3 +134,11 @@ func test_reset_mid_pulse_returns_the_visual_to_rest() -> void:
 
 	assert_almost_eq(bubble.pulse_scale(), 1.0, 0.0001, "reset clears the pulse")
 	assert_eq(bubble.get_node("Visual").scale, Vector2.ONE, "and the transform agrees with the getter")
+
+
+# BUG-014 / round-2 must-fix 3: the same `\A…\z` rule as `Ids`, pinned.
+func test_a_newline_suffixed_path_is_refused() -> void:
+	var bubble: WishBubble = _mounted()
+
+	assert_false(bubble.show_wish("res://assets/art/items/cenoura.png\n"), "^…$ accepted this")
+	assert_false(bubble.show_wish("res://assets/art/items/cenoura.png\r\n"))

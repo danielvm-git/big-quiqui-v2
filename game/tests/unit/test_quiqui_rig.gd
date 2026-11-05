@@ -177,3 +177,30 @@ func test_the_box_widens_with_the_height_on_a_centre_anchored_rig() -> void:
 	assert_almost_eq(painted.size.y, mounted.size.y, mounted.size.y * 0.03, "the art fills the box height")
 	assert_almost_eq(mounted.size.x, painted.size.x, mounted.size.x * 0.03, "and the box widens with the art")
 	assert_gt(painted.size.y / 1440.0, 0.55, "the painted character keeps DESIGN §3 on a 4:3 canvas")
+
+
+# BUG-013 / round-2 must-fix: the design unit is the opaque character, not the
+# 1024x1024 frame that carries an ~8 % transparent margin.
+func test_the_character_is_measured_on_its_opaque_pixels() -> void:
+	var sprite: Sprite2D = rig.expression
+	var frame_height: float = sprite.texture.get_size().y * sprite.global_scale.y
+	var painted: Rect2 = rig.get_visual_global_rect()
+	var box: Rect2 = rig.get_global_rect()
+
+	assert_true(painted.has_area(), "QuiQui is visible")
+	assert_lt(painted.size.y, frame_height * 0.95, "the art frame carries transparent margin")
+	assert_almost_eq(painted.end.y, box.end.y, 2.0, "the visible feet sit on the pivot line")
+	assert_almost_eq(painted.get_center().x, box.get_center().x, 2.0, "the visible centre is the box centre")
+
+
+# Every shipped base pose must stay in the design band: fitting each pose on its
+# own opaque rect keeps the seen height constant even though `carente` is wider
+# and shorter than `base`.
+func test_every_base_pose_keeps_the_height_and_the_feet() -> void:
+	for expression_id: String in ["base", "pisca", "rindo", "carente"]:
+		if not rig.set_expression(expression_id):
+			continue
+		var painted: Rect2 = rig.get_visual_global_rect()
+		var box: Rect2 = rig.get_global_rect()
+		assert_almost_eq(painted.size.y, box.size.y, box.size.y * 0.02, "%s keeps the box height" % expression_id)
+		assert_almost_eq(painted.end.y, box.end.y, 2.0, "%s keeps the feet on the line" % expression_id)

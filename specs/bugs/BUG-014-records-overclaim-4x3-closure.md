@@ -55,8 +55,14 @@ cycle's own documentation.
 3. `BUG-002` names the shipped test (`test_a_rig_off_the_feet_line_is_caught`) and hands its hero-scale
    half to BUG-013.
 4. `ADR-008` consequences now say **painted** character 0.575 (box 0.574) and record the box-fitting rule.
+5. **Round 2** found two more instances: `DESIGN.md` still carried the `~600–700 px` reading (true only
+   on 16:9, false — 830 px — on the iPad the game targets); it now names the ratio as the contract and
+   the px figure per canvas. `BUG-013` also claimed `WishBubble.ART_PATH_PATTERN` had been changed to
+   `\A…\z` and tested when it had not; the pattern is now `\A…\z` and the newline case is pinned.
+   The old "Before / after" column in `FIX-e01-e02` is now labelled **Box** height ratio, because it is
+   art-before vs box-after, a mixed series kept only for the record.
 
 ## Verification
 
-`bash scripts/preflight.sh` → PREFLIGHT GREEN (19 scripts, 154 tests, 604 asserts). The numbers in all
+`bash scripts/preflight.sh` → PREFLIGHT GREEN (19 scripts, 158 tests, 620 asserts). The numbers in all
 four records come from the same probe run, which is committed as a tool.

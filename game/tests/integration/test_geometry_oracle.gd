@@ -99,9 +99,11 @@ func test_an_oversized_background_is_caught() -> void:
 
 func test_a_rig_off_the_feet_line_is_caught() -> void:
 	var stage: Control = _build_stage(GeometryOracle.DESKTOP_16_9, Vector2(148.0, 148.0))[1] as Control
-	var rig: Control = _add_group_control(stage, "Rig", GeometryOracle.RIG_GROUP)
+	_add_edges(stage, GeometryOracle.DESKTOP_16_9)
+	var rig: PaintedBox = _add_painted_control(stage, "Rig", GeometryOracle.RIG_GROUP)
 	rig.position = Vector2(640.0, 222.0)
 	rig.size = Vector2(640.0, 400.0)
+	rig.painted = rig.get_global_rect()
 	await wait_frames(2)
 
 	var oracle: GeometryOracle = GeometryOracle.new()
@@ -127,7 +129,8 @@ func test_a_bottom_bar_that_floats_is_caught() -> void:
 
 func test_a_correctly_anchored_rig_passes_the_care_room_spec() -> void:
 	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
-	var rig: Control = _add_group_control(stage, "Rig", GeometryOracle.RIG_GROUP)
+	_add_edges(stage, GeometryOracle.IPAD_4_3)
+	var rig: PaintedBox = _add_painted_control(stage, "Rig", GeometryOracle.RIG_GROUP)
 	# 620 / 1080 of the height, feet on 78 %, centred: the ADR-008 contract.
 	rig.anchor_left = 0.5
 	rig.anchor_right = 0.5
@@ -136,11 +139,32 @@ func test_a_correctly_anchored_rig_passes_the_care_room_spec() -> void:
 	rig.offset_left = -320.0
 	rig.offset_right = 320.0
 	await wait_frames(2)
+	rig.painted = rig.get_global_rect()
 
 	var oracle: GeometryOracle = GeometryOracle.new()
 	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, GeometryOracle.CARE_ROOM_SPEC)
 
 	assert_true(findings.is_empty(), oracle.summary())
+
+
+## The care-room spec requires the two edge strips; every happy-path stage needs
+## them, placed inside the canvas it was built for.
+func _add_edges(stage: Control, size: Vector2i) -> void:
+	var canvas: Vector2 = Vector2(size)
+	var bottom: Control = _add_group_control(stage, "Dots", GeometryOracle.BOTTOM_GROUP)
+	bottom.size = Vector2(456.0, 72.0)
+	bottom.position = Vector2((canvas.x - 456.0) * 0.5, canvas.y - 36.0 - 72.0)
+	var hud: Control = _add_group_control(stage, "Hud", GeometryOracle.TOP_RIGHT_GROUP)
+	hud.size = Vector2(244.0, 72.0)
+	hud.position = Vector2(canvas.x - 36.0 - 244.0, 36.0)
+
+
+func _add_painted_control(stage: Control, node_name: String, group: String) -> PaintedBox:
+	var rig: PaintedBox = PaintedBox.new()
+	rig.name = node_name
+	rig.add_to_group(group, false)
+	stage.add_child(rig)
+	return rig
 
 
 func _add_group_control(stage: Control, node_name: String, group: String) -> Control:
@@ -198,6 +222,7 @@ func test_a_character_that_paints_smaller_than_its_box_is_caught() -> void:
 
 func test_a_character_that_fills_its_box_passes() -> void:
 	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
+	_add_edges(stage, GeometryOracle.IPAD_4_3)
 	_add_painted_rig(
 		stage,
 		Rect2(694.0, 316.0, 660.0, 882.0),
@@ -214,14 +239,30 @@ func test_a_character_that_fills_its_box_passes() -> void:
 func test_a_scene_that_forgets_a_declared_group_is_caught() -> void:
 	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
 	await wait_frames(2)
-	var spec: Dictionary = GeometryOracle.CARE_ROOM_SPEC.duplicate()
-	spec["required_groups"] = [GeometryOracle.RIG_GROUP, GeometryOracle.BOTTOM_GROUP]
 
 	var oracle: GeometryOracle = GeometryOracle.new()
-	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, spec)
+	# CARE_ROOM_SPEC itself declares the three groups the care rooms must have.
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, GeometryOracle.CARE_ROOM_SPEC)
 
-	assert_eq(findings.size(), 2, "an empty declared group is a finding, not a silent pass: %s" % oracle.summary())
+	assert_eq(findings.size(), 3, "an empty declared group is a finding, not a silent pass: %s" % oracle.summary())
 	assert_true(oracle.summary().contains("no such node"), oracle.summary())
+
+
+func test_a_rig_that_cannot_report_painted_geometry_is_caught() -> void:
+	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
+	_add_edges(stage, GeometryOracle.IPAD_4_3)
+	# The pre-fix geometry with a node that cannot measure itself: this is exactly
+	# the shape that shipped green (a tall box around a small character).
+	var rig: Control = _add_group_control(stage, "Rig", GeometryOracle.RIG_GROUP)
+	rig.position = Vector2(704.0, 316.0)
+	rig.size = Vector2(640.0, 882.0)
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, GeometryOracle.CARE_ROOM_SPEC)
+
+	assert_false(findings.is_empty(), "a rig that cannot be measured must fail closed, not fall back to the box")
+	assert_true(oracle.summary().contains("no painted geometry"), oracle.summary())
 
 
 func test_an_oversized_scene_root_is_caught() -> void:

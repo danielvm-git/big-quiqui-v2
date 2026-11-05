@@ -17,7 +17,7 @@ const FRAME_PATH: String = "res://assets/art/ui/balao_desejo.png"
 const ART_ROOT: String = "res://assets/art/"
 ## Only a literal art path may be loaded: no `.`, `..` or scheme tricks. Prefix
 ## and suffix checks alone accepted `res://assets/art/../../x.png`.
-const ART_PATH_PATTERN: String = "^res://assets/art/([a-z0-9_]+/)*[a-z0-9_]+\\.png$"
+const ART_PATH_PATTERN: String = "\\Ares://assets/art/([a-z0-9_]+/)*[a-z0-9_]+\\.png\\z"
 
 const PULSE_AMPLITUDE: float = 0.04
 const PULSE_SPEED: float = 3.0

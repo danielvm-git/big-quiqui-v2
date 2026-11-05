@@ -43,12 +43,14 @@ const CARE_ROOM_SPEC: Dictionary = {
 	"rig_height_max": 0.65,
 	"bottom_gap_max": 60.0,
 	"top_right_gap_max": 60.0,
+	"required_groups": [RIG_GROUP, BOTTOM_GROUP, TOP_RIGHT_GROUP],
 }
 ## The title screen stands her lower, above the Play button, on the 92.6 % line.
 const TITLE_SPEC: Dictionary = {
 	"rig_feet_ratio": 0.926,
 	"rig_height_min": 0.55,
 	"rig_height_max": 0.65,
+	"required_groups": [RIG_GROUP],
 }
 
 var findings: Array[String] = []
@@ -167,14 +169,19 @@ func _audit_rig(root: Control, canvas: Rect2, spec: Dictionary) -> void:
 	for node: Node in rigs:
 		var control: Control = node as Control
 		if control == null:
+			findings.append("rig node %s is not a Control: the layout contract cannot be measured" % node.name)
 			continue
 		var box: Rect2 = control.get_global_rect()
 		var painted: Rect2 = _painted_rect(control)
-		var measured: Rect2 = painted if painted.has_area() else box
+		# Fail closed: "cannot measure" is a finding, never a silent fall back to
+		# the box — that fallback is how BUG-013 shipped green.
+		if not painted.has_area():
+			findings.append("rig %s exposes no painted geometry: the height and feet checks cannot run" % control.name)
+			continue
+		var measured: Rect2 = painted
 		_audit_rig_feet(control, measured, canvas, expected_feet)
 		_audit_rig_height(control, measured, canvas, min_ratio, max_ratio)
-		if painted.has_area():
-			_audit_rig_box_is_the_character(control, box, painted, canvas)
+		_audit_rig_box_is_the_character(control, box, painted, canvas)
 		if absf(measured.get_center().x - canvas.get_center().x) > canvas.size.x * RATIO_TOLERANCE:
 			findings.append(
 				(

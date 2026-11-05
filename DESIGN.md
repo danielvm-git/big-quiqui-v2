@@ -33,7 +33,7 @@
     not scale with the canvas. The rig's box width follows its height, so the **painted** character, not
     the box, keeps the 55–65 % below. `GeometryOracle` asserts the painted rect, the feet line and the insets.
 - **Hero Scale (`QuiQuiRig`):**
-  - In care rooms (`Casa`, `Cozinha`, `Banheiro`, `Closet`, `Jardim`, `Quarto`), QuiQui occupies **`55%–65%` of viewport height** (`~600–700 px` tall), centered horizontally with feet anchored at `78%` of stage height.
+  - In care rooms (`Casa`, `Cozinha`, `Banheiro`, `Closet`, `Jardim`, `Quarto`), QuiQui occupies **`55%–65%` of viewport height** (`~620 px` tall on the 16:9 canvas; the **ratio** is the contract on every aspect — 4:3 gives `~830 px`), centered horizontally with visible feet anchored at `78%` of viewport height. **Measured on the opaque character**, not on the art frame or the `Control` box: the shipped art carries a ~8 % transparent margin.
 - **Hit Targets:**
   - All buttons, food items, bath tools, clothes, and furniture pieces MUST have a minimum bounding box of **`120×120 px`** (preferred `148×148 px`) with `>=24 px` spacing between neighbors.
 

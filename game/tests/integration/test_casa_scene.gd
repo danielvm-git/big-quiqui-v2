@@ -191,19 +191,13 @@ func test_the_vila_door_is_never_dimmed() -> void:
 
 # BUG-013: the layout gate must measure the character the child sees, and the
 # scene must actually declare the groups the spec asserts.
-func _care_spec() -> Dictionary:
-	var spec: Dictionary = GeometryOracle.CARE_ROOM_SPEC.duplicate()
-	spec["required_groups"] = [GeometryOracle.RIG_GROUP, GeometryOracle.BOTTOM_GROUP, GeometryOracle.TOP_RIGHT_GROUP]
-	return spec
-
-
 func test_the_hub_declares_every_group_its_spec_asserts() -> void:
 	for size: Vector2i in GeometryOracle.ASPECTS:
 		var stage: Control = _mount(size)
 		await wait_frames(3)
 
 		var oracle: GeometryOracle = GeometryOracle.new()
-		var findings: Array[String] = oracle.audit(stage, size, _care_spec())
+		var findings: Array[String] = oracle.audit(stage, size, GeometryOracle.CARE_ROOM_SPEC)
 		assert_true(findings.is_empty(), "%dx%d: %s" % [size.x, size.y, oracle.summary()])
 
 		stage.get_parent().queue_free()

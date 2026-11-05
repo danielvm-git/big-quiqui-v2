@@ -59,11 +59,23 @@ The RED runs are in the log of this cycle: before the fix, the new oracle test r
    a second assertion (`box is N of the canvas but the character is only M` when dead space > 3 %), and
    now audits the **scene root** rect and optional `required_groups` — the two ways a scene could still
    opt out of its own layout gate.
-3. Measured after (`game/tools/measure_hero_scale.gd`): casa painted 0.578 / 0.575 / 0.575 and titulo
+3. **Round 2** found the same defect one level down: `get_visual_global_rect()` returned the
+   1024×1024 texture **frame**, and the shipped art carries an ~8 % transparent margin (opaque rect
+   `x=306 y=75 412×868`), so the child still saw ~0.49. Now `QuiQuiRig.opaque_rect()` caches
+   `Image.get_used_rect()` per texture; the layout scales on the opaque height, shifts the frame so the
+   opaque **bottom** sits on the pivot and the opaque centre on the box centre, and
+   `get_visual_global_rect()` returns the union of the visible sprites' opaque rects. Each base pose is
+   fitted on its own opaque rect, so `carente` (wider, shorter) keeps the same seen height instead of
+   pulsing between poses.
+4. Measured after (`game/tools/measure_hero_scale.gd`, opaque): casa 0.578 / 0.575 / 0.575 and titulo
    0.575 / 0.575 / 0.575 at 16:9, 1920×1440 and 2048×1536; feet on 0.780 / 0.926 everywhere.
+5. **The oracle now fails closed**: a node in the `rig` group that is not a `Control`, or a rig that
+   cannot report painted geometry (missing art, a renamed layer), is a *finding*, not a silent fall
+   back to the box. `required_groups` moved into `CARE_ROOM_SPEC` / `TITLE_SPEC`, so a scene that
+   forgets `add_to_group` can no longer opt out.
 
-Deferred reviewer items closed in the same commit: `Ids.PATTERN` and `WishBubble.ART_PATH_PATTERN` are
-`\A…\z` with trailing-newline tests; `GeometryOracle`'s dead `EDGE_INSET_TOLERANCE` and
+Deferred reviewer items closed in the same commits: `Ids.PATTERN` and `WishBubble.ART_PATH_PATTERN` are
+`\A…\z` with trailing-newline tests (`test_a_newline_suffixed_path_is_refused` for the art path); `GeometryOracle`'s dead `EDGE_INSET_TOLERANCE` and
 `get_tree_nodes_in_group` are gone; `WishBubble.reset()` resets `_visual.scale`; `Log.event()` clears
 `last_line` so a closed diary cannot leave a stale mirror.
 
@@ -73,11 +85,13 @@ Not done, deliberately: the tap filter reviewer B suggested is unnecessary once 
 
 ## Verification
 
-`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **154 tests, 604 asserts** (was 143/567).
+`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **158 tests, 620 asserts** (was 143/567).
 New guards: `test_a_character_that_paints_smaller_than_its_box_is_caught`,
 `test_a_character_that_fills_its_box_passes`, `test_an_oversized_scene_root_is_caught`,
 `test_a_scene_that_forgets_a_declared_group_is_caught`,
 `test_the_box_widens_with_the_height_on_a_centre_anchored_rig`,
+`test_the_character_is_measured_on_its_opaque_pixels`, `test_every_base_pose_keeps_the_height_and_the_feet`,
+`test_a_rig_that_cannot_report_painted_geometry_is_caught`,
 `test_the_painted_character_keeps_the_design_height_on_ipad` (casa and titulo),
 `test_a_trailing_newline_is_refused`, `test_reset_mid_pulse_returns_the_visual_to_rest`,
 `test_last_line_never_survives_a_closed_diary`.
