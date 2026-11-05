@@ -224,6 +224,26 @@ func test_disabling_a_held_food_still_ends_the_gesture_and_frees_the_lock() -> v
 	assert_eq(other.state_id(), "DRAGGING", "no wedged owner (T-E03-01)")
 
 
+# ── e03s03 cancelled touch ───────────────────────────────────────────────────
+
+
+func test_a_cancelled_touch_on_the_target_returns_and_never_consumes() -> void:
+	var other: TouchDraggable = _make_food(self, Vector2(400.0, 120.0), "Maca")
+	_send(food, _touch(_center(food), true))
+	_send(food, _drag(ON_TARGET))
+	var cancelled: InputEventScreenTouch = _touch(ON_TARGET, false)
+	cancelled.canceled = true
+
+	_send(food, cancelled)
+
+	assert_eq(food.state_id(), "RETURNING", "a system gesture is not a drop")
+	assert_eq(consumed, 0)
+	assert_eq(ended, 1)
+	assert_true(probe.is_clean(), probe.summary())
+	_send(other, _touch(_center(other), true))
+	assert_eq(other.state_id(), "DRAGGING", "the lock is free")
+
+
 # ── SC-E03-P1-06 owner released when the node leaves the tree ────────────────
 
 

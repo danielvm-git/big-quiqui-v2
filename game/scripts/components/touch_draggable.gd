@@ -85,7 +85,7 @@ func _gui_input(event: InputEvent) -> void:
 		return
 	if event is InputEventScreenTouch:
 		var touch: InputEventScreenTouch = event as InputEventScreenTouch
-		_on_contact(touch.index, touch.pressed, touch.position)
+		_on_contact(touch.index, touch.pressed, touch.position, touch.canceled)
 	elif event is InputEventScreenDrag:
 		var drag: InputEventScreenDrag = event as InputEventScreenDrag
 		_on_motion(drag.index, drag.position)
@@ -112,11 +112,13 @@ func state_id() -> String:
 	return fsm.state
 
 
-func _on_contact(index: int, pressed: bool, local_point: Vector2) -> void:
+## A cancelled touch is the system taking the finger back, not the child letting
+## go, so it flies home even when the finger was over the target.
+func _on_contact(index: int, pressed: bool, local_point: Vector2, cancelled: bool = false) -> void:
 	if pressed:
 		_press(index, local_point)
 	elif _owns(index):
-		_drop(_to_global(local_point))
+		_drop(_to_global(local_point), cancelled)
 
 
 func _press(index: int, local_point: Vector2) -> void:
@@ -142,9 +144,9 @@ func _on_motion(index: int, local_point: Vector2) -> void:
 	drag_moved.emit(point)
 
 
-func _drop(point: Vector2) -> void:
+func _drop(point: Vector2, cancelled: bool) -> void:
 	_holder = null
-	if _is_on_target(point):
+	if not cancelled and _is_on_target(point):
 		fsm.transition_to(STATE_CONSUMED)
 		drag_ended.emit()
 		_emit("drag.drop", {"outcome": "consumed"})

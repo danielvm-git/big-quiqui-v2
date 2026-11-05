@@ -100,6 +100,29 @@ func test_music_crossfade_completes_in_four_tenths_of_a_second() -> void:
 	assert_almost_eq(am._active_music.volume_db, am.music_db, 0.01)
 
 
+func test_is_music_playing_names_only_the_active_stream() -> void:
+	var other: AudioStreamWAV = AudioStreamWAV.new()
+	assert_false(am.is_music_playing(stream), "nothing plays yet")
+
+	am.play_music(stream)
+
+	assert_true(am.is_music_playing(stream))
+	assert_false(am.is_music_playing(other))
+	assert_false(am.is_music_playing(null))
+
+	am.play_music(other)
+
+	assert_false(am.is_music_playing(stream), "the outgoing track is not the music any more")
+	assert_true(am.is_music_playing(other))
+
+
+func test_is_music_playing_is_false_after_a_reset() -> void:
+	am.play_music(stream)
+	am.reset()
+
+	assert_false(am.is_music_playing(stream))
+
+
 func test_reset_clears_duck_and_cursor() -> void:
 	am.apply_duck(true)
 	am.play_sfx(stream)

@@ -149,6 +149,11 @@ func is_crossfading() -> bool:
 	return _crossfading
 
 
+## `play_music` always restarts, so a scene that must not restart a theme asks first.
+func is_music_playing(stream: AudioStream) -> bool:
+	return stream != null and _active_music != null and _active_music.playing and _active_music.stream == stream
+
+
 # ── sfx ──────────────────────────────────────────────────────────────────────
 
 

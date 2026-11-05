@@ -97,6 +97,41 @@ func test_duplicate_pending_request_is_not_queued_twice() -> void:
 	assert_eq(loaded, [SCENE_A, SCENE_B], "B loads once, not twice")
 
 
+# e03s03: a double tap on a door must not reload the scene it is already opening.
+func test_a_repeat_request_for_the_path_in_flight_does_not_reload() -> void:
+	sm.request_scene(SCENE_A)
+
+	assert_false(sm.request_scene(SCENE_A), "a second tap during the fade")
+	assert_eq(sm.pending_scene, "", "nothing is parked")
+
+	_drive(4.0)
+
+	assert_eq(loaded, [SCENE_A], "one load")
+	assert_eq(sm.fsm.state, "IDLE")
+
+
+func test_a_repeat_request_during_the_fade_in_does_not_reload() -> void:
+	sm.request_scene(SCENE_A)
+	while sm.fsm.state != "FADING_IN":
+		sm.advance(0.1)
+
+	sm.request_scene(SCENE_A)
+	_drive(4.0)
+
+	assert_eq(loaded, [SCENE_A])
+
+
+func test_a_repeat_request_leaves_a_parked_different_scene_alone() -> void:
+	sm.request_scene(SCENE_A)
+	sm.request_scene(SCENE_B)
+
+	sm.request_scene(SCENE_A)
+
+	assert_eq(sm.pending_scene, SCENE_B)
+	_drive(4.0)
+	assert_eq(loaded, [SCENE_A, SCENE_B])
+
+
 func test_same_scene_request_is_rejected() -> void:
 	sm.request_scene(SCENE_A)
 	_drive(2.0)

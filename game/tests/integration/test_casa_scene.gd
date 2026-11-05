@@ -7,6 +7,9 @@ extends GutTest
 ## highlight track the CareLoopManager.
 
 const SCENE_PATH: String = "res://scenes/casa.tscn"
+const COZINHA_PATH: String = "res://scenes/cozinha.tscn"
+const THEME_PATH: String = "res://assets/audio/music/tema_principal.ogg"
+const KITCHEN_THEME_PATH: String = "res://assets/audio/music/cozinha.ogg"
 
 var scene: CasaScene = null
 var requested_scenes: Array[String] = []
@@ -93,6 +96,76 @@ func test_door_taps_fire_once_despite_the_mouse_echo() -> void:
 
 	assert_eq(scene.door_taps, 1, "one tap, one door press")
 	assert_eq(asked, ["FEED"])
+
+
+# SC-E03-P1-20
+func test_the_feed_door_navigates_to_the_kitchen() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_frames(3)
+
+	var feed_door: TapButton = scene.door("FEED")
+	for event: InputEvent in TouchSim.tap_events(feed_door, true):
+		feed_door._gui_input(event)
+
+	assert_eq(requested_scenes, [COZINHA_PATH])
+
+
+# e03s03: a 4-year-old double-taps, and the door now navigates.
+func test_a_double_tap_on_the_feed_door_asks_for_the_kitchen_once() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_frames(3)
+
+	var feed_door: TapButton = scene.door("FEED")
+	for tap: int in range(2):
+		for event: InputEvent in TouchSim.tap_events(feed_door, true):
+			feed_door._gui_input(event)
+
+	assert_eq(scene.door_taps, 2)
+	assert_eq(requested_scenes, [COZINHA_PATH])
+	assert_eq(get_node("/root/SceneManager").pending_scene, "", "no reload is queued")
+
+
+func test_the_other_care_doors_stay_pending() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_frames(3)
+
+	var door_steps: Array[String] = ["BATH", "DRESS", "PLAY", "SLEEP"]
+	for step: String in door_steps:
+		var door: TapButton = scene.door(step)
+		for event: InputEvent in TouchSim.tap_events(door, true):
+			door._gui_input(event)
+
+	assert_true(requested_scenes.is_empty())
+
+
+# SC-E03-P1-20: the kitchen theme must not follow the child into the hub.
+func test_arriving_from_the_kitchen_restores_the_main_theme() -> void:
+	var audio: Node = get_node("/root/AudioManager")
+	audio.play_music(load(KITCHEN_THEME_PATH) as AudioStream)
+
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_frames(3)
+
+	assert_true(audio.is_music_playing(load(THEME_PATH) as AudioStream))
+
+
+func test_arriving_with_silence_starts_the_main_theme() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_frames(3)
+
+	assert_true(get_node("/root/AudioManager").is_music_playing(load(THEME_PATH) as AudioStream))
+
+
+func test_arriving_from_the_title_does_not_restart_the_main_theme() -> void:
+	var audio: Node = get_node("/root/AudioManager")
+	audio.play_music(load(THEME_PATH) as AudioStream)
+	var active: AudioStreamPlayer = audio._active_music
+
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_frames(3)
+
+	assert_eq(audio._active_music, active, "play_music always swaps players: it was not called")
+	assert_true(audio.is_music_playing(load(THEME_PATH) as AudioStream))
 
 
 # SC-E02-P1-17 — a door to a scene that does not exist yet must never navigate

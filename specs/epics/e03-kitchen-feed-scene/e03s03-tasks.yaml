@@ -13,7 +13,7 @@ tasks:
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e03s03-t02
   description: Implement build_cozinha_scene.gd, cozinha.tscn, KitchenScene with the kitchen_feed
     Fsm, and Casa music restore
@@ -22,7 +22,7 @@ tasks:
   risk: P1
   allure:
     severity: high
-  status: failing
+  status: passing
 - id: e03s03-t03
   description: Verify both aspects, a windowed real-input run, PII log audit and story traceability
     for e03s03
