@@ -124,6 +124,8 @@ func reset() -> void:
 	_wish_id = ""
 	_pulse_time = 0.0
 	_pulse_scale = 1.0
+	if _visual != null:
+		_visual.scale = Vector2.ONE  # the getter and the transform must agree (BUG-005)
 	if _icon != null:
 		_icon.texture = null
 	if fsm != null and fsm.state != STATE_HIDDEN:

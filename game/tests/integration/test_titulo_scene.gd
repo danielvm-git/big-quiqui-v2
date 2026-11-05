@@ -97,3 +97,16 @@ func test_tapping_quiqui_makes_her_laugh() -> void:
 
 	assert_eq(scene.rig.expression_id, "rindo", "affection gets a reaction")
 	assert_eq(scene.rig.taps, 1, "and the echo does not double count")
+
+
+# BUG-013: the title screen keeps the same character scale on the iPad canvas.
+func test_the_painted_character_keeps_the_design_height_on_ipad() -> void:
+	scene = _mount(GeometryOracle.IPAD_4_3) as TituloScene
+	await wait_frames(3)
+
+	var painted: Rect2 = scene.rig.get_visual_global_rect()
+	var canvas: Vector2 = Vector2(GeometryOracle.IPAD_4_3)
+
+	assert_between(painted.size.y / canvas.y, 0.55, 0.65, "55-65 % of the viewport height")
+	assert_almost_eq(painted.end.y / canvas.y, 0.926, 0.02, "feet on the 92.6 % line")
+	assert_almost_eq(scene.rig.size.y, painted.size.y, painted.size.y * 0.03, "the box is the character")

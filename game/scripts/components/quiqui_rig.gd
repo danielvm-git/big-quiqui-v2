@@ -32,6 +32,14 @@ const Z_HEADWEAR: int = 30
 const Z_NECK: int = 40
 const Z_GLASSES: int = 50
 
+## The art is square (1024x1024). The box is fitted to this aspect on resize so
+## the *painted* character keeps DESIGN §3's 55-65 % on every canvas instead of
+## the box keeping it while the art shrinks (BUG-013).
+const DEFAULT_ART_ASPECT: float = 1.0
+## A box that keeps this much canvas height above the art is a taller frame than
+## the character: `GeometryOracle` fails it (BUG-013).
+const BOX_FIT_EPSILON: float = 0.5
+
 ## Legacy composition: these are full-body images, so only one may be visible at
 ## a time until e10 ships separate body/outfit/expression layers.
 signal expression_changed(expression_id: String)
@@ -58,6 +66,7 @@ var _spring: SquashSpring = SquashSpring.new()
 var _time: float = 0.0
 var _next_blink_at: float = 0.0
 var _blink_until: float = -1.0
+var _art_aspect: float = DEFAULT_ART_ASPECT
 
 
 func _ready() -> void:
@@ -66,15 +75,39 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build_rig()
 	set_expression(NEUTRAL_EXPRESSION)
+	_refit()  # the first layout pass can land before the pivot exists
 
 
-## A responsive box (ADR-008) may be laid out after `_ready`: re-anchor the feet
-## and re-fit the art instead of keeping the first frame's geometry.
-func _notification(what: int) -> void:
-	if what != NOTIFICATION_RESIZED or pivot == null:
+## The responsive layout, in one place: fit the box to the art, re-anchor the
+## feet on the bottom edge, re-fit the sprites. Safe to call any number of times.
+func _refit() -> void:
+	if pivot == null:
 		return
+	_fit_box_to_art()
 	pivot.position = Vector2(size.x * 0.5, size.y)
 	_update_layout()
+
+
+## A responsive box (ADR-008) may be laid out after `_ready`: fit the box to the
+## art and re-anchor instead of keeping the first frame's geometry.
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_RESIZED:
+		return
+	_refit()
+
+
+## The builder's ratio anchors own the **height**; the width has to follow the
+## art, or `_update_layout`'s width-limited fit shrinks the character on taller
+## canvases (BUG-013). Only valid for the centred 0.5/0.5 anchor column every
+## builder pins — symmetric offsets then keep her centred at any width.
+func _fit_box_to_art() -> void:
+	if not is_equal_approx(anchor_left, anchor_right) or not is_equal_approx(anchor_left, 0.5):
+		return
+	var wanted: float = size.y * _art_aspect
+	if wanted <= 1.0 or absf(size.x - wanted) < BOX_FIT_EPSILON:
+		return
+	offset_left = -wanted * 0.5
+	offset_right = wanted * 0.5
 
 
 func _process(delta: float) -> void:
@@ -266,16 +299,20 @@ func _apply_expression(id: String) -> void:
 	expression.texture = texture
 	expression.visible = true
 	expression_id = id
+	_fit_box_to_art()
 	_update_layout()
 	expression_changed.emit(id)
 
 
 ## Feet-anchored layout: the art is drawn upward from the pivot, and the visual
-## stack is sized against the control box.
+## stack is fitted to the control box. `_fit_box_to_art` keeps the box art-shaped,
+## so the fit is height-driven and the painted height equals the box height.
 func _update_layout() -> void:
 	if expression == null or expression.texture == null:
 		return
 	var art: Vector2 = expression.texture.get_size()
+	if art.x > 0.0 and art.y > 0.0:
+		_art_aspect = art.x / art.y
 	var box: Vector2 = size if size.x > 1.0 else art
 	var factor: float = minf(box.x / art.x, box.y / art.y) if art.x > 0.0 and art.y > 0.0 else 1.0
 	for sprite: Sprite2D in [body, outfit, expression, headwear, neck, glasses]:

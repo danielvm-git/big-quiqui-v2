@@ -7,7 +7,9 @@ extends RefCounted
 ## external auditor (`scripts/log_tool.py` `ID_RE`) and must not drift with this
 ## one, so a diary key may carry `.`, `:` and `/` while a save/art id may not.
 
-const PATTERN: String = "^[a-z0-9_]{1,64}$"
+## `\A…\z` and not `^…$`: PCRE's `$` also matches before a trailing newline, so
+## `^…$` accepts `"mesa\n"` (CONVENTIONS.md §4, review A on BUG-008).
+const PATTERN: String = "\\A[a-z0-9_]{1,64}\\z"
 const MAX_CHARS: int = 64
 
 static var _re: RegEx = null

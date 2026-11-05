@@ -26,7 +26,12 @@
 - **Base Canvas:** `1920×1080` (`canvas_items` stretch, `expand` aspect).
 - **4:3 iPad Expansion (`2048×1536` → `1920×1440` logical):**
   - Background `TextureRect` fills 100% of the expanded viewport (`EXPAND_IGNORE_SIZE` + `STRETCH_KEEP_ASPECT_COVERED`) — **0 px letterbox bars**.
-  - Interactive UI and trays anchor to the viewport edges with a `36 px` safe inset. There is **no** centred `SafeStage` container; composition is fixed by [ADR-008](specs/adr/ADR-008-edge-anchored-responsive-composition.md): anchors and offsets are expressed as ratios of the canvas (never absolute `1920×1080` pixels), and the feet line, rig height and insets are asserted by `GeometryOracle`.
+  - Interactive UI and trays anchor to the viewport edges with a `36 px` safe inset. There is **no**
+    centred `SafeStage` container; composition is fixed by [ADR-008](specs/adr/ADR-008-edge-anchored-responsive-composition.md):
+    **anchors are ratios of the canvas** (positions and the rig's height), **offsets are absolute pixels**
+    (36 px insets, fixed hit-target sizes, the rig's feet-line offset) — insets and 120×120 px targets must
+    not scale with the canvas. The rig's box width follows its height, so the **painted** character, not
+    the box, keeps the 55–65 % below. `GeometryOracle` asserts the painted rect, the feet line and the insets.
 - **Hero Scale (`QuiQuiRig`):**
   - In care rooms (`Casa`, `Cozinha`, `Banheiro`, `Closet`, `Jardim`, `Quarto`), QuiQui occupies **`55%–65%` of viewport height** (`~600–700 px` tall), centered horizontally with feet anchored at `78%` of stage height.
 - **Hit Targets:**

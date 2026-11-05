@@ -145,3 +145,35 @@ func test_a_resize_moves_the_feet_to_the_new_bottom_edge() -> void:
 
 	assert_almost_eq(rig.pivot.position.x, 250.0, 0.01, "the pivot follows the box centre")
 	assert_almost_eq(rig.pivot.position.y, 700.0, 0.01, "the feet stay on the bottom edge")
+
+
+# BUG-013: the box height is a ratio, so the box has to be art-shaped or the
+# width-limited fit shrinks the character as the canvas gets taller.
+func test_the_box_widens_with_the_height_on_a_centre_anchored_rig() -> void:
+	var viewport: SubViewport = SubViewport.new()
+	viewport.size = Vector2i(1920, 1440)
+	viewport.disable_3d = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	add_child_autofree(viewport)
+	var stage: Control = Control.new()
+	stage.set_anchors_preset(Control.PRESET_FULL_RECT)
+	viewport.add_child(stage)
+
+	var mounted: QuiQuiRig = QuiQuiRig.new()
+	mounted.manual_step = true
+	# The builder's contract: a centred column, height from the feet line ratio.
+	mounted.anchor_left = 0.5
+	mounted.anchor_right = 0.5
+	mounted.anchor_top = 0.78 - 620.0 / 1080.0
+	mounted.anchor_bottom = 0.78
+	mounted.offset_left = -320.0
+	mounted.offset_right = 320.0
+	stage.add_child(mounted)
+	await wait_frames(2)
+
+	var painted: Rect2 = mounted.get_visual_global_rect()
+
+	assert_almost_eq(mounted.size.y, 620.0 / 1080.0 * 1440.0, 1.0, "the height still comes from the ratio")
+	assert_almost_eq(painted.size.y, mounted.size.y, mounted.size.y * 0.03, "the art fills the box height")
+	assert_almost_eq(mounted.size.x, painted.size.x, mounted.size.x * 0.03, "and the box widens with the art")
+	assert_gt(painted.size.y / 1440.0, 0.55, "the painted character keeps DESIGN §3 on a 4:3 canvas")

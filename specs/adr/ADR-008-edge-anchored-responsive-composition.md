@@ -39,7 +39,9 @@ pixel-identical and needs no new node in the tree.
 - Scene roots use `set_anchors_and_offsets_preset(PRESET_FULL_RECT)` and never assign `size`.
 - Builders pin ratios through `SceneBuilder.pin(node, anchors, offsets)`.
 
-`GeometryOracle` now checks the contract in both directions and takes a **spec** at the call site
+The rig box is fitted to the art aspect on every layout pass (`QuiQuiRig._fit_box_to_art`), so the
+box height and the painted height are the same number (BUG-013). `GeometryOracle` now checks the
+contract in both directions and takes a **spec** at the call site
 (`CARE_ROOM_SPEC`, `TITLE_SPEC`): background size == canvas (letterbox *and* oversized), hit targets
 ≥120×120 inside the canvas, `rig` height ratio 0.55–0.65 and feet on the declared line and
 horizontally centred, `ui_bottom` within 60 px of the bottom, `ui_top_right` within 60 px of the
@@ -48,8 +50,8 @@ top-right corner. A product requirement is only "verified" if the assertion can 
 ## Consequences
 
 - The 16:9 composition is unchanged to the pixel (measured: root 1920×1080, background 1920×1080,
-  rig feet 0.780, dots 36 px, HUD 36/36). The 4:3 canvas now composes: rig 0.574 of the height,
-  feet 0.780, dots 36 px, doors on the edges, bubble on the feet line.
+  rig feet 0.780, dots 36 px, HUD 36/36). The 4:3 canvas now composes: **painted** character 0.575 of
+  the height (box 0.574), feet 0.780, dots 36 px, doors on the edges, bubble on the feet line.
 - Every future scene (e03–e10) inherits a mechanical layout gate: declare the groups, pass the spec,
   and a regression fails Preflight instead of shipping to a child's iPad.
 - `QuiQuiRig` re-anchors its pivot on `NOTIFICATION_RESIZED`, so a responsive box actually grows the

@@ -1,6 +1,6 @@
 ---
 bug_id: BUG-013
-status: open
+status: fixed
 severity: high
 scope: ui
 title: On 4:3, QuiQui is painted at 42% of the viewport height while the oracle proves the box
@@ -43,30 +43,41 @@ Consequences the reviewers found from the same cause:
   head trigger the affection reaction** (`quiqui_rig.gd:66`, `casa.gd:110-115`) — a hidden hit area on
   a children's app (REVIEW-B should-fix 3).
 
-## Fix plan (TDD, red first)
-1. **RED** in `game/tests/integration/test_geometry_oracle.gd`: a `QuiQuiRig` whose box is 640×881 on a
-   2048×1536 canvas must be *caught* for painted height 0.418 < 0.55; add the same case to
-   `test_casa_scene.gd` next to the existing `has_area()` assertion.
-2. Change `_audit_rig_height` / `_audit_rig_feet` to measure `rig.get_visual_global_rect()` when the
-   node is a `QuiQuiRig`, keeping the box assertion as a second, separate check.
-3. Fix the layout: drive the art scale from height (`factor = box.y / art.y`) and let the **width track
-   the height** (`offset_left/right = ±size.y * RIG_ASPECT / 2` in `_notification(NOTIFICATION_RESIZED)`),
-   or use an `AspectRatioContainer`. Measured clear width at 1920×1440: art would span x ≈ 547…1373;
-   door columns end at 232 / start at 1688, so it fits.
-4. Reject taps outside `get_visual_global_rect()` in `_gui_input` (one `has_point` test).
-5. Re-measure and correct every affected record (see BUG-014).
+## Resolution (TDD: red first, then green)
 
-## Deferred should-fix items from the same reviews (fix in this cycle if cheap)
-- `Ids.PATTERN` uses `^…$`; `CONVENTIONS.md:78` mandates `\A…\z` — `Ids.is_valid("base\n") == true`
-  (REVIEW-A should-fix 1). Same for `WishBubble.ART_PATH_PATTERN`. Add the newline case to the tests.
-- `GeometryOracle` group checks are silent no-ops when a group is empty, and the root rect is never
-  audited directly; a scene can opt out of its own layout gate by forgetting `add_to_group`
-  (REVIEW-A should-fix 2). Add `required_groups` to the spec.
-- Dead code the cycle added: `EDGE_INSET_TOLERANCE` and `get_tree_nodes_in_group`
-  (REVIEW-B should-fix 4).
-- `WishBubble.reset()` does not reset `_visual.scale` (REVIEW-B consider 7); `Log.event()` returns
-  before assigning `last_line` when no session file is open (consider 10).
+The RED runs are in the log of this cycle: before the fix, the new oracle test reported
+`rig QuiQuiRig is 0.42 of the canvas height, expected 0.55-0.65 (painted character)` and
+`box is 0.57 of the canvas but the character is only 0.42 (0.16 of empty space above her head)`, and
+`test_the_painted_character_keeps_the_design_height_on_ipad` failed at 0.418.
+
+1. `QuiQuiRig._fit_box_to_art()` — the builder's ratio anchors own the **height**; the width now follows
+   the art aspect (`offset_left/right = ±size.y * art_aspect / 2`), only for the centred `0.5/0.5`
+   anchor column every builder pins. `_refit()` runs from `_ready`, `_apply_expression` and
+   `NOTIFICATION_RESIZED`, so the box is art-shaped on every layout pass and `_update_layout`'s
+   `minf` fit becomes height-driven.
+2. `GeometryOracle` measures `get_visual_global_rect()` when the node offers it, keeps the box check as
+   a second assertion (`box is N of the canvas but the character is only M` when dead space > 3 %), and
+   now audits the **scene root** rect and optional `required_groups` — the two ways a scene could still
+   opt out of its own layout gate.
+3. Measured after (`game/tools/measure_hero_scale.gd`): casa painted 0.578 / 0.575 / 0.575 and titulo
+   0.575 / 0.575 / 0.575 at 16:9, 1920×1440 and 2048×1536; feet on 0.780 / 0.926 everywhere.
+
+Deferred reviewer items closed in the same commit: `Ids.PATTERN` and `WishBubble.ART_PATH_PATTERN` are
+`\A…\z` with trailing-newline tests; `GeometryOracle`'s dead `EDGE_INSET_TOLERANCE` and
+`get_tree_nodes_in_group` are gone; `WishBubble.reset()` resets `_visual.scale`; `Log.event()` clears
+`last_line` so a closed diary cannot leave a stale mirror.
+
+Not done, deliberately: the tap filter reviewer B suggested is unnecessary once the box **is** the art
+(the dead space is what made blank pixels tappable), and `SceneBuilder.pin`'s `Vector4` slots keep their
+`scene_builder.gd` docstring rather than a typed record — both are recorded here as accepted.
 
 ## Verification
-Pending — this bug is open. The cycle closes when both reviewers pass the AND gate (round 2/5) with
-zero must-fix each.
+
+`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **154 tests, 604 asserts** (was 143/567).
+New guards: `test_a_character_that_paints_smaller_than_its_box_is_caught`,
+`test_a_character_that_fills_its_box_passes`, `test_an_oversized_scene_root_is_caught`,
+`test_a_scene_that_forgets_a_declared_group_is_caught`,
+`test_the_box_widens_with_the_height_on_a_centre_anchored_rig`,
+`test_the_painted_character_keeps_the_design_height_on_ipad` (casa and titulo),
+`test_a_trailing_newline_is_refused`, `test_reset_mid_pulse_returns_the_visual_to_rest`,
+`test_last_line_never_survives_a_closed_diary`.

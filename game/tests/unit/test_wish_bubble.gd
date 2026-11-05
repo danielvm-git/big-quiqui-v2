@@ -120,3 +120,17 @@ func test_a_traversal_path_is_refused() -> void:
 	assert_false(bubble.show_wish("res://assets/art/../../secret.png"), "no '..' may escape the art root")
 	assert_false(bubble.show_wish("res://assets/art/items/CENOURA.png"), "ids are lowercase")
 	assert_false(bubble.show_wish("https://example.com/x.png"))
+
+
+# BUG-005/013: `reset()` must leave the getter and the transform agreeing.
+func test_reset_mid_pulse_returns_the_visual_to_rest() -> void:
+	var bubble: WishBubble = _mounted()
+	bubble.manual_step = true
+	bubble.show_wish("res://assets/art/items/cenoura.png")
+	bubble.advance(0.3)
+	assert_ne(bubble.get_node("Visual").scale, Vector2.ONE, "the pulse must actually move the art")
+
+	bubble.reset()
+
+	assert_almost_eq(bubble.pulse_scale(), 1.0, 0.0001, "reset clears the pulse")
+	assert_eq(bubble.get_node("Visual").scale, Vector2.ONE, "and the transform agrees with the getter")

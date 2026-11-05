@@ -187,3 +187,42 @@ func test_the_vila_door_is_never_dimmed() -> void:
 	clm.complete_step(clm.STATE_FEED)
 	assert_eq(scene.door("VILA").modulate.a, 1.0, "and stays that way as the cycle advances")
 	TestReset.reset_all()
+
+
+# BUG-013: the layout gate must measure the character the child sees, and the
+# scene must actually declare the groups the spec asserts.
+func _care_spec() -> Dictionary:
+	var spec: Dictionary = GeometryOracle.CARE_ROOM_SPEC.duplicate()
+	spec["required_groups"] = [GeometryOracle.RIG_GROUP, GeometryOracle.BOTTOM_GROUP, GeometryOracle.TOP_RIGHT_GROUP]
+	return spec
+
+
+func test_the_hub_declares_every_group_its_spec_asserts() -> void:
+	for size: Vector2i in GeometryOracle.ASPECTS:
+		var stage: Control = _mount(size)
+		await wait_frames(3)
+
+		var oracle: GeometryOracle = GeometryOracle.new()
+		var findings: Array[String] = oracle.audit(stage, size, _care_spec())
+		assert_true(findings.is_empty(), "%dx%d: %s" % [size.x, size.y, oracle.summary()])
+
+		stage.get_parent().queue_free()
+
+
+func test_the_painted_character_keeps_the_design_height_on_ipad() -> void:
+	scene = _mount(GeometryOracle.IPAD_4_3) as CasaScene
+	await wait_frames(3)
+
+	var painted: Rect2 = scene.rig.get_visual_global_rect()
+	var canvas: Vector2 = Vector2(GeometryOracle.IPAD_4_3)
+	var height_ratio: float = painted.size.y / canvas.y
+	var feet_ratio: float = painted.end.y / canvas.y
+
+	assert_between(height_ratio, 0.55, 0.65, "DESIGN §3: 55-65 % of the viewport height, not 42 %")
+	assert_almost_eq(feet_ratio, 0.78, 0.02, "and the feet stay on the 78 % line")
+	assert_almost_eq(
+		scene.rig.size.y,
+		painted.size.y,
+		painted.size.y * 0.03,
+		"the box is the character, with no dead space above her head"
+	)

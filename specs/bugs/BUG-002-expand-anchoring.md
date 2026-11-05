@@ -31,7 +31,7 @@ the 16:9 composition pixel-identical and makes the 4:3 canvas compose correctly.
 `specs/adr/ADR-008-edge-anchored-responsive-composition.md`.
 
 ## Fix (TDD)
-- RED `test_geometry_oracle.test_a_rig_off_the_78_percent_feet_line_is_caught` and
+- RED `test_geometry_oracle.test_a_rig_off_the_feet_line_is_caught` and
   `test_a_bottom_bar_that_floats_is_caught` — spec-driven findings.
 - GREEN `GeometryOracle.audit(root, size, spec)` gains `rig`/`ui_bottom`/`ui_top_right` group
   checks; scene tests pass the DESIGN ratios explicitly.
@@ -46,3 +46,7 @@ the 16:9 composition pixel-identical and makes the 4:3 canvas compose correctly.
 `bash scripts/preflight.sh` → GREEN (19 scripts, 143 tests, 567 asserts, L0–L5b). The regression
 test named in the fix plan is in the suite; see `specs/verifications/FIX-e01-e02-2026-11-04.md`
 for the per-finding evidence, including the measured before/after layout.
+
+## Follow-up (BUG-013)
+
+The root-size and 4:3 anchoring halves above are closed. The **hero-scale** half (55–65 % of viewport height) was still measured on the `Control` box, not on the character; it is tracked and fixed as `BUG-013`.

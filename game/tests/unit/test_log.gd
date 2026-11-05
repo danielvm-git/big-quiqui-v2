@@ -123,3 +123,15 @@ func test_prose_under_msg_is_refused_by_policy() -> void:
 
 	log.call("event", "test.msg_id", {"msg": "hora_do_banho"})
 	assert_eq(_last_line()["msg"], "hora_do_banho", "an id survives, and that is the contract")
+
+
+# BUG-003/013: `last_line` is a mirror, so a closed diary must not leave the
+# previous event behind for a payload-only assertion to read.
+func test_last_line_never_survives_a_closed_diary() -> void:
+	log.event("test.before_close", {"msg": "antes"})
+	assert_eq(log.last_line.get("ev"), "test.before_close")
+
+	log.stop_session()
+
+	log.event("test.after_close", {"msg": "depois"})
+	assert_true(log.last_line.is_empty(), "a refused write leaves no stale mirror: %s" % log.last_line)

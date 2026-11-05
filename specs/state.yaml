@@ -19,11 +19,12 @@ review_gate:
     - specs/verifications/REVIEW-A-e01-e02-2026-11-04.md
     - specs/verifications/REVIEW-B-e01-e02-2026-11-04.md
   must_fix: [BUG-013, BUG-014]
+  must_fix_status: "fixed in the round-2 input commit; both reviewers must re-pass before e03 lands"
 bug_cycle:
-  status: reopened
-  round: 1
-  current_step: 0
-  completed_steps: []
+  status: fixed_pending_review
+  round: 2
+  current_step: 5
+  completed_steps: [1, 2, 3, 4]
   ids: [BUG-013, BUG-014]
   previous:
     status: closed
@@ -49,8 +50,8 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: fix-bug
-  context: "Review gate is RED: request-review round 1/5 failed the AND gate (reviewer A 72 %, reviewer B 62 %) on BUG-013 (on 4:3 the character is painted at 0.418 of the viewport height while the oracle proves the empty Control box) and BUG-014 (the closure records overclaim it). e03 is blocked until round 2 passes; do not copy the fixed-pixel rig width into e03-e10."
+  next_skill: request-review
+  context: "BUG-013/014 fixed (154 tests). Review round 2 is the gate. Review gate was RED: request-review round 1/5 failed the AND gate (reviewer A 72 %, reviewer B 62 %) on BUG-013 (on 4:3 the character is painted at 0.418 of the viewport height while the oracle proves the empty Control box) and BUG-014 (the closure records overclaim it). e03 is blocked until round 2 passes; do not copy the fixed-pixel rig width into e03-e10."
   epic: e03-kitchen-feed-scene (blocked by BUG-013)
   bug_fix: "OPEN. BUG-013 (high, P0) + BUG-014 (medium, P1) from review round 1/5. The suite itself stays GREEN: 19 scripts / 143 tests / 567 asserts - the green suite does not cover the painted-art requirement."
   open_decisions:

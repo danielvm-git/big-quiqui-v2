@@ -149,3 +149,89 @@ func _add_group_control(stage: Control, node_name: String, group: String) -> Con
 	control.add_to_group(group, false)
 	stage.add_child(control)
 	return control
+
+
+# ── BUG-013: the ratios are asserted on the character, not on the box ────────
+#
+# The box grows with the canvas because its height is a ratio, but the art inside
+# it was fitted with `min(box.w/art.w, box.h/art.h)` against a fixed 640 px width,
+# so on 4:3 the box was 0.574 of the height and the child was 0.418. A duck-typed
+# double pins the oracle contract without depending on the rig's own fitting.
+
+
+class PaintedBox:
+	extends Control
+	var painted: Rect2 = Rect2()
+
+	func get_visual_global_rect() -> Rect2:
+		return painted
+
+
+func _add_painted_rig(stage: Control, box: Rect2, painted: Rect2) -> PaintedBox:
+	var rig: PaintedBox = PaintedBox.new()
+	rig.name = "Rig"
+	rig.add_to_group(GeometryOracle.RIG_GROUP, false)
+	rig.position = box.position
+	rig.size = box.size
+	rig.painted = painted
+	stage.add_child(rig)
+	return rig
+
+
+func test_a_character_that_paints_smaller_than_its_box_is_caught() -> void:
+	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
+	# The e02 geometry on 2048x1536: box 640x882 on the 78 % line, art 642 px tall.
+	_add_painted_rig(
+		stage,
+		Rect2(704.0, 316.0, 640.0, 882.0),
+		Rect2(703.0, 556.0, 642.0, 642.0),
+	)
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, GeometryOracle.CARE_ROOM_SPEC)
+
+	assert_false(findings.is_empty(), "a 0.418 character behind a 0.574 box must fail")
+	assert_true(oracle.summary().contains("painted character"), oracle.summary())
+	assert_true(oracle.summary().contains("empty space"), oracle.summary())
+
+
+func test_a_character_that_fills_its_box_passes() -> void:
+	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
+	_add_painted_rig(
+		stage,
+		Rect2(694.0, 316.0, 660.0, 882.0),
+		Rect2(694.0, 316.0, 660.0, 882.0),
+	)
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, GeometryOracle.CARE_ROOM_SPEC)
+
+	assert_true(findings.is_empty(), oracle.summary())
+
+
+func test_a_scene_that_forgets_a_declared_group_is_caught() -> void:
+	var stage: Control = _build_stage(GeometryOracle.IPAD_4_3, Vector2(148.0, 148.0))[1] as Control
+	await wait_frames(2)
+	var spec: Dictionary = GeometryOracle.CARE_ROOM_SPEC.duplicate()
+	spec["required_groups"] = [GeometryOracle.RIG_GROUP, GeometryOracle.BOTTOM_GROUP]
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.IPAD_4_3, spec)
+
+	assert_eq(findings.size(), 2, "an empty declared group is a finding, not a silent pass: %s" % oracle.summary())
+	assert_true(oracle.summary().contains("no such node"), oracle.summary())
+
+
+func test_an_oversized_scene_root_is_caught() -> void:
+	var stage: Control = _build_stage(GeometryOracle.DESKTOP_16_9, Vector2(148.0, 148.0))[1] as Control
+	stage.offset_right = 1920.0
+	stage.offset_bottom = 1080.0
+	await wait_frames(2)
+
+	var oracle: GeometryOracle = GeometryOracle.new()
+	var findings: Array[String] = oracle.audit(stage, GeometryOracle.DESKTOP_16_9)
+
+	assert_false(findings.is_empty(), "a 2x scene root must fail on its own")
+	assert_true(oracle.summary().contains("scene root"), oracle.summary())
