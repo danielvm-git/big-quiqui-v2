@@ -66,8 +66,10 @@ Before the fix the new oracle test reported (rerun by reverting `_fit_box_to_art
    `get_visual_global_rect()` returns the union of the visible sprites' opaque rects. Each base pose is
    fitted on its own opaque rect, so `carente` (wider, shorter) keeps the same seen height instead of
    pulsing between poses.
-4. Measured after (`game/tools/measure_hero_scale.gd`, opaque): casa 0.578 / 0.575 / 0.575 and titulo
-   0.575 / 0.575 / 0.575 at 16:9, 1920×1440 and 2048×1536; feet on 0.780 / 0.926 everywhere.
+4. Measured after with `game/tools/measure_hero_scale.gd` (opaque, at rest — the tool pins the pose):
+   **0.574 on all six rows** (casa and titulo at 16:9, 1920×1440 and 2048×1536), feet 0.780 / 0.926.
+   A raw `_process` run adds ±2 % of idle breathing (0.561–0.587), so any figure that differs from
+   0.574 came from a breathing phase, not from the layout.
 5. **Round 3** found the visible consequence of the size change: the wish bubble was pinned with an
    absolute `-812 px` offset tuned for a 620 px character, so on 4:3 her correct size put her head
    *through* the bubble (213–269 px of overlap, 26–30 % of her height) exactly when `casa.gd` shows the
