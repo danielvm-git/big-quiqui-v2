@@ -1,10 +1,11 @@
 # story: e02s03
 extends GutTest
-## SC-E02-P1-14..20 — the hub slice: `casa.tscn` boots on bg_sala with a
-## reactive QuiQui, six doors, dots, HUD and wish bubble; the layout holds on
-## 16:9 and 4:3; doors fire once under mouse echo; an absent target scene is
-## never navigated to; 8 s of idle show QuiQui's wish; the dots and the door
-## highlight track the CareLoopManager.
+## SC-E02-P1-14..20 — the hub's input and its care-loop coupling: six doors that fire
+## once under mouse echo, an absent target scene that is never navigated to, music on
+## arrival, 8 s of idle showing QuiQui's wish, the dots and the door highlight tracking
+## the CareLoopManager, and the e07 guarantee that a hub arriving inside a CELEBRATE
+## cycle closes it. Layout, inventory and the wish bubble live in `test_casa_layout.gd
+## (split at the 300-line guideline, e07 post-epic).
 
 const SCENE_PATH: String = "res://scenes/casa.tscn"
 const COZINHA_PATH: String = "res://scenes/cozinha.tscn"
