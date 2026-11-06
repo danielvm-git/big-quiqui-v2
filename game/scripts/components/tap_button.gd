@@ -87,8 +87,10 @@ func _activate() -> void:
 	taps += 1
 	_spring.start()
 	_apply_scale(_spring.scale)
-	tapped.emit()
+	# Emit ui.tap before `tapped` so hub listeners can append `scene.pending` (or
+	# navigation) as the final diary line — same tap, one story in the log mirror.
 	_emit("ui.tap", {"widget": name.to_lower()})
+	tapped.emit()
 
 
 func _apply_scale(value: Vector2) -> void:
