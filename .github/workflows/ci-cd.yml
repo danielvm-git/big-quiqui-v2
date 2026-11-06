@@ -144,9 +144,36 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
+  export-preset:
+    # Cheap ubuntu job that answers "is there an iOS preset yet?" so the macOS job
+    # below can be skipped instead of reserved-and-cancelled. A step-level gate is
+    # not enough: it still asks GitHub for a macOS runner to discover there is
+    # nothing to do, which costs a macOS minute per run and turns every PR red when
+    # the macOS pool is unavailable (2026-11-05: 0 steps acquired, 9 consecutive runs).
+    needs: [test]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      enabled: ${{ steps.preset.outputs.enabled }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+
+      - name: Detect export preset
+        id: preset
+        run: |
+          if grep -q 'name="iOS"' game/export_presets.cfg 2>/dev/null; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=iOS export skipped::game/export_presets.cfg has no iOS preset yet (arrives with e11)."
+          fi
+
   export:
     # Self-enables at e11 when game/export_presets.cfg gains an iOS preset.
-    needs: [test]
+    needs: [test, export-preset]
+    if: needs.export-preset.outputs.enabled == 'true'
     runs-on: macos-14
     timeout-minutes: 40
     permissions:
