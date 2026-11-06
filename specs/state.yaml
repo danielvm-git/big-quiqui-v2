@@ -87,7 +87,7 @@ handoff:
     - "Hero-scale contract: DECIDED — the ratio on the opaque character is the requirement, the px figures in DESIGN section 3 are per-canvas illustrations. `QuiQuiRig` fits the box to the opaque art, so box height == painted height at rest."
 epic_cycle:
   step: 7
-  story: e04s01
+  story: e04s02
   story_bcps: 3
   epic_epic_bcps: 13
   fast_mode: true

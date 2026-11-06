@@ -1,35 +1,60 @@
 story_id: e04s02
 spec: e04s02.md
 epic_id: e04
-title: 'BathScene Stage 1 (SOAP): Sponge & Scented Soaps Spawning 8 Aligned Foam Blobs
-  Strictly Inside ScrubHull'
-status: failing
+title: 'BathScene Stage 1 (SOAP): Sponge & Eight Foam Patches Inside the Hull'
+status: passing
 bcps: 4
 playable_scene: res://scenes/banheiro.tscn
+threat_findings:
+- T-E04-01
+- T-E04-07
 tasks:
 - id: e04s02-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e04s02
-    (BathScene Stage 1 (SOAP): Sponge & Scented Soaps Spawning 8 Aligned Foam Blobs
-    Strictly Inside ScrubHull)'
+  description: Write failing test_banheiro_scene.gd for SC-E04-P0-10..P1-17 (hull
+    containment on three canvases, soak-once, stage closes once, resize re-projection)
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e04s02-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e04s02
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  description: Implement FoamBlob (region test, idempotent soak, reset) and BathScene
+    stage FSM SOAP -> SOAP_DONE with SOAP/RINSE/DRY declared
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: passing
+- id: e04s02-t03
+  description: Solve the eight blob slots from rig.scrub_hull_global() on two rings
+    and re-project on resize (closes T-E04-01 and T-E04-07)
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: passing
+- id: e04s02-t04
+  description: 'Generate banheiro.tscn with build_banheiro_scene.gd: rig, 8 foam nodes,
+    sponge, 3 soaps, home, bubble, particles; all groups declared'
+  verify: godot --headless --path game -s tools/build_banheiro_scene.gd
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e04s02-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e04s02
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  status: passing
+- id: e04s02-t05
+  description: 'Update the hub door test: BATH navigates now that banheiro.tscn ships,
+    DRESS/PLAY/SLEEP stay pending'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing
+- id: e04s02-t06
+  description: Verify lint, type gate, oracle on both aspects, PII log audit and story
+    traceability for e04s02
+  verify: gdlint game/ && gdformat --check game/ && bash scripts/logs.sh audit --self-test
+    && bash scripts/trace-stories.sh --strict
+  risk: P2
+  allure:
+    severity: normal
+  status: passing
