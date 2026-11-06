@@ -210,3 +210,12 @@ bugs:
   file: specs/bugs/BUG-026-tests-that-cannot-fail.md
   status: fixed
   found_by: e07 post-epic review (reviewer B should-fix 3 and considers 12-14, reviewer A consider 3)
+- bug_id: BUG-025
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: docs
+  summary: An orphaned doc comment above ProgressManager.equip described _apply, so the reward path documented the wrong function
+  file: specs/bugs/BUG-025-progress-manager-doc-rot.md
+  status: fixed
+  found_by: e07 post-epic review (audit-code)

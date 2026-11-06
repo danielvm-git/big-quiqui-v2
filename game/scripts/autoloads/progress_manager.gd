@@ -130,8 +130,6 @@ func add_tickets(amount: int) -> void:
 	_apply(0, amount)
 
 
-## One logical change, one `progress_changed`: the mutators above are for the
-## HUD's incremental updates, a full cycle is a single event.
 ## Records what she is wearing. One id per slot, validated by `Ids` before it can
 ## reach disk or a `res://` path (T-E05-01). Returns false and changes nothing when
 ## the slot or the id is not valid.
@@ -172,6 +170,9 @@ func complete_cycle(coins: int = CYCLE_COINS_REWARD, tickets: int = CYCLE_TICKET
 ## Mutates and **writes**: every caller is a money path, and a reward that lives only in
 ## RAM is gone the moment iOS kills the app from the switcher. The write is atomic
 ## (`.tmp` + rename), so a crash mid-write keeps the previous file.
+##
+## One logical change, one `progress_changed`: the `add_coins`/`add_tickets` mutators are for
+## the HUD's incremental updates, a full cycle is a single event.
 func _apply(coins_delta: int, tickets_delta: int, cycles_delta: int = 0) -> void:
 	data.coins = clampi(data.coins + coins_delta, 0, SaveData.MAX_COINS)
 	data.tickets = clampi(data.tickets + tickets_delta, 0, SaveData.MAX_TICKETS)
