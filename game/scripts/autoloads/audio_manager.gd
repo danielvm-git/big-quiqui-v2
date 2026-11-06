@@ -222,10 +222,7 @@ func _on_voice_finished() -> void:
 
 
 func reset() -> void:
-	for player: AudioStreamPlayer in _all_players():
-		player.stop()
-		player.stream = null
-		player.volume_db = 0.0
+	release_streams()
 	_active_music = _music_a
 	_sfx_cursor = 0
 	_crossfading = false
@@ -234,6 +231,20 @@ func reset() -> void:
 		apply_duck(false)
 	_ducked_buses.clear()
 	_apply_bus_volumes()
+
+
+## Stops every player and drops its stream, so the engine can collect the audio resources.
+## Called from `reset()` and on quit: without it, Godot frees the players while their Ogg
+## playback is still live and reports four leaked objects and two resources at exit (BUG-028).
+func release_streams() -> void:
+	for player: AudioStreamPlayer in _all_players():
+		player.stop()
+		player.stream = null
+		player.volume_db = 0.0
+
+
+func _exit_tree() -> void:
+	release_streams()
 
 
 ## Never null: a manager asked to reset before `_ready` built its players has

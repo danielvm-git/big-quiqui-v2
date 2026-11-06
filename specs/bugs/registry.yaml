@@ -246,3 +246,12 @@ bugs:
   file: specs/bugs/BUG-024-design-night-tint-drift.md
   status: fixed
   found_by: e07 post-epic review (reviewer B should-fix 9)
+- bug_id: BUG-028
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: core
+  summary: AudioManager never released its streams, so every quit leaked 4 objects and 2 resources and tema_principal.ogg stayed in use
+  file: specs/bugs/BUG-028-audio-leaks-on-quit.md
+  status: fixed
+  found_by: e07 post-epic review cold-start smoke (verify-work)
