@@ -91,3 +91,22 @@ big-release validate
 # the gate the shared workflow calls
 bash scripts/preflight.sh
 ```
+
+## Amendment 2026-11-05 — the placeholder `export` job must skip at job level
+
+The template copy gates the iOS export behind a **step-level** check
+(`if: steps.preset.outputs.enabled == 'true'`), so GitHub still reserves a `macos-14` runner to
+discover that there is nothing to do. Two consequences: a macOS minute is spent on every run, and
+when the macOS pool is unavailable the job is `cancelled` with **0 steps acquired** — which turns a
+placeholder into a red required check. That happened on nine consecutive runs on 2026-11-05
+(`runner_name: ""`, 1 s, `steps: 0`), blocking PRs #10, #11 and #12 with no code defect behind it.
+
+This repository therefore carries **one deliberate deviation** from the template copy: a cheap
+`export-preset` ubuntu job answers "is there an iOS preset yet?" and the macOS job is
+`if: needs.export-preset.outputs.enabled == 'true'`. The placeholder now reports `skipped` (visible,
+not silent), spends no macOS minute, and self-enables the day `game/export_presets.cfg` gains the
+preset at e11 — the behaviour the job's own comment always claimed.
+
+**Upstream action:** port the same two-job shape to `danielvm-git/.github` →
+`test-build-release-godot.yml` and delete this amendment when the copy is re-synced. Until then this
+file is the record of the divergence, so a re-sync does not silently reintroduce the block.
