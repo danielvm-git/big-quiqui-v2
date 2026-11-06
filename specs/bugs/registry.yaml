@@ -155,3 +155,12 @@ bugs:
   file: specs/bugs/BUG-017-sleep-lamp-inert-after-finish.md
   status: fixed
   found_by: e07 post-epic review (reviewer A should-fix 4, reviewer B consider 13)
+- bug_id: BUG-018
+  date: '2026-11-06'
+  severity: high
+  priority: P1
+  scope: core
+  summary: The Casa is whitelisted from the CELEBRATE detour guard but never closes the cycle, and the guard ran before validation, so a hub mounted mid-celebration has six dead doors
+  file: specs/bugs/BUG-018-hub-arrives-inside-celebrate.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer A should-fix 2, reviewer B consider 10)

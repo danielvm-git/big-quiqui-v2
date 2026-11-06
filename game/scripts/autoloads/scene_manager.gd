@@ -105,11 +105,13 @@ func request_scene(path: String) -> bool:
 	if path.strip_edges().is_empty():
 		reject(path, REASON_EMPTY_PATH)
 		return false
-	_close_celebrate_for_detour(path)
 	# Also while busy: a double tap must not queue a reload of the scene in flight.
 	if path == current_scene:
 		reject(path, REASON_SAME_SCENE)
 		return false
+	# After validation: a request that is refused is not a detour, so it must not close
+	# the cycle (e07 post-epic, review B consider 10).
+	_close_celebrate_for_detour(path)
 	if _park(path):
 		return false
 	_start(path)

@@ -255,3 +255,27 @@ func test_a_detour_request_closes_the_celebrate_cycle() -> void:
 	assert_eq(clm.state_id(), "IDLE", "a non-Casa detour closes the cycle")
 	sm.loader = Callable()
 	sm.manual_step = false
+
+
+## e07 post-epic (review B consider 10): the guard ran before the request was validated, so a
+## duplicate request for the scene already on stage closed CELEBRATE. A rejected request is not
+## a detour — the child never left the celebration.
+func test_a_rejected_request_is_not_a_detour() -> void:
+	var sm: Node = get_node("/root/SceneManager")
+	sm.manual_step = true
+	sm.loader = func(_path: String) -> void: pass
+	var album: String = "res://scenes/album.tscn"
+	sm.request_scene(album)
+	assert_eq(sm.current_scene, album)
+	clm.begin_step("FEED")
+	for step: String in ["FEED", "BATH", "DRESS", "PLAY", "SLEEP"]:
+		clm.complete_step(step)
+	assert_eq(clm.state_id(), "CELEBRATE")
+
+	sm.request_scene(album)
+
+	assert_eq(clm.state_id(), "CELEBRATE", "the refused duplicate left the cycle alone")
+	sm.loader = Callable()
+	sm.manual_step = false
+	sm.reset()
+	clm.reset()

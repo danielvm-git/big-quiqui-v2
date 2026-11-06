@@ -57,6 +57,7 @@ var _wish_shown_for_idle: bool = false
 
 
 func _ready() -> void:
+	close_celebrate_if_needed()
 	for step: String in DOOR_SCENES:
 		var door: TapButton = door(step)
 		if door != null:
@@ -90,6 +91,15 @@ func advance(delta: float) -> void:
 		rig.set_expression("carente")
 	if bubble != null:
 		bubble.show_wish(WISH_ICONS[step])
+
+
+## The hub is a whitelisted target of `SceneManager`'s detour guard, so it must close a
+## CELEBRATE cycle itself: arriving from anywhere (a parked request, the album, a test) while
+## the loop is mid-celebration otherwise shows six doors that all refuse (T-E07-05).
+func close_celebrate_if_needed() -> void:
+	var manager: Node = get_node_or_null("/root/CareLoopManager")
+	if manager != null and manager.has_method("close_celebrate_if_needed"):
+		manager.call("close_celebrate_if_needed")
 
 
 func door(step: String) -> TapButton:

@@ -240,6 +240,25 @@ func test_eight_seconds_of_idle_show_the_wish_and_the_longing_face() -> void:
 	assert_eq(scene.rig.expression_id, "rindo", "and QuiQui laughs again")
 
 
+# e07 post-epic (T-E07-05): the Casa is a whitelisted target of the detour guard, so a hub
+# that arrives while the loop is still in CELEBRATE must close the cycle itself — otherwise
+# it mounts with every care door refusing, the exact brick the guard exists to prevent.
+func test_arriving_during_the_celebration_closes_the_cycle() -> void:
+	var clm: Node = get_node("/root/CareLoopManager")
+	clm.call("reset")
+	clm.call("begin_step", CareSteps.FEED)
+	for step: String in [CareSteps.FEED, CareSteps.BATH, CareSteps.DRESS, CareSteps.PLAY, CareSteps.SLEEP]:
+		clm.call("complete_step", step)
+	assert_eq(str(clm.call("state_id")), CareSteps.CELEBRATE)
+
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_process_frames(3)
+
+	assert_eq(str(clm.call("state_id")), CareSteps.IDLE, "the hub is usable again")
+	assert_eq(int(clm.get("cycle_id")), 1, "and the cycle closed once")
+	assert_eq(scene.door(CareSteps.FEED).modulate.a, 1.0, "the first door is live, not dimmed")
+
+
 # SC-E02-P1-19
 func test_dots_and_highlight_track_the_care_loop_manager() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
