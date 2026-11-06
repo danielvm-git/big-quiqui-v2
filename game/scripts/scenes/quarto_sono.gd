@@ -61,8 +61,10 @@ func advance(delta: float) -> void:
 
 
 ## One tap: lit → dim. The tint lands on the background, never on the character.
+## Inert once she is asleep: lighting the room back up behind the party transition is a
+## glitch a child reads as a broken bedroom.
 func toggle_lamp() -> bool:
-	if fsm.state != STATE_SLEEPING and not credited:
+	if fsm.state != STATE_SLEEPING:
 		return false
 	lamp_on = not lamp_on
 	_apply_lamp()

@@ -146,3 +146,12 @@ bugs:
   file: specs/bugs/BUG-016-project-version-drift.md
   status: fixed
   found_by: bigpowers adoption audit (CI6, root VERSION sync)
+- bug_id: BUG-017
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: ui
+  summary: The bedroom lamp is not inert after the step finishes (double-negative guard), so the room relights behind the party transition
+  file: specs/bugs/BUG-017-sleep-lamp-inert-after-finish.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer A should-fix 4, reviewer B consider 13)

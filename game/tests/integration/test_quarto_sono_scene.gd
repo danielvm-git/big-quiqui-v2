@@ -127,6 +127,21 @@ func test_both_interactions_credit_sleep_and_request_the_celebration_once() -> v
 # ── SC-E07-P1-04 one interaction is not enough ────────────────────────────
 
 
+func test_the_lamp_is_inert_once_the_step_is_finished() -> void:
+	_walk_to_sleep()
+	_mount()
+	await wait_process_frames(3)
+	_tuck()
+	_tap(scene.lamp)
+	assert_eq(scene.fsm.state, SleepScene.STATE_FINISHED)
+	assert_false(scene.lamp_on, "the winning tap dimmed the room")
+
+	_tap(scene.lamp)
+
+	assert_false(scene.lamp_on, "a tap after finishing changes nothing")
+	assert_eq(scene.background.modulate, SleepScene.NIGHT_TINT, "and the room stays dark")
+
+
 func test_the_lamp_alone_does_not_credit() -> void:
 	_walk_to_sleep()
 	_mount()
