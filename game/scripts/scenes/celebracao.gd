@@ -11,9 +11,6 @@ const CASA_PATH: String = "res://scenes/casa.tscn"
 const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
 const VOICE_PATH: String = "res://assets/audio/voice/celebrate_parabens.ogg"
 
-const COINS: int = 5
-const TICKETS: int = 1
-
 @onready var rig: QuiQuiRig = $QuiQuiRig as QuiQuiRig
 @onready var confetti: CPUParticles2D = $Confetti as CPUParticles2D
 

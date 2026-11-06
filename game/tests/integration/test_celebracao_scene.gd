@@ -39,6 +39,15 @@ func _walk_to_celebrate() -> void:
 	clm.call("begin_step", CareSteps.CELEBRATE)
 
 
+func _deliver(control: Control, events: Array[InputEvent]) -> void:
+	for event: InputEvent in events:
+		control._gui_input(TouchSim.gui_event(control, event))
+
+
+func _tap(control: Control) -> void:
+	_deliver(control, TouchSim.tap_events(control, true))
+
+
 func _mount(size: Vector2i = GeometryOracle.DESKTOP_16_9) -> CelebrationScene:
 	viewport = SubViewport.new()
 	viewport.size = size
@@ -60,14 +69,14 @@ func test_entering_pays_once_and_moves_the_loop_to_idle() -> void:
 	var pm: Node = get_node("/root/ProgressManager")
 	# The reward is granted when the loop *enters* CELEBRATE, before this scene mounts:
 	# CareLoopManager owns money, the scene only closes the cycle.
-	assert_eq(pm.call("get_coins"), CelebrationScene.COINS, "the reward landed on entry")
-	assert_eq(pm.call("get_tickets"), CelebrationScene.TICKETS)
+	assert_eq(pm.call("get_coins"), pm.CYCLE_COINS_REWARD, "the reward landed on entry")
+	assert_eq(pm.call("get_tickets"), pm.CYCLE_TICKETS_REWARD)
 
 	_mount()
 	await wait_process_frames(3)
 
-	assert_eq(pm.call("get_coins"), CelebrationScene.COINS, "still exactly one reward")
-	assert_eq(pm.call("get_tickets"), CelebrationScene.TICKETS)
+	assert_eq(pm.call("get_coins"), pm.CYCLE_COINS_REWARD, "still exactly one reward")
+	assert_eq(pm.call("get_tickets"), pm.CYCLE_TICKETS_REWARD)
 	assert_eq(int(pm.data.completed_cycles), 1, "the counter moved with the reward")
 	assert_eq(str(clm.call("state_id")), CareSteps.IDLE, "the cycle closed")
 	assert_eq(requested, [CASA_PATH], "the Casa is requested once")
@@ -81,14 +90,14 @@ func test_re_entering_the_same_cycle_pays_nothing() -> void:
 	var pm: Node = get_node("/root/ProgressManager")
 	_mount()
 	await wait_process_frames(3)
-	assert_eq(pm.call("get_coins"), CelebrationScene.COINS)
+	assert_eq(pm.call("get_coins"), pm.CYCLE_COINS_REWARD)
 
 	scene.queue_free()
 	scene = null
 	_mount()
 	await wait_process_frames(3)
 
-	assert_eq(pm.call("get_coins"), CelebrationScene.COINS, "no second payment")
+	assert_eq(pm.call("get_coins"), pm.CYCLE_COINS_REWARD, "no second payment")
 	assert_eq(int(pm.data.completed_cycles), 1, "and no second cycle")
 
 
@@ -165,5 +174,19 @@ func test_a_second_grant_in_the_same_cycle_pays_nothing() -> void:
 
 	clm.call("_grant_cycle_reward")
 
-	assert_eq(pm.call("get_coins"), CelebrationScene.COINS, "the ledger refuses a second payment")
+	assert_eq(pm.call("get_coins"), pm.CYCLE_COINS_REWARD, "the ledger refuses a second payment")
+	assert_eq(int(pm.data.completed_cycles), 1)
+
+
+## e07s02 AC5: "HomeButton leaves early without paying twice". Nothing tapped it before.
+func test_home_leaves_early_and_the_reward_is_already_paid() -> void:
+	_walk_to_celebrate()
+	var pm: Node = get_node("/root/ProgressManager")
+	_mount()
+	await wait_process_frames(3)
+
+	_tap(scene.get_node("HomeButton") as TapButton)
+
+	assert_eq(requested, [CASA_PATH], "the Casa is requested once, early or late")
+	assert_eq(pm.call("get_coins"), pm.CYCLE_COINS_REWARD, "and nothing was paid twice")
 	assert_eq(int(pm.data.completed_cycles), 1)

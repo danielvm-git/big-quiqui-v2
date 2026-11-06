@@ -201,3 +201,12 @@ bugs:
   file: specs/bugs/BUG-021-cycle-e2e-overstated.md
   status: fixed
   found_by: e07 post-epic review (reviewer B should-fix 7, reviewer A should-fix 3)
+- bug_id: BUG-026
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: tests
+  summary: Five assertions could not fail — zzz idempotence, the rig's layers, a CanvasModulate, the celebration HomeButton, and the price duplicated in the scene
+  file: specs/bugs/BUG-026-tests-that-cannot-fail.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 3 and considers 12-14, reviewer A consider 3)
