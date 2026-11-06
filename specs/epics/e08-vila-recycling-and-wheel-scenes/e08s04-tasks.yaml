@@ -3,7 +3,7 @@ spec: e08s04.md
 epic_id: e08
 title: Economy Conservation Property Tests (Coins/Tickets Non-Negative & Double-Tap
   Spin Idempotency)
-status: failing
+status: done
 bcps: 2
 playable_scene: res://scenes/vila.tscn + res://scenes/roda.tscn
 tasks:
@@ -18,7 +18,7 @@ tasks:
     categories:
       - "e08"
       - "unit"
-  status: failing
+  status: done
 - id: e08s04-t02
   description: 'Green ProgressManager/WheelScene if tests expose a real gap; keep clamps
     and Fsm guard as single source of truth'
@@ -31,7 +31,7 @@ tasks:
     categories:
       - "e08"
       - "unit"
-  status: failing
+  status: done
 - id: e08s04-t03
   description: 'Verify PII log audit and story traceability for e08s04'
   verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
@@ -43,4 +43,4 @@ tasks:
     categories:
       - "e08"
       - "audit"
-  status: failing
+  status: done
