@@ -30,16 +30,23 @@ Two further defects compounded it:
 the design's first option (edge anchoring) is used, because it keeps the approved 16:9 frame
 pixel-identical and needs no new node in the tree.
 
-- `QuiQuiRig`: `anchor_left = anchor_right = 0.5` with a fixed width, `anchor_top = feet - height`,
+- `QuiQuiRig`: `anchor_left = anchor_right = 0.5`, with a width fitted to the art aspect on every
+  layout pass (`_fit_box_to_art`), `anchor_top = feet - height`,
   `anchor_bottom = 0.78` (care rooms) so the box grows with the canvas and the feet stay on the line.
 - Doors: fixed 168×168 boxes, edge columns (`anchor_left = 0`/`1`), row centres as ratios.
 - `CareDotsBar`: bottom edge, 36 px inset, horizontally centred.
 - `CoinTicketHud`: top-right, 36 px inset.
-- `WishBubble`: pinned to the feet line, so it stays above QuiQui's head on every aspect.
+- `WishBubble`: anchored to the character's head line (`feet - rig height`), so it stays above
+  QuiQui's head on every aspect — `test_casa_scene.test_the_bubble_never_covers_the_character_on_either_aspect`
+  pins it.
 - Scene roots use `set_anchors_and_offsets_preset(PRESET_FULL_RECT)` and never assign `size`.
 - Builders pin ratios through `SceneBuilder.pin(node, anchors, offsets)`.
 
-`GeometryOracle` now checks the contract in both directions and takes a **spec** at the call site
+The requirement is delivered by `_update_layout`'s **height-driven** factor
+(`factor = box.y / opaque_height`), which makes the painted height equal the box height identically.
+`_fit_box_to_art` is what makes the **box** art-shaped, so the tap surface is the character rather than a
+column of empty space (BUG-013). `GeometryOracle` now checks the
+contract in both directions and takes a **spec** at the call site
 (`CARE_ROOM_SPEC`, `TITLE_SPEC`): background size == canvas (letterbox *and* oversized), hit targets
 ≥120×120 inside the canvas, `rig` height ratio 0.55–0.65 and feet on the declared line and
 horizontally centred, `ui_bottom` within 60 px of the bottom, `ui_top_right` within 60 px of the
@@ -48,8 +55,9 @@ top-right corner. A product requirement is only "verified" if the assertion can 
 ## Consequences
 
 - The 16:9 composition is unchanged to the pixel (measured: root 1920×1080, background 1920×1080,
-  rig feet 0.780, dots 36 px, HUD 36/36). The 4:3 canvas now composes: rig 0.574 of the height,
-  feet 0.780, dots 36 px, doors on the edges, bubble on the feet line.
+  rig feet 0.780, dots 36 px, HUD 36/36). The 4:3 canvas now composes: the painted character is 0.574 of the height at rest — the
+  same number as the box, because the box is fitted to the art — feet 0.780, dots 36 px, doors on the
+  edges, and the wish bubble hangs above the head line on every aspect.
 - Every future scene (e03–e10) inherits a mechanical layout gate: declare the groups, pass the spec,
   and a regression fails Preflight instead of shipping to a child's iPad.
 - `QuiQuiRig` re-anchors its pivot on `NOTIFICATION_RESIZED`, so a responsive box actually grows the

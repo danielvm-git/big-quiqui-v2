@@ -32,6 +32,15 @@ const Z_HEADWEAR: int = 30
 const Z_NECK: int = 40
 const Z_GLASSES: int = 50
 
+## The art is square (1024x1024). The box is fitted to this aspect on resize so
+## the *painted* character keeps DESIGN §3's 55-65 % on every canvas instead of
+## the box keeping it while the art shrinks (BUG-013).
+const DEFAULT_ART_ASPECT: float = 1.0
+## Re-entrancy guard for `_fit_box_to_art`, which rewrites offsets inside
+## `NOTIFICATION_RESIZED`: a second pass is a no-op, so the fit converges in one
+## pass and cannot loop. (The oracle's dead-space rule lives in `GeometryOracle`.)
+const BOX_FIT_EPSILON: float = 0.5
+
 ## Legacy composition: these are full-body images, so only one may be visible at
 ## a time until e10 ships separate body/outfit/expression layers.
 signal expression_changed(expression_id: String)
@@ -58,6 +67,10 @@ var _spring: SquashSpring = SquashSpring.new()
 var _time: float = 0.0
 var _next_blink_at: float = 0.0
 var _blink_until: float = -1.0
+## texture instance id -> opaque rect in frame pixels. The shipped art carries an
+## 8 % transparent margin; DESIGN §3 measures the character the child sees, so the
+## layout and the oracle both work on the opaque rect (round-2 review, BUG-013).
+var _opaque: Dictionary = {}
 
 
 func _ready() -> void:
@@ -66,15 +79,39 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build_rig()
 	set_expression(NEUTRAL_EXPRESSION)
+	_refit()  # the first layout pass can land before the pivot exists
 
 
-## A responsive box (ADR-008) may be laid out after `_ready`: re-anchor the feet
-## and re-fit the art instead of keeping the first frame's geometry.
-func _notification(what: int) -> void:
-	if what != NOTIFICATION_RESIZED or pivot == null:
+## The responsive layout, in one place: fit the box to the art, re-anchor the
+## feet on the bottom edge, re-fit the sprites. Safe to call any number of times.
+func _refit() -> void:
+	if pivot == null:
 		return
+	_fit_box_to_art()
 	pivot.position = Vector2(size.x * 0.5, size.y)
 	_update_layout()
+
+
+## A responsive box (ADR-008) may be laid out after `_ready`: fit the box to the
+## art and re-anchor instead of keeping the first frame's geometry.
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_RESIZED:
+		return
+	_refit()
+
+
+## The builder's ratio anchors own the **height**; the width has to follow the
+## art, or `_update_layout`'s width-limited fit shrinks the character on taller
+## canvases (BUG-013). Only valid for the centred 0.5/0.5 anchor column every
+## builder pins — symmetric offsets then keep her centred at any width.
+func _fit_box_to_art() -> void:
+	if not is_equal_approx(anchor_left, anchor_right) or not is_equal_approx(anchor_left, 0.5):
+		return
+	var wanted: float = size.y * _visible_aspect()
+	if wanted <= 1.0 or absf(size.x - wanted) < BOX_FIT_EPSILON:
+		return
+	offset_left = -wanted * 0.5
+	offset_right = wanted * 0.5
 
 
 func _process(delta: float) -> void:
@@ -194,21 +231,66 @@ func set_outfit(id: String) -> bool:
 	return true
 
 
-## The union of every visible sprite, in rig-local coordinates. The mouth zone and
-## the scrub hull must live inside this rect (TEST_PLAN §1.4).
+## The union of every visible sprite's **opaque** pixels, in global coordinates:
+## the character the child sees, not the 1024x1024 frame around it. The mouth zone
+## and the scrub hull must live inside this rect (TEST_PLAN §1.4).
 func get_visual_global_rect() -> Rect2:
 	var rect: Rect2 = Rect2()
 	var started: bool = false
 	for sprite: Sprite2D in [body, outfit, expression, headwear, neck, glasses]:
 		if sprite == null or not sprite.visible or sprite.texture == null:
 			continue
-		var sprite_rect: Rect2 = Rect2(
-			sprite.global_position - sprite.texture.get_size() * 0.5 * sprite.global_scale,
-			sprite.texture.get_size() * sprite.global_scale,
-		)
+		var sprite_rect: Rect2 = _opaque_global_rect(sprite)
 		rect = sprite_rect if not started else rect.merge(sprite_rect)
 		started = true
 	return rect
+
+
+func _opaque_global_rect(sprite: Sprite2D) -> Rect2:
+	var frame: Rect2 = Rect2(
+		sprite.global_position - sprite.texture.get_size() * 0.5 * sprite.global_scale,
+		sprite.texture.get_size() * sprite.global_scale,
+	)
+	var used: Rect2 = opaque_rect(sprite.texture)
+	if used.size.x <= 0.0 or used.size.y <= 0.0:
+		return Rect2()  # cannot measure: contributes nothing, so the gate fails closed
+	return Rect2(frame.position + used.position * sprite.global_scale, used.size * sprite.global_scale)
+
+
+## The opaque box of a texture in frame pixels, cached. Returns an **empty** rect
+## when the image cannot be read: the caller must treat "cannot measure" as a
+## failure, never as "the frame is the character" (round 3, BUG-013).
+func opaque_rect(texture: Texture2D) -> Rect2:
+	if texture == null:
+		return Rect2()
+	var key: int = texture.get_instance_id()
+	if _opaque.has(key):
+		return _opaque[key] as Rect2
+	var used: Rect2 = Rect2()
+	var image: Image = texture.get_image()
+	if image != null and not image.is_empty():
+		var opaque: Rect2i = image.get_used_rect()
+		if opaque.size.x > 0 and opaque.size.y > 0:
+			used = Rect2(Vector2(opaque.position), Vector2(opaque.size))
+	if used.size.x <= 0.0 or used.size.y <= 0.0:
+		_emit("rig.opaque_unreadable", {"art": texture.resource_path.get_file()})
+	_opaque[key] = used
+	return used
+
+
+## Width over height of the opaque character: the design unit, not the frame.
+func _visible_aspect() -> float:
+	var seen: Rect2 = _visible_box()
+	if seen.size.x <= 0.0 or seen.size.y <= 0.0:
+		return DEFAULT_ART_ASPECT
+	return seen.size.x / seen.size.y
+
+
+## The character's opaque box in frame pixels, or an empty rect when unreadable.
+func _visible_box() -> Rect2:
+	if expression == null or expression.texture == null:
+		return Rect2()
+	return opaque_rect(expression.texture)
 
 
 func reset() -> void:
@@ -266,28 +348,40 @@ func _apply_expression(id: String) -> void:
 	expression.texture = texture
 	expression.visible = true
 	expression_id = id
-	_update_layout()
+	_refit()
 	expression_changed.emit(id)
 
 
-## Feet-anchored layout: the art is drawn upward from the pivot, and the visual
-## stack is sized against the control box.
+## Feet-anchored layout on the **opaque** character: the seen height is the box
+## height, the seen feet sit on the pivot, and the seen centre is the box centre.
+## The frame's transparent margin is allowed to overflow the box — nothing clips a
+## `Node2D` child, and `get_visual_global_rect` reports what a child sees.
 func _update_layout() -> void:
 	if expression == null or expression.texture == null:
 		return
 	var art: Vector2 = expression.texture.get_size()
-	var box: Vector2 = size if size.x > 1.0 else art
-	var factor: float = minf(box.x / art.x, box.y / art.y) if art.x > 0.0 and art.y > 0.0 else 1.0
+	var used: Rect2 = _visible_box()
+	# Unreadable art still renders (the frame is all we have) but reports nothing,
+	# so `GeometryOracle` says "no painted geometry" instead of measuring a frame.
+	var seen: Vector2 = used.size if used.size.x > 0.0 and used.size.y > 0.0 else art
+	var box: Vector2 = size if size.y > 1.0 else seen
+	var factor: float = box.y / seen.y if seen.y > 0.0 else 1.0
+	# The frame is centred on the sprite position; shift it so the opaque rect's
+	# bottom edge lands on the pivot and its centre on the box centre.
+	var shift: Vector2 = Vector2(
+		art.x * factor * 0.5 - (used.position.x + used.size.x * 0.5) * factor,
+		art.y * factor - (used.position.y + used.size.y) * factor,
+	)
 	for sprite: Sprite2D in [body, outfit, expression, headwear, neck, glasses]:
 		if sprite == null:
 			continue
 		sprite.scale = Vector2.ONE * factor
-		sprite.position = Vector2(0.0, -art.y * factor * 0.5)
+		sprite.position = Vector2(0.0, -art.y * factor * 0.5) + shift
 	if mouth_zone != null:
-		mouth_zone.size = art * factor * 0.18
+		mouth_zone.size = seen * factor * 0.18
 		mouth_zone.position = Vector2(
 			size.x * 0.5 - mouth_zone.size.x * 0.5,
-			size.y - art.y * factor * 0.62,
+			size.y - seen.y * factor * 0.62,
 		)
 
 

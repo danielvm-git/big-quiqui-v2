@@ -1,6 +1,6 @@
 ---
 bug_id: BUG-014
-status: open
+status: fixed
 severity: medium
 scope: docs
 title: BUG-002 closure evidence compares art-before with box-after; DESIGN §3 states a rule the builders break
@@ -45,5 +45,26 @@ cycle's own documentation.
 3. Fix the test name in `BUG-002:34`; keep BUG-002 `fixed` only for the root-size half and point its
    hero-scale half at BUG-013.
 
+## Resolution
+
+1. `FIX-e01-e02` gained a **Corrected measurements** section with a `box` *and* `painted` column and the
+   command that reproduces it (`game/tools/measure_hero_scale.gd`); the old table stays, labelled as box
+   geometry, so the before/after series can no longer be read as one series.
+2. `DESIGN.md` §3 now states the rule the builders actually follow: anchors are ratios, offsets are
+   absolute pixels, and the rig box width follows its height.
+3. `BUG-002` names the shipped test (`test_a_rig_off_the_feet_line_is_caught`) and hands its hero-scale
+   half to BUG-013.
+4. `ADR-008` consequences now say the painted character **equals** the box at rest (0.574) and record
+   the box-fitting rule — the earlier "painted 0.575 vs box 0.574" implied a structural difference that
+   cannot exist.
+5. **Round 2** found two more instances: `DESIGN.md` still carried the `~600–700 px` reading (true only
+   on 16:9, false — 830 px — on the iPad the game targets); it now names the ratio as the contract and
+   the px figure per canvas. `BUG-013` also claimed `WishBubble.ART_PATH_PATTERN` had been changed to
+   `\A…\z` and tested when it had not; the pattern is now `\A…\z` and the newline case is pinned.
+   The old "Before / after" column in `FIX-e01-e02` is now labelled **Box** height ratio, because it is
+   art-before vs box-after, a mixed series kept only for the record.
+
 ## Verification
-Pending — closes with BUG-013 in review round 2/5.
+
+`bash scripts/preflight.sh` → PREFLIGHT GREEN (19 scripts, 163 tests, 637 asserts). Every number quoted in these records **for the current layout** comes from `game/tools/measure_hero_scale.gd`, which is committed and pins the rest pose
+(`manual_step` + `pivot.scale = ONE`), so a reviewer reproduces 0.574 exactly.
