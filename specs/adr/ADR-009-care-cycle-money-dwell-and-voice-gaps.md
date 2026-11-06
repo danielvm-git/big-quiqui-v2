@@ -63,3 +63,10 @@ reviewer cannot leave undocumented, because the next agent would otherwise re-de
    that *is* genuinely shared was already extracted once (BUG-010); collapsing six rooms' private
    helpers into a base class is a refactor with no user-visible effect and no failing gate, so it is not
    smuggled into a review pass.
+
+6. **The celebration does not display the reward (deferred to a story).** `IMPACT_LATEST.md` planned a
+   "reward reveal" and `DESIGN_PLAN_LATEST.md` lists the coin/star art for it; e07s02's acceptance
+   criteria and frozen `celebracao.tscn` contract do not. Implementing it now would change both — a
+   product scope change, not a review fix. `moedinha.png` and `estrela.png` are already shipped and
+   already used by `CoinTicketHud`, so the story is unblocked: see BUG-031, which also carries the
+   `HOLD_SEC` the reveal needs (item 2 above).

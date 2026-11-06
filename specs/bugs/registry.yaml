@@ -273,3 +273,12 @@ bugs:
   file: specs/bugs/BUG-030-cycle-e2e-hardcodes-the-price.md
   status: fixed
   found_by: e07 post-epic review, second pass (same class as BUG-026)
+- bug_id: BUG-031
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: ui
+  summary: The celebration pays +5/+1 but shows nothing; IMPACT_LATEST planned a "reward reveal" and the frozen e07s02 contract does not include one
+  file: specs/bugs/BUG-031-celebration-shows-no-reward.md
+  status: deferred
+  found_by: e07 post-epic review (epic vs IMPACT_LATEST / DESIGN_PLAN_LATEST)
