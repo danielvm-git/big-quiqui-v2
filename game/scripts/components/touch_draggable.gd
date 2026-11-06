@@ -9,8 +9,9 @@ extends Control
 ##
 ## `CONSUME_ON_DROP` is the eat/apply gesture (e03). `CONTINUOUS_SCRUB` is the e04
 ## gesture: the prop does not move, the finger does, and each move inside the
-## target's hull becomes a `scrubbed` point. `SNAP_TO_SLOT` and `FREE_PLACEMENT`
-## still behave as if there were no target (e06, e09).
+## target's hull becomes a `scrubbed` point. `SNAP_TO_SLOT` is the e05 gesture: drop
+## it on the character and it *replaces* what is in that slot, then flies home.
+## `FREE_PLACEMENT` still behaves as if there were no target (e09).
 
 signal drag_started
 signal drag_moved(global_point: Vector2)
@@ -18,6 +19,8 @@ signal drag_ended
 signal consumed
 ## CONTINUOUS_SCRUB only, and only while the finger is inside the hull.
 signal scrubbed(global_point: Vector2)
+## SNAP_TO_SLOT only, and only when the drop lands on the target.
+signal snapped(slot: String, id: String)
 
 enum Mode { CONSUME_ON_DROP, CONTINUOUS_SCRUB, SNAP_TO_SLOT, FREE_PLACEMENT }
 
@@ -54,6 +57,11 @@ var scrub_target: Control = null
 ## Optional loop that owns exactly one SFX channel for the length of the gesture
 ## (T-E04-05). Null means silence.
 var scrub_loop_stream: AudioStream = null
+## SNAP_TO_SLOT target and payload: what this item puts on, and into which slot.
+var snap_target: Control = null
+var snap_margin: float = 0.0
+var payload_slot: String = ""
+var payload_id: String = ""
 ## Grows the target rect, in canvas px.
 var drop_margin: float = 0.0
 var enabled: bool = true
@@ -200,11 +208,10 @@ func _drop(point: Vector2, cancelled: bool) -> void:
 		_end_scrub()
 		return
 	if not cancelled and _is_on_target(point):
-		fsm.transition_to(STATE_CONSUMED)
-		drag_ended.emit()
-		_emit("drag.drop", {"outcome": "consumed"})
-		consumed.emit()
-		_emit("drag.consume")
+		_consume()
+		return
+	if not cancelled and _is_on_snap_target(point):
+		_snap()
 		return
 	fsm.transition_to(STATE_RETURNING)
 	_return_from = position
@@ -275,8 +282,36 @@ func _hull() -> PackedVector2Array:
 	return hull if hull is PackedVector2Array else PackedVector2Array()
 
 
+func _consume() -> void:
+	fsm.transition_to(STATE_CONSUMED)
+	drag_ended.emit()
+	_emit("drag.drop", {"outcome": "consumed"})
+	consumed.emit()
+	_emit("drag.consume")
+
+
+## The item flies home afterwards: the wardrobe keeps its contents, the character
+## takes the look.
+func _snap() -> void:
+	fsm.transition_to(STATE_RETURNING)
+	_return_from = position
+	_return_elapsed = 0.0
+	drag_ended.emit()
+	_emit("drag.drop", {"outcome": "snapped"})
+	snapped.emit(payload_slot, payload_id)
+
+
 func _owns(index: int) -> bool:
 	return _holder == self and index == _owner_touch_index
+
+
+func _is_on_snap_target(point: Vector2) -> bool:
+	if mode != Mode.SNAP_TO_SLOT:
+		return false
+	if not is_instance_valid(snap_target) or not snap_target.is_inside_tree():
+		return false
+	var rect: Rect2 = snap_target.get_global_transform_with_canvas() * Rect2(Vector2.ZERO, snap_target.size)
+	return rect.grow(snap_margin).has_point(point)
 
 
 func _is_on_target(point: Vector2) -> bool:

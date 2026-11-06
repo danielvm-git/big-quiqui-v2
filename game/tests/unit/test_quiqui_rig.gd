@@ -356,3 +356,49 @@ func test_the_hull_contains_the_body_and_not_the_transparent_margin() -> void:
 		box = box.expand(point)
 	assert_lt(box.size.y, painted.size.y, "the hull is inset inside the opaque art")
 	assert_gt(box.size.y, painted.size.y * 0.8, "but not so far in that the body is unreachable")
+
+
+# e05s01 / T-E05-03: the face is the only feedback a pre-reader has, so the outfit
+# and every accessory that could hide it must stay behind the expression layer.
+func test_the_expression_layer_sits_above_outfit_and_accessories() -> void:
+	assert_true(rig.set_outfit("vestido_florido"), "the outfit loads")
+	assert_true(rig.set_accessory("head", "tiara_flores"))
+	assert_true(rig.set_accessory("eyes", "oculos_coracao"))
+	rig.set_expression("base")
+
+	assert_gt(rig.expression.z_index, rig.outfit.z_index, "the face is above the dress")
+	assert_true(rig.expression.visible, "and visible")
+	# A hat and glasses may sit above the face, but their art must not reach the mouth.
+	var mouth: Vector2 = rig.mouth_global_center()
+	for slot: String in ["head", "eyes"]:
+		var sprite: Sprite2D = rig.headwear if slot == "head" else rig.glasses
+		assert_false(
+			_art_rect(sprite).has_point(mouth),
+			"%s art must not cover the mouth zone at %s" % [slot, mouth],
+		)
+
+
+func _art_rect(sprite: Sprite2D) -> Rect2:
+	return Rect2(
+		sprite.global_position - sprite.texture.get_size() * 0.5 * sprite.global_scale,
+		sprite.texture.get_size() * sprite.global_scale
+	)
+
+
+# T-E05-05: one accessory per slot. A second hat replaces the first, it does not stack.
+func test_a_second_accessory_replaces_the_first_in_its_slot() -> void:
+	assert_true(rig.set_accessory("head", "tiara_flores"))
+	assert_true(rig.set_accessory("head", "coroa"))
+	assert_eq(rig.accessory_id("head"), "coroa", "the newest hat wins")
+	assert_eq(rig.accessory_id("eyes"), "", "and other slots are untouched")
+
+
+func test_an_invalid_accessory_is_refused_and_changes_nothing() -> void:
+	for bad: String in ["../etc/passwd", "TIARA", "a".repeat(65), "id.with.dot"]:
+		assert_false(rig.set_accessory("head", bad), bad)
+	assert_eq(rig.accessory_id("head"), "", "nothing was equipped")
+
+
+func test_an_unknown_slot_is_refused_loudly_enough_to_debug() -> void:
+	assert_false(rig.set_accessory("tail", "tiara_flores"))
+	assert_true(rig.get_visual_global_rect().has_area(), "and the rig still renders")

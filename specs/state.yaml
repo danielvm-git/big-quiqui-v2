@@ -4,8 +4,8 @@ version: 0.3.1-dev
 workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: build
-current_epic: e04-bathroom-bath-scene
-current_story: e04s01
+current_epic: e05-closet-dress-scene
+current_story: e05s01
 review_gate:
   skill: request-review
   method: "dual-blind AND gate: 2 reviewers, different agents, no shared context"
@@ -87,14 +87,13 @@ handoff:
     - "Hero-scale contract: DECIDED — the ratio on the opaque character is the requirement, the px figures in DESIGN section 3 are per-canvas illustrations. `QuiQuiRig` fits the box to the opaque art, so box height == painted height at rest."
 epic_cycle:
   step: 8
-  story: e04s04
-  story_bcps: 3
-  epic_epic_bcps: 13
+  story: e05s03
+  story_bcps: 4
+  epic_epic_bcps: 11
   fast_mode: true
-  started_at: "2026-11-06T01:05:00-03:00"
+  started_at: "2026-11-06T04:20:00-03:00"
   completed_at: null
-  audit_result: pass
-  verify_result: pass
+  audit_result: null
 metrics:
   story_start: null
   story_end: null

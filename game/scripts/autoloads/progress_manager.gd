@@ -132,6 +132,39 @@ func add_tickets(amount: int) -> void:
 
 ## One logical change, one `progress_changed`: the mutators above are for the
 ## HUD's incremental updates, a full cycle is a single event.
+## Records what she is wearing. One id per slot, validated by `Ids` before it can
+## reach disk or a `res://` path (T-E05-01). Returns false and changes nothing when
+## the slot or the id is not valid.
+func equip(slot: String, id: String) -> bool:
+	if not Ids.is_valid(slot) or not Ids.is_valid(id):
+		_emit("progress.invalid_equip", {"slot": "invalid"})
+		return false
+	if str(data.equipped_outfits.get(slot, "")) == id:
+		return true  # idempotent: equipping the same thing twice is not an event
+	data.equipped_outfits[slot] = id
+	save()
+	progress_changed.emit()
+	return true
+
+
+func equipped(slot: String) -> String:
+	return str(data.equipped_outfits.get(slot, ""))
+
+
+## Applies the saved look to a rig without going through the closet: the room that
+## opens must already show what the child chose last time.
+func dress(rig: Node) -> void:
+	if rig == null or not is_instance_valid(rig):
+		return
+	var outfit: String = equipped(SaveData.SLOT_BODY)
+	if not outfit.is_empty():
+		rig.call("set_outfit", outfit)
+	for slot: String in [SaveData.SLOT_HEAD, SaveData.SLOT_NECK, SaveData.SLOT_EYES]:
+		var id: String = equipped(slot)
+		if not id.is_empty():
+			rig.call("set_accessory", slot, id)
+
+
 func complete_cycle(coins: int = CYCLE_COINS_REWARD, tickets: int = CYCLE_TICKETS_REWARD) -> void:
 	_apply(coins, tickets, 1)
 
