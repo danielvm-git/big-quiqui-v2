@@ -192,3 +192,12 @@ bugs:
   file: specs/bugs/BUG-022-frozen-contracts-never-built.md
   status: fixed
   found_by: e07 post-epic review (reviewer B should-fix 4)
+- bug_id: BUG-021
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: tests
+  summary: The cycle E2E carried 35 unreachable lines, never ran GeometryOracle (AC4) and its "detour" test never entered CELEBRATE
+  file: specs/bugs/BUG-021-cycle-e2e-overstated.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 7, reviewer A should-fix 3)
