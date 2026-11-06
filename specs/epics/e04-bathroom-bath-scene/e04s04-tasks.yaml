@@ -2,32 +2,44 @@ story_id: e04s04
 spec: e04s04.md
 epic_id: e04
 title: BathScene 3-Stage E2E TouchSim & 4:3 iPad Foam-Hull Containment Oracle Tests
-status: failing
+status: passing
 bcps: 2
 playable_scene: res://scenes/banheiro.tscn
+threat_findings:
+- T-E04-02
+- T-E04-06
+- T-E04-07
 tasks:
 - id: e04s04-t01
-  description: Write failing GUT unit & TouchSim/GeometryOracle tests for e04s04 (BathScene
-    3-Stage E2E TouchSim & 4:3 iPad Foam-Hull Containment Oracle Tests)
+  description: 'Write BathE2eTestCase: real loaders, manual_step scene manager, per-scene
+    FsmProbe, touch delivery through TouchSim.gui_event'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P1
+  allure:
+    severity: high
+  status: passing
+- id: e04s04-t02
+  description: 'Write SC-E04-P0-30..P2-35: full journey on three canvases, containment
+    before/after resize, no resurrection, abandon mid-journey'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
-- id: e04s04-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e04s04
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  status: passing
+- id: e04s04-t03
+  description: Make the sweep realistic (three alternating passes) after the single-pass
+    run under-counted rinse points
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e04s04-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e04s04
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  status: passing
+- id: e04s04-t04
+  description: Verify lint, type gate, oracle on the journey canvas, PII audit and
+    traceability for e04s04
+  verify: gdlint game/ && gdformat --check game/ && bash scripts/logs.sh audit --self-test
+    && bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing

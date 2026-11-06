@@ -179,9 +179,11 @@ func test_a_freed_target_is_a_miss_not_a_crash() -> void:
 	assert_eq(consumed, 0)
 
 
-func test_other_modes_return_home_even_on_the_target() -> void:
+## CONTINUOUS_SCRUB became live in e04s01, so only the two modes still unbuilt keep
+## the e03 placeholder behaviour. The scrub's own gesture is covered in
+## `test_touch_draggable_scrub.gd`.
+func test_unbuilt_modes_return_home_even_on_the_target() -> void:
 	for mode: TouchDraggable.Mode in [
-		TouchDraggable.Mode.CONTINUOUS_SCRUB,
 		TouchDraggable.Mode.SNAP_TO_SLOT,
 		TouchDraggable.Mode.FREE_PLACEMENT,
 	]:

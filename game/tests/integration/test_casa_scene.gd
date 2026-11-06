@@ -135,14 +135,29 @@ func test_a_double_tap_on_the_feed_door_asks_for_the_kitchen_once() -> void:
 	assert_eq(get_node("/root/SceneManager").pending_scene, "", "no reload is queued")
 
 
+## BATH is no longer pending: `banheiro.tscn` ships with e04s02, so the bath door
+## navigates like the feed door does. Only the rooms that do not exist yet stay pending.
 func test_the_other_care_doors_stay_pending() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
 	await wait_process_frames(3)
-	for step: String in ["BATH", "DRESS", "PLAY", "SLEEP"]:
+	for step: String in ["DRESS", "PLAY", "SLEEP"]:
 		var door: TapButton = scene.door(step)
 		for event: InputEvent in TouchSim.tap_events(door, true):
 			door._gui_input(event)
 	assert_true(requested_scenes.is_empty())
+
+
+## The bath door opens now that the scene exists: one request, and the hub is not
+## swapped under GUT.
+func test_the_bath_door_asks_for_the_bathroom_once() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_process_frames(3)
+	var door: TapButton = scene.door("BATH")
+	for tap: int in range(2):
+		for event: InputEvent in TouchSim.tap_events(door, true):
+			door._gui_input(event)
+
+	assert_eq(requested_scenes, ["res://scenes/banheiro.tscn"], "one request, not two")
 
 
 # SC-E03-P1-20: the kitchen theme must not follow the child into the hub.

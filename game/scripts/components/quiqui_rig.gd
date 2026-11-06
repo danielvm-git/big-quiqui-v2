@@ -21,6 +21,11 @@ const Z_HEADWEAR: int = 30
 const Z_NECK: int = 40
 const Z_GLASSES: int = 50
 const DEFAULT_ART_ASPECT: float = 1.0
+## The scrub region (ADR-004 mode 2): a polygon around her body, derived from the
+## opaque rect on every layout pass so it lands on the character at any aspect
+## (T-E04-01). Authored in rig-local space; `scrub_hull_global` transforms it.
+const SCRUB_HULL_POINTS: int = 12
+const SCRUB_HULL_INSET: float = 12.0
 const BOX_FIT_EPSILON: float = 0.5
 
 signal expression_changed(expression_id: String)
@@ -47,6 +52,7 @@ var _next_blink_at: float = 0.0
 var _blink_until: float = -1.0
 var _face_before_anticipation: String = ""
 var _opaque: Dictionary = {}
+var _scrub_hull_local: PackedVector2Array = PackedVector2Array()
 
 
 func _ready() -> void:
@@ -150,11 +156,7 @@ func set_expression(id: String) -> bool:
 
 func set_outfit(id: String) -> bool:
 	if id.is_empty():
-		if outfit != null:
-			outfit.visible = false
-			outfit.texture = null
-		outfit_id = ""
-		outfit_changed.emit("")
+		_take_outfit_off()
 		return true
 	if not Ids.is_valid(id):
 		LogSink.emit_from(self, "rig.invalid_outfit", {"outfit": "invalid"})
@@ -168,6 +170,14 @@ func set_outfit(id: String) -> bool:
 	outfit_id = id
 	outfit_changed.emit(id)
 	return true
+
+
+func _take_outfit_off() -> void:
+	if outfit != null:
+		outfit.visible = false
+		outfit.texture = null
+	outfit_id = ""
+	outfit_changed.emit("")
 
 
 ## Union of every visible sprite's opaque pixels in global coordinates.
@@ -290,9 +300,42 @@ func _update_layout() -> void:
 		if sprite != null:
 			sprite.scale = Vector2.ONE * factor
 			sprite.position = (Vector2(0.0, -art.y * 0.5) + shift) * factor
+	_rebuild_scrub_hull(get_visual_global_rect())
 	if mouth_zone != null:
 		mouth_zone.size = seen * factor * 0.18
 		mouth_zone.position = Vector2(size.x * 0.5 - mouth_zone.size.x * 0.5, size.y - seen.y * factor * 0.62)
+
+
+## The scrub hull in rig-local coordinates: an ellipse inscribed in the visible
+## art, inset by `SCRUB_HULL_INSET`, so a scrub registers on her body rather than
+## on the transparent margin around it.
+func scrub_hull_local() -> PackedVector2Array:
+	return _scrub_hull_local
+
+
+## The same polygon in global coordinates, transformed at call time, so a hull can
+## never be stale after a resize (T-E04-01).
+func scrub_hull_global() -> PackedVector2Array:
+	var out: PackedVector2Array = PackedVector2Array()
+	var to_canvas: Transform2D = get_global_transform_with_canvas()
+	for point: Vector2 in _scrub_hull_local:
+		out.append(to_canvas * point)
+	return out
+
+
+func _rebuild_scrub_hull(seen_global: Rect2) -> void:
+	var origin: Vector2 = get_global_rect().position
+	var box: Rect2 = Rect2(seen_global.position - origin, seen_global.size).grow(-SCRUB_HULL_INSET)
+	if box.size.x <= 1.0 or box.size.y <= 1.0:
+		_scrub_hull_local = PackedVector2Array()
+		return
+	var centre: Vector2 = box.get_center()
+	var radii: Vector2 = box.size * 0.5
+	var hull: PackedVector2Array = PackedVector2Array()
+	for index: int in range(SCRUB_HULL_POINTS):
+		var angle: float = TAU * float(index) / float(SCRUB_HULL_POINTS)
+		hull.append(centre + Vector2(cos(angle) * radii.x, sin(angle) * radii.y))
+	_scrub_hull_local = hull
 
 
 func _load_art(id: String) -> Texture2D:

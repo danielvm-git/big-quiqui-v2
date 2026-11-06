@@ -1,0 +1,69 @@
+# story: e04s01
+# Evals — e04 (Bathroom BATH scene), written BEFORE the code (SCHEMA rule 1).
+# Schema: specs/benchmarks/SCHEMA.md · Skill: run-evals
+#
+# e04s01 is the first story, so its evals are `capability`: they fail on main today
+# because neither the scrub mode nor the hull exists. As stories land, later evals in
+# this file become `regression` (SCHEMA rule 3) and carry their RED evidence inline.
+#
+# Provenance for thresholds: specs/product/TUTOTOONS_REFERENCE.md (5 measured titles)
+# and specs/security/epics/e04/THREAT_MODEL.md (T-E04-01..07).
+epic: e04
+kind: capability
+evals:
+  - id: EV-E04-01
+    claim: "The scrub hull follows the character's opaque rect on every canvas, so a scrub on 4:3 lands on her body, not beside it"
+    story: e04s01
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "test_the_hull_follows_the_opaque_rect_on_every_canvas"
+    pass_when: "exit==0 and the scenario passes at 1920x1080, 1920x1440 and 2048x1536"
+    fails_on: "main (no scrub_hull_global yet)"
+    threat: T-E04-01
+    note: |
+      The failure this catches is invisible at 16:9: the hull is authored in rig-local
+      space while the box follows the opaque art per aspect (BUG-013). A hull cached at
+      one canvas size still passes every 16:9 check.
+
+  - id: EV-E04-02
+    claim: "An interrupted scrub never wedges dragging: freeing the node mid-gesture leaves the next control draggable"
+    story: e04s01
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "test_freeing_a_scrubbing_node_releases_the_owner"
+    pass_when: "exit==0 and the scenario passes"
+    fails_on: "main (CONTINUOUS_SCRUB not implemented)"
+    threat: T-E04-04
+    note: |
+      The shared static owner is the same latch e03's CONSUME_ON_DROP uses. A wedge here
+      is a dead scene for a child who cannot read, which is why it is a P0 eval and not a
+      should-fix.
+
+  - id: EV-E04-03
+    claim: "The diary does not grow with the gesture: a 40-motion scrub writes exactly what a 2-motion scrub writes"
+    story: e04s01
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "test_a_long_scrub_writes_as_much_as_a_short_one"
+    pass_when: "exit==0 and the two Log.write_count() deltas are equal and <= 4"
+    fails_on: "main (no scrub events yet); would also fail any per-motion logging"
+    threat: T-E04-03
+    note: |
+      Asserted on the writer's own counter, not on a grep of the file, so it cannot pass
+      by accident of buffering.
+
+  - id: EV-E04-04
+    claim: "The scrub is taught by a ghost hand and PT-BR voice, with no text on screen"
+    story: e04s01
+    grader: model
+    rubric:
+      1: "A drawn hand (ghost-hand affordance) appears over the sponge before the first scrub input"
+      2: "The affordance disappears after the first successful scrub and does not return in the same visit"
+      3: "No Label/RichTextLabel with play meaning exists in banheiro.tscn (the scene's no-text test passes)"
+      4: "A PT-BR voice clip or SFX carries the instruction"
+    pass_when: "all rubric items yes"
+    source: "TUTOTOONS_REFERENCE.md disposition: ghost-hand adopted from Smolsies, deferred from e03 to e04"
+    note: |
+      This is the one benchmark pattern we adopted that has no mechanical oracle: a hand
+      that teaches a drag is a judgement about feel. It is a model grader with a numbered
+      rubric for that reason, not a unit test pretending to measure teaching.
