@@ -255,3 +255,12 @@ bugs:
   file: specs/bugs/BUG-028-audio-leaks-on-quit.md
   status: fixed
   found_by: e07 post-epic review cold-start smoke (verify-work)
+- bug_id: BUG-029
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: docs
+  summary: specs/README.md advertised ADR-001 through ADR-005 while nine exist, and did not name specs/epics/archive/
+  file: specs/bugs/BUG-029-readme-adr-range-stale.md
+  status: fixed
+  found_by: e07 post-epic review, second pass (documentation sweep)
