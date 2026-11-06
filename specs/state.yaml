@@ -4,7 +4,7 @@ workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: build
 current_epic: e07-sleep-and-celebration-scenes
-current_story: e05s01
+current_story: e07s04
 review_gate:
   skill: request-review
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
