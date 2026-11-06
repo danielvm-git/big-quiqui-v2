@@ -149,12 +149,11 @@ handoff:
   epic_wsjf: 5.7
   first_story: e09s01
   context: >-
-    e08 is closed and reviewed twice (dual-blind PASS, then the post-epic review: BUG-037..045 fixed on
-    danielvm-git/post-epic-review-fixes-ef7cea, not yet merged). e08 itself is on local main but main is
-    ahead of origin and v0.10.0 is not cut: the human runs release-branch for the fixes branch and then
-    the e08 release. e09 is next by WSJF among the unblocked epics (e11 is 6.4 but is the release gate and
-    needs e09/e10 first). Run plan-work on e09s01 and expand the boilerplate capsule before any code, as
-    e08s03/s04 needed.
+    e08 is closed, reviewed twice (dual-blind PASS, then the post-epic review: BUG-037..045 fixed) and
+    landed on origin/main through PR 35, a chore squash so CI cut no release. v0.10.0 (e08) is NOT cut:
+    the human decides when (release-branch; a feat commit on main triggers big-release). e09 is next by
+    WSJF among the unblocked epics (e11 is 6.4 but is the release gate and needs e09/e10). Run plan-work
+    on e09s01 and expand the boilerplate capsule before any code, as e08s03/s04 needed.
   open_decisions:
   - No bedtime voice line exists in game/assets/audio/voice/. The bedroom answers
     with SFX (BUG-020). Add celebrate/sleep lines when the family records them — never
@@ -203,6 +202,9 @@ gate_decisions:
 - gate: commit hook (bigpowers pre-tool-use) in a worktree
   decision: committed with git plumbing (write-tree, commit-tree, update-ref) because the hook reads the branch of its own cwd (main) and blocked a feature-branch commit; messages stay Conventional Commits with no attribution footer
   reason: the guard's intent (no commits on main) was met; same workaround as the e08 close
+- gate: ship (release-branch, standing approval)
+  decision: opened PR 35 titled chore(e08) and squash-merged it once all five checks were green; main CI and Deploy green, no tag created
+  reason: the brief forbids tagging or publishing a release, and this repo's CI releases on feat/fix commits to main, so the title type was chosen to keep the release a human decision
 - gate: cleanup (organize-workspace)
   decision: removed the merged, clean ~/Developer/big-quiqui-v2-e08 worktree and its merged branch (git branch -d); left the two orca review-e07 worktrees alone (unmerged branch, untracked files)
   reason: delete only what is clearly merged and mine
