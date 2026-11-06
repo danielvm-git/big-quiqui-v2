@@ -142,7 +142,25 @@ handoff:
   bug_fix: 'BUG-013 + BUG-014 + BUG-015 closed. Suite: 26 scripts / 311 tests / 1441
     asserts on epic/e03-kitchen-feed-scene (0 files > 300 lines, 0 functions > 20
     lines).'
-  open_gate_decisions:
+  open_decisions:
+  - 'Ghost-hand drag affordance (Smolsies benchmark) is ADOPTED but deferred to e04:
+    the bath step has the same teach-without-words problem. It becomes an e04 story
+    plus a `model`-rubric eval; do not bolt it onto the released e03.'
+  - 'Benchmark divergences are deliberate and recorded in TEST_PLAN section 4: our
+    120 px hit-target floor and 36 px insets are stricter than the five measured TutoTOONS
+    titles (76-96 px chrome, 7-19 px insets). A review that asks us to align downward
+    is wrong.'
+  - 'Branch protection and repository rulesets return 403 on this private repo (needs
+    GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs
+    with required check ''gate'' manually enforced until the plan is upgraded or the
+    repo is made public.'
+  - 'Version delivered by CI is only meaningful on main: big-release silently no-ops
+    when HEAD is not a configured release branch.'
+  - 'Hero-scale contract: DECIDED — the ratio on the opaque character is the requirement,
+    the px figures in DESIGN section 3 are per-canvas illustrations. `QuiQuiRig` fits
+    the box to the opaque art, so box height == painted height at rest.'
+
+gate_decisions:
   - gate: "planning spine (e07 tasks were boilerplate)"
     decision: "wrote specs + tasks + verify commands for e07s01..s04 before coding"
     reason: "the capsule's task files were template placeholders; a task without a real verify command is not a gate"
