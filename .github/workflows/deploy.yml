@@ -1,0 +1,71 @@
+# story: e06s03
+# Decoupled CD (audit item CI4). CI runs on pull_request and push; this file runs ONLY
+# after the CI workflow succeeds on main, and it consumes CI's artefacts instead of
+# rebuilding (single-build principle).
+#
+# Until e11 there is nothing to deploy: the iOS export job self-disables without
+# `game/export_presets.cfg`, so this workflow validates the boundary artifact and then
+# reports "no deployable artefact" instead of failing. The moment the preset lands it
+# becomes the deployment path, with no restructuring.
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["Test Build Release"]
+    types: [completed]
+    branches: [main]
+
+# CI9: a deploy in flight is never cancelled by a newer commit.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Resolve the CI run
+        id: ci
+        run: |
+          echo "sha=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_OUTPUT"
+          echo "run_id=${{ github.event.workflow_run.id }}" >> "$GITHUB_OUTPUT"
+
+      - name: Download boundary artifact (deploy-meta.json)
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: deploy-meta
+          run-id: ${{ steps.ci.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate the artifact before trusting it (CI8)
+        run: |
+          test -f deploy-meta.json || { echo "::error::deploy-meta.json missing"; exit 1; }
+          cat deploy-meta.json
+          sha=$(jq -r .sha deploy-meta.json)
+          ref=$(jq -r .ref deploy-meta.json)
+          app=$(jq -r .app_type deploy-meta.json)
+          test "$sha" = "${{ steps.ci.outputs.sha }}" || { echo "::error::sha mismatch: $sha"; exit 1; }
+          test "$ref" = "main" || { echo "::error::ref is $ref, expected main"; exit 1; }
+          echo "validated: sha=$sha ref=$ref app_type=$app"
+
+      - name: Look for a deployable artefact
+        id: artefact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        continue-on-error: true
+        with:
+          name: godot-export
+          run-id: ${{ steps.ci.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: No artefact yet — nothing to deploy
+        if: steps.artefact.outcome != 'success'
+        run: |
+          echo "::notice title=Deploy skipped::No export artefact in the CI run (the iOS preset arrives with e11). Boundary artifact validated; this workflow becomes the deployment path then."

@@ -8,6 +8,29 @@ All human and AI contributors MUST follow these rules without exception.
 
 ## 1. Always Green / Shift Left Doctrine
 
+### 1.0 Commands, Preflight & what they enforce
+
+Single source of truth for commands. `AGENTS.md` repeats the table for agents, and CI runs the same
+Preflight, so **local green means CI green** (audit item CI15).
+
+| Action | Command |
+|---|---|
+| Run | `godot --path game` |
+| Test | `godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit` |
+| Lint | `gdlint game/ && gdformat --check game/` |
+| Typecheck | `godot --headless --path game -s tools/type_gate.gd` |
+| **Preflight (gate)** | `bash scripts/preflight.sh` — L0, L0a, L0b, L1, L3, L4, L5, L5b, L6 |
+| Health | `bash scripts/health.sh` |
+| CI workflows (local) | `bash scripts/ci-lint.sh` |
+| Coverage map | `bash scripts/coverage-map.sh` |
+| Hotspots | `bash scripts/churn-rank.sh` |
+| Project version sync | `bash scripts/sync-project-version.sh` |
+| Setup | `bash scripts/setup.sh` |
+| Logs | `bash scripts/logs.sh summary --sessions 3` |
+| Traceability | `bash scripts/trace-stories.sh --strict` |
+| Release | `big-release release --dry-run --verbose` (CI releases on `main`) |
+
+
 - **1-10-100 Rule:** Catching a defect during TDD costs $1\times$; during epic review costs $10\times$; during child playtesting on iPad costs $100\times$.
 - **Preflight Gate:** Before starting any story and before every commit, the full Preflight command MUST exit `0`:
   ```bash

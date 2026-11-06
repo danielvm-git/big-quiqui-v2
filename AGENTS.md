@@ -57,6 +57,13 @@ Five autoload singletons coordinate the game: `Log` (schema-validated JSONL loca
 - NEVER include `Co-authored-by` or AI agent attribution in git commits.
 - NEVER require reading text to play; every prompt MUST be visual + PT-BR voice/SFX.
 - NEVER use Kenney placeholders, painterly v0.2 assets, or pure black (`#000000`) outlines.
+- NEVER hand-edit generated files: `game/scenes/*.tscn` come from `game/tools/build_*_scene.gd` and
+  `*.gd.uid` from the engine import. Change the builder, regenerate, commit both.
+- NEVER edit vendored or third-party trees (`game/addons/gut/`, `scripts/lib/`). Patch upstream or wrap;
+  do not fork in place.
+- NEVER hand-edit `user://` data. Bump `SaveData.version`, migrate at read time, keep the old field for
+  one release (ADR-005 amendment).
+- NEVER commit secrets, tokens or signing material, and never add a workflow that prints an env block.
 
 ## Agent Rules
 - **Workflow Mandate:** You MUST use the bigpowers skills (`plan-work`, `develop-tdd`, `build-epic`, `verify-work`, `audit-code`) to perform tasks. DO NOT write code directly without active epic/story specs.

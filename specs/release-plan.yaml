@@ -15,10 +15,14 @@ release:
     v0.5.0: e04
     v0.6.0: e05
     v0.7.0: e06
-    v0.8.0: e07
-    v0.9.0: e08
-    v0.10.0: e09
-    v0.11.0: e10
+    # v0.8.0 was consumed by a portfolio `feat(observability)` commit (PR #26), not by an
+    # epic: the train stays intact, the mapping shifts by one, and e11 still lands v1.0.0
+    # through an explicit `feat(e11)!:` breaking change.
+    v0.8.0: "feat(observability) — portfolio tooling, not an epic"
+    v0.9.0: e07
+    v0.10.0: e08
+    v0.11.0: e09
+    v0.12.0: e10
     v1.0.0: e11
 title: "Coelinha QuiQui — Greenfield TutoTOONS Vertical-Slice Release Plan"
 slicing_strategy: "scene_by_scene_vertical"

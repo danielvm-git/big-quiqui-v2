@@ -2,6 +2,7 @@
 
 <!-- story: e01s01 -->
 - **Status:** Accepted — the **composition clause is superseded by ADR-008**; the viewport contract below still stands
+- **Retroactive:** yes — recorded after the decision was already in force in code
 - **Date:** 2026-11-04
 
 ## Context

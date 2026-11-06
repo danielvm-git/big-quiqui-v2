@@ -121,6 +121,12 @@ else
   info "skipped — no vendored validator and bigpowers not installed globally"
 fi
 
+stage "L5c · project version matches the latest tag"
+# BUG-016: `.big-release.yml` claimed CI synced project.godot from the tag, and nothing
+# did — the game shipped v0.7.0 advertising 0.1.0. The export job syncs before building
+# the IPA; this asserts it locally and in CI.
+run "sync-project-version --check" bash scripts/sync-project-version.sh --check
+
 stage "L6 · CI workflows (wire-ci, local)"
 # Actionlint when installed; the structural rules (SHA pinning, permissions, timeouts,
 # concurrency, no pull_request_target) always run. A pipeline that cannot be validated
