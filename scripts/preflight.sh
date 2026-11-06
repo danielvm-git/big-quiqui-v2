@@ -121,6 +121,12 @@ else
   info "skipped — no vendored validator and bigpowers not installed globally"
 fi
 
+stage "L6 · CI workflows (wire-ci, local)"
+# Actionlint when installed; the structural rules (SHA pinning, permissions, timeouts,
+# concurrency, no pull_request_target) always run. A pipeline that cannot be validated
+# locally breaks every cycle, so this is a gate and not a note.
+run "ci-lint.sh" bash scripts/ci-lint.sh
+
 stage "L5b · release config (big-release)"
 if command -v big-release >/dev/null 2>&1; then
   run "big-release validate" big-release validate

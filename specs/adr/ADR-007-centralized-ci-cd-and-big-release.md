@@ -110,3 +110,41 @@ preset at e11 — the behaviour the job's own comment always claimed.
 **Upstream action:** port the same two-job shape to `danielvm-git/.github` →
 `test-build-release-godot.yml` and delete this amendment when the copy is re-synced. Until then this
 file is the record of the divergence, so a re-sync does not silently reintroduce the block.
+
+## Amendment 2026-11-06 — self-contained by decision, not by accident
+
+The portfolio guide (`danielvm-git/.github` discussions/32, v4.1.0) offers two consumption modes:
+invoke a central reusable workflow, or keep a template copy in the repository. **This project stays
+self-contained.** The central mode was tried and failed here: a cross-repo `uses:` from a private
+repository produced a run with **0 jobs and no diagnostic**, while `actionlint` was clean on both files.
+A pipeline that cannot start cannot be debugged.
+
+### What we still follow from the guide, because it is still right
+
+| Principle | Status here |
+|---|---|
+| **Single-build boundary artifact** | Kept: `build` emits `deploy-meta.json` (`{sha, ref, app_type}`) exactly as specified |
+| **Least-privilege `permissions:` per job** | Kept, and now *enforced* by `scripts/ci-lint.sh` (preflight L6 + a `ci-lint` job) |
+| **Actions pinned to 40-char SHAs** | Kept, enforced, and kept honest by Dependabot (`.github/dependabot.yml`) |
+| **Concurrency per ref** | Kept |
+| **Per-job `timeout-minutes:`** | Kept, enforced |
+| **`big-release` as the release engine** | Kept (git-derived version, tag, GitHub release, artifact attach) |
+| **Fast static gate before the expensive jobs** | Kept, and `ci-lint` now runs before everything else in the chain |
+
+### What we deliberately dropped, and why
+
+| Guide element | Why not here |
+|---|---|
+| Central reusable workflow | 0-job startup failure on a private repo; a local copy is debuggable, a black box is not |
+| CD decoupled through `workflow_run` | There is no deploy target until e11. Splitting build from "deploy" today would add a second workflow to debug for an offline app with nowhere to deploy |
+| `name: Test Build Release` | That name exists so the central deploy workflow can listen for it. With no central workflow, the name is noise; `CI/CD` says what the file is |
+| `semantic-release` | `big-release` is the portfolio's engine and the one e11 will use for the iPad build |
+| Matrix builds | One engine version is pinned by the project (`GODOT_VERSION`), so a matrix multiplies minutes for identical coverage |
+| `health_check_expected_body` | There is no HTTP surface. The runtime equivalent is `scripts/health.sh` |
+
+### The honest limit of "self-contained"
+
+Nothing here is shared, so a fix lands once per repository rather than once for 28. That cost is
+accepted for this project: the pipeline is one file, ~300 lines, validated locally in a second by
+`scripts/ci-lint.sh`. **Revisit at e11** — the iPad build is the first stage with a real deploy target,
+and that is the moment the decoupling earns its keep.
