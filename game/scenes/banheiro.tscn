@@ -16,14 +16,14 @@
 [ext_resource type="Texture2D" path="res://assets/art/efeitos/gota.png" id="14_3migl"]
 [ext_resource type="Texture2D" path="res://assets/art/efeitos/bolha.png" id="15_mnpdx"]
 
-[node name="Banheiro" type="Control" unique_id=698510564]
+[node name="Banheiro" type="Control" unique_id=1996394751]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_p1g6w")
 
-[node name="Background" type="TextureRect" parent="." unique_id=1442655372 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=8608162 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -32,7 +32,7 @@ texture = ExtResource("2_qnxut")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=1338119500 groups=["rig"]]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=1868291103 groups=["rig"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -42,14 +42,14 @@ offset_left = -320.0
 offset_right = 320.0
 script = ExtResource("3_qg2ob")
 
-[node name="Foam0" type="Control" parent="." unique_id=1505101331 groups=["foam"]]
+[node name="Foam0" type="Control" parent="." unique_id=1541413340 groups=["foam"]]
 anchors_preset = 0
 offset_right = 120.0
 offset_bottom = 120.0
 mouse_filter = 2
 script = ExtResource("4_ny1wj")
 
-[node name="Art" type="TextureRect" parent="Foam0" unique_id=1029458815]
+[node name="Art" type="TextureRect" parent="Foam0" unique_id=870974100]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -58,14 +58,14 @@ texture = ExtResource("5_556lo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Foam1" type="Control" parent="." unique_id=74553847 groups=["foam"]]
+[node name="Foam1" type="Control" parent="." unique_id=692483967 groups=["foam"]]
 anchors_preset = 0
 offset_right = 120.0
 offset_bottom = 120.0
 mouse_filter = 2
 script = ExtResource("4_ny1wj")
 
-[node name="Art" type="TextureRect" parent="Foam1" unique_id=1371443361]
+[node name="Art" type="TextureRect" parent="Foam1" unique_id=1071348567]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -74,14 +74,14 @@ texture = ExtResource("5_556lo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Foam2" type="Control" parent="." unique_id=1601694394 groups=["foam"]]
+[node name="Foam2" type="Control" parent="." unique_id=1534824522 groups=["foam"]]
 anchors_preset = 0
 offset_right = 120.0
 offset_bottom = 120.0
 mouse_filter = 2
 script = ExtResource("4_ny1wj")
 
-[node name="Art" type="TextureRect" parent="Foam2" unique_id=953360129]
+[node name="Art" type="TextureRect" parent="Foam2" unique_id=1141808079]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -90,14 +90,14 @@ texture = ExtResource("5_556lo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Foam3" type="Control" parent="." unique_id=1947101734 groups=["foam"]]
+[node name="Foam3" type="Control" parent="." unique_id=1226498420 groups=["foam"]]
 anchors_preset = 0
 offset_right = 120.0
 offset_bottom = 120.0
 mouse_filter = 2
 script = ExtResource("4_ny1wj")
 
-[node name="Art" type="TextureRect" parent="Foam3" unique_id=984639426]
+[node name="Art" type="TextureRect" parent="Foam3" unique_id=1287274820]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -106,14 +106,14 @@ texture = ExtResource("5_556lo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Foam4" type="Control" parent="." unique_id=1973887180 groups=["foam"]]
+[node name="Foam4" type="Control" parent="." unique_id=528958195 groups=["foam"]]
 anchors_preset = 0
 offset_right = 120.0
 offset_bottom = 120.0
 mouse_filter = 2
 script = ExtResource("4_ny1wj")
 
-[node name="Art" type="TextureRect" parent="Foam4" unique_id=2143500374]
+[node name="Art" type="TextureRect" parent="Foam4" unique_id=483518387]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -122,14 +122,14 @@ texture = ExtResource("5_556lo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Foam5" type="Control" parent="." unique_id=1350805022 groups=["foam"]]
+[node name="Foam5" type="Control" parent="." unique_id=2047293493 groups=["foam"]]
 anchors_preset = 0
 offset_right = 120.0
 offset_bottom = 120.0
 mouse_filter = 2
 script = ExtResource("4_ny1wj")
 
-[node name="Art" type="TextureRect" parent="Foam5" unique_id=1414185216]
+[node name="Art" type="TextureRect" parent="Foam5" unique_id=1321178083]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -138,14 +138,14 @@ texture = ExtResource("5_556lo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Foam6" type="Control" parent="." unique_id=394421433 groups=["foam"]]
+[node name="Foam6" type="Control" parent="." unique_id=61426915 groups=["foam"]]
 anchors_preset = 0
 offset_right = 120.0
 offset_bottom = 120.0
 mouse_filter = 2
 script = ExtResource("4_ny1wj")
 
-[node name="Art" type="TextureRect" parent="Foam6" unique_id=1286685954]
+[node name="Art" type="TextureRect" parent="Foam6" unique_id=1558656860]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -154,14 +154,14 @@ texture = ExtResource("5_556lo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Foam7" type="Control" parent="." unique_id=1726014895 groups=["foam"]]
+[node name="Foam7" type="Control" parent="." unique_id=1409249951 groups=["foam"]]
 anchors_preset = 0
 offset_right = 120.0
 offset_bottom = 120.0
 mouse_filter = 2
 script = ExtResource("4_ny1wj")
 
-[node name="Art" type="TextureRect" parent="Foam7" unique_id=1319786237]
+[node name="Art" type="TextureRect" parent="Foam7" unique_id=390346032]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -170,7 +170,7 @@ texture = ExtResource("5_556lo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Sponge" type="Control" parent="." unique_id=496197745 groups=["hit_target"]]
+[node name="Sponge" type="Control" parent="." unique_id=1798211812 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 1.0
@@ -182,7 +182,7 @@ offset_right = 74.0
 offset_bottom = -36.0
 script = ExtResource("6_gr8d6")
 
-[node name="Art" type="TextureRect" parent="Sponge" unique_id=634442848]
+[node name="Art" type="TextureRect" parent="Sponge" unique_id=2142059824]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -191,7 +191,7 @@ texture = ExtResource("7_6p42e")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shower" type="Control" parent="." unique_id=1212850549 groups=["hit_target"]]
+[node name="Shower" type="Control" parent="." unique_id=2435226 groups=["hit_target"]]
 visible = false
 anchors_preset = 0
 anchor_left = 0.5
@@ -204,7 +204,7 @@ offset_right = 74.0
 offset_bottom = -36.0
 script = ExtResource("6_gr8d6")
 
-[node name="Art" type="TextureRect" parent="Shower" unique_id=386587521]
+[node name="Art" type="TextureRect" parent="Shower" unique_id=2092736535]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -213,7 +213,7 @@ texture = ExtResource("8_pv52q")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Towel" type="Control" parent="." unique_id=913962013 groups=["hit_target"]]
+[node name="Towel" type="Control" parent="." unique_id=1789904700 groups=["hit_target"]]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -226,7 +226,7 @@ offset_right = -36.0
 offset_bottom = -36.0
 script = ExtResource("6_gr8d6")
 
-[node name="Art" type="TextureRect" parent="Towel" unique_id=542750669]
+[node name="Art" type="TextureRect" parent="Towel" unique_id=872250135]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -235,7 +235,7 @@ texture = ExtResource("9_ldtqo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Soap0" type="Control" parent="." unique_id=73158479 groups=["hit_target"]]
+[node name="Soap0" type="Control" parent="." unique_id=1325434997 groups=["hit_target"]]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -245,7 +245,7 @@ offset_right = 156.0
 offset_bottom = -36.0
 script = ExtResource("10_3746r")
 
-[node name="Art" type="TextureRect" parent="Soap0" unique_id=155636090]
+[node name="Art" type="TextureRect" parent="Soap0" unique_id=1482408165]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -254,7 +254,7 @@ texture = ExtResource("11_5ukx8")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Soap1" type="Control" parent="." unique_id=1957417902 groups=["hit_target"]]
+[node name="Soap1" type="Control" parent="." unique_id=1604407471 groups=["hit_target"]]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -264,7 +264,7 @@ offset_right = 300.0
 offset_bottom = -36.0
 script = ExtResource("10_3746r")
 
-[node name="Art" type="TextureRect" parent="Soap1" unique_id=386721663]
+[node name="Art" type="TextureRect" parent="Soap1" unique_id=899721676]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -273,7 +273,7 @@ texture = ExtResource("11_5ukx8")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Soap2" type="Control" parent="." unique_id=1069262150 groups=["hit_target"]]
+[node name="Soap2" type="Control" parent="." unique_id=1617388652 groups=["hit_target"]]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -283,7 +283,7 @@ offset_right = 444.0
 offset_bottom = -36.0
 script = ExtResource("10_3746r")
 
-[node name="Art" type="TextureRect" parent="Soap2" unique_id=1987321744]
+[node name="Art" type="TextureRect" parent="Soap2" unique_id=461373563]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -292,7 +292,7 @@ texture = ExtResource("11_5ukx8")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HomeButton" type="Control" parent="." unique_id=1666761856 groups=["hit_target"]]
+[node name="HomeButton" type="Control" parent="." unique_id=1936387301 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 36.0
@@ -300,7 +300,7 @@ offset_right = 156.0
 offset_bottom = 156.0
 script = ExtResource("10_3746r")
 
-[node name="Art" type="TextureRect" parent="HomeButton" unique_id=1124272239]
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=1796123219]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -309,7 +309,7 @@ texture = ExtResource("12_1f7wg")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="WishBubble" type="Control" parent="." unique_id=1047813723 groups=["wish_bubble"]]
+[node name="WishBubble" type="Control" parent="." unique_id=1930269222 groups=["wish_bubble"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -321,7 +321,7 @@ offset_right = 110.0
 offset_bottom = -8.0
 script = ExtResource("13_dcnxr")
 
-[node name="Gota" type="CPUParticles2D" parent="." unique_id=1132569593]
+[node name="Gota" type="CPUParticles2D" parent="." unique_id=1137114287]
 z_index = 30
 emitting = false
 amount = 12
@@ -336,7 +336,7 @@ initial_velocity_max = 200.0
 scale_amount_min = 0.05
 scale_amount_max = 0.09
 
-[node name="Bolhas" type="CPUParticles2D" parent="." unique_id=1471316378]
+[node name="Bolhas" type="CPUParticles2D" parent="." unique_id=1066529673]
 z_index = 30
 emitting = false
 amount = 10

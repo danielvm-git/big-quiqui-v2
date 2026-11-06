@@ -23,11 +23,6 @@ const RINSE_POINTS: int = 10
 const DRY_POINTS: int = 8
 ## Beat between stages so the change is visible instead of instant.
 const STAGE_GAP_SEC: float = 0.8
-## Blob diameter as a share of the painted character height.
-const BLOB_RATIO: float = 0.11
-## Rings the blobs sit on, as a fraction of the hull radius. Two rings read as a
-## pattern on her body instead of a grid on her face.
-const RING_FRACTIONS: Array[float] = [0.55, 0.85]
 ## Soap tints, in child-friendly order: the first is the default.
 const SOAP_TINTS: Array[Color] = [
 	Color(0.92, 0.97, 1.0),
@@ -213,15 +208,11 @@ func _credit_bath() -> void:
 
 
 func _inside_hull(point: Vector2) -> bool:
-	var hull: PackedVector2Array = rig.scrub_hull_global()
-	return hull.size() >= 3 and Geometry2D.is_point_in_polygon(point, hull)
+	return BathRoomView.contains(rig.scrub_hull_global(), point)
 
 
 func _set_device(device: TouchDraggable, active: bool) -> void:
-	if device == null:
-		return
-	device.enabled = active
-	device.visible = active
+	BathRoomView.set_device(device, active)
 
 
 func _wire_sponge() -> void:
@@ -259,9 +250,7 @@ func _on_soap_tapped(index: int) -> void:
 
 
 func _apply_tint() -> void:
-	var colour: Color = SOAP_TINTS[_tint % SOAP_TINTS.size()]
-	for blob_node: FoamBlob in _blobs:
-		blob_node.self_modulate = colour
+	BathRoomView.tint(_blobs, SOAP_TINTS[_tint % SOAP_TINTS.size()])
 
 
 # ── blob geometry ────────────────────────────────────────────────────────────
@@ -270,37 +259,17 @@ func _apply_tint() -> void:
 ## Rebuilds the eight slots in normalised hull space. Called once at ready; the
 ## projection runs again on every resize.
 func _rebuild_blobs() -> void:
-	_slots.clear()
-	for index: int in range(BLOB_COUNT):
-		var ring: float = RING_FRACTIONS[index % RING_FRACTIONS.size()]
-		var angle: float = TAU * float(index) / float(BLOB_COUNT)
-		_slots.append(Vector2(ring, angle))
+	_slots = BathRoomView.slots(BLOB_COUNT)
 	_blobs.clear()
 	for index: int in range(BLOB_COUNT):
 		var node: FoamBlob = get_node_or_null("Foam%d" % index) as FoamBlob
-		if node == null:
-			continue
-		_blobs.append(node)
-		(node.get_node("Art") as TextureRect).modulate = Color.WHITE
+		if node != null:
+			_blobs.append(node)
 	project_blobs()
 
 
 func project_blobs() -> void:
-	var hull: PackedVector2Array = rig.scrub_hull_global()
-	if hull.size() < 3 or _blobs.is_empty():
-		return
-	var box: Rect2 = Rect2(hull[0], Vector2.ZERO)
-	for point: Vector2 in hull:
-		box = box.expand(point)
-	var centre: Vector2 = box.get_center()
-	var radii: Vector2 = box.size * 0.5
-	var diameter: float = maxf(rig.get_visual_global_rect().size.y * BLOB_RATIO, 24.0)
-	for index: int in range(_blobs.size()):
-		var slot: Vector2 = _slots[index]
-		var point: Vector2 = centre + Vector2(cos(slot.y) * radii.x * slot.x, sin(slot.y) * radii.y * slot.x)
-		var blob_node: FoamBlob = _blobs[index]
-		blob_node.size = Vector2(diameter, diameter)
-		blob_node.global_position = point - blob_node.size * 0.5
+	BathRoomView.project_blobs(rig, _blobs, _slots)
 
 
 func _notification(what: int) -> void:

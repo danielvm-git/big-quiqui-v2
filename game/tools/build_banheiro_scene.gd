@@ -40,17 +40,8 @@ const BLOB_SIZE: float = 120.0
 
 
 func _init() -> void:
-	var root: Control = Control.new()
-	root.name = "Banheiro"
-	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	root.set_script(load(SCENE_SCRIPT))
-
-	var background: TextureRect = _make_art("Background", BG_PATH)
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	background.add_to_group("background", true)
-	root.add_child(background)
-
+	var root: Control = _make_root()
+	_add_background(root)
 	_add_rig(root)
 	_add_blobs(root)
 	_add_sponge(root)
@@ -59,12 +50,33 @@ func _init() -> void:
 	_add_soaps(root)
 	_add_home(root)
 	_add_bubble(root)
-	root.add_child(_make_particles("Gota", GOTA_ART, 12, 0.6, 700.0, Vector2(0.05, 0.09)))
-	root.add_child(_make_particles("Bolhas", BOLHA_ART, 10, 0.9, -200.0, Vector2(0.06, 0.12)))
+	_add_particles(root)
 
 	var saved: bool = SceneBuilder.pack_and_save(root, SCENE_PATH, "build_banheiro_scene")
 	root.free()
 	quit(0 if saved else 1)
+
+
+func _make_root() -> Control:
+	var root: Control = Control.new()
+	root.name = "Banheiro"
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.set_script(load(SCENE_SCRIPT))
+	return root
+
+
+## Two one-shot bursts, used by the rinse and the dry pass.
+func _add_particles(root: Control) -> void:
+	root.add_child(_make_particles("Gota", GOTA_ART, 12, 0.6, 700.0, Vector2(0.05, 0.09)))
+	root.add_child(_make_particles("Bolhas", BOLHA_ART, 10, 0.9, -200.0, Vector2(0.06, 0.12)))
+
+
+func _add_background(root: Control) -> void:
+	var background: TextureRect = _make_art("Background", BG_PATH)
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	background.add_to_group("background", true)
+	root.add_child(background)
 
 
 func _add_rig(root: Control) -> void:
@@ -95,9 +107,7 @@ func _add_blobs(root: Control) -> void:
 		blob.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		blob.add_to_group("foam", true)
 		blob.size = Vector2(BLOB_SIZE, BLOB_SIZE)
-		var art: TextureRect = _make_art("Art", BLOB_ART)
-		art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		blob.add_child(art)
+		blob.add_child(_framed_art("Art", BLOB_ART))
 		root.add_child(blob)
 
 
@@ -108,18 +118,16 @@ func _add_sponge(root: Control) -> void:
 	sponge.set_script(load(SPONGE_SCRIPT))
 	sponge.add_to_group("hit_target", true)
 	sponge.set("mode", 1)  # TouchDraggable.Mode.CONTINUOUS_SCRUB
-	(
-		SceneBuilder
-		. pin(
-			sponge,
-			Vector4(0.5, 1.0, 0.5, 1.0),
-			Vector4(-SPONGE_SIZE.x * 0.5, -SPONGE_SIZE.y - INSET, SPONGE_SIZE.x * 0.5, -INSET),
-		)
-	)
-	var art: TextureRect = _make_art("Art", SPONGE_ART)
-	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	sponge.add_child(art)
+	_pin_device(sponge, 0)
+	sponge.add_child(_framed_art("Art", SPONGE_ART))
 	root.add_child(sponge)
+
+
+## A child node whose art fills it, used by every button-shaped node.
+func _framed_art(node_name: String, art_path: String) -> TextureRect:
+	var art: TextureRect = _make_art(node_name, art_path)
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	return art
 
 
 ## Stage devices share one shape: a scrub target parked at an edge, disabled until its
@@ -134,15 +142,19 @@ func _add_device(root: Control, node_name: String, art_path: String, side: int) 
 	device.set("mode", 1)  # TouchDraggable.Mode.CONTINUOUS_SCRUB
 	device.set("enabled", false)
 	device.visible = false
+	_pin_device(device, side)
+	var art: TextureRect = _make_art("Art", art_path)
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	device.add_child(art)
+	root.add_child(device)
+
+
+## `side`: 0 centre-bottom, 1 left-bottom, 2 right-bottom. The offsets follow the
+## anchor, so an edge device stays inside the 36 px inset on every canvas.
+func _pin_device(device: Control, side: int) -> void:
 	var anchor_x: float = 0.5 if side == 0 else (0.0 if side == 1 else 1.0)
-	var left: float = -SPONGE_SIZE.x * 0.5
-	var right: float = SPONGE_SIZE.x * 0.5
-	if side == 1:
-		left = INSET
-		right = INSET + SPONGE_SIZE.x
-	elif side == 2:
-		left = -INSET - SPONGE_SIZE.x
-		right = -INSET
+	var left: float = -SPONGE_SIZE.x * 0.5 if side == 0 else (INSET if side == 1 else -INSET - SPONGE_SIZE.x)
+	var right: float = SPONGE_SIZE.x * 0.5 if side == 0 else (INSET + SPONGE_SIZE.x if side == 1 else -INSET)
 	(
 		SceneBuilder
 		. pin(
@@ -151,10 +163,6 @@ func _add_device(root: Control, node_name: String, art_path: String, side: int) 
 			Vector4(left, -SPONGE_SIZE.y - INSET, right, -INSET),
 		)
 	)
-	var art: TextureRect = _make_art("Art", art_path)
-	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	device.add_child(art)
-	root.add_child(device)
 
 
 ## Three soaps along the bottom-left; tapping one recolours the foam.
@@ -173,9 +181,7 @@ func _add_soaps(root: Control) -> void:
 				Vector4(left, -SOAP_SIZE.y - INSET, left + SOAP_SIZE.x, -INSET),
 			)
 		)
-		var art: TextureRect = _make_art("Art", SOAP_ART)
-		art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		soap.add_child(art)
+		soap.add_child(_framed_art("Art", SOAP_ART))
 		root.add_child(soap)
 
 
@@ -192,9 +198,7 @@ func _add_home(root: Control) -> void:
 			Vector4(INSET, INSET, INSET + HOME_SIZE.x, INSET + HOME_SIZE.y),
 		)
 	)
-	var art: TextureRect = _make_art("Art", HOME_ART)
-	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	home.add_child(art)
+	home.add_child(_framed_art("Art", HOME_ART))
 	root.add_child(home)
 
 
