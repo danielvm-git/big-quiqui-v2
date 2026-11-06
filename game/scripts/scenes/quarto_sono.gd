@@ -94,7 +94,9 @@ func _finish() -> void:
 		return
 	_credit_sleep()
 	_log("sleep.finished", {"lamp_on": lamp_on})
-	_request(CELEBRACAO_PATH)
+	# Only a credited SLEEP opens the party. Coming back after the step is free play, and
+	# a celebration with no reward behind it is worse than going home (review B).
+	_request(CELEBRACAO_PATH if credited else CASA_PATH)
 
 
 func _credit_sleep() -> void:

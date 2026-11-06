@@ -131,3 +131,11 @@ func test_the_celebration_passes_the_oracle_and_has_no_text() -> void:
 		for node: Node in mounted.find_children("*", "Label", true, false):
 			assert_true((node as Label).text.is_empty(), "%s carries text" % node.name)
 		mounted.queue_free()
+
+
+# e07 review B: the celebration always returns by itself, even when there is nothing to pay.
+func test_the_celebration_leaves_even_when_the_cycle_was_not_open() -> void:
+	_mount()
+	await wait_process_frames(3)
+
+	assert_eq(requested, [CASA_PATH], "the only exit is not a 120 px corner button")

@@ -177,3 +177,15 @@ func test_the_bedroom_passes_the_oracle_on_both_canvases_and_has_no_text() -> vo
 		for node: Node in mounted.find_children("*", "Label", true, false):
 			assert_true((node as Label).text.is_empty(), "%s carries text" % node.name)
 		mounted.queue_free()
+
+
+# e07 review B: an uncredited SLEEP must go home, not open a rewardless party.
+func test_an_uncredited_finish_goes_home_instead_of_the_celebration() -> void:
+	_mount()
+	await wait_process_frames(3)
+	_tuck()
+	_tap(scene.lamp)
+
+	assert_eq(scene.fsm.state, SleepScene.STATE_FINISHED)
+	assert_false(scene.credited, "the loop was never in SLEEP")
+	assert_eq(requested, [SleepScene.CASA_PATH], "the hub, not a rewardless celebration")

@@ -66,3 +66,32 @@
 
 `trace-stories.sh --strict` → 0 missing. `e07s01..s04` referenced from their specs, task files and the
 verification rows above.
+
+## Review (request-review) and response (respond-review)
+
+Two independent reviewers, different agents, no shared context:
+
+| Reviewer | Agent | Verdict | Score | Must-fix |
+|---|---|---|---|---|
+| A | claude | FAIL | 75 % | 1 |
+| B | omp | FAIL | 78 % | 2 |
+
+Reports: `REVIEW-A-e07-2026-11-06.md`, `REVIEW-B-e07-2026-11-06.md`.
+
+### Responded (all must-fixes closed)
+
+| Finding | Fix | Test |
+|---|---|---|
+| **A1 / B1 — the cycle reward was never written to disk.** `_apply` mutated and emitted but never saved; `save()` was called only by `equip()`, and there is no quit hook. On iPad the app is killed from the switcher right after the party, so the child lost the +5/+1 and the cycle counter. Reproduced by both reviewers (`coins=5, writes=0, file_exists=false`). | `_apply` now writes through `save()`; the HUD's single `progress_changed` comes from the write itself, with an explicit emit when the write fails | `test_completing_a_cycle_writes_the_save` (write_count +1, and a fresh `load_or_default()` sees the coins) |
+| **B2 — the celebration was reachable with zero reward and could not leave by itself.** The bedroom's `_finish()` requested the party unconditionally while `_credit_sleep()` silently declines outside SLEEP, and `_leave()` only ran when `close_cycle()` succeeded | `_finish()` requests the celebration **only when credited**, else the hub; the celebration always `_leave()`s, closing the cycle first if it can | `test_an_uncredited_finish_goes_home_instead_of_the_celebration`, `test_the_celebration_leaves_even_when_the_cycle_was_not_open` |
+
+Both reviewers also confirmed: the lamp never tints the rig, the tuck is idempotent, the detour guard is
+idempotent and pays nothing, `STEP_ROOM_SPEC` passes on both canvases, and no scene carries text.
+
+**Gate after the response: PREFLIGHT GREEN — 396 tests, 2065 asserts.**
+
+### Deferred (should-fix / consider, not blocking)
+
+- Reviewer B's `consider` items on `_leave()` duplication across scenes and the E2E's stated scope are
+  recorded in the reports; the duplication is the project's established per-scene pattern, and the E2E
+  boundary is written into `e07s04.md`.

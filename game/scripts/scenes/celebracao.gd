@@ -34,7 +34,10 @@ func _ready() -> void:
 	_play_stream("play_music", MUSIC_PATH)
 	_play_stream("play_voice", VOICE_PATH)
 	_log("scene.ready", {"scene": "celebracao"})
+	# Close if we can, and leave either way: every other room returns to the hub by
+	# itself, and a celebration that only escapes through the corner button is a trap.
 	close_cycle()
+	_leave()
 
 
 func _process(delta: float) -> void:
