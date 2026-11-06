@@ -109,6 +109,27 @@ When any gate fails, you MUST either fix it immediately (`quick-fix` if data-onl
 
 ---
 
+## 5. Size & Review Bars
+
+`audit-code` has applied these two bars since e01 and every epic review quotes them, but until the e07
+post-epic review they were written down nowhere, so each audit read them slightly differently (the e07
+audit accepted a 204-line E2E while missing a 349-line one). They are now the standard:
+
+- **One file, one subject: 300 lines maximum.** A file that grows past it is split by subject, not
+  trimmed by deleting assertions (BUG-033 split `test_casa_scene.gd` 349 → 277 + 109).
+- **One function, one job: 20 non-comment lines maximum.** Extract a helper instead of nesting.
+- **Scope:** the bar applies to every **new or changed** file. Grandfathered debt, as of the e07
+  post-epic review, is exactly: `game/scripts/components/quiqui_rig.gd` (427),
+  `game/tests/unit/test_quiqui_rig.gd` (404), `.github/workflows/ci-cd.yml` (341),
+  `game/scripts/components/touch_draggable.gd` (331), `game/scripts/scenes/banheiro.gd` (326).
+  Growing one of those is a violation; shrinking one is welcome whenever a touching change allows it.
+- **Generated artifacts are not hand-maintained:** `specs/tech-architecture/COVERAGE_MAP_LATEST.md`
+  (`bash scripts/coverage-map.sh --write`) and `HOTSPOTS_LATEST.md`
+  (`bash scripts/churn-rank.sh 0 --write`) are regenerated and committed at every epic close
+  (BUG-034 left them two epics behind).
+
+---
+
 ## Tests (F.I.R.S.T. + 9-Layer Pyramid)
 
 - **Fast, Isolated, Repeatable, Self-Validating, Timely (TDD Red → Green → Refactor).**

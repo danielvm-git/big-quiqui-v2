@@ -7,21 +7,21 @@ Churn is the number of commits touching the file; `lines` is its current size;
 
 | Rank | File | Commits | Lines | Tests |
 |---|---|---|---|---|
-| 1 | `game/tests/integration/test_casa_scene.gd` | 7 | 333 | 0 |
-| 2 | `game/tests/unit/test_quiqui_rig.gd` | 6 | 404 | 0 |
-| 3 | `game/scripts/components/quiqui_rig.gd` | 6 | 427 | 8 |
-| 4 | `.github/workflows/ci-cd.yml` | 6 | 328 | 0 |
-| 5 | `game/tests/integration/test_titulo_scene.gd` | 5 | 112 | 0 |
-| 6 | `scripts/preflight.sh` | 4 | 149 | 1 |
-| 7 | `game/tools/type_gate.gd` | 4 | 66 | 1 |
-| 8 | `game/tools/build_titulo_scene.gd` | 4 | 92 | 0 |
-| 9 | `game/tools/build_casa_scene.gd` | 4 | 190 | 0 |
-| 10 | `game/tests/unit/test_progress_manager.gd` | 4 | 201 | 0 |
-| 11 | `game/tests/unit/test_log.gd` | 4 | 142 | 1 |
-| 12 | `game/tests/integration/test_geometry_oracle.gd` | 4 | 291 | 0 |
-| 13 | `game/tests/helpers/geometry_oracle.gd` | 4 | 285 | 17 |
-| 14 | `game/scripts/resources/save_data.gd` | 4 | 127 | 4 |
-| 15 | `game/scripts/components/wish_bubble.gd` | 4 | 181 | 1 |
+| 1 | `game/tests/integration/test_casa_scene.gd` | 9 | 277 | 1 |
+| 2 | `.github/workflows/ci-cd.yml` | 7 | 341 | 0 |
+| 3 | `game/tests/unit/test_quiqui_rig.gd` | 6 | 404 | 0 |
+| 4 | `game/tests/integration/test_quarto_sono_scene.gd` | 6 | 269 | 0 |
+| 5 | `game/scripts/components/quiqui_rig.gd` | 6 | 427 | 9 |
+| 6 | `game/scripts/autoloads/scene_manager.gd` | 6 | 279 | 14 |
+| 7 | `game/scripts/autoloads/progress_manager.gd` | 6 | 196 | 9 |
+| 8 | `scripts/preflight.sh` | 5 | 155 | 1 |
+| 9 | `game/tests/unit/test_progress_manager.gd` | 5 | 217 | 0 |
+| 10 | `game/tests/integration/test_titulo_scene.gd` | 5 | 112 | 0 |
+| 11 | `game/scripts/scenes/quarto_sono.gd` | 5 | 187 | 3 |
+| 12 | `game/scripts/scenes/celebracao.gd` | 5 | 127 | 2 |
+| 13 | `game/project.godot` | 5 | 49 | 1 |
+| 14 | `game/tools/type_gate.gd` | 4 | 66 | 1 |
+| 15 | `game/tools/build_titulo_scene.gd` | 4 | 92 | 0 |
 
 **Read this as:** a high-churn, high-line file is where the next bug lives; a
 high-churn, low-test file is where the next regression goes unnoticed.

@@ -1,10 +1,11 @@
 # story: e02s03
 extends GutTest
-## SC-E02-P1-14..20 — the hub slice: `casa.tscn` boots on bg_sala with a
-## reactive QuiQui, six doors, dots, HUD and wish bubble; the layout holds on
-## 16:9 and 4:3; doors fire once under mouse echo; an absent target scene is
-## never navigated to; 8 s of idle show QuiQui's wish; the dots and the door
-## highlight track the CareLoopManager.
+## SC-E02-P1-14..20 — the hub's input and its care-loop coupling: six doors that fire
+## once under mouse echo, an absent target scene that is never navigated to, music on
+## arrival, 8 s of idle showing QuiQui's wish, the dots and the door highlight tracking
+## the CareLoopManager, and the e07 guarantee that a hub arriving inside a CELEBRATE
+## cycle closes it. Layout, inventory and the wish bubble live in `test_casa_layout.gd
+## (split at the 300-line guideline, e07 post-epic).
 
 const SCENE_PATH: String = "res://scenes/casa.tscn"
 const COZINHA_PATH: String = "res://scenes/cozinha.tscn"
@@ -48,34 +49,6 @@ func _mount(size: Vector2i) -> Control:
 	var instance: Node = packed.instantiate()
 	viewport.add_child(instance)
 	return instance as Control
-
-
-# SC-E02-P1-14
-func test_both_aspects_pass_the_geometry_oracle() -> void:
-	for size: Vector2i in GeometryOracle.ASPECTS:
-		var stage: Control = _mount(size)
-		await wait_process_frames(3)
-		var oracle: GeometryOracle = GeometryOracle.new()
-		var findings: Array[String] = oracle.audit(stage, size, GeometryOracle.CARE_ROOM_SPEC)
-		assert_true(findings.is_empty(), "%dx%d: %s" % [size.x, size.y, oracle.summary()])
-		stage.get_parent().queue_free()
-
-
-# SC-E02-P1-15
-func test_the_hub_exposes_rig_bubble_dots_hud_and_six_doors() -> void:
-	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
-	await wait_process_frames(3)
-	assert_not_null(scene.rig, "QuiQui lives in the hub")
-	assert_true(scene.rig.get_visual_global_rect().has_area(), "QuiQui is visible")
-	assert_not_null(scene.bubble)
-	assert_not_null(scene.dots)
-	assert_not_null(scene.hud)
-	for step: String in ["FEED", "BATH", "DRESS", "PLAY", "SLEEP", "VILA"]:
-		var door: TapButton = scene.door(step)
-		assert_not_null(door, "the %s door must exist" % step)
-		assert_true(door.is_in_group(GeometryOracle.HIT_GROUP))
-		var box: Rect2 = door.get_global_rect()
-		assert_true(box.size.x >= 120.0 and box.size.y >= 120.0, "%s door is %s" % [step, box.size])
 
 
 # SC-E02-P1-16
@@ -240,6 +213,25 @@ func test_eight_seconds_of_idle_show_the_wish_and_the_longing_face() -> void:
 	assert_eq(scene.rig.expression_id, "rindo", "and QuiQui laughs again")
 
 
+# e07 post-epic (T-E07-05): the Casa is a whitelisted target of the detour guard, so a hub
+# that arrives while the loop is still in CELEBRATE must close the cycle itself — otherwise
+# it mounts with every care door refusing, the exact brick the guard exists to prevent.
+func test_arriving_during_the_celebration_closes_the_cycle() -> void:
+	var clm: Node = get_node("/root/CareLoopManager")
+	clm.call("reset")
+	clm.call("begin_step", CareSteps.FEED)
+	for step: String in [CareSteps.FEED, CareSteps.BATH, CareSteps.DRESS, CareSteps.PLAY, CareSteps.SLEEP]:
+		clm.call("complete_step", step)
+	assert_eq(str(clm.call("state_id")), CareSteps.CELEBRATE)
+
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_process_frames(3)
+
+	assert_eq(str(clm.call("state_id")), CareSteps.IDLE, "the hub is usable again")
+	assert_eq(int(clm.get("cycle_id")), 1, "and the cycle closed once")
+	assert_eq(scene.door(CareSteps.FEED).modulate.a, 1.0, "the first door is live, not dimmed")
+
+
 # SC-E02-P1-19
 func test_dots_and_highlight_track_the_care_loop_manager() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
@@ -284,47 +276,3 @@ func test_the_vila_door_is_never_dimmed() -> void:
 	clm.complete_step(clm.STATE_FEED)
 	assert_eq(scene.door("VILA").modulate.a, 1.0, "and stays that way as the cycle advances")
 	TestReset.reset_all()
-
-
-# BUG-013: the layout gate must measure the character the child sees, and the
-# scene must actually declare the groups the spec asserts.
-func test_the_hub_declares_every_group_its_spec_asserts() -> void:
-	for size: Vector2i in GeometryOracle.ASPECTS:
-		var stage: Control = _mount(size)
-		await wait_process_frames(3)
-
-		var oracle: GeometryOracle = GeometryOracle.new()
-		var findings: Array[String] = oracle.audit(stage, size, GeometryOracle.CARE_ROOM_SPEC)
-		assert_true(findings.is_empty(), "%dx%d: %s" % [size.x, size.y, oracle.summary()])
-
-		stage.get_parent().queue_free()
-
-
-func test_the_painted_character_keeps_the_design_height_on_ipad() -> void:
-	scene = _mount(GeometryOracle.IPAD_4_3) as CasaScene
-	await wait_process_frames(3)
-
-	var painted: Rect2 = scene.rig.get_visual_global_rect()
-	var canvas: Vector2 = Vector2(GeometryOracle.IPAD_4_3)
-	var height_ratio: float = painted.size.y / canvas.y
-	var feet_ratio: float = painted.end.y / canvas.y
-
-	assert_between(height_ratio, 0.55, 0.65, "DESIGN §3: 55-65 % of the viewport height, not 42 %")
-	assert_almost_eq(feet_ratio, 0.78, 0.02, "and the feet stay on the 78 % line")
-	assert_almost_eq(scene.rig.size.y, painted.size.y, painted.size.y * 0.03, "box matches character")
-
-
-# Round 3 (BUG-013): the bubble hangs above the head line without covering the face.
-func test_the_bubble_never_covers_the_character_on_either_aspect() -> void:
-	for size: Vector2i in GeometryOracle.ASPECTS:
-		scene = _mount(size) as CasaScene
-		await wait_process_frames(3)
-		scene.bubble.show_wish(scene.WISH_ICONS["FEED"])
-		await wait_process_frames(2)
-
-		var head: float = scene.rig.get_visual_global_rect().position.y
-		var bubble_bottom: float = scene.bubble.get_global_rect().end.y
-		assert_true(bubble_bottom <= head + 1.0, "%dx%d: bubble <= head" % [size.x, size.y])
-		scene.bubble.hide_wish()
-		scene.get_parent().queue_free()
-		scene = null

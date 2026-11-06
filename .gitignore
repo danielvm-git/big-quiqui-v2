@@ -28,3 +28,5 @@ allure-report/
 
 # Public-reference frames (measured, never committed): specs/product/TUTOTOONS_REFERENCE.md
 reference/
+# REA acquisition workspace (pulled APKs and engine evidence, never committed)
+.rea/

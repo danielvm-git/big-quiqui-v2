@@ -110,6 +110,8 @@ func next_step() -> String:
 	return STEP_ORDER[done]
 
 
+## TestReset entry point. The reward ledger is in-memory and per-session, so a reset in play would
+## replay a cycle; nothing but tests calls this (ADR-009).
 func reset() -> void:
 	cycle_id = 0
 	_rewarded_cycle_id = -1

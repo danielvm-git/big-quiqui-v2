@@ -100,8 +100,12 @@ func test_the_tuck_sets_the_sleepy_face_and_starts_zzz_once() -> void:
 	assert_true(scene.tucked)
 	assert_eq(scene.rig.expression_id, "sono")
 	assert_true(scene.zzz.emitting, "the zzz burst runs")
-	_tuck()
-	assert_eq(scene.rig.expression_id, "sono", "a second tuck changes nothing")
+	# e07 post-epic (review B should-fix 3): the old test only re-read the expression, so a
+	# `zzz.restart()` on the second tuck would have passed. Stop the burst first, then tuck again.
+	scene.zzz.emitting = false
+	assert_false(scene.tuck(), "the seam refuses a second tuck")
+	assert_false(scene.zzz.emitting, "so the burst is not restarted")
+	assert_eq(scene.rig.expression_id, "sono", "and the sleepy face stays")
 
 
 # ── SC-E07-P0-03 both interactions credit SLEEP once ──────────────────────
@@ -125,6 +129,21 @@ func test_both_interactions_credit_sleep_and_request_the_celebration_once() -> v
 
 
 # ── SC-E07-P1-04 one interaction is not enough ────────────────────────────
+
+
+func test_the_lamp_is_inert_once_the_step_is_finished() -> void:
+	_walk_to_sleep()
+	_mount()
+	await wait_process_frames(3)
+	_tuck()
+	_tap(scene.lamp)
+	assert_eq(scene.fsm.state, SleepScene.STATE_FINISHED)
+	assert_false(scene.lamp_on, "the winning tap dimmed the room")
+
+	_tap(scene.lamp)
+
+	assert_false(scene.lamp_on, "a tap after finishing changes nothing")
+	assert_eq(scene.background.modulate, SleepScene.NIGHT_TINT, "and the room stays dark")
 
 
 func test_the_lamp_alone_does_not_credit() -> void:
@@ -189,3 +208,62 @@ func test_an_uncredited_finish_goes_home_instead_of_the_celebration() -> void:
 	assert_eq(scene.fsm.state, SleepScene.STATE_FINISHED)
 	assert_false(scene.credited, "the loop was never in SLEEP")
 	assert_eq(requested, [SleepScene.CASA_PATH], "the hub, not a rewardless celebration")
+
+
+## e07 post-epic (review B should-fix 5): `play_music` always swaps players, so an unguarded
+## call restarts the hub's theme from 0 s under the zzz. The threat model promises the opposite:
+## "music continues rather than restarting".
+func test_the_bedroom_does_not_restart_the_theme_it_arrives_on() -> void:
+	var audio: Node = get_node("/root/AudioManager")
+	audio.call("play_music", load(SleepScene.MUSIC_PATH) as AudioStream)
+	var active: AudioStreamPlayer = audio.get("_active_music")
+
+	_mount()
+
+	assert_eq(audio.get("_active_music"), active, "play_music swaps players: it was not called")
+	assert_true(bool(audio.call("is_music_playing", load(SleepScene.MUSIC_PATH) as AudioStream)))
+
+
+## e07 post-epic (review B should-fix 6): the bedroom was the only care room that made no sound
+## at all, and it carried a dead VOICE_PATH constant pointing at the celebration's clip. There is
+## no bedtime line in the set (recorded in ADR-009), so the room answers with shipped SFX.
+func test_the_lamp_and_the_tuck_make_a_sound() -> void:
+	var audio: Node = get_node("/root/AudioManager")
+	_mount()
+	await wait_process_frames(3)
+	var plays: int = int(audio.call("sfx_cursor"))
+
+	_tap(scene.lamp)
+	assert_eq(int(audio.call("sfx_cursor")), plays + 1, "the lamp clicks")
+
+	_tuck()
+	assert_eq(int(audio.call("sfx_cursor")), plays + 3, "a thud, then the success chime that ends the step")
+
+
+## e07 post-epic (review B should-fix 4): the frozen contract promises `tuck() -> bool`, and the
+## suite only drove the drag slot. The seam is the contract; the drag is one of its callers.
+func test_the_tuck_seam_reports_the_first_tuck_only() -> void:
+	_mount()
+	await wait_process_frames(3)
+
+	assert_true(scene.tuck(), "the first tuck happens")
+	assert_false(scene.tuck(), "the second one is a no-op")
+	assert_eq(scene.rig.expression_id, "sono")
+
+
+## e07 post-epic (review A consider 3, review B consider 14): `rig.modulate` alone would not
+## catch a tint applied to the rig's layers, or a `CanvasModulate` that darkens the whole
+## canvas — the exact failure T-E07-01 exists for. And the assertion only means something if
+## the character is actually painted.
+func test_the_night_tint_never_reaches_a_layer_or_the_canvas() -> void:
+	_mount()
+	await wait_process_frames(3)
+
+	_tap(scene.lamp)
+
+	var painted: Sprite2D = scene.rig.get_node("Pivot/Expression") as Sprite2D
+	assert_not_null(painted.texture, "the character is painted, so a tint would be visible")
+	for layer: Node in scene.rig.get_node("Pivot").get_children():
+		if layer is Sprite2D:
+			assert_eq((layer as Sprite2D).modulate, Color.WHITE, "%s was tinted" % layer.name)
+	assert_eq(scene.find_children("*", "CanvasModulate", true, false).size(), 0, "nothing darkens the whole canvas")

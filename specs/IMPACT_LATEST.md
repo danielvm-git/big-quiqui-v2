@@ -14,7 +14,7 @@ the two modules every other epic depends on: `CareLoopManager` (its `CELEBRATE �
 | Module | Why it changes | Dependents | Existing tests | Coverage note |
 |---|---|---|---|---|
 | `game/scripts/scenes/quarto_sono.gd` (new) | SLEEP scene: lamp toggle, `sono` expression, SLEEP credit | `casa.gd` door table | none yet | new |
-| `game/scripts/scenes/celebracao.gd` (new) | CELEBRATE scene: confetti, reward reveal, `complete_cycle` | `casa.gd` door table | none yet | new |
+| `game/scripts/scenes/celebracao.gd` (new) | CELEBRATE scene: confetti, voice, closing the cycle. **The planned "reward reveal" did not ship** — see BUG-031 (deferred: it changes e07s02's frozen contract) | `casa.gd` door table | `test_celebracao_scene.gd` | direct |
 | `scripts/autoloads/care_loop_manager.gd` | ensure `SLEEP → CELEBRATE → IDLE` is walked exactly once and the cycle id increments | every scene's credit path, `casa.gd` dots | `test_care_loop_manager.gd` (13) | direct |
 | `scripts/autoloads/progress_manager.gd` | `complete_cycle` reward once per cycle (BUG-007 clamps) | `casa.gd` HUD, celebration scene | `test_progress_manager.gd` (16) | direct |
 | `game/scripts/components/quiqui_rig.gd` | `sono`/`celebrando` expressions exist already; no API change expected | every scene | `test_quiqui_rig.gd` (404 lines) | direct, hotspot #3 |

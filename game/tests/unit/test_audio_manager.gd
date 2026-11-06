@@ -161,3 +161,26 @@ func test_calls_before_ready_degrade() -> void:
 	fresh.call("apply_duck", false)
 	fresh.call("reset")
 	fresh.free()
+
+
+# BUG-028: quitting with an Ogg playback live leaks four objects and two resources
+# (`--quit-after 3` reported them on every run). Releasing the streams first is the fix.
+func test_release_streams_stops_every_player_and_drops_its_stream() -> void:
+	am.play_music(stream)
+	am.play_voice(stream)
+	am.play_sfx(stream)
+
+	am.call("release_streams")
+
+	for player: AudioStreamPlayer in am.call("_all_players"):
+		assert_false(player.playing, "%s stopped" % player.name)
+		assert_null(player.stream, "%s dropped its stream" % player.name)
+	assert_false(am.is_music_playing(stream))
+
+
+func test_exit_tree_is_safe_twice_and_without_players() -> void:
+	am.play_music(stream)
+	am.call("_exit_tree")
+	am.call("_exit_tree")
+
+	assert_false(am.is_music_playing(stream))

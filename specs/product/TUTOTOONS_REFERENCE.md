@@ -5,10 +5,11 @@
 **Skill:** observation pass (no device, no APK) · **Date:** 2026-11-05 · **Author:** coding agent
 **Purpose:** turn "TutoTOONS-grade" into numbers this project can be held to, from public sources only.
 
-> **Status:** pass 1 of 2. This document measures **static composition** from public store screenshots.
-> It does **not** measure runtime feel — touch latency, frame rate, audio mix and haptics need a device
-> (see [Not measurable this way](#not-measurable-this-way)). An engine-side pass with REA is stubbed at
-> [Engine check](#engine-check-stub-before-any-rea-investment) and needs one Android device.
+> **Status:** pass 1 (static composition, below) and pass 3 (engine, done) complete. The engine-side
+> pass with REA — stubbed at [Engine check](#engine-check-stub-before-any-rea-investment) — is now closed
+> against a real device; results live in
+> [`TUTOTOONS_ENGINE_REPORT.md`](TUTOTOONS_ENGINE_REPORT.md). Pass 2 (video timing, 60 fps capture) is
+> still offline.
 
 ---
 
@@ -176,13 +177,15 @@ unzip -l app.apk | grep -E "lib/|assets/META-INF/AIR|global-metadata"
 | Signature | Engine | Verdict |
 |---|---|---|
 | `lib/*/libunity.so` + `assets/bin/Data/Managed/Metadata/global-metadata.dat` | Unity il2cpp | **REA worth it** — `docs/il2cpp-metadata.md` gives a class/method inventory to search for care-loop names |
-| `lib/*/libCore.so`, `assets/META-INF/AIR/` | Adobe AIR | **REA no** — logic is ActionScript in a SWF; needs JPEXS, not JADX |
+| `lib/*/libCore.so`, `assets/META-INF/AIR/` | Adobe AIR | **Not present in the current catalogue** — see the correction below |
 | `libcocos2dcpp.so`, `libmono.so`, `libgodot_*` | Cocos / Mono / Godot | partial — provider-specific |
 | DEX-dominant | Kotlin/Java | yes, JADX path |
 
-Known already from the package list: **Jungle Animal Hair Salon** and **Sweet Baby Girl Summer Fun 2**
-are `air.com.tutotoons.*` — Adobe AIR, so out of REA's reach. Dopples World's engine is **unverified**;
-one `unzip -l` settles it.
+> **Corrected 2026-11-06 by the REA deep pass** (see `TUTOTOONS_ENGINE_REPORT.md`): the `air.com.tutotoons.*`
+> prefix is a **legacy `applicationId` fossil, not an engine**. Both `air.com.tutotoons.app.*` titles
+> fingerprinted on the device (Power Girls Super City, Sweet Baby Girl Halloween Fun, Animal Hair Salon 2
+> Jungle) are **Unity IL2CPP**, as are all 24 installed titles. Dopples World is now verified: **Unity 6
+> (`6000.0.71f1`)** — not AIR, not "unverified". The Adobe-AIR row above is therefore informational only.
 
 ## Next pass
 
@@ -190,8 +193,9 @@ one `unzip -l` settles it.
    tap→reaction delay, care-step pacing. Needs a public gameplay video per title; store previews are
    empty for this sample.
 2. Device pass: touch latency and frame pacing on the iPad target.
-3. Engine pass: one title, one specific numeric question (e.g. "what is the wish-prompt interval?"), per
-   the stub above.
+3. ~~Engine pass~~ **DONE** — 24 titles fingerprinted and IL2CPP-decoded on a Galaxy Tab A7 Lite; the
+   care-loop mechanics, shared engine and architecture evolution are written up in
+   [`TUTOTOONS_ENGINE_REPORT.md`](TUTOTOONS_ENGINE_REPORT.md).
 
 ## Provenance
 

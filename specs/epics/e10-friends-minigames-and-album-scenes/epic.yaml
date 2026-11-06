@@ -7,6 +7,13 @@ playable_scene: res://scenes/pato_danca.tscn + res://scenes/urso_puzzle.tscn + r
 status: planned
 bcps: 14
 wsjf: 5.2
+parity:
+  source: specs/product/QUIQUI2_TUTOTOONS_PARITY_BACKLOG.md
+  notes: >
+    Four minigames are the biggest teach-without-words risk in the plan: reuse the
+    hint layer for each minigame's first gesture (FIX-02) and drive the sticker album
+    collection with unlock badges (FIX-04).
+  fixes: [FIX-02, FIX-04]
 stories:
 - id: e10s01
   title: 'Playable Scene 14: DuckDanceScene (pato_danca.tscn) 3-Round Pose-Matching

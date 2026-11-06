@@ -6,6 +6,12 @@ playable_scene: ALL (17 scenes verified)
 status: planned
 bcps: 13
 wsjf: 6.4
+parity:
+  source: specs/product/QUIQUI2_TUTOTOONS_PARITY_BACKLOG.md
+  notes: >
+    Release gate is the honest home for production scaffolding: save backup + repair
+    path (FIX-06) and the dev-only debug console + FPS overlay (FIX-07).
+  fixes: [FIX-06, FIX-07]
 stories:
 - id: e11s01
   title: 500-Step Model-Based Testing (MBT) Random Walk Across All 17 Scenes Verifying

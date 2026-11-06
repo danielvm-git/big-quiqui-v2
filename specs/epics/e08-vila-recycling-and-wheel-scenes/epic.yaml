@@ -6,6 +6,14 @@ playable_scene: res://scenes/vila.tscn + res://scenes/roda.tscn
 status: planned
 bcps: 12
 wsjf: 6.1
+parity:
+  source: specs/product/QUIQUI2_TUTOTOONS_PARITY_BACKLOG.md
+  notes: >
+    First epic where a child meets the outdoor drag-and-earn verbs alone, so it is the
+    debut for the TutoTOONS feel fixes: FIX-01 (wish escalation on the hub), FIX-02
+    (HintManager ghost-hand teaching the recycling drag), FIX-03 (coin travels to the HUD
+    on earn), FIX-04 (unlock badge on the wheel), FIX-05 (wheel prize table as EconomyData).
+  fixes: [FIX-01, FIX-02, FIX-03, FIX-04, FIX-05]
 stories:
 - id: e08s01
   title: 'Playable Scene 9: VilaScene (vila.tscn) Panoramic Responsive Hub with 6

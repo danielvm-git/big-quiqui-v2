@@ -146,3 +146,184 @@ bugs:
   file: specs/bugs/BUG-016-project-version-drift.md
   status: fixed
   found_by: bigpowers adoption audit (CI6, root VERSION sync)
+- bug_id: BUG-017
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: ui
+  summary: The bedroom lamp is not inert after the step finishes (double-negative guard), so the room relights behind the party transition
+  file: specs/bugs/BUG-017-sleep-lamp-inert-after-finish.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer A should-fix 4, reviewer B consider 13)
+- bug_id: BUG-018
+  date: '2026-11-06'
+  severity: high
+  priority: P1
+  scope: core
+  summary: The Casa is whitelisted from the CELEBRATE detour guard but never closes the cycle, and the guard ran before validation, so a hub mounted mid-celebration has six dead doors
+  file: specs/bugs/BUG-018-hub-arrives-inside-celebrate.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer A should-fix 2, reviewer B consider 10)
+- bug_id: BUG-019
+  date: '2026-11-06'
+  severity: medium
+  priority: P1
+  scope: ui
+  title: The bedroom and the celebration restart the shared theme under the voice
+  summary: SleepScene and CelebrationScene called play_music(tema_principal) unconditionally, so the hub's theme restarted from 0 s twice per cycle and under the congratulation voice
+  file: specs/bugs/BUG-019-new-scenes-restart-the-theme.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 5)
+- bug_id: BUG-020
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: ui
+  summary: SleepScene carried a dead VOICE_PATH constant (pointing at the celebration clip) and was the only care room with no sound at all
+  file: specs/bugs/BUG-020-bedroom-silent-and-dead-voice-const.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 6)
+- bug_id: BUG-022
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: SleepScene.tuck(), CycleE2eTestCase, the ledger assertion and the celebration WishBubble were frozen contracts that never shipped, while the audit reported PASS
+  file: specs/bugs/BUG-022-frozen-contracts-never-built.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 4)
+- bug_id: BUG-021
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: tests
+  summary: The cycle E2E carried 35 unreachable lines, never ran GeometryOracle (AC4) and its "detour" test never entered CELEBRATE
+  file: specs/bugs/BUG-021-cycle-e2e-overstated.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 7, reviewer A should-fix 3)
+- bug_id: BUG-026
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: tests
+  summary: Five assertions could not fail — zzz idempotence, the rig's layers, a CanvasModulate, the celebration HomeButton, and the price duplicated in the scene
+  file: specs/bugs/BUG-026-tests-that-cannot-fail.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 3 and considers 12-14, reviewer A consider 3)
+- bug_id: BUG-025
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: docs
+  summary: An orphaned doc comment above ProgressManager.equip described _apply, so the reward path documented the wrong function
+  file: specs/bugs/BUG-025-progress-manager-doc-rot.md
+  status: fixed
+  found_by: e07 post-epic review (audit-code)
+- bug_id: BUG-027
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: docs
+  summary: CelebrationScene claimed ProgressManager refuses a second payment for the same cycle; the only ledger is CareLoopManager's in-memory one, and reset() replays it
+  file: specs/bugs/BUG-027-false-guard-claim.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer A consider 1)
+- bug_id: BUG-023
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: execution-status recorded a nonexistent instant (16:60:00) and release-plan still called e04-e07 "planned" while every capsule was done and archived
+  file: specs/bugs/BUG-023-bookkeeping-invalid-timestamp.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 8, plus the epic-vs-capsule check)
+- bug_id: BUG-024
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: DESIGN.md's night_slumber_tint (#2B2D5C, canvas modulate) disagreed with the shipped tint (#6B73B8, background only) on both value and scope
+  file: specs/bugs/BUG-024-design-night-tint-drift.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 9)
+- bug_id: BUG-028
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: core
+  summary: With music playing the engine reports 4 leaked audio objects and 2 resources at exit; stopping/nulling/freeing the players and releasing streams changes nothing, so it is engine teardown, not game code
+  file: specs/bugs/BUG-028-audio-leaks-on-quit.md
+  status: wontfix
+  found_by: e07 post-epic review cold-start smoke (verify-work)
+- bug_id: BUG-029
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: docs
+  summary: specs/README.md advertised ADR-001 through ADR-005 while nine exist, and did not name specs/epics/archive/
+  file: specs/bugs/BUG-029-readme-adr-range-stale.md
+  status: fixed
+  found_by: e07 post-epic review, second pass (documentation sweep)
+- bug_id: BUG-030
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: tests
+  summary: The cycle E2E asserted the reward against literals 5 and 1 instead of ProgressManager's economy constants
+  file: specs/bugs/BUG-030-cycle-e2e-hardcodes-the-price.md
+  status: fixed
+  found_by: e07 post-epic review, second pass (same class as BUG-026)
+- bug_id: BUG-031
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: ui
+  summary: The celebration paid +5/+1 but showed nothing and lasted one fade; the reward now pops in (coin + ticket) and the party holds 1.8s before returning home
+  file: specs/bugs/BUG-031-celebration-shows-no-reward.md
+  status: fixed
+  found_by: e07 post-epic review (epic vs IMPACT_LATEST / DESIGN_PLAN_LATEST)
+- bug_id: BUG-032
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: README claimed v0.6.0, 5 of 11 epics, 361 tests and 5 playable scenes while main was v0.9.0, 7 of 11, 408 tests and 8 scenes
+  file: specs/bugs/BUG-032-readme-status-block-stale.md
+  status: fixed
+  found_by: e07 post-epic review, third pass (maintain-wiki sweep)
+- bug_id: BUG-033
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: tests
+  summary: test_casa_scene.gd reached 349 lines, over the 300-line ceiling, and had regrown after every epic that added a door
+  file: specs/bugs/BUG-033-casa-suite-over-300-lines.md
+  status: fixed
+  found_by: e07 post-epic review, third pass (file-size sweep)
+- bug_id: BUG-034
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: docs
+  summary: COVERAGE_MAP_LATEST and HOTSPOTS_LATEST were left at e06, so the coverage map omitted the two new scenes and their tests
+  file: specs/bugs/BUG-034-generated-latest-docs-stale.md
+  status: fixed
+  found_by: e07 post-epic review, third pass (maintain-wiki)
+- bug_id: BUG-035
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: docs
+  summary: The 300-line/20-line review bar every audit enforces was undocumented, and five pre-existing files break it (427, 404, 341, 331, 326 lines)
+  file: specs/bugs/BUG-035-review-bars-undocumented.md
+  status: fixed
+  found_by: e07 post-epic review, fourth pass (tree-wide size sweep)
+- bug_id: BUG-036
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: execution-status.yaml said e06s01-e06s03 were "planned" in development_status while its own stories block said done
+  file: specs/bugs/BUG-036-execution-status-self-contradiction.md
+  status: fixed
+  found_by: e07 post-epic review, fifth pass (SoT self-consistency check)

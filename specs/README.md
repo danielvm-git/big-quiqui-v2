@@ -9,8 +9,9 @@ All planning, product, architecture, security, verification, and vertical-slice 
 - `specs/execution-status.yaml` — Live story/task execution status.
 - `specs/product/` — `VISION_LATEST.yaml`, `SCOPE_LATEST.yaml`, `GLOSSARY_LATEST.yaml`, `REQUIREMENTS_TRACE.yaml`.
 - `specs/tech-architecture/` — `tech-stack.md`, `EXPLICIT_STATE_MACHINES.md`, `TEST_PLAN_LATEST.md`, `SECURITY_PLAN_LATEST.md`, `DESIGN_PLAN_LATEST.md`.
-- `specs/adr/` — Architectural Decision Records (`ADR-001` through `ADR-005`).
-- `specs/epics/eNN-slug/` — Vertical-slice epic capsules (`epic.yaml`, story `.md` specs, `eNNsYY-tasks.yaml`).
+- `specs/adr/` — Architectural Decision Records (`ADR-001` through `ADR-009`).
+- `specs/epics/archive/` — Closed epic capsules, verbatim, moved here when the epic ships.
+- `specs/epics/eNN-slug/` — Vertical-slice epic capsules, one directory per open epic (`epic.yaml`, story `.md` specs, `eNNsYY-tasks.yaml`).
 - `specs/security/` — STRIDE threat models per epic (`epics/eNN/THREAT_MODEL.md`).
 - `specs/verifications/` — Gate verification and visual audit reports.
 - `specs/bugs/registry.yaml` — Discovered defects registry.

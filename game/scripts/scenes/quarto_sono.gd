@@ -11,7 +11,10 @@ extends Control
 const CELEBRACAO_PATH: String = "res://scenes/celebracao.tscn"
 const CASA_PATH: String = "res://scenes/casa.tscn"
 const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/celebrate_parabens.ogg"
+## No bedtime voice line exists in the set (ADR-009), so the room answers with SFX.
+const LAMP_SFX_PATH: String = "res://assets/audio/sfx/tap.ogg"
+const TUCK_SFX_PATH: String = "res://assets/audio/sfx/drop.ogg"
+const DONE_SFX_PATH: String = "res://assets/audio/sfx/success.ogg"
 
 const NIGHT_TINT: Color = Color(0.42, 0.45, 0.72)
 const LIT_TINT: Color = Color.WHITE
@@ -47,7 +50,7 @@ func _ready() -> void:
 	plush.payload_id = "plush"
 	plush.snapped.connect(_on_snapped)
 	_apply_lamp()
-	_play_stream("play_music", MUSIC_PATH)
+	_play_music_once()
 	_log("scene.ready", {"scene": "quarto_sono"})
 
 
@@ -61,11 +64,14 @@ func advance(delta: float) -> void:
 
 
 ## One tap: lit → dim. The tint lands on the background, never on the character.
+## Inert once she is asleep: lighting the room back up behind the party transition is a
+## glitch a child reads as a broken bedroom.
 func toggle_lamp() -> bool:
-	if fsm.state != STATE_SLEEPING and not credited:
+	if fsm.state != STATE_SLEEPING:
 		return false
 	lamp_on = not lamp_on
 	_apply_lamp()
+	_play_stream("play_sfx", LAMP_SFX_PATH)
 	_log("sleep.lamp", {"on": lamp_on})
 	_try_finish()
 	return true
@@ -74,14 +80,22 @@ func toggle_lamp() -> bool:
 ## The plush lands on her: she lies down, the zzz burst starts. Idempotent — a second
 ## tuck does not restart the particles (a restart reads as a glitch to a child).
 func _on_snapped(_slot: String, _id: String) -> void:
+	tuck()
+
+
+## Public seam of the frozen contract (e07s01 §3): the drag slot calls it, so does a test.
+## Returns true only when this call is the one that tucked her in.
+func tuck() -> bool:
 	if tucked:
-		return
+		return false
 	tucked = true
 	rig.set_expression("sono")
 	zzz.global_position = rig.get_visual_global_rect().get_center()
 	zzz.restart()
+	_play_stream("play_sfx", TUCK_SFX_PATH)
 	_log("sleep.tuck", {"tucked": true})
 	_try_finish()
+	return true
 
 
 func _try_finish() -> void:
@@ -93,6 +107,7 @@ func _finish() -> void:
 	if not fsm.transition_from(STATE_SLEEPING, STATE_FINISHED):
 		return
 	_credit_sleep()
+	_play_stream("play_sfx", DONE_SFX_PATH)
 	_log("sleep.finished", {"lamp_on": lamp_on})
 	# Only a credited SLEEP opens the party. Coming back after the step is free play, and
 	# a celebration with no reward behind it is worse than going home (review B).
@@ -136,6 +151,20 @@ func _care_state() -> String:
 
 func _care_loop() -> Node:
 	return get_node_or_null("/root/CareLoopManager")
+
+
+## The hub's theme keeps running into the room: `play_music` always restarts and swaps
+## players, and a bedroom is a place, not a track change (threat model: "music continues
+## rather than restarting").
+func _play_music_once() -> void:
+	if not ResourceLoader.exists(MUSIC_PATH):
+		_log("audio.missing_art", {"track": MUSIC_PATH.get_file().get_basename()})
+		return
+	var audio: Node = get_node_or_null("/root/AudioManager")
+	var stream: AudioStream = load(MUSIC_PATH) as AudioStream
+	if audio == null or stream == null or bool(audio.call("is_music_playing", stream)):
+		return
+	audio.call("play_music", stream)
 
 
 func _play_stream(method: String, path: String) -> bool:

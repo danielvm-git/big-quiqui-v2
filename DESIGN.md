@@ -18,7 +18,7 @@
 | `lavender_dream` | `#B983FF` | Closet/bedroom accents, magic sparkles |
 | `sky_bubble` | `#5AC8FA` | Bathroom water/foam accents, clean highlights |
 | `warm_cream_surface` | `#FFF8E7` | Tray backgrounds, sticker album pages, wish bubbles |
-| `night_slumber_tint` | `#2B2D5C` | Canvas modulate tint during `SLEEP` lamp-off state |
+| `night_slumber_tint` | `#6B73B8` | **Background-only** modulate during the `SLEEP` lamp-off state. Never the rig, never a `CanvasModulate`: a dark character is a broken character (`SleepScene.NIGHT_TINT`, T-E07-01) |
 
 ---
 
