@@ -82,10 +82,10 @@ func advance(delta: float) -> void:
 		STATE_READY:
 			_advance_idle(step)
 		STATE_CHEWING:
-			if fsm.elapsed_sec() >= CHEW_SEC:
+			if fsm.check_dwell() or fsm.elapsed_sec() >= CHEW_SEC:
 				_start_pleasure()
 		STATE_PLEASURE:
-			if fsm.elapsed_sec() >= PLEASURE_SEC:
+			if fsm.check_dwell() or fsm.elapsed_sec() >= PLEASURE_SEC:
 				_end_bite()
 
 

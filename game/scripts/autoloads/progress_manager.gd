@@ -14,6 +14,8 @@ signal progress_changed
 const PRODUCTION_PATH: String = "user://progress.json"
 const TEST_PATH: String = "user://test_progress.json"
 const TMP_SUFFIX: String = ".tmp"
+const CYCLE_COINS_REWARD: int = 5
+const CYCLE_TICKETS_REWARD: int = 1
 
 var data: SaveData = null
 var save_path: String = PRODUCTION_PATH
@@ -54,48 +56,50 @@ func load_or_default() -> void:
 		return
 	var file: FileAccess = FileAccess.open(save_path, FileAccess.READ)
 	if file == null:
-		last_error = "open_failed"
-		data = SaveData.new()
-		_emit("save.load_failed", {"reason": "open"})
+		_fail_load("open_failed", "open")
 		return
 	var text: String = file.get_as_text()
 	file.close()
-	# JSON.new().parse() reports the error instead of pushing an engine error, so a
-	# corrupt save is a recovered state that a test can assert on.
 	var json: JSON = JSON.new()
-	var parse_error: int = json.parse(text)
-	if parse_error != OK or not json.data is Dictionary:
-		last_error = "corrupt"
-		data = SaveData.new()
-		_emit("save.load_failed", {"reason": "corrupt"})
+	if json.parse(text) != OK or not json.data is Dictionary:
+		_fail_load("corrupt", "corrupt")
 		return
 	data = SaveData.from_dictionary(json.data as Dictionary)
 	_emit("save.loaded", {"coins": data.coins, "cycles": data.completed_cycles})
 
 
+func _fail_load(err: String, reason: String) -> void:
+	last_error = err
+	data = SaveData.new()
+	_emit("save.load_failed", {"reason": reason})
+
+
 ## Atomic write: temp file, flush, close, rename. Returns false on failure.
 func save() -> bool:
 	last_error = ""
-	var tmp_path: String = save_path + TMP_SUFFIX
-	var file: FileAccess = FileAccess.open(tmp_path, FileAccess.WRITE)
-	if file == null:
+	var tmp: String = tmp_path()
+	if not _write_tmp(tmp):
 		last_error = "open_failed"
 		_emit("save.write_failed", {"reason": "open"})
+		return false
+	if DirAccess.rename_absolute(tmp, save_path) != OK:
+		last_error = "rename_failed"
+		DirAccess.remove_absolute(tmp)
+		_emit("save.write_failed", {"reason": "rename"})
+		return false
+	write_count += 1
+	_emit("save.written", {"coins": data.coins, "cycles": data.completed_cycles})
+	progress_changed.emit()
+	return true
+
+
+func _write_tmp(tmp: String) -> bool:
+	var file: FileAccess = FileAccess.open(tmp, FileAccess.WRITE)
+	if file == null:
 		return false
 	file.store_string(JSON.stringify(data.to_dictionary(), "\t"))
 	file.flush()
 	file.close()
-
-	var renamed: int = DirAccess.rename_absolute(tmp_path, save_path)
-	if renamed != OK:
-		last_error = "rename_failed"
-		DirAccess.remove_absolute(tmp_path)
-		_emit("save.write_failed", {"reason": "rename"})
-		return false
-
-	write_count += 1
-	_emit("save.written", {"coins": data.coins, "cycles": data.completed_cycles})
-	progress_changed.emit()
 	return true
 
 
@@ -110,6 +114,14 @@ func has_orphan_tmp() -> bool:
 # ── mutation helpers (clamped, always announced) ─────────────────────────────
 
 
+func get_coins() -> int:
+	return 0 if data == null else data.coins
+
+
+func get_tickets() -> int:
+	return 0 if data == null else data.tickets
+
+
 func add_coins(amount: int) -> void:
 	_apply(amount, 0)
 
@@ -120,7 +132,7 @@ func add_tickets(amount: int) -> void:
 
 ## One logical change, one `progress_changed`: the mutators above are for the
 ## HUD's incremental updates, a full cycle is a single event.
-func complete_cycle(coins: int = 5, tickets: int = 1) -> void:
+func complete_cycle(coins: int = CYCLE_COINS_REWARD, tickets: int = CYCLE_TICKETS_REWARD) -> void:
 	_apply(coins, tickets, 1)
 
 

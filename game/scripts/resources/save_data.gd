@@ -101,21 +101,10 @@ static func _clean_placement(raw: Variant) -> Array[Dictionary]:
 			continue
 		var entry: Dictionary = item as Dictionary
 		var raw_id: Variant = entry.get("id", "")
-		if not raw_id is String:
-			continue
-		var id: String = raw_id as String
-		if not is_valid_id(id):
-			continue
-		(
-			clean
-			. append(
-				{
-					"id": id,
-					"x": clampf(float(entry.get("x", 0.5)), 0.0, 1.0),
-					"y": clampf(float(entry.get("y", 0.5)), 0.0, 1.0),
-				}
-			)
-		)
+		if raw_id is String and is_valid_id(raw_id as String):
+			var px: float = clampf(float(entry.get("x", 0.5)), 0.0, 1.0)
+			var py: float = clampf(float(entry.get("y", 0.5)), 0.0, 1.0)
+			clean.append({"id": raw_id as String, "x": px, "y": py})
 	return clean
 
 

@@ -23,18 +23,21 @@ func _ready() -> void:
 	row.add_theme_constant_override("separation", DOT_GAP)
 	row.mouse_filter = MOUSE_FILTER_IGNORE
 	add_child(row)
-
 	for index: int in range(DOT_COUNT):
-		var dot: TextureRect = TextureRect.new()
-		dot.name = "Dot%d" % index
-		dot.mouse_filter = MOUSE_FILTER_IGNORE
-		dot.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		dot.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		dot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var dot: TextureRect = _make_dot(index)
 		row.add_child(dot)
 		_dots.append(dot)
-
 	_apply()
+
+
+func _make_dot(index: int) -> TextureRect:
+	var dot: TextureRect = TextureRect.new()
+	dot.name = "Dot%d" % index
+	dot.mouse_filter = MOUSE_FILTER_IGNORE
+	dot.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	dot.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	dot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	return dot
 
 
 ## Mirrors how many of the five care steps are done. Clamped to 0..5.

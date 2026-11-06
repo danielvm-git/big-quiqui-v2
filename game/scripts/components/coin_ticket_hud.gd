@@ -45,15 +45,12 @@ func _exit_tree() -> void:
 
 ## Re-reads the economy from ProgressManager. A missing manager shows zeros.
 func refresh() -> void:
-	var data: SaveData = null
-	if _manager != null:
-		data = _manager.get("data") as SaveData
-	if data == null:
+	if _manager != null and _manager.has_method("get_coins") and _manager.has_method("get_tickets"):
+		_coins_shown = int(_manager.call("get_coins"))
+		_tickets_shown = int(_manager.call("get_tickets"))
+	else:
 		_coins_shown = 0
 		_tickets_shown = 0
-	else:
-		_coins_shown = data.coins
-		_tickets_shown = data.tickets
 	_coin_label.text = str(_coins_shown)
 	_ticket_label.text = str(_tickets_shown)
 
@@ -94,7 +91,6 @@ func _build_group(row: HBoxContainer, group_name: String, icon_path: String) -> 
 	group.add_theme_constant_override("separation", 8)
 	group.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(group)
-
 	var icon: TextureRect = TextureRect.new()
 	icon.name = group_name + "Icon"
 	icon.custom_minimum_size = ICON_SIZE
@@ -103,7 +99,12 @@ func _build_group(row: HBoxContainer, group_name: String, icon_path: String) -> 
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	group.add_child(icon)
+	var count: Label = _make_count_label(group_name)
+	group.add_child(count)
+	return count
 
+
+func _make_count_label(group_name: String) -> Label:
 	var count: Label = Label.new()
 	count.name = group_name + "Count"
 	count.text = "0"
@@ -114,7 +115,6 @@ func _build_group(row: HBoxContainer, group_name: String, icon_path: String) -> 
 	count.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0))
 	count.add_theme_color_override("font_outline_color", Color(0.29, 0.145, 0.066, 1.0))
 	count.add_theme_constant_override("outline_size", 8)
-	group.add_child(count)
 	return count
 
 

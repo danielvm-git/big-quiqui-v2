@@ -45,13 +45,7 @@ func _init() -> void:
 	root.name = "Cozinha"
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.set_script(load(SCENE_SCRIPT))
-
-	var background: TextureRect = _make_art("Background", BG_PATH)
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	background.add_to_group("background", true)
-	root.add_child(background)
-
+	_add_background(root)
 	_add_tray(root)
 	_add_rig(root)
 	_add_foods(root)
@@ -59,10 +53,17 @@ func _init() -> void:
 	_add_bubble(root)
 	root.add_child(_make_particles("Crumbs", CRUMBS_ART, 14, 0.7, 900.0, Vector2(0.05, 0.09)))
 	root.add_child(_make_particles("Hearts", HEARTS_ART, 8, 0.9, -300.0, Vector2(0.08, 0.14)))
-
 	var saved: bool = SceneBuilder.pack_and_save(root, SCENE_PATH, "build_cozinha_scene")
 	root.free()
 	quit(0 if saved else 1)
+
+
+func _add_background(root: Control) -> void:
+	var background: TextureRect = _make_art("Background", BG_PATH)
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	background.add_to_group("background", true)
+	root.add_child(background)
 
 
 func _make_art(node_name: String, path: String) -> TextureRect:
@@ -112,26 +113,16 @@ func _add_rig(root: Control) -> void:
 
 func _add_foods(root: Control) -> void:
 	var pitch: float = FOOD_SIZE + FOOD_GAP
+	var top: float = -TRAY_CENTRE_ABOVE_BOTTOM - FOOD_SIZE * 0.5
 	for index: int in range(FOOD_COUNT):
 		var food: Control = Control.new()
 		food.name = "Food%d" % index
 		food.set_script(load(FOOD_SCRIPT))
 		food.z_index = ABOVE_RIG_Z
 		food.add_to_group("hit_target", true)
-		var centre_x: float = pitch * (index - (FOOD_COUNT - 1) * 0.5)
-		(
-			SceneBuilder
-			. pin(
-				food,
-				Vector4(0.5, 1.0, 0.5, 1.0),
-				Vector4(
-					centre_x - FOOD_SIZE * 0.5,
-					-TRAY_CENTRE_ABOVE_BOTTOM - FOOD_SIZE * 0.5,
-					centre_x + FOOD_SIZE * 0.5,
-					-TRAY_CENTRE_ABOVE_BOTTOM + FOOD_SIZE * 0.5,
-				),
-			)
-		)
+		var left: float = pitch * (index - (FOOD_COUNT - 1) * 0.5) - FOOD_SIZE * 0.5
+		var offsets: Vector4 = Vector4(left, top, left + FOOD_SIZE, top + FOOD_SIZE)
+		SceneBuilder.pin(food, Vector4(0.5, 1.0, 0.5, 1.0), offsets)
 		root.add_child(food)
 		var art: TextureRect = _make_art("Art", "")
 		art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -143,22 +134,14 @@ func _add_home_button(root: Control) -> void:
 	button.name = "HomeButton"
 	button.set_script(load(BUTTON_SCRIPT))
 	button.add_to_group("hit_target", true)
-	(
-		SceneBuilder
-		. pin(
-			button,
-			Vector4.ZERO,
-			Vector4(HOME_INSET, HOME_INSET, HOME_INSET + HOME_SIZE, HOME_INSET + HOME_SIZE),
-		)
-	)
+	var edge: float = HOME_INSET + HOME_SIZE
+	SceneBuilder.pin(button, Vector4.ZERO, Vector4(HOME_INSET, HOME_INSET, edge, edge))
 	root.add_child(button)
-
 	var visual: Control = Control.new()
 	visual.name = "Visual"
 	visual.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	button.add_child(visual)
-
 	var art: TextureRect = _make_art("Art", HOME_ART)
 	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	visual.add_child(art)
@@ -189,12 +172,7 @@ func _add_bubble(root: Control) -> void:
 
 
 func _make_particles(
-	node_name: String,
-	path: String,
-	amount: int,
-	lifetime: float,
-	gravity_y: float,
-	scale_range: Vector2,
+	node_name: String, path: String, amount: int, lifetime: float, gravity_y: float, scale_range: Vector2
 ) -> CPUParticles2D:
 	var particles: CPUParticles2D = CPUParticles2D.new()
 	particles.name = node_name

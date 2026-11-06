@@ -59,7 +59,6 @@ var _progress: float = 0.0
 var _clock_ms: int = 0
 var _curtain_layer: CanvasLayer = null
 var _curtain: ColorRect = null
-var _swapped: bool = false
 
 
 func _ready() -> void:
@@ -103,24 +102,24 @@ func advance(delta: float) -> String:
 	if fsm.check_dwell():
 		recover_from_watchdog()
 		return fsm.state
-
 	_progress += delta
 	var ratio: float = 1.0 if fade_duration_sec <= 0.0 else clampf(_progress / fade_duration_sec, 0.0, 1.0)
+	_step_active(ratio)
+	return fsm.state
 
+
+func _step_active(ratio: float) -> void:
 	match fsm.state:
 		STATE_FADING_OUT:
 			_set_curtain_alpha(ratio)
 			if ratio >= 1.0:
 				_enter_swapping()
 		STATE_SWAPPING:
-			if not _swapped:
-				_swapped = true
-				_load_pending_or_current()
+			_load_pending_or_current()
 		STATE_FADING_IN:
 			_set_curtain_alpha(1.0 - ratio)
 			if ratio >= 1.0:
 				_finish()
-	return fsm.state
 
 
 ## Forces the machine back to IDLE after a stuck transition (2.0 s watchdog). A long
@@ -130,10 +129,9 @@ func recover_from_watchdog() -> void:
 	var stuck: String = fsm.state
 	watchdog_recovered.emit(stuck)
 	_emit("scene.watchdog", {"stuck_state": stuck.to_lower()})
-	if not _swapped and (stuck == STATE_FADING_OUT or stuck == STATE_SWAPPING):
+	if stuck == STATE_FADING_OUT or stuck == STATE_SWAPPING:
 		_swap_to_current()
 	_progress = 0.0
-	_swapped = false
 	_set_curtain_alpha(0.0)
 	fsm.reset(STATE_IDLE)
 	_start_pending()
@@ -158,7 +156,6 @@ func reset() -> void:
 	pending_scene = ""
 	current_scene = ""
 	_progress = 0.0
-	_swapped = false
 	production_swap_path = ""
 	_set_curtain_alpha(0.0)
 
@@ -166,7 +163,6 @@ func reset() -> void:
 func _start(path: String) -> void:
 	current_scene = path
 	_progress = 0.0
-	_swapped = false
 	fsm.transition_to(STATE_FADING_OUT)
 	_emit("scene.fade_out", {"path": _slug(path)})
 

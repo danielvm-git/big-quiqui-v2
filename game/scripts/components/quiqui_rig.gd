@@ -1,8 +1,7 @@
 # story: e01s04
 class_name QuiQuiRig
 extends Control
-## Layered character rig (ADR-003): `Control` layout box + foot-pivoted `Node2D`
-## art stack (Body 0 → Outfit 10 → Expression 20 → Headwear 30 → Neck 40 → Glasses 50).
+## Layered character rig (ADR-003): `Control` layout box + foot-pivoted `Node2D` art stack.
 
 const ART_ROOT: String = "res://assets/art/quiqui/"
 const NEUTRAL_EXPRESSION: String = "base"
@@ -85,7 +84,10 @@ func _process(delta: float) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event.device == -1:
 		return
-	if (event is InputEventMouseButton or event is InputEventScreenTouch) and bool(event.get("pressed")):
+	var is_left_click: bool = (
+		event is InputEventMouseButton and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT
+	)
+	if (is_left_click or event is InputEventScreenTouch) and bool(event.get("pressed")):
 		if _hits_character(event.get("position") as Vector2):
 			taps += 1
 			play_squash()
@@ -205,7 +207,7 @@ func opaque_rect(texture: Texture2D) -> Rect2:
 
 
 func mouth_global_center() -> Vector2:
-	return mouth_zone.get_global_rect().get_center()
+	return global_position if mouth_zone == null else mouth_zone.get_global_rect().get_center()
 
 
 func update_food_proximity(global_point: Vector2) -> void:

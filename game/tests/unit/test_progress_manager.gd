@@ -171,3 +171,5 @@ func test_complete_cycle_announces_once() -> void:
 	pm.complete_cycle()
 
 	assert_eq(announced.size(), 1, "one cycle, one signal — the HUD repaints once")
+	assert_eq(pm.get_coins(), pm.CYCLE_COINS_REWARD)
+	assert_eq(pm.get_tickets(), pm.CYCLE_TICKETS_REWARD)

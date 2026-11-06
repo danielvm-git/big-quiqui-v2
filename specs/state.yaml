@@ -2,7 +2,7 @@
 project: big-quiqui-v2
 version: 0.3.1-dev
 workflow_mode: solo-git
-active_flow: fix_bug
+active_flow: epic_cycle
 lifecycle_phase: build
 current_epic: e03-kitchen-feed-scene
 current_story: e03s04
@@ -50,14 +50,14 @@ bug_cycle:
   round: 6
   current_step: 5
   completed_steps: [1, 2, 3, 4, 5]
-  ids: [BUG-013, BUG-014]
+  ids: [BUG-013, BUG-014, BUG-015]
   previous:
     status: closed
     closed_in: "PR #7 (squash 328a94c) -> v0.3.1"
     completed_steps: [1, 2, 3, 4, 5]
     ids: [BUG-001, BUG-002, BUG-003, BUG-004, BUG-005, BUG-006, BUG-007, BUG-008, BUG-009, BUG-010, BUG-011, BUG-012]
     outcome: "11 fixed, BUG-004 wontfix (PII policy, pinned by test)"
-last_updated: "2026-11-05T20:10:00-03:00"
+last_updated: "2026-11-05T21:10:00-03:00"
 
 release_target:
   version: "1.0.0"
@@ -76,9 +76,9 @@ project_cycle:
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
   next_skill: release-branch
-  context: "Dual-blind review gate PASSED (100% / 100%). BUG-013 and BUG-014 are closed and reconciled into epic/e03-kitchen-feed-scene."
+  context: "Dual-blind review gate PASSED (100% / 100%). BUG-013, BUG-014, and BUG-015 (all residual e01-e03 audit/review advisories) are closed on epic/e03-kitchen-feed-scene."
   epic: e03-kitchen-feed-scene
-  bug_fix: "BUG-013 + BUG-014 closed. Suite: 24 scripts / 308 tests / 1429 asserts on epic/e03-kitchen-feed-scene (19 scripts / 165 tests / 647 asserts on fix/bug-013-hero-scale)."
+  bug_fix: "BUG-013 + BUG-014 + BUG-015 closed. Suite: 26 scripts / 311 tests / 1441 asserts on epic/e03-kitchen-feed-scene (0 files > 300 lines, 0 functions > 20 lines)."
   open_decisions:
     - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."
     - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."

@@ -75,6 +75,14 @@ func test_an_unknown_id_is_logged_without_echoing_it() -> void:
 	assert_eq(line.get("item", ""), "invalid", "untrusted text never reaches the diary")
 
 
+func test_missing_data_file_returns_null_and_logs() -> void:
+	assert_null(FoodCatalog.get_item("cenoura", "res://resources/foods/missing/"))
+	var line: Dictionary = _last_diary_line()
+
+	assert_eq(line.get("ev", ""), "item.missing_data")
+	assert_eq(line.get("item", ""), "cenoura")
+
+
 func test_a_tray_holds_the_requested_number_of_distinct_foods() -> void:
 	for count: int in [1, 3, 10]:
 		var ids: Array[String] = _ids_of(FoodCatalog.pick_tray(_rng(SEED), count))

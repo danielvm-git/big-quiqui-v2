@@ -28,11 +28,11 @@ static func all() -> Array[ItemData]:
 	return items
 
 
-static func get_item(id: String) -> ItemData:
+static func get_item(id: String, dir: String = FOODS_DIR) -> ItemData:
 	if not FOOD_IDS.has(id):
 		LogSink.emit_to_diary("item.unknown", {"item": "invalid"})
 		return null
-	var path: String = "%s%s.tres" % [FOODS_DIR, id]
+	var path: String = "%s%s.tres" % [dir, id]
 	if not ResourceLoader.exists(path):
 		LogSink.emit_to_diary("item.missing_data", {"item": id})
 		return null
