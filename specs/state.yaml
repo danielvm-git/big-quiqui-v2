@@ -135,14 +135,28 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: survey-context
+  next_skill: release-branch
   context: Dual-blind review gate PASSED (100% / 100%). BUG-013, BUG-014, and BUG-015
     (all residual e01-e03 audit/review advisories) are closed on epic/e03-kitchen-feed-scene.
   epic: e03-kitchen-feed-scene
   bug_fix: 'BUG-013 + BUG-014 + BUG-015 closed. Suite: 26 scripts / 311 tests / 1441
     asserts on epic/e03-kitchen-feed-scene (0 files > 300 lines, 0 functions > 20
     lines).'
-  open_decisions:
+  open_gate_decisions:
+  - gate: "planning spine (e07 tasks were boilerplate)"
+    decision: "wrote specs + tasks + verify commands for e07s01..s04 before coding"
+    reason: "the capsule's task files were template placeholders; a task without a real verify command is not a gate"
+  - gate: "build-epic step 0 (threat model)"
+    decision: "completed the draft e07 model written by the adoption audit and closed all six findings in-story"
+    reason: "a draft is not a model; the reward path became reachable for the first time in e07"
+  - gate: "verify-work / audit-code"
+    decision: "PASS after fixing request_scene from 26 to 21 lines (split into _park and _close_celebrate_for_detour)"
+    reason: "the project's 20-line bar, enforced in every previous epic"
+  - gate: "request-review (dual-blind, 2 reviewers)"
+    decision: "responded to all 3 must-fixes instead of merging; re-ran the gate"
+    reason: "both reviewers independently found the same data-loss bug; a red review is a red gate"
+
+decisions:
   - 'Ghost-hand drag affordance (Smolsies benchmark) is ADOPTED but deferred to e04:
     the bath step has the same teach-without-words problem. It becomes an e04 story
     plus a `model`-rubric eval; do not bolt it onto the released e03.'
@@ -168,6 +182,7 @@ epic_cycle:
   started_at: '2026-11-06T07:55:00-03:00'
   completed_at: '2026-11-06T09:20:00-03:00'
   audit_result: pass
+  review_result: "round 1: FAIL (A 75%, B 78%); 3 must-fixes closed; gate re-run green (396 tests)"
 metrics:
   story_start: null
   story_end: null
