@@ -86,14 +86,14 @@ handoff:
     - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."
     - "Hero-scale contract: DECIDED — the ratio on the opaque character is the requirement, the px figures in DESIGN section 3 are per-canvas illustrations. `QuiQuiRig` fits the box to the opaque art, so box height == painted height at rest."
 epic_cycle:
-  step: 8
-  story: e03s04
-  story_bcps: 2
-  epic_epic_bcps: 12
+  step: 1
+  story: e04s01
+  story_bcps: 3
+  epic_epic_bcps: 13
   fast_mode: true
-  started_at: "2026-11-05T13:50:00-03:00"
-  completed_at: "2026-11-05T18:44:20-03:00"
-  audit_result: pass
+  started_at: "2026-11-06T01:05:00-03:00"
+  completed_at: null
+  audit_result: null
 metrics:
   story_start: null
   story_end: null

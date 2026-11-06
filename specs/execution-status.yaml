@@ -49,6 +49,10 @@ development_status:
 epics:
 
 stories:
+  e04s01:
+    status: in_progress
+    started_at: "2026-11-06T01:05:00-03:00"
+    completed_at: null
   e03s01:
     status: done
     started_at: "2026-11-05T13:53:00-03:00"
