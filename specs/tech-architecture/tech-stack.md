@@ -59,3 +59,56 @@ identifier each maps to. Source of truth for the glossary: `specs/product/GLOSSA
 | Nhami | the eating sound/word | `sfx_nhami` | "chomp" |
 | Careta | facial expression overlay | `ExpressionOverlay` | "sprite", "face" |
 | Diário | the local JSONL play diary | `Log` / `user://logs/` | "telemetry", "analytics" |
+
+## 7. Entry points
+| Entry point | What it is | Where |
+|---|---|---|
+| `game/project.godot` | the application: window, stretch mode, autoload order, input emulation | root of the Godot project |
+| `game/scenes/titulo.tscn` | the first scene a child sees (Play → Casa) | shipped |
+| `game/scenes/casa.tscn` | the hub: door table → `cozinha`, `banheiro`, `closet`, `jardim` | shipped |
+| `scripts/preflight.sh` | the gate every change must pass | repo root |
+| `scripts/setup.sh` | idempotent dev bootstrap | repo root |
+| `game/tools/build_*_scene.gd` | scene builders; `.tscn` files are generated, never hand-edited | tooling |
+
+## 8. Module map
+| Module | Responsibility | Depends on |
+|---|---|---|
+| `scripts/autoloads/log.gd` | schema-validated JSONL diary, PII redaction | `core/log_sink.gd` (consumers) |
+| `scripts/autoloads/progress_manager.gd` | typed save, atomic write, equip/dress | `resources/save_data.gd`, `core/ids.gd` |
+| `scripts/autoloads/care_loop_manager.gd` | `IDLE→FEED→BATH→DRESS→PLAY→SLEEP→CELEBRATE` | `core/fsm.gd`, `core/care_steps.gd` |
+| `scripts/autoloads/scene_manager.gd` | table-driven scene transitions, 1-slot pending queue, watchdog | `core/fsm.gd` |
+| `scripts/autoloads/audio_manager.gd` | music crossfade, 8-channel SFX pool, voice ducking | engine only |
+| `scripts/core/*` | `Fsm`, `Ids`, `CareSteps`, `FoodCatalog`, `LogSink`, `SquashSpring` | none (leaves) |
+| `scripts/components/*` | `QuiQuiRig`, `TouchDraggable`, `TapButton`, `WishBubble`, `FoamBlob`, `GardenProp`, `BathRoomView`, `AccessorySlots` | `core/*` |
+| `scripts/scenes/*` | one script per playable room; owns its `Fsm` and its devices | components, autoloads |
+| `tests/helpers/*` | `GeometryOracle`, `TouchSim`, `FsmProbe`, `TestReset`, per-journey fixtures | components |
+
+## 9. Data stores
+| Store | Format | Location | Owner |
+|---|---|---|---|
+| Save | JSON, atomic `.tmp` rename | `user://progress.json` | `ProgressManager` / `SaveData` (ADR-005) |
+| Diary | JSONL, one line per event | `user://logs/quiqui-<sid>.jsonl` | `Log` |
+| Art / audio | imported Godot resources | `res://assets/**` | build |
+
+No database, no remote store. Tests are isolated through `TestReset` (`user://test_progress.json`).
+
+## 10. External services
+**None, by construction.** No HTTP, WebSocket, telemetry or ads: `HTTPRequest`, `HTTPClient`,
+`WebSocketPeer` and `OS.shell` never appear in `game/` — enforced by preflight (no-grep stage),
+`scripts/health.sh` and CONVENTIONS' Never list. Releases are the only network participant and they run
+in CI, not in the game.
+
+## 11. Error handling conventions
+| Situation | Convention |
+|---|---|
+| Autoload or manager missing | degrade silently through `LogSink` (never `get_node` without a null check on a path a test can run before `_ready`) |
+| Missing art or audio | log `*.missing_art` with the **id**, keep the scene playable |
+| Save read failure or corrupt file | fall back to defaults, log `save.load_failed`, never crash the room |
+| Invalid id from disk | drop it at load (`Ids`), log once |
+| State-machine violation | impossible by construction: `Fsm` has declared edges; an illegal call logs `fsm.illegal_transition` and the probe fails the test |
+
+## 12. Contract and API shape
+- **No public API.** The contract surface is internal: `Fsm` edges, signal names, and the save schema.
+- Every signal carries typed arguments; every manager exposes `state_id()` for tests.
+- Ids are `\A[a-z0-9_]{1,64}\z` (`Ids`) and are the only thing that may reach a `res://` path.
+- The diary schema is fixed by the external auditor (`scripts/log_tool.py`), not by the game.

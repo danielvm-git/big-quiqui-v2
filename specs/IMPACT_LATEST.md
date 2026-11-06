@@ -1,58 +1,48 @@
-# Impact — e01s01 (Godot 4.7 Expand Viewport, Fsm Core, Log JSONL & Test Helpers)
+# Impact — e07 (SleepScene + CelebrationScene, close the care cycle)
 
-<!-- story: e01s01 -->
-**Skill:** `assess-impact` (lightweight) · **Date:** 2026-11-04 · **Mode:** pre-build
+<!-- story: e07s01 -->
+**Skill:** `assess-impact` (lightweight) · **Date:** 2026-11-06 · **Mode:** pre-build, brownfield
 
 ## Verdict
 
-**Risk: 3 / 10 — LOW. Proceed without a `grill-me` gate.**
-Net-new code on an empty `game/scripts` tree: no existing dependents, no runtime
-surface to break. The risk that matters is *irreversibility of decisions*, not blast
-radius — and those decisions are already frozen in ADR-001..006.
+**Risk: 5 / 10 — MEDIUM.** Net-new scenes, but the first epic that **closes a care cycle**, so it touches
+the two modules every other epic depends on: `CareLoopManager` (its `CELEBRATE → IDLE` edge and
+`complete_cycle`) and `ProgressManager` (the reward path with the BUG-007 clamps).
 
-## Blast radius
+## Modules on the change path
 
-| Area | Dependents today | What e01s01 changes |
+| Module | Why it changes | Dependents | Existing tests | Coverage note |
+|---|---|---|---|---|
+| `game/scripts/scenes/quarto_sono.gd` (new) | SLEEP scene: lamp toggle, `sono` expression, SLEEP credit | `casa.gd` door table | none yet | new |
+| `game/scripts/scenes/celebracao.gd` (new) | CELEBRATE scene: confetti, reward reveal, `complete_cycle` | `casa.gd` door table | none yet | new |
+| `scripts/autoloads/care_loop_manager.gd` | ensure `SLEEP → CELEBRATE → IDLE` is walked exactly once and the cycle id increments | every scene's credit path, `casa.gd` dots | `test_care_loop_manager.gd` (13) | direct |
+| `scripts/autoloads/progress_manager.gd` | `complete_cycle` reward once per cycle (BUG-007 clamps) | `casa.gd` HUD, celebration scene | `test_progress_manager.gd` (16) | direct |
+| `game/scripts/components/quiqui_rig.gd` | `sono`/`celebrando` expressions exist already; no API change expected | every scene | `test_quiqui_rig.gd` (404 lines) | direct, hotspot #3 |
+| `game/tools/build_quarto_sono_scene.gd`, `build_celebracao_scene.gd` (new) | generate the two `.tscn` | n/a | builders are tooling | gap by design (see `COVERAGE_MAP_LATEST.md`) |
+
+## Affected stories
+
+`e07s01`–`e07s04` (this epic). No earlier story reopens: `e02`'s Casa doors already declare `SLEEP` as the
+last pending door, and both new `.tscn` files make their doors navigate — the same "adding a scene is an
+integration change" pattern that D? fired on e04/e05/e06, now expected here.
+
+## Test coverage on the path
+
+| Surface | Today | Planned |
 |---|---|---|
-| `game/scripts/core/fsm.gd` | none (0 `.gd` files) | creates the FSM every later manager must use (ADR-001) |
-| `game/scripts/autoloads/log.gd` | none | creates `Log`; every later `Log.event()` call depends on its schema |
-| `game/tests/helpers/*` | none | creates `TestReset`, `FsmProbe`, `TouchSim`, `GeometryOracle`; all 43 stories' tests depend on these APIs |
-| `game/project.godot` | CI, big-release, preflight | adds autoloads + `run/main_scene` stays unset until e01s05 |
-| `scripts/preflight.sh` | hooks + CI | unchanged; becomes non-vacuous for the first time |
+| `CareLoopManager` cycle close | `test_care_loop_manager.gd` covers edges and `complete_step`, not a full `IDLE→…→CELEBRATE→IDLE` walk | one unit test for the full walk + `completed_cycles` increment |
+| `ProgressManager.complete_cycle` | covered incl. clamps and single emit (BUG-007) | a reward-once assertion from the celebration scene |
+| Door table | `test_casa_scene.gd` asserts doors per step | the SLEEP door navigates once; "doors stay pending" retires |
+| Layout | `GeometryOracle` per scene type | both new scenes pass `STEP_ROOM_SPEC` on three canvases |
 
-## Downstream stories touched by the interfaces this story freezes
+## Risks and mitigations
 
-| Story | Depends on | Coupling |
-|---|---|---|
-| e01s02 | `Fsm` API (`transition_from`, `legal_edges`, `max_dwell_sec`) | HIGH — a change to `Fsm` breaks SceneManager/AudioManager |
-| e01s03 | `TestReset` (save-path redirection), `Log` schema | HIGH |
-| e01s04 | `TouchSim`, `GeometryOracle`, `Fsm` | HIGH |
-| e01s05 | all four helpers + `Log` + autoload set | HIGH |
-| e02–e11 (38 stories) | all of the above | HIGH at the API level, low in volume |
+| Risk | Mitigation |
+|---|---|
+| Double reward if `complete_cycle` runs twice | existing `_rewarded_cycle_id` guard; assert from the scene |
+| Cycle never closes (`CELEBRATE` without `→ IDLE`) | explicit test for the closing edge; the FSM already declares it |
+| Two scenes in one epic means two builders, two layouts | one shared spec (`STEP_ROOM_SPEC`), builders mirror the existing pattern |
+| `quiqui_rig.gd` is 427 lines and the #3 hotspot | no API change planned; if one is needed, extract rather than grow |
 
-This is why the four helper APIs are treated as ADR-level decisions rather than
-implementation detail: they are the contract for 42 downstream stories.
-
-## Test coverage that must exist before the code
-
-| Layer | Required by `TEST_PLAN_LATEST.md` | Planned in `e01-TEST_PLAN_LATEST.md` |
-|---|---|---|
-| Unit | Fsm legal edges, idempotency, dwell timeout | SC-E01-P0-01..03 |
-| Integration | autoload boot, Log JSONL schema + PII, atomic save round-trip | SC-E01-P0-04..06 |
-| E2E / geometry | dual aspect 1920×1080 + 2048×1536, ≥120 px hit targets | SC-E01-P0-07 |
-| Control (anti-vacuity) | preflight must go RED when the suite is empty | SC-E01-P0-08 |
-
-## Migration / rollback
-
-No data migration: `user://` is untouched until e01s03 introduces `SaveData`.
-Rollback is `git revert` of a single story branch; no schema or save-format debt.
-
-## Recommendation
-
-Proceed to `kickoff-branch` → `develop-tdd` for e01s01 in this order:
-`Fsm` (unit) → `Log` (unit + PII) → helpers (`TestReset`, `FsmProbe`) → `TouchSim` /
-`GeometryOracle` (integration) → autoload wiring (integration). Write the control test
-(empty-suite → preflight RED) first: it protects every later story from the vacuity
-mode found in Phase 1.
-
-`plan-consistency-check.sh` for the e01 capsule: **CRITICAL=0 HIGH=0 MED=0** (PASS).
+**No `grill-me` gate required** (risk ≤ 7). Recommended first commit: the failing `CELEBRATE → IDLE` walk
+test, before either scene exists.

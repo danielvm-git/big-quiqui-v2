@@ -1,5 +1,5 @@
 # story: e01s01
-name: CI/CD
+name: Test Build Release
 
 # Portfolio CI/CD — Option B of danielvm-git/.github discussion #32:
 # this file is a COPY of the central template
@@ -35,7 +35,14 @@ on:
 # Cancel superseded PR runs, never an in-flight release on main.
 concurrency:
   group: pipeline-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  # CI9: cancel superseded runs. A release run gets its own lock (see the release
+  # job) so this can never abort a half-published version.
+  cancel-in-progress: true
+
+# CI13: least privilege by default; jobs widen it explicitly (`contents: write` only
+# on the release job).
+permissions:
+  contents: read
 
 env:
   GODOT_VERSION: "4.7.0"
@@ -168,7 +175,7 @@ jobs:
         with:
           name: deploy-meta
           path: deploy-meta.json
-          retention-days: 30
+          retention-days: 3
           if-no-files-found: error
 
   export-preset:
@@ -247,6 +254,9 @@ jobs:
   release:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs: [verify, build]
+    concurrency:
+      group: release-${{ github.ref }}
+      cancel-in-progress: false
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     permissions:
@@ -259,6 +269,9 @@ jobs:
           # the release job pushes the tag: this is the one checkout that keeps the token
           fetch-depth: 0
           persist-credentials: true
+
+      - name: Sync project.godot version with the tag
+        run: bash scripts/sync-project-version.sh --check
 
       - name: Install big-release
         run: |

@@ -1,127 +1,148 @@
-# story: e01s01
-# Bug registry — one row per specs/bugs/BUG-*.md. All 12 rows were opened from
-# specs/verifications/AUDIT-e01-e02-2026-11-04.md (audit-code, full checklist).
 bugs:
-  - bug_id: BUG-001
-    date: "2026-11-04"
-    severity: high
-    priority: P0
-    scope: ui
-    summary: "Scene roots pack at 2x the canvas (offsets kept after PRESET_FULL_RECT) and the geometry oracle only checks >= cover"
-    file: specs/bugs/BUG-001-scene-root-double-canvas.md
-    status: fixed
-  - bug_id: BUG-002
-    date: "2026-11-04"
-    severity: high
-    priority: P0
-    scope: ui
-    summary: "Interactive UI uses 16:9 pixel coordinates; 4:3 expanded canvas leaves QuiQui at 58% and a 396px dead band"
-    file: specs/bugs/BUG-002-expand-anchoring.md
-    status: fixed
-  - bug_id: BUG-003
-    date: "2026-11-04"
-    severity: medium
-    priority: P1
-    scope: telemetry
-    summary: "care.abandon logs step=idle after the transition; fsm.dwell_timeout logs limit_sec in milliseconds"
-    file: specs/bugs/BUG-003-falsified-telemetry.md
-    status: fixed
-  - bug_id: BUG-004
-    date: "2026-11-04"
-    severity: medium
-    priority: P1
-    scope: telemetry
-    summary: "Every human-readable msg is redacted because the writer applies the id rule the auditor exempts"
-    file: specs/bugs/BUG-004-msg-always-redacted.md
-    status: wontfix
-  - bug_id: BUG-005
-    date: "2026-11-04"
-    severity: medium
-    priority: P1
-    scope: ui
-    summary: "WishBubble reports pulse_scale 1.0 while hidden but keeps the last transform"
-    file: specs/bugs/BUG-005-wish-bubble-hidden-transform.md
-    status: fixed
-  - bug_id: BUG-006
-    date: "2026-11-04"
-    severity: medium
-    priority: P1
-    scope: ui
-    summary: "QuiQuiRig.reset clears outfit_id but leaves the outfit sprite visible"
-    file: specs/bugs/BUG-006-rig-reset-outfit.md
-    status: fixed
-  - bug_id: BUG-007
-    date: "2026-11-04"
-    severity: medium
-    priority: P1
-    scope: persistence
-    summary: "Tickets clamp against MAX_COINS; complete_cycle emits progress_changed three times and never clamps cycles"
-    file: specs/bugs/BUG-007-economy-counters.md
-    status: fixed
-  - bug_id: BUG-008
-    date: "2026-11-04"
-    severity: medium
-    priority: P1
-    scope: core
-    summary: "Three divergent resource-id contracts (SaveData, QuiQuiRig, CONVENTIONS) plus the separate diary schema"
-    file: specs/bugs/BUG-008-divergent-id-contracts.md
-    status: fixed
-  - bug_id: BUG-009
-    date: "2026-11-04"
-    severity: low
-    priority: P2
-    scope: core
-    summary: "complete_step(IDLE) starts FEED and the Vila door renders permanently dimmed"
-    file: specs/bugs/BUG-009-api-surprises.md
-    status: fixed
-  - bug_id: BUG-010
-    date: "2026-11-04"
-    severity: low
-    priority: P2
-    scope: core
-    summary: "Duplicated log bridge, squash spring, scene-builder scaffolding and care-step names"
-    file: specs/bugs/BUG-010-duplicated-infrastructure.md
-    status: fixed
-  - bug_id: BUG-011
-    date: "2026-11-04"
-    severity: low
-    priority: P2
-    scope: tooling
-    summary: "Dead CareLoopManager.test_mode and gate blind spots: type_gate/trace-stories skip game/tools"
-    file: specs/bugs/BUG-011-dead-state-and-gate-blindspots.md
-    status: fixed
-  - bug_id: BUG-012
-    date: "2026-11-04"
-    severity: low
-    priority: P2
-    scope: core
-    summary: "Managers dereference fsm/players before _ready and show_wish validates paths by prefix/suffix"
-    file: specs/bugs/BUG-012-pre-ready-and-path-validation.md
-    status: fixed
-  - bug_id: BUG-013
-    date: "2026-11-05"
-    severity: high
-    priority: P0
-    scope: ui
-    summary: "On 4:3 QuiQui is painted at 42% of the height while the oracle proves the empty Control box"
-    file: specs/bugs/BUG-013-hero-scale-measures-box-not-art.md
-    status: fixed
-    found_by: "request-review round 1/5 (both reviewers, must-fix)"
-  - bug_id: BUG-014
-    date: "2026-11-05"
-    severity: medium
-    priority: P1
-    scope: docs
-    summary: "BUG-002 closure evidence mixes art-before with box-after; DESIGN section 3 states an offsets rule both shipped scenes break"
-    file: specs/bugs/BUG-014-records-overclaim-4x3-closure.md
-    status: fixed
-    found_by: "request-review round 1/5 (reviewer A should-fix 3, reviewer B must-fix 2)"
-  - bug_id: BUG-015
-    date: "2026-11-05"
-    severity: medium
-    priority: P1
-    scope: core
-    summary: "Residual e01-e03 audit advisories: unwired kitchen dwell check, QuiQuiRig right-click/pre-ready guards, SceneManager _swapped flag, FoodCatalog missing_data seam, CoinTicketHud Demeter getters, and doc/file-size ceilings"
-    file: specs/bugs/BUG-015-e03-audit-and-review-gaps.md
-    status: fixed
-    found_by: "fix-bug audit sweep across e01-e03 verification records"
+- bug_id: BUG-001
+  date: '2026-11-04'
+  severity: high
+  priority: P0
+  scope: ui
+  summary: Scene roots pack at 2x the canvas (offsets kept after PRESET_FULL_RECT)
+    and the geometry oracle only checks >= cover
+  file: specs/bugs/BUG-001-scene-root-double-canvas.md
+  status: fixed
+- bug_id: BUG-002
+  date: '2026-11-04'
+  severity: high
+  priority: P0
+  scope: ui
+  summary: Interactive UI uses 16:9 pixel coordinates; 4:3 expanded canvas leaves
+    QuiQui at 58% and a 396px dead band
+  file: specs/bugs/BUG-002-expand-anchoring.md
+  status: fixed
+- bug_id: BUG-003
+  date: '2026-11-04'
+  severity: medium
+  priority: P1
+  scope: telemetry
+  summary: care.abandon logs step=idle after the transition; fsm.dwell_timeout logs
+    limit_sec in milliseconds
+  file: specs/bugs/BUG-003-falsified-telemetry.md
+  status: fixed
+- bug_id: BUG-004
+  date: '2026-11-04'
+  severity: medium
+  priority: P1
+  scope: telemetry
+  summary: Every human-readable msg is redacted because the writer applies the id
+    rule the auditor exempts
+  file: specs/bugs/BUG-004-msg-always-redacted.md
+  status: wontfix
+- bug_id: BUG-005
+  date: '2026-11-04'
+  severity: medium
+  priority: P1
+  scope: ui
+  summary: WishBubble reports pulse_scale 1.0 while hidden but keeps the last transform
+  file: specs/bugs/BUG-005-wish-bubble-hidden-transform.md
+  status: fixed
+- bug_id: BUG-006
+  date: '2026-11-04'
+  severity: medium
+  priority: P1
+  scope: ui
+  summary: QuiQuiRig.reset clears outfit_id but leaves the outfit sprite visible
+  file: specs/bugs/BUG-006-rig-reset-outfit.md
+  status: fixed
+- bug_id: BUG-007
+  date: '2026-11-04'
+  severity: medium
+  priority: P1
+  scope: persistence
+  summary: Tickets clamp against MAX_COINS; complete_cycle emits progress_changed
+    three times and never clamps cycles
+  file: specs/bugs/BUG-007-economy-counters.md
+  status: fixed
+- bug_id: BUG-008
+  date: '2026-11-04'
+  severity: medium
+  priority: P1
+  scope: core
+  summary: Three divergent resource-id contracts (SaveData, QuiQuiRig, CONVENTIONS)
+    plus the separate diary schema
+  file: specs/bugs/BUG-008-divergent-id-contracts.md
+  status: fixed
+- bug_id: BUG-009
+  date: '2026-11-04'
+  severity: low
+  priority: P2
+  scope: core
+  summary: complete_step(IDLE) starts FEED and the Vila door renders permanently dimmed
+  file: specs/bugs/BUG-009-api-surprises.md
+  status: fixed
+- bug_id: BUG-010
+  date: '2026-11-04'
+  severity: low
+  priority: P2
+  scope: core
+  summary: Duplicated log bridge, squash spring, scene-builder scaffolding and care-step
+    names
+  file: specs/bugs/BUG-010-duplicated-infrastructure.md
+  status: fixed
+- bug_id: BUG-011
+  date: '2026-11-04'
+  severity: low
+  priority: P2
+  scope: tooling
+  summary: 'Dead CareLoopManager.test_mode and gate blind spots: type_gate/trace-stories
+    skip game/tools'
+  file: specs/bugs/BUG-011-dead-state-and-gate-blindspots.md
+  status: fixed
+- bug_id: BUG-012
+  date: '2026-11-04'
+  severity: low
+  priority: P2
+  scope: core
+  summary: Managers dereference fsm/players before _ready and show_wish validates
+    paths by prefix/suffix
+  file: specs/bugs/BUG-012-pre-ready-and-path-validation.md
+  status: fixed
+- bug_id: BUG-013
+  date: '2026-11-05'
+  severity: high
+  priority: P0
+  scope: ui
+  summary: On 4:3 QuiQui is painted at 42% of the height while the oracle proves the
+    empty Control box
+  file: specs/bugs/BUG-013-hero-scale-measures-box-not-art.md
+  status: fixed
+  found_by: request-review round 1/5 (both reviewers, must-fix)
+- bug_id: BUG-014
+  date: '2026-11-05'
+  severity: medium
+  priority: P1
+  scope: docs
+  summary: BUG-002 closure evidence mixes art-before with box-after; DESIGN section
+    3 states an offsets rule both shipped scenes break
+  file: specs/bugs/BUG-014-records-overclaim-4x3-closure.md
+  status: fixed
+  found_by: request-review round 1/5 (reviewer A should-fix 3, reviewer B must-fix
+    2)
+- bug_id: BUG-015
+  date: '2026-11-05'
+  severity: medium
+  priority: P1
+  scope: core
+  summary: 'Residual e01-e03 audit advisories: unwired kitchen dwell check, QuiQuiRig
+    right-click/pre-ready guards, SceneManager _swapped flag, FoodCatalog missing_data
+    seam, CoinTicketHud Demeter getters, and doc/file-size ceilings'
+  file: specs/bugs/BUG-015-e03-audit-and-review-gaps.md
+  status: fixed
+  found_by: fix-bug audit sweep across e01-e03 verification records
+- bug_id: BUG-016
+  date: '2026-11-06'
+  severity: medium
+  priority: P1
+  scope: release
+  summary: project.godot advertised 0.1.0 while the ladder was at v0.8.0; .big-release.yml
+    claimed CI synced it and nothing did
+  file: specs/bugs/BUG-016-project-version-drift.md
+  status: fixed
+  found_by: bigpowers adoption audit (CI6, root VERSION sync)

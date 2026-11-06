@@ -2,6 +2,7 @@
 
 <!-- story: e02s03 -->
 - **Status:** Accepted
+- **Retroactive:** yes — recorded after the decision was already in force in code
 - **Date:** 2026-11-04
 - **Supersedes:** ADR-002's composition clause (the "centered `SafeStage` container" MUST) and narrows `DESIGN.md` §3 to edge/ratio anchoring; the ADR-002 viewport contract stands
 - **Closes:** BUG-001, BUG-002

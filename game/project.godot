@@ -7,7 +7,7 @@ config_version=5
 [application]
 
 config/name="Coelinha QuiQui"
-config/version="0.1.0"
+config/version="0.8.0"
 config/features=PackedStringArray("4.7", "Mobile")
 run/main_scene="res://scenes/titulo.tscn"
 config/icon="res://assets/art/ui/moedinha.png"

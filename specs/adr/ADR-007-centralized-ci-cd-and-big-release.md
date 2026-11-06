@@ -2,6 +2,7 @@
 
 <!-- story: e01s01 -->
 - **Status:** Accepted
+- **Retroactive:** yes — recorded after the decision was already in force in code
 - **Date:** 2026-11-04
 - **Supersedes:** the bespoke `.github/workflows/ci-cd.yml` (gate → package-ios → release)
 - **Sources:** `danielvm-git/.github` discussion **#32** (central CI/CD v4.1.0), `danielvm-git/big-release` discussion **#72** (release automation)
