@@ -2,7 +2,7 @@ epic_id: e05
 slug: e05-closet-dress-scene
 title: 'Playable Scene 5: Closet & Accessories — DRESS Step (closet.tscn)'
 playable_scene: res://scenes/closet.tscn
-status: planned
+status: done
 bcps: 11
 wsjf: 7.0
 stories:
@@ -10,17 +10,17 @@ stories:
   title: QuiQuiRig Layered OutfitSprite & AccessorySprites Composited Under ExpressionSprite
     + ProgressManager Outfit Save
   bcps: 4
-  status: planned
+  status: done
   delta: ADDED
 - id: e05s02
   title: 'Playable Scene 5: ClosetScene (closet.tscn) with 4 Outfits, 6 Accessories,
     pop_roupa SFX & Sparkle Burst'
   bcps: 5
-  status: planned
+  status: done
   delta: ADDED
 - id: e05s03
   title: ClosetScene E2E Outfit-Preserves-Expression Invariant & Disk Round-Trip Persistence
     Tests
   bcps: 2
-  status: planned
+  status: done
   delta: ADDED

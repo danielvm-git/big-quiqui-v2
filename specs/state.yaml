@@ -1,4 +1,3 @@
-# story: e01s01
 project: big-quiqui-v2
 version: 0.3.1-dev
 workflow_mode: solo-git
@@ -8,107 +7,193 @@ current_epic: e06-garden-play-scene
 current_story: e05s01
 review_gate:
   skill: request-review
-  method: "dual-blind AND gate: 2 reviewers, different agents, no shared context"
+  method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
   round: 6
   max_rounds: 6
   verdict: PASS
   history:
-    - round: 1
-      verdict: FAIL
-      scores: {reviewer_a: 72, reviewer_b: 62}
-      reports: [specs/verifications/REVIEW-A-e01-e02-2026-11-04.md, specs/verifications/REVIEW-B-e01-e02-2026-11-04.md]
-      must_fix: [BUG-013, BUG-014]
-    - round: 2
-      verdict: FAIL
-      scores: {reviewer_a: 80, reviewer_b: 70}
-      reports: [specs/verifications/REVIEW-A2-e01-e02-round2-2026-11-05.md, specs/verifications/REVIEW-B2-e01-e02-round2-2026-11-05.md]
-      must_fix: "opaque-pixel hero scale; oracle must fail closed; DESIGN px reading; false WishBubble closure"
-    - round: 3
-      verdict: FAIL
-      scores: {reviewer_a: 60, reviewer_b: 76}
-      reports: [specs/verifications/REVIEW-A3-e01-e02-round3-2026-11-05.md, specs/verifications/REVIEW-B3-e01-e02-round3-2026-11-05.md]
-      must_fix: "wish bubble covered her face on 4:3; newline test did not discriminate; opaque_rect still failed open; records' rest numbers"
-    - round: 4
-      verdict: FAIL
-      scores: {reviewer_a: 99, reviewer_b: 70}
-      reports: [specs/verifications/REVIEW-A4-e01-e02-round4-2026-11-05.md, specs/verifications/REVIEW-B4-e01-e02-round4-2026-11-05.md]
-      must_fix: "two records quoted the pre-manual_step breathing phase as tool output"
-    - round: 5
-      verdict: CAP_EXHAUSTED
-      scores: {reviewer_a: PASS_92, reviewer_b: 72}
-      reports: [specs/verifications/REVIEW-A5-e01-e02-round5-2026-11-05.md, specs/verifications/REVIEW-B5-e01-e02-round5-2026-11-05.md]
-      must_fix: "nothing distinguished get_visual_global_rect() from the box (mutation stayed green); RED recipe, mechanism and universal claims were wrong"
-    - round: 6
-      verdict: PASS
-      scores: {reviewer_a: 100, reviewer_b: 100}
-      reports: [specs/verifications/REVIEW-A6-e01-e03-2026-11-05.md, specs/verifications/REVIEW-B6-e01-e03-2026-11-05.md]
-      must_fix: []
+  - round: 1
+    verdict: FAIL
+    scores:
+      reviewer_a: 72
+      reviewer_b: 62
+    reports:
+    - specs/verifications/REVIEW-A-e01-e02-2026-11-04.md
+    - specs/verifications/REVIEW-B-e01-e02-2026-11-04.md
+    must_fix:
+    - BUG-013
+    - BUG-014
+  - round: 2
+    verdict: FAIL
+    scores:
+      reviewer_a: 80
+      reviewer_b: 70
+    reports:
+    - specs/verifications/REVIEW-A2-e01-e02-round2-2026-11-05.md
+    - specs/verifications/REVIEW-B2-e01-e02-round2-2026-11-05.md
+    must_fix: opaque-pixel hero scale; oracle must fail closed; DESIGN px reading;
+      false WishBubble closure
+  - round: 3
+    verdict: FAIL
+    scores:
+      reviewer_a: 60
+      reviewer_b: 76
+    reports:
+    - specs/verifications/REVIEW-A3-e01-e02-round3-2026-11-05.md
+    - specs/verifications/REVIEW-B3-e01-e02-round3-2026-11-05.md
+    must_fix: wish bubble covered her face on 4:3; newline test did not discriminate;
+      opaque_rect still failed open; records' rest numbers
+  - round: 4
+    verdict: FAIL
+    scores:
+      reviewer_a: 99
+      reviewer_b: 70
+    reports:
+    - specs/verifications/REVIEW-A4-e01-e02-round4-2026-11-05.md
+    - specs/verifications/REVIEW-B4-e01-e02-round4-2026-11-05.md
+    must_fix: two records quoted the pre-manual_step breathing phase as tool output
+  - round: 5
+    verdict: CAP_EXHAUSTED
+    scores:
+      reviewer_a: PASS_92
+      reviewer_b: 72
+    reports:
+    - specs/verifications/REVIEW-A5-e01-e02-round5-2026-11-05.md
+    - specs/verifications/REVIEW-B5-e01-e02-round5-2026-11-05.md
+    must_fix: nothing distinguished get_visual_global_rect() from the box (mutation
+      stayed green); RED recipe, mechanism and universal claims were wrong
+  - round: 6
+    verdict: PASS
+    scores:
+      reviewer_a: 100
+      reviewer_b: 100
+    reports:
+    - specs/verifications/REVIEW-A6-e01-e03-2026-11-05.md
+    - specs/verifications/REVIEW-B6-e01-e03-2026-11-05.md
+    must_fix: []
   must_fix: []
-  must_fix_status: "Dual-blind AND-gate PASS (Reviewer A: 100%, Reviewer B: 100%, 0 must-fix, 0 should-fix)"
+  must_fix_status: 'Dual-blind AND-gate PASS (Reviewer A: 100%, Reviewer B: 100%,
+    0 must-fix, 0 should-fix)'
 bug_cycle:
   status: closed
   round: 6
   current_step: 5
-  completed_steps: [1, 2, 3, 4, 5]
-  ids: [BUG-013, BUG-014, BUG-015]
+  completed_steps:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  ids:
+  - BUG-013
+  - BUG-014
+  - BUG-015
   previous:
     status: closed
-    closed_in: "PR #7 (squash 328a94c) -> v0.3.1"
-    completed_steps: [1, 2, 3, 4, 5]
-    ids: [BUG-001, BUG-002, BUG-003, BUG-004, BUG-005, BUG-006, BUG-007, BUG-008, BUG-009, BUG-010, BUG-011, BUG-012]
-    outcome: "11 fixed, BUG-004 wontfix (PII policy, pinned by test)"
-last_updated: "2026-11-05T21:10:00-03:00"
+    closed_in: 'PR #7 (squash 328a94c) -> v0.3.1'
+    completed_steps:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    ids:
+    - BUG-001
+    - BUG-002
+    - BUG-003
+    - BUG-004
+    - BUG-005
+    - BUG-006
+    - BUG-007
+    - BUG-008
+    - BUG-009
+    - BUG-010
+    - BUG-011
+    - BUG-012
+    outcome: 11 fixed, BUG-004 wontfix (PII policy, pinned by test)
+last_updated: '2026-11-05T21:10:00-03:00'
+release:
+  ci_verified: true
+  last_released: "v0.6.0"
+  last_released_at: "2026-11-06T02:59:32Z"
+  ci_verified_commit: 00eaad3
 
 release_target:
-  version: "1.0.0"
-  codename: "Repaginada TutoTOONS Vertical"
-  target_platform: "iPadOS (4:3 2048x1536) & Desktop/Landscape (16:9 1920x1080)"
-  engine: "Godot 4.7"
-
+  version: 1.0.0
+  codename: Repaginada TutoTOONS Vertical
+  target_platform: iPadOS (4:3 2048x1536) & Desktop/Landscape (16:9 1920x1080)
+  engine: Godot 4.7
 project_cycle:
   mode: standard
   current_phase: 4
-  completed_phases: [1, 2, 3]
+  completed_phases:
+  - 1
+  - 2
+  - 3
   phase_artifacts:
     discover: specs/tech-architecture/tech-stack.md
     elaborate: specs/adr/
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: build-epic
-  context: "Dual-blind review gate PASSED (100% / 100%). BUG-013, BUG-014, and BUG-015 (all residual e01-e03 audit/review advisories) are closed on epic/e03-kitchen-feed-scene."
+  next_skill: survey-context
+  context: Dual-blind review gate PASSED (100% / 100%). BUG-013, BUG-014, and BUG-015
+    (all residual e01-e03 audit/review advisories) are closed on epic/e03-kitchen-feed-scene.
   epic: e03-kitchen-feed-scene
-  bug_fix: "BUG-013 + BUG-014 + BUG-015 closed. Suite: 26 scripts / 311 tests / 1441 asserts on epic/e03-kitchen-feed-scene (0 files > 300 lines, 0 functions > 20 lines)."
+  bug_fix: 'BUG-013 + BUG-014 + BUG-015 closed. Suite: 26 scripts / 311 tests / 1441
+    asserts on epic/e03-kitchen-feed-scene (0 files > 300 lines, 0 functions > 20
+    lines).'
   open_decisions:
-    - "Ghost-hand drag affordance (Smolsies benchmark) is ADOPTED but deferred to e04: the bath step has the same teach-without-words problem. It becomes an e04 story plus a `model`-rubric eval; do not bolt it onto the released e03."
-    - "Benchmark divergences are deliberate and recorded in TEST_PLAN section 4: our 120 px hit-target floor and 36 px insets are stricter than the five measured TutoTOONS titles (76-96 px chrome, 7-19 px insets). A review that asks us to align downward is wrong."
-    - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."
-    - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."
-    - "Hero-scale contract: DECIDED — the ratio on the opaque character is the requirement, the px figures in DESIGN section 3 are per-canvas illustrations. `QuiQuiRig` fits the box to the opaque art, so box height == painted height at rest."
+  - 'Ghost-hand drag affordance (Smolsies benchmark) is ADOPTED but deferred to e04:
+    the bath step has the same teach-without-words problem. It becomes an e04 story
+    plus a `model`-rubric eval; do not bolt it onto the released e03.'
+  - 'Benchmark divergences are deliberate and recorded in TEST_PLAN section 4: our
+    120 px hit-target floor and 36 px insets are stricter than the five measured TutoTOONS
+    titles (76-96 px chrome, 7-19 px insets). A review that asks us to align downward
+    is wrong.'
+  - 'Branch protection and repository rulesets return 403 on this private repo (needs
+    GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs
+    with required check ''gate'' manually enforced until the plan is upgraded or the
+    repo is made public.'
+  - 'Version delivered by CI is only meaningful on main: big-release silently no-ops
+    when HEAD is not a configured release branch.'
+  - 'Hero-scale contract: DECIDED — the ratio on the opaque character is the requirement,
+    the px figures in DESIGN section 3 are per-canvas illustrations. `QuiQuiRig` fits
+    the box to the opaque art, so box height == painted height at rest.'
 epic_cycle:
   step: 8
   story: e05s03
   story_bcps: 2
   epic_epic_bcps: 11
   fast_mode: true
-  started_at: "2026-11-06T04:20:00-03:00"
-  completed_at: "2026-11-06T06:45:00-03:00"
+  started_at: '2026-11-06T04:20:00-03:00'
+  completed_at: '2026-11-06T06:45:00-03:00'
   audit_result: pass
 metrics:
   story_start: null
   story_end: null
-  skill_timings: {}
-
+  skill_timings:
+    release-branch:
+      calls: 0
+      total_seconds: 0
+      avg_seconds: 0
+      _start: '2026-11-06T03:06:20Z'
 decisions:
-  - id: ADR-001
-    summary: "Table-driven Fsm (res://scripts/core/fsm.gd) required for all state machines; boolean flag clusters banned."
-  - id: ADR-002
-    summary: "1920x1080 canvas_items + expand aspect; 100% Control scene roots (PRESET_FULL_RECT) for zero letterbox bars on 4:3 iPad."
-  - id: ADR-003
-    summary: "QuiQuiRig separates Control layout box from foot-pivoted Node2D rig and layers Outfit under ExpressionOverlay so outfits never hide facial expressions."
-  - id: ADR-004
-    summary: "Unified TouchDraggable (4 modes: CONSUME_ON_DROP, CONTINUOUS_SCRUB, SNAP_TO_SLOT, FREE_PLACEMENT) with device==-1 mouse-echo filtering."
-  - id: ADR-005
-    summary: "Typed SaveData Resource with atomic .tmp rename and mandatory TestReset isolation (user://test_progress.json)."
-  - id: ADR-006
-    summary: "Scene-by-Scene Vertical Slicing: Every epic (e01..e11) ends with at least one bootable, playable, end-to-end tested scene."
+- id: ADR-001
+  summary: Table-driven Fsm (res://scripts/core/fsm.gd) required for all state machines;
+    boolean flag clusters banned.
+- id: ADR-002
+  summary: 1920x1080 canvas_items + expand aspect; 100% Control scene roots (PRESET_FULL_RECT)
+    for zero letterbox bars on 4:3 iPad.
+- id: ADR-003
+  summary: QuiQuiRig separates Control layout box from foot-pivoted Node2D rig and
+    layers Outfit under ExpressionOverlay so outfits never hide facial expressions.
+- id: ADR-004
+  summary: 'Unified TouchDraggable (4 modes: CONSUME_ON_DROP, CONTINUOUS_SCRUB, SNAP_TO_SLOT,
+    FREE_PLACEMENT) with device==-1 mouse-echo filtering.'
+- id: ADR-005
+  summary: Typed SaveData Resource with atomic .tmp rename and mandatory TestReset
+    isolation (user://test_progress.json).
+- id: ADR-006
+  summary: 'Scene-by-Scene Vertical Slicing: Every epic (e01..e11) ends with at least
+    one bootable, playable, end-to-end tested scene.'
