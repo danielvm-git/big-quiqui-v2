@@ -3,7 +3,7 @@ spec: e07s02.md
 epic_id: e07
 title: 'Playable Scene 8: CelebrationScene — confetti, PT-BR voice, atomic +5 coins
   / +1 ticket'
-status: failing
+status: passing
 bcps: 4
 playable_scene: res://scenes/quarto_sono.tscn + res://scenes/celebracao.tscn
 threat_findings:
@@ -17,7 +17,7 @@ tasks:
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e07s02-t02
   description: Implement the story contract (strict typing, Fsm where stateful, wired
     at _ready)
@@ -26,11 +26,11 @@ tasks:
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e07s02-t03
   description: Verify lint, type gate, oracle on both canvases, PII audit and traceability
   verify: bash scripts/preflight.sh && bash scripts/trace-stories.sh --strict
   risk: P1
   allure:
     severity: high
-  status: failing
+  status: passing

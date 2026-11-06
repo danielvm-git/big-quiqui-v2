@@ -223,3 +223,35 @@ func test_the_reward_degrades_when_progress_manager_is_unreachable() -> void:
 	assert_eq(fresh.call("state_id"), CareSteps.CELEBRATE, "the cycle still completes with no sink")
 	assert_eq(int(fresh.get("_rewarded_cycle_id")), 0, "the ledger advances, so a late grant is not double-paid")
 	fresh.free()
+
+
+# e07s03 / T-E07-05: a detour out of CELEBRATE must not brick the hub.
+func test_a_detour_from_celebrate_closes_the_cycle_to_idle() -> void:
+	# `complete_step` walks to the successor itself, so the cycle is walked by
+	# completing the current step: FEED -> BATH -> ... -> SLEEP -> CELEBRATE.
+	clm.begin_step("FEED")
+	for step: String in ["FEED", "BATH", "DRESS", "PLAY", "SLEEP"]:
+		assert_true(clm.complete_step(step), "complete %s" % step)
+	assert_eq(clm.state_id(), "CELEBRATE")
+
+	assert_true(clm.close_celebrate_if_needed(), "the guard closes the cycle")
+	assert_eq(clm.state_id(), "IDLE", "the hub is usable again")
+	assert_false(clm.close_celebrate_if_needed(), "and it is idempotent")
+	assert_eq(clm.cycle_id, 1, "the cycle is over: the counter advanced, but no coins were paid here")
+
+
+## The guard is wired at the one place every door goes through, not in each scene.
+func test_a_detour_request_closes_the_celebrate_cycle() -> void:
+	var sm: Node = get_node("/root/SceneManager")
+	sm.manual_step = true
+	sm.loader = func(_path: String) -> void: pass
+	clm.begin_step("FEED")
+	for step: String in ["FEED", "BATH", "DRESS", "PLAY", "SLEEP"]:
+		clm.complete_step(step)
+	assert_eq(clm.state_id(), "CELEBRATE")
+
+	sm.request_scene("res://scenes/album.tscn")
+
+	assert_eq(clm.state_id(), "IDLE", "a non-Casa detour closes the cycle")
+	sm.loader = Callable()
+	sm.manual_step = false
