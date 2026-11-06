@@ -44,6 +44,29 @@ env:
   EXPORT_PATH: "build/ios/quiqui.ipa"
 
 jobs:
+  ci-lint:
+    # wire-ci's hard gate: a pipeline that cannot be validated locally breaks every
+    # cycle. `scripts/ci-lint.sh` is the same check that runs in preflight L6, so a
+    # workflow edit is caught before it ever reaches a runner.
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6.3.0
+        with:
+          python-version: "3.12"
+
+      - name: Install dev tooling (PyYAML for ci-lint)
+        run: pip install -r requirements-dev.txt
+
+      - name: Workflow structure (pinning, permissions, timeouts, concurrency)
+        run: bash scripts/ci-lint.sh
+
   test:
     runs-on: ubuntu-22.04
     timeout-minutes: 25
@@ -53,13 +76,16 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6.3.0
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
 
-      - name: Install gdtoolkit (gdlint + gdformat)
-        run: pip install "gdtoolkit==4.*" pyyaml
+      - name: Install dev tooling (gdlint, gdformat, PyYAML)
+        run: pip install -r requirements-dev.txt
 
       - uses: chickensoft-games/setup-godot@ac93246ea68518a384c1c280a496e5989341f2f6  # v2.4.0
         with:
@@ -78,7 +104,7 @@ jobs:
 
   verify:
     if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
-    needs: [test]
+    needs: [ci-lint, test]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -87,6 +113,7 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Check Conventional Commits
         run: |
@@ -119,7 +146,7 @@ jobs:
           echo "OK: no network APIs"
 
   build:
-    needs: [verify]
+    needs: [ci-lint, verify]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -172,7 +199,7 @@ jobs:
 
   export:
     # Self-enables at e11 when game/export_presets.cfg gains an iOS preset.
-    needs: [test, export-preset]
+    needs: [ci-lint, test, export-preset]
     if: needs.export-preset.outputs.enabled == 'true'
     runs-on: macos-14
     timeout-minutes: 40
@@ -182,6 +209,7 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Detect export preset
         id: preset
@@ -228,6 +256,7 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
         with:
+          # the release job pushes the tag: this is the one checkout that keeps the token
           fetch-depth: 0
           persist-credentials: true
 
