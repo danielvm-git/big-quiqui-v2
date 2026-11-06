@@ -309,3 +309,12 @@ bugs:
   file: specs/bugs/BUG-034-generated-latest-docs-stale.md
   status: fixed
   found_by: e07 post-epic review, third pass (maintain-wiki)
+- bug_id: BUG-035
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: docs
+  summary: The 300-line/20-line review bar every audit enforces was undocumented, and five pre-existing files break it (427, 404, 341, 331, 326 lines)
+  file: specs/bugs/BUG-035-review-bars-undocumented.md
+  status: fixed
+  found_by: e07 post-epic review, fourth pass (tree-wide size sweep)
