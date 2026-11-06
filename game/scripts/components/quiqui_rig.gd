@@ -156,11 +156,7 @@ func set_expression(id: String) -> bool:
 
 func set_outfit(id: String) -> bool:
 	if id.is_empty():
-		if outfit != null:
-			outfit.visible = false
-			outfit.texture = null
-		outfit_id = ""
-		outfit_changed.emit("")
+		_take_outfit_off()
 		return true
 	if not Ids.is_valid(id):
 		LogSink.emit_from(self, "rig.invalid_outfit", {"outfit": "invalid"})
@@ -174,6 +170,14 @@ func set_outfit(id: String) -> bool:
 	outfit_id = id
 	outfit_changed.emit(id)
 	return true
+
+
+func _take_outfit_off() -> void:
+	if outfit != null:
+		outfit.visible = false
+		outfit.texture = null
+	outfit_id = ""
+	outfit_changed.emit("")
 
 
 ## Union of every visible sprite's opaque pixels in global coordinates.

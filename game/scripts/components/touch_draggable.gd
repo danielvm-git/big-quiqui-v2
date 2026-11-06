@@ -197,10 +197,7 @@ func _scrub_move(point: Vector2) -> void:
 func _drop(point: Vector2, cancelled: bool) -> void:
 	_holder = null
 	if fsm.state == STATE_SCRUBBING:
-		_stop_loop()
-		fsm.transition_to(STATE_REST)
-		drag_ended.emit()
-		_emit("scrub.end", {"scrubbed": _scrub_count})
+		_end_scrub()
 		return
 	if not cancelled and _is_on_target(point):
 		fsm.transition_to(STATE_CONSUMED)
@@ -214,6 +211,13 @@ func _drop(point: Vector2, cancelled: bool) -> void:
 	_return_elapsed = 0.0
 	drag_ended.emit()
 	_emit("drag.drop", {"outcome": "returned"})
+
+
+func _end_scrub() -> void:
+	_stop_loop()
+	fsm.transition_to(STATE_REST)
+	drag_ended.emit()
+	_emit("scrub.end", {"scrubbed": _scrub_count})
 
 
 ## Scene changes and stage resets call this: it releases the shared owner, stops the
