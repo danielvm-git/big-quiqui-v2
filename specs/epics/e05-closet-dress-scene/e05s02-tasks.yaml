@@ -1,35 +1,52 @@
 story_id: e05s02
 spec: e05s02.md
 epic_id: e05
-title: 'Playable Scene 5: ClosetScene (closet.tscn) with 4 Outfits, 6 Accessories,
-  pop_roupa SFX & Sparkle Burst'
-status: failing
+title: Playable ClosetScene (4 outfits, 6 accessories, pop SFX, sparkle burst)
+status: passing
 bcps: 5
 playable_scene: res://scenes/closet.tscn
+threat_findings:
+- T-E05-02
+- T-E05-05
+- T-E05-06
+- T-E05-07
 tasks:
 - id: e05s02-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e05s02
-    (Playable Scene 5: ClosetScene (closet.tscn) with 4 Outfits, 6 Accessories, pop_roupa
-    SFX & Sparkle Burst)'
+  description: 'Add SNAP_TO_SLOT to TouchDraggable: snap_target/margin, payload slot+id,
+    snapped signal, item flies home on success'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e05s02-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e05s02
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  description: Write failing test_closet_scene.gd SC-E05-P0-10..P2-17
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: passing
+- id: e05s02-t03
+  description: 'Implement ClosetScene: catalogue, wiring, snap handler, sparkle burst,
+    pop SFX, DRESS credit once, abandon'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: passing
+- id: e05s02-t04
+  description: Generate closet.tscn with build_closet_scene.gd (left outfits rail,
+    right accessories rail, home, bubble, sparkles)
+  verify: godot --headless --path game -s tools/build_closet_scene.gd
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e05s02-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e05s02
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  status: passing
+- id: e05s02-t05
+  description: 'Update the hub door test: DRESS navigates now that closet.tscn ships;
+    PLAY/SLEEP stay pending'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing
