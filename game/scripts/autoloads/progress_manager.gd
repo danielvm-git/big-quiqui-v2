@@ -169,11 +169,17 @@ func complete_cycle(coins: int = CYCLE_COINS_REWARD, tickets: int = CYCLE_TICKET
 	_apply(coins, tickets, 1)
 
 
+## Mutates and **writes**: every caller is a money path, and a reward that lives only in
+## RAM is gone the moment iOS kills the app from the switcher. The write is atomic
+## (`.tmp` + rename), so a crash mid-write keeps the previous file.
 func _apply(coins_delta: int, tickets_delta: int, cycles_delta: int = 0) -> void:
 	data.coins = clampi(data.coins + coins_delta, 0, SaveData.MAX_COINS)
 	data.tickets = clampi(data.tickets + tickets_delta, 0, SaveData.MAX_TICKETS)
 	data.completed_cycles = clampi(data.completed_cycles + cycles_delta, 0, SaveData.MAX_CYCLES)
-	progress_changed.emit()
+	# `save()` announces the change itself (the HUD repaints once). If the write fails,
+	# the HUD still needs to know the RAM value moved.
+	if not save():
+		progress_changed.emit()
 
 
 ## TestReset entry point.

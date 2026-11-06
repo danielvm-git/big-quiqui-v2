@@ -1,35 +1,34 @@
 story_id: e07s03
 spec: e07s03.md
 epic_id: e07
-title: Safe Detour Auto-Completion Guard (Opening Album/Vila Mid-Celebration Never
-  Bricks CasaScene)
-status: failing
+title: Safe detour auto-completion guard — opening a detour mid-celebration never
+  bricks the Casa
+status: passing
 bcps: 2
 playable_scene: res://scenes/quarto_sono.tscn + res://scenes/celebracao.tscn
+threat_findings:
+- T-E07-05
 tasks:
 - id: e07s03-t01
-  description: Write failing GUT unit & TouchSim/GeometryOracle tests for e07s03 (Safe
-    Detour Auto-Completion Guard (Opening Album/Vila Mid-Celebration Never Bricks
-    CasaScene))
+  description: Write the failing tests for SC-E07-P0-12, SC-E07-P0-13, SC-E07-P1-14
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e07s03-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e07s03
+  description: Implement the story contract (strict typing, Fsm where stateful, wired
+    at _ready)
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
     addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: passing
+- id: e07s03-t03
+  description: Verify lint, type gate, oracle on both canvases, PII audit and traceability
+  verify: bash scripts/preflight.sh && bash scripts/trace-stories.sh --strict
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e07s03-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e07s03
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
-  risk: P2
-  allure:
-    severity: normal
-  status: failing
+  status: passing

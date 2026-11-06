@@ -168,3 +168,16 @@ func _progress_manager() -> Node:
 
 func _emit(ev: String, data: Dictionary) -> void:
 	LogSink.emit_from(self, ev, data)
+
+
+## A child can leave CELEBRATE by a detour (album, vila, home). Without this the loop
+## stays in CELEBRATE and every care door refuses, so the hub is bricked (T-E07-05).
+## Idempotent: closing twice is a no-op, and it never pays — the reward was granted on
+## entry to CELEBRATE.
+func close_celebrate_if_needed() -> bool:
+	if fsm == null or fsm.state != STATE_CELEBRATE:
+		return false
+	if not fsm.transition_from(STATE_CELEBRATE, STATE_IDLE):
+		return false
+	_emit("care.celebrate_detour_closed", {"cycle": cycle_id})
+	return true

@@ -17,6 +17,9 @@ const STATE_FADING_OUT: String = "FADING_OUT"
 const STATE_SWAPPING: String = "SWAPPING"
 const STATE_FADING_IN: String = "FADING_IN"
 
+const CASA_PATH: String = "res://scenes/casa.tscn"
+## The celebration is the legitimate target of a CELEBRATE cycle, not a detour.
+const CELEBRACAO_PATH: String = "res://scenes/celebracao.tscn"
 const REASON_SAME_SCENE: String = "same_scene"
 const REASON_EMPTY_PATH: String = "empty_path"
 
@@ -72,22 +75,42 @@ func _process(delta: float) -> void:
 	advance(delta)
 
 
+## A detour out of the celebration must not leave the care cycle stuck in CELEBRATE
+## (T-E07-05). Closing it here means every door, from every scene, is covered — except
+## the two legitimate CELEBRATE targets: the hub and the celebration itself.
+func _close_celebrate_for_detour(path: String) -> void:
+	if path == CASA_PATH or path == CELEBRACAO_PATH:
+		return
+	var care: Node = get_node_or_null("/root/CareLoopManager")
+	if care != null and care.has_method("close_celebrate_if_needed"):
+		care.call("close_celebrate_if_needed")
+
+
+## Parks a request that cannot start now: an identical pending path, or a machine that
+## is mid-transition. Both are normal, not errors.
+func _park(path: String) -> bool:
+	if path == pending_scene:
+		scene_requested.emit(path, true)
+		return true
+	if fsm.state != STATE_IDLE:
+		pending_scene = path
+		scene_requested.emit(path, true)
+		return true
+	return false
+
+
 ## Requests a scene. Returns true when the transition started immediately,
 ## false when it was parked in the single pending slot.
 func request_scene(path: String) -> bool:
 	if path.strip_edges().is_empty():
 		reject(path, REASON_EMPTY_PATH)
 		return false
+	_close_celebrate_for_detour(path)
 	# Also while busy: a double tap must not queue a reload of the scene in flight.
 	if path == current_scene:
 		reject(path, REASON_SAME_SCENE)
 		return false
-	if path == pending_scene:
-		scene_requested.emit(path, true)
-		return false
-	if fsm.state != STATE_IDLE:
-		pending_scene = path
-		scene_requested.emit(path, true)
+	if _park(path):
 		return false
 	_start(path)
 	scene_requested.emit(path, false)

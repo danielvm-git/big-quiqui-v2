@@ -199,3 +199,19 @@ func test_an_invalid_equip_is_refused() -> void:
 		assert_false(pm.call("equip", SaveData.SLOT_HEAD, bad), bad)
 		assert_false(pm.call("equip", "bad slot!", "coroa"), "slot must be an id too")
 	assert_eq(pm.call("equipped", SaveData.SLOT_HEAD), "")
+
+
+# e07 review (both reviewers): the reward must reach the disk, not only the RAM.
+func test_completing_a_cycle_writes_the_save() -> void:
+	pm.set_test_mode(true)
+	pm.reset()
+	var before: int = pm.write_count
+
+	pm.complete_cycle()
+
+	assert_eq(pm.write_count, before + 1, "exactly one write for the cycle")
+	assert_true(FileAccess.file_exists(pm.save_path), "the save file exists")
+	var coins_after: int = pm.get_coins()
+	pm.data = SaveData.new()
+	pm.load_or_default()
+	assert_eq(pm.get_coins(), coins_after, "and a restart sees the reward")

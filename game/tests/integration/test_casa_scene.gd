@@ -135,30 +135,27 @@ func test_a_double_tap_on_the_feed_door_asks_for_the_kitchen_once() -> void:
 	assert_eq(get_node("/root/SceneManager").pending_scene, "", "no reload is queued")
 
 
-## BATH (e04s02), DRESS (e05s02) and PLAY (e06s02) are no longer pending: their scenes
-## ship, so those doors navigate. Only the rooms that do not exist yet stay pending —
-## and SLEEP is the last one.
-func test_the_other_care_doors_stay_pending() -> void:
-	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
-	await wait_process_frames(3)
-	for step: String in ["SLEEP"]:
+## Every care step now has a scene, so no door is "pending" any more: this replaces the
+## e03-era "doors stay pending" assertion, which had been shrinking epic by epic. A door
+## that stops navigating is now a regression, not a feature.
+func test_every_care_door_navigates_to_its_scene() -> void:
+	var expected: Dictionary = {
+		"FEED": "res://scenes/cozinha.tscn",
+		"BATH": "res://scenes/banheiro.tscn",
+		"DRESS": "res://scenes/closet.tscn",
+		"PLAY": "res://scenes/jardim.tscn",
+		"SLEEP": "res://scenes/quarto_sono.tscn",
+	}
+	for step: String in expected.keys():
+		requested_scenes = []
+		scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+		await wait_process_frames(3)
 		var door: TapButton = scene.door(step)
 		for event: InputEvent in TouchSim.tap_events(door, true):
 			door._gui_input(event)
-	assert_true(requested_scenes.is_empty())
-
-
-## The bath door opens now that the scene exists: one request, and the hub is not
-## swapped under GUT.
-func test_the_bath_door_asks_for_the_bathroom_once() -> void:
-	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
-	await wait_process_frames(3)
-	var door: TapButton = scene.door("BATH")
-	for tap: int in range(2):
-		for event: InputEvent in TouchSim.tap_events(door, true):
-			door._gui_input(event)
-
-	assert_eq(requested_scenes, ["res://scenes/banheiro.tscn"], "one request, not two")
+		assert_eq(requested_scenes, [expected[step]], "%s door" % step)
+		scene.queue_free()
+		scene = null
 
 
 ## The garden door opens now that the scene exists.
