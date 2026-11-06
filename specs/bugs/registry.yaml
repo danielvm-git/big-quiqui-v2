@@ -327,3 +327,75 @@ bugs:
   file: specs/bugs/BUG-036-execution-status-self-contradiction.md
   status: fixed
   found_by: e07 post-epic review, fifth pass (SoT self-consistency check)
+- bug_id: BUG-037
+  date: '2026-11-07'
+  severity: medium
+  priority: P2
+  scope: code
+  summary: WheelScene re-seeds its RNG to 42 on every spin, so the shipped wheel pays the same prize forever
+  file: specs/bugs/BUG-037-wheel-seed-reset-every-spin.md
+  status: open
+  found_by: e08 post-epic review
+- bug_id: BUG-038
+  date: '2026-11-07'
+  severity: medium
+  priority: P2
+  scope: code
+  summary: Tapping Home while the wheel is SPINNING debits the ticket and never pays the prize
+  file: specs/bugs/BUG-038-wheel-home-during-spin-loses-ticket.md
+  status: open
+  found_by: e08 post-epic review
+- bug_id: BUG-039
+  date: '2026-11-07'
+  severity: medium
+  priority: P2
+  scope: code
+  summary: The recycling coin and hint are guarded per VilaScene instance, so every visit to the Vila pays +1 again
+  file: specs/bugs/BUG-039-recycle-earn-per-instance-not-session.md
+  status: open
+  found_by: e08 post-epic review
+- bug_id: BUG-040
+  date: '2026-11-07'
+  severity: medium
+  priority: P2
+  scope: tests
+  summary: e08 tests: hint-once test never recycles, miss test does not check the bag returned, SC-E08-P0-20 and SC-E08-P1-15 are absent
+  file: specs/bugs/BUG-040-e08-tests-cannot-fail-and-missing-scenarios.md
+  status: open
+  found_by: e08 post-epic review
+- bug_id: BUG-041
+  date: '2026-11-07'
+  severity: low
+  priority: P3
+  scope: code
+  summary: vila._ready (25), roda._ready (22) and CoinTicketHud.fly_coin (28) exceed the 20-line bar in CONVENTIONS section 5
+  file: specs/bugs/BUG-041-functions-over-20-line-bar.md
+  status: open
+  found_by: e08 post-epic review
+- bug_id: BUG-042
+  date: '2026-11-07'
+  severity: low
+  priority: P3
+  scope: code
+  summary: wheel.badge_hide is logged on every progress_changed while the badge is hidden, with a reason that is only true once
+  file: specs/bugs/BUG-042-badge-hide-logged-every-refresh.md
+  status: open
+  found_by: e08 post-epic review
+- bug_id: BUG-043
+  date: '2026-11-07'
+  severity: low
+  priority: P3
+  scope: docs
+  summary: e08 left no threat model, README/TEST_PLAN/state counters stale, and frozen contracts that never shipped are not recorded
+  file: specs/bugs/BUG-043-e08-docs-and-threat-model-drift.md
+  status: open
+  found_by: e08 post-epic review
+- bug_id: BUG-044
+  date: '2026-11-07'
+  severity: low
+  priority: P3
+  scope: code
+  summary: A zero or negative EconomyData.wheel_spin_ticket_cost gives free spins or mints tickets
+  file: specs/bugs/BUG-044-wheel-ticket-cost-unclamped.md
+  status: open
+  found_by: e08 post-epic review
