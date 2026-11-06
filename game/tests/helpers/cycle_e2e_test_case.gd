@@ -11,7 +11,6 @@ extends GutTest
 ## credited once, the reward paid once, the hub usable afterwards.
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const CELEBRACAO_PATH: String = "res://scenes/celebracao.tscn"
 const ALBUM_PATH: String = "res://scenes/album.tscn"
 const STEP_SEC: float = 0.1
 const STEPS: int = 30

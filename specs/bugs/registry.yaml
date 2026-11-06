@@ -237,3 +237,12 @@ bugs:
   file: specs/bugs/BUG-023-bookkeeping-invalid-timestamp.md
   status: fixed
   found_by: e07 post-epic review (reviewer B should-fix 8, plus the epic-vs-capsule check)
+- bug_id: BUG-024
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: DESIGN.md's night_slumber_tint (#2B2D5C, canvas modulate) disagreed with the shipped tint (#6B73B8, background only) on both value and scope
+  file: specs/bugs/BUG-024-design-night-tint-drift.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 9)
