@@ -1,0 +1,71 @@
+# story: e03s04
+# Evals — e03 (Kitchen FEED scene), benchmark-derived. Schema: specs/benchmarks/SCHEMA.md
+# Skill: run-evals · kind: regression
+#
+# Every entry here is a REGRESSION eval (SCHEMA rule 3): the guard exists because the
+# defect shipped once. Provenance for the numbers: specs/product/TUTOTOONS_REFERENCE.md
+# (measured on 5 TutoTOONS titles, same 4:3 canvas).
+#
+# RED evidence for each eval is recorded inline. Two were produced by mutation on
+# 2026-11-05 in a clean worktree; the third is the pre-fix geometry itself.
+epic: e03
+kind: regression
+evals:
+  - id: EV-E03-01
+    claim: "The kitchen's hero is 55-65 % of the canvas height and its feet sit on the 78 % line, measured on the painted character"
+    story: e03s03
+    grader: code
+    run: bash scripts/preflight.sh
+    must_match: "test_the_painted_character_keeps_the_design_height_on_ipad"
+    also_requires:
+      - "test_the_character_is_measured_on_its_opaque_pixels"
+      - "test_a_character_that_paints_smaller_than_its_box_is_caught"
+    pass_when: "exit==0 and all three scenarios among passing tests"
+    red_evidence: |
+      Mutation 2026-11-05: `opaque_rect()` returned the 1024x1024 frame instead of
+      `Image.get_used_rect()` -> `the art frame carries transparent margin` and
+      `cannot measure is empty, not the frame` fail. The scene-level oracles stay green
+      under that mutation because box height == painted height by construction, so the
+      unit pair above is the actual guard; this eval exists to stop someone deleting it.
+    provenance: "hero band measured 55-65 % across the 5 reference titles; DESIGN.md §3"
+
+  - id: EV-E03-02
+    claim: "The wish bubble never covers the character on any canvas; the face is the only feedback a pre-reading child has"
+    story: e03s03
+    grader: code
+    run: bash scripts/preflight.sh
+    must_match: "test_the_bubble_never_covers_the_character_on_any_aspect"
+    pass_when: "exit==0 and the scenario passes on 1920x1080, 1920x1440 and 2048x1536"
+    red_evidence: |
+      Mutation 2026-11-05: `BUBBLE_GAP = -900` (the pre-fix `BUBBLE_TOP_FROM_FEET = -812`
+      pinned the bubble to the feet line, tuned for a 620 px character):
+        "1920x1080: the bubble ends at 1122.4 but her head starts at 219.1"
+        "1920x1440: the bubble ends at 1196.5 but her head starts at 295.2"
+        "2048x1536: the bubble ends at 1216.3 but her head starts at 315.0"
+    provenance: "every measured title anchors the icon bubble to the head line"
+
+  - id: EV-E03-03
+    claim: "Nothing in the kitchen requires reading: the scene carries no text node with play meaning"
+    story: e03s03
+    grader: code
+    run: bash scripts/preflight.sh
+    must_match: "test_the_scene_has_no_text"
+    pass_when: "exit==0 and the scenario passes"
+    red_evidence: |
+      Adding any `Label`/`RichTextLabel` with non-empty `text` to `cozinha.tscn` fails it;
+      the check walks every node in the mounted scene, so a new scene is covered by
+      construction rather than by remembering.
+    provenance: "zero text in any of the four measured gameplay frames; CONVENTIONS Never-read rule"
+
+  - id: EV-E03-04
+    claim: "The kitchen's persistent controls stay inside the 36 px safe inset and above the 120x120 px floor, on both aspects"
+    story: e03s03
+    grader: code
+    run: bash scripts/preflight.sh
+    must_match: "test_the_home_button_is_a_safe_top_left_hit_target"
+    pass_when: "exit==0 and the scenario passes"
+    red_evidence: |
+      `GeometryOracle`'s hit-target and edge-inset checks fail if the home button moves inside
+      the inset or below 120x120 px. The reference titles use 76-96 px chrome; we are
+      deliberately stricter (TEST_PLAN §4), so this eval pins OUR number, not theirs.
+    provenance: "TEST_PLAN §3 rows 4-5; declined benchmark pattern recorded in TEST_PLAN §4"

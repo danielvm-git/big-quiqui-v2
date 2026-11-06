@@ -11,11 +11,30 @@
 3. **`TouchSim` (`res://tests/helpers/touch_sim.gd`)**:
    - `tap_control(control, with_mouse_echo = true)`: pushes `InputEventScreenTouch(pressed=true)` + synthesized `InputEventMouseButton(device=-1)` + release.
    - `drag_control_to(control, target_global_pos, steps = 12, with_mouse_echo = true)`: simulates smooth finger drag across `Viewport.push_input`.
-4. **`GeometryOracle` (`res://tests/helpers/geometry_oracle.gd`)**:
-   - Resizes root viewport to `1920×1080` (16:9) and `2048×1536` (4:3 iPad) and asserts:
-     - Background `TextureRect` covers 100% of viewport rect.
-     - All interactive buttons/draggables have `size.x >= 120` and `size.y >= 120` and lie strictly within the visible viewport.
-     - All `QuiQuiRig` child zones (`MouthZone`, `ScrubHull`, foam blobs, accessories) lie strictly within `QuiQuiRig.get_visual_global_rect()`.
+4. **`GeometryOracle` (`res://tests/helpers/geometry_oracle.gd`)** — the caller mounts the scene in a
+   `SubViewport` of the target size and passes a **spec**; the oracle never resizes the window:
+   - **Scene root** rect equals the canvas (a packed `size` on a `FULL_RECT` root grows it to 2x — BUG-001).
+   - **Background** `TextureRect` *equals* the canvas in both directions: smaller is letterbox bars, larger
+     is an oversized root zooming the art (BUG-001/F18). `STRETCH_KEEP_ASPECT_COVERED` is required.
+   - **Hit targets**: every node in `hit_target` is ≥ `120×120` and inside the canvas.
+   - **Rig height and feet** are measured on `QuiQuiRig.get_visual_global_rect()` — the union of the
+     visible sprites' **opaque** pixels, not the `Control` box and not the 1024×1024 texture frame
+     (BUG-013). A box keeping > 3 % of the canvas height as dead space above the art is a finding.
+   - **Fails closed**: a node in the `rig` group that is not a `Control`, or a rig that cannot report
+     painted geometry (missing/renamed art, unreadable image), is a *finding* — never a silent fall back
+     to the box. `opaque_rect()` returning empty logs `rig.opaque_unreadable`.
+   - **`required_groups`**: a spec may name the groups its scene type must declare; an empty one is a
+     finding, so a scene cannot opt out of its own gate by forgetting `add_to_group`.
+   - **Rig child zones** (`MouthZone`, `ScrubHull`, foam blobs, accessories) lie inside
+     `get_visual_global_rect()` (TEST_PLAN §1.4).
+
+   Specs are per scene type, declared where they are asserted:
+
+   | Spec | Scene type | Groups asserted |
+   |---|---|---|
+   | `CARE_ROOM_SPEC` | hub (`casa`) | rig + dots (`ui_bottom`) + HUD (`ui_top_right`) |
+   | `STEP_ROOM_SPEC` | task rooms (`cozinha`, e04–e10 steps) | rig |
+   | `TITLE_SPEC` | `titulo` | rig |
 
 ## 2. Per-Epic Vertical Slice Gate
 Every epic `e01`..`e10` MUST pass:
@@ -24,3 +43,35 @@ Every epic `e01`..`e10` MUST pass:
 - **L2 Scene Integration Gate:** Boot the epic's playable `.tscn`, drive the complete user interaction via `TouchSim`, assert state transition via `FsmProbe`, and assert dual-aspect layout via `GeometryOracle`.
 - **L3 Observability & Privacy Gate:** `bash scripts/logs.sh audit --self-test` exits `0`.
 - **L4 Traceability Gate:** `bash scripts/trace-stories.sh --strict` exits `0`.
+- **L5 Benchmark Conformance Gate:** the mechanical subset of
+  `specs/product/TUTOTOONS_REFERENCE.md` — see §3.
+
+## 3. Benchmark Conformance Gate (all playable scenes)
+
+The reference benchmark (`specs/product/TUTOTOONS_REFERENCE.md`) measured five TutoTOONS titles on the
+same 4:3 canvas. Its **mechanical** findings are gated; its observational ones are review criteria.
+A scene earns green only when every row below passes on `1920×1080`, `1920×1440` and `2048×1536`:
+
+| # | Assertion | Where | Benchmark source |
+|---|---|---|---|
+| 1 | Scene root rect == canvas | `GeometryOracle` root check | BUG-001 class; every measured frame is full-bleed |
+| 2 | Painted character 55–65 % of height, feet on the spec line, horizontally centred | `GeometryOracle` + `get_visual_global_rect()` | hero frames measured 55–65 % |
+| 3 | Wish/state bubble anchored to the head line, never overlapping the character | `GeometryOracle` `wish_bubble` group + the scene's clearance test | every measured title anchors it to the head |
+| 4 | Interactive targets ≥ 120×120 px and inside the canvas | `GeometryOracle` hit-target check | their chrome is 76–96 px — we are deliberately stricter |
+| 5 | Top-right HUD and bottom strip within 36 px of their edges | `GeometryOracle` `ui_bottom` / `ui_top_right` | their insets are 7–19 px — we are deliberately stricter |
+| 6 | No text node carries play meaning | the scene's `test_the_scene_has_no_text` | zero text in any measured gameplay frame |
+
+A new scene starts by declaring groups (`rig`, and `wish_bubble`/`ui_*` as its type requires), passing
+its spec to `GeometryOracle`, and adding the clearance test. It is not green until `preflight.sh` passes.
+
+## 4. Declined benchmark patterns (do not "fix" us toward these)
+
+| Pattern | Measured | Why declined |
+|---|---|---|
+| Multi-character rooms with depth scaling (15–44 % heights) | Fluvsies 4 pets, Dopples 16 characters | our slice is a single-hero care loop; revisit only if e10 minigames put friends on screen |
+| Chrome buttons of 76–96 px (`px@1080`) | Fluvsies rail 96, Smolsies/Dopples/SBG 76–86 | our 120 px floor is for 4–7-year-olds, who miss small corner targets |
+| HUD inset of 7–19 px | all four room frames | 36 px costs nothing and the top strip is the most mis-tap-prone region |
+| Flat dark-outline art | Dopples | our art direction is glossy, 3D-shaded, no pure-black outlines (`DESIGN.md`) |
+
+Recorded here so a future review does not flag our stricter numbers as divergence from the benchmark,
+and so a future "alignment" pass does not quietly adopt them.
