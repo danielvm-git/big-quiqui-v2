@@ -98,3 +98,105 @@ func test_badge_hides_after_first_spin() -> void:
 	while str(scene.get("fsm").state) != WheelScene.STATE_IDLE:
 		scene.call("advance", 0.05)
 	assert_false(badge.visible)
+
+
+func _tap(button: TapButton) -> void:
+	for event: InputEvent in TouchSim.tap_events(button, true):
+		button._gui_input(event)
+
+
+func _settle() -> void:
+	while str(scene.get("fsm").state) != WheelScene.STATE_IDLE:
+		scene.call("advance", 0.05)
+
+
+func _spin_many(count: int, seed_value: int) -> Array[int]:
+	var progress: Node = get_node("/root/ProgressManager")
+	progress.call("add_tickets", count)
+	scene.call("seed_rng", seed_value)
+	var spin: TapButton = scene.get_node("SpinButton") as TapButton
+	var payouts: Array[int] = []
+	for _i in range(count):
+		var before: int = int(progress.call("get_coins"))
+		_tap(spin)
+		_settle()
+		payouts.append(int(progress.call("get_coins")) - before)
+	return payouts
+
+
+## BUG-037 / SC-E08-P1-15: the same seed replays, and a session is not one prize forever.
+func test_seeded_spins_replay_and_vary() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	scene.set("manual_step", true)
+	await wait_process_frames(3)
+	var first: Array[int] = _spin_many(12, 1234)
+	TestReset.reset_all()
+	var second: Array[int] = _spin_many(12, 1234)
+	assert_eq(first, second, "same seed -> same prizes")
+	var distinct: Dictionary = {}
+	for coins: int in first:
+		distinct[coins] = true
+	assert_gt(distinct.size(), 1, "twelve spins are not one constant prize")
+
+
+## BUG-038: leaving mid-spin must not eat the ticket.
+func test_home_is_inert_while_spinning() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	scene.set("manual_step", true)
+	await wait_process_frames(3)
+	var progress: Node = get_node("/root/ProgressManager")
+	progress.call("add_tickets", 1)
+	var requested: Array[String] = []
+	var manager: Node = get_node("/root/SceneManager")
+	manager.scene_requested.connect(func(path: String, _queued: bool) -> void: requested.append(path))
+	_tap(scene.get_node("SpinButton") as TapButton)
+	assert_eq(str(scene.get("fsm").state), WheelScene.STATE_SPINNING)
+	_tap(scene.get_node("HomeButton") as TapButton)
+	assert_eq(requested, [] as Array[String], "Home is ignored while the wheel turns")
+	_settle()
+	_tap(scene.get_node("HomeButton") as TapButton)
+	assert_eq(requested, ["res://scenes/casa.tscn"] as Array[String], "Home works once idle")
+
+
+## BUG-044: a hand-edited table cannot make spins free or mint tickets.
+func test_zero_or_negative_cost_still_spends_one_ticket() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	scene.set("manual_step", true)
+	await wait_process_frames(3)
+	var progress: Node = get_node("/root/ProgressManager")
+	progress.call("add_tickets", 3)
+	for cost: int in [0, -5]:
+		var eco: EconomyData = EconomyData.new()
+		eco.wheel_spin_ticket_cost = cost
+		scene.call("apply_economy", eco)
+		var before: int = int(progress.call("get_tickets"))
+		_tap(scene.get_node("SpinButton") as TapButton)
+		_settle()
+		assert_eq(int(progress.call("get_tickets")), before - 1, "cost %d spends exactly one" % cost)
+
+
+func test_no_ticket_means_no_spin() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	scene.set("manual_step", true)
+	await wait_process_frames(3)
+	_tap(scene.get_node("SpinButton") as TapButton)
+	assert_eq(str(scene.get("fsm").state), WheelScene.STATE_IDLE)
+	assert_eq(int(get_node("/root/ProgressManager").call("get_coins")), 0)
+
+
+## BUG-042: badge_hide is a transition, not a refresh side effect.
+func test_badge_hide_is_logged_only_when_the_badge_actually_goes() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	scene.set("manual_step", true)
+	await wait_process_frames(3)
+	var progress: Node = get_node("/root/ProgressManager")
+	var diary: Node = get_node("/root/Log")
+	progress.call("add_coins", 1)
+	assert_ne((diary.get("last_line") as Dictionary).get("ev"), "wheel.badge_hide", "no spin yet")
+	progress.call("add_tickets", 1)
+	_tap(scene.get_node("SpinButton") as TapButton)
+	_settle()
+	var seen: String = str((diary.get("last_line") as Dictionary).get("ev"))
+	progress.call("add_coins", 1)
+	assert_ne((diary.get("last_line") as Dictionary).get("ev"), "wheel.badge_hide", "not logged again")
+	assert_ne(seen, "", "diary is open")

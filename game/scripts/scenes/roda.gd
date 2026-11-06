@@ -45,7 +45,15 @@ func _ready() -> void:
 	close_celebrate_if_needed()
 	if economy == null:
 		economy = EconomyData.new()
+	_rng.randomize()
 	fsm = Fsm.new(STATE_IDLE, LEGAL_EDGES, MAX_DWELL, Callable(self, "_fsm_clock_ms"))
+	_connect_inputs()
+	_play_voice()
+	_refresh_badge()
+	_log("scene.ready", {"scene": "roda"})
+
+
+func _connect_inputs() -> void:
 	var progress: Node = get_node_or_null("/root/ProgressManager")
 	if progress != null and progress.has_signal("progress_changed"):
 		progress.progress_changed.connect(_refresh_badge)
@@ -56,9 +64,11 @@ func _ready() -> void:
 		home.tapped.connect(_on_home)
 	if rig != null:
 		rig.tapped.connect(_on_rig_tapped)
-	_play_voice()
-	_refresh_badge()
-	_log("scene.ready", {"scene": "roda"})
+
+
+## Test seam: a fixed seed replays the same prizes; production seeds from the clock once.
+func seed_rng(value: int) -> void:
+	_rng.seed = value
 
 
 ## Test seam: replace the prize table after mount.
@@ -104,13 +114,12 @@ func _on_spin_tapped() -> void:
 	var progress: Node = get_node_or_null("/root/ProgressManager")
 	if progress == null or economy == null:
 		return
-	var cost: int = economy.wheel_spin_ticket_cost
+	var cost: int = maxi(economy.wheel_spin_ticket_cost, 1)
 	if int(progress.call("get_tickets")) < cost:
 		return
 	if not fsm.transition_to(STATE_SPINNING):
 		return
 	progress.call("add_tickets", -cost)
-	_rng.seed = 42
 	_pending_prize = economy.pick_prize(_rng)
 	_state_age = 0.0
 	_log("wheel.spin_start", {"prize": _pending_prize})
@@ -139,12 +148,15 @@ func _refresh_badge() -> void:
 	var progress: Node = get_node_or_null("/root/ProgressManager")
 	var tickets: int = 0 if progress == null else int(progress.call("get_tickets"))
 	var show_badge: bool = tickets > 0 and not _had_spin_success
+	var was_visible: bool = badge.visible
 	badge.visible = show_badge
-	if not show_badge:
+	if was_visible and not show_badge and _had_spin_success:
 		_log("wheel.badge_hide", {"reason": "first_spin_done"})
 
 
 func _on_home() -> void:
+	if fsm.state != STATE_IDLE:
+		return
 	var manager: Node = get_node_or_null("/root/SceneManager")
 	if manager != null:
 		manager.call("request_scene", CASA_PATH)
