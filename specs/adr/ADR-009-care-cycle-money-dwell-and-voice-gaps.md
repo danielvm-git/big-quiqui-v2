@@ -55,3 +55,11 @@ reviewer cannot leave undocumented, because the next agent would otherwise re-de
   `AUDIT-e07-epic.md` and the threat model are corrected to say so.
 - A future hold, a recorded bedtime line, and rig dressing have a named home; none of them is a
   surprise inside e08.
+
+## Also considered, deliberately not changed
+
+5. **The per-scene `_play_stream` / `_leave` twins stay.** `SleepScene` and `CelebrationScene` each carry
+   their own small audio and navigation helpers, as every room since e03 does. The shared infrastructure
+   that *is* genuinely shared was already extracted once (BUG-010); collapsing six rooms' private
+   helpers into a base class is a refactor with no user-visible effect and no failing gate, so it is not
+   smuggled into a review pass.

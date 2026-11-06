@@ -32,7 +32,7 @@ first time — and the first that can be entered by **detour** from another room
 | **T**ampering | **double reward**: two entries in the same cycle both pay | **high** | `_rewarded_cycle_id` guard already exists; the scene must assert it, not assume it (T-E07-03) |
 | **T**ampering | **credit without reward**: `completed_cycles` increments but the reward write fails | medium | one `_apply` for coins+tickets+cycles, then one save (T-E07-04) |
 | **T**ampering | **cycle never closes**: leaving `CELEBRATE` by a detour leaves the loop stuck, so no door ever opens again | **high** | `close_celebrate_if_needed()` on any non-Casa request while in `CELEBRATE` (T-E07-05) |
-| **T**ampering | SLEEP credited twice by toggling the lamp again | medium | `credited` guard + `k` (T-E07-02) |
+| **T**ampering | SLEEP credited twice by toggling the lamp again | medium | `credited` guard + `fsm.transition_from(SLEEPING, FINISHED)`, and the lamp is inert once `FINISHED` (T-E07-02) |
 | **I**nformation disclosure | celebration prints counts; nothing personal | low | numbers and ids only |
 | **D**enial of service | night tint applied to the rig makes the character unreadable | medium | tint the background only (T-E07-01) |
 | **D**enial of service | zzz particles keep emitting after leaving | low | `HomeButton` stops them; asserted |
@@ -64,3 +64,15 @@ first time — and the first that can be entered by **detour** from another room
 - Network (none; CI grep control).
 - Save schema changes: the reward uses existing fields and clamps (BUG-007).
 - Sticker album / vila content: they are detour *targets* only, not implemented here.
+
+## Post-epic review addendum (2026-11-06)
+
+Two mitigations in this table were **aspirational when written** and were made true by the e07 post-epic
+review, not by the epic itself: the reward being written to disk (it was not, T-E07-04) and the music
+continuing instead of restarting (both new scenes restarted it). The scene now asserts the ledger, the
+bedroom's lamp is inert once `FINISHED`, and the hub closes a celebration it arrives inside. Details:
+`specs/verifications/POSTEPIC-e07-2026-11-06.md`.
+
+**T-E07-03 scope, stated exactly:** once per cycle **per session**. The ledger is in memory
+(`CareLoopManager._rewarded_cycle_id`), `ProgressManager` has no per-cycle guard, and `reset()` replays a
+cycle — test-only. See [ADR-009](../../adr/ADR-009-care-cycle-money-dwell-and-voice-gaps.md).
