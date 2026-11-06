@@ -75,3 +75,15 @@ its spec to `GeometryOracle`, and adding the clearance test. It is not green unt
 
 Recorded here so a future review does not flag our stricter numbers as divergence from the benchmark,
 and so a future "alignment" pass does not quietly adopt them.
+
+## 5. e08 — Vila, recycling, wheel (added by the e08 post-epic review)
+
+| Scenario | Test |
+|---|---|
+| SC-E08-P0-01..05 hub, POIs, escalation | `test_vila_scene.gd` |
+| SC-E08-P0-07..10 recycle, hint, miss, cosmetic juice | `test_vila_recycling.gd` (+ per-session earn, BUG-039) |
+| SC-E08-P0-12..16 wheel layout, spend, double-tap, badge | `test_roda_scene.gd` |
+| SC-E08-P1-15 seeded replay and variety | `test_seeded_spins_replay_and_vary` |
+| SC-E08-P0-18..20 economy never negative, interleave | `test_economy_properties.gd` |
+| Home locked mid-spin, cost floor, badge log once | `test_roda_scene.gd` (BUG-038, 044, 042) |
+

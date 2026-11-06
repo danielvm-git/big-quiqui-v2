@@ -7,26 +7,29 @@ production script, the tests that exercise it, and the gaps.
 
 | Module | Found through | Tests referencing it |
 |---|---|---|
-| `game/scripts/autoloads/audio_manager.gd` | `AudioManager` | 11 |
+| `game/scripts/autoloads/audio_manager.gd` | `AudioManager` | 14 |
 | `game/scripts/autoloads/care_loop_manager.gd` | `CareLoopManager` | 15 |
-| `game/scripts/autoloads/log.gd` | `Log` | 9 |
-| `game/scripts/autoloads/progress_manager.gd` | `ProgressManager` | 9 |
-| `game/scripts/autoloads/scene_manager.gd` | `SceneManager` | 14 |
+| `game/scripts/autoloads/log.gd` | `Log` | 10 |
+| `game/scripts/autoloads/progress_manager.gd` | `ProgressManager` | 12 |
+| `game/scripts/autoloads/scene_manager.gd` | `SceneManager` | 16 |
 | `game/scripts/components/accessory_slots.gd` | `AccessorySlots` | indirect via `quiqui_rig.gd` |
 | `game/scripts/components/bath_room_view.gd` | `BathRoomView` | indirect via `banheiro.gd` |
 | `game/scripts/components/care_dots_bar.gd` | `CareDotsBar` | 1 |
-| `game/scripts/components/coin_ticket_hud.gd` | `CoinTicketHud` | 1 |
+| `game/scripts/components/coin_ticket_hud.gd` | `CoinTicketHud` | 2 |
+| `game/scripts/components/drag_hint.gd` | `DragHint` | 1 |
 | `game/scripts/components/foam_blob.gd` | `FoamBlob` | 1 |
 | `game/scripts/components/garden_prop.gd` | `GardenProp` | 2 |
-| `game/scripts/components/quiqui_rig.gd` | `QuiQuiRig` | 9 |
-| `game/scripts/components/tap_button.gd` | `TapButton` | 16 |
-| `game/scripts/components/touch_draggable.gd` | `TouchDraggable` | 14 |
-| `game/scripts/components/wish_bubble.gd` | `WishBubble` | 1 |
+| `game/scripts/components/hint_manager.gd` | `HintManager` | 1 |
+| `game/scripts/components/quiqui_rig.gd` | `QuiQuiRig` | 10 |
+| `game/scripts/components/tap_button.gd` | `TapButton` | 19 |
+| `game/scripts/components/touch_draggable.gd` | `TouchDraggable` | 15 |
+| `game/scripts/components/wish_bubble.gd` | `WishBubble` | 2 |
 | `game/scripts/core/care_steps.gd` | `CareSteps` | 15 |
+| `game/scripts/core/economy_data.gd` | `EconomyData` | 1 |
 | `game/scripts/core/food_catalog.gd` | `FoodCatalog` | 2 |
 | `game/scripts/core/fsm.gd` | `Fsm` | 17 |
 | `game/scripts/core/ids.gd` | `Ids` | 3 |
-| `game/scripts/core/log_sink.gd` | `LogSink` | indirect via `casa.gd` |
+| `game/scripts/core/log_sink.gd` | `LogSink` | indirect via `roda.gd` |
 | `game/scripts/core/squash_spring.gd` | `SquashSpring` | 1 |
 | `game/scripts/resources/item_data.gd` | `ItemData` | 2 |
 | `game/scripts/resources/save_data.gd` | `SaveData` | 5 |
@@ -37,18 +40,22 @@ production script, the tests that exercise it, and the gaps.
 | `game/scripts/scenes/cozinha.gd` | `KitchenScene` | 4 |
 | `game/scripts/scenes/jardim.gd` | `GardenScene` | 2 |
 | `game/scripts/scenes/quarto_sono.gd` | `SleepScene` | 2 |
+| `game/scripts/scenes/roda.gd` | `WheelScene` | 2 |
 | `game/scripts/scenes/titulo.gd` | `TituloScene` | 2 |
+| `game/scripts/scenes/vila.gd` | `VilaScene` | 2 |
 | `game/tools/build_banheiro_scene.gd` | `banheiro.tscn` | 4 |
-| `game/tools/build_casa_scene.gd` | `casa.tscn` | 12 |
+| `game/tools/build_casa_scene.gd` | `casa.tscn` | 14 |
 | `game/tools/build_celebracao_scene.gd` | `celebracao.tscn` | 2 |
 | `game/tools/build_closet_scene.gd` | `closet.tscn` | 3 |
 | `game/tools/build_cozinha_scene.gd` | `cozinha.tscn` | 4 |
 | `game/tools/build_jardim_scene.gd` | `jardim.tscn` | 3 |
 | `game/tools/build_quarto_sono_scene.gd` | `quarto_sono.tscn` | 3 |
+| `game/tools/build_roda_scene.gd` | `roda.tscn` | 2 |
 | `game/tools/build_titulo_scene.gd` | `titulo.tscn` | 2 |
+| `game/tools/build_vila_scene.gd` | `vila.tscn` | 3 |
 | `game/tools/measure_hero_scale.gd` | `MeasureHeroScale` | **GAP** |
 | `game/tools/scene_builder.gd` | `SceneBuilder` | **GAP** |
 | `game/tools/type_gate.gd` | `TypeGate` | 1 |
 
-**42 production scripts, 2 gap(s).** Gaps are reviewed at each epic gate; a gap is
+**49 production scripts, 2 gap(s).** Gaps are reviewed at each epic gate; a gap is
 acceptable only when the module is impossible to exercise headless (documented here).

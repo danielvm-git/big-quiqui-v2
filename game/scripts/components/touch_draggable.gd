@@ -1,4 +1,5 @@
 # story: e03s01
+# story: e08s02
 class_name TouchDraggable
 extends Control
 ## The one drag surface (ADR-004): a prop picked up by one finger, which is either
@@ -87,6 +88,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_NONE
 	size = size.max(MIN_HIT_SIZE)
+	_rest_position = position
 
 
 func _process(delta: float) -> void:

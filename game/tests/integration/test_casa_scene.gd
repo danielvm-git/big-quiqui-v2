@@ -9,6 +9,7 @@ extends GutTest
 
 const SCENE_PATH: String = "res://scenes/casa.tscn"
 const COZINHA_PATH: String = "res://scenes/cozinha.tscn"
+const VILA_PATH: String = "res://scenes/vila.tscn"
 const THEME_PATH: String = "res://assets/audio/music/tema_principal.ogg"
 const KITCHEN_THEME_PATH: String = "res://assets/audio/music/cozinha.ogg"
 
@@ -181,15 +182,15 @@ func test_arriving_from_the_title_does_not_restart_the_main_theme() -> void:
 	assert_true(audio.is_music_playing(load(THEME_PATH) as AudioStream))
 
 
-# SC-E02-P1-17 — a door to a scene that does not exist yet must never navigate
-func test_tapping_the_vila_door_stays_pending() -> void:
+# SC-E02-P1-17 — the Vila door navigates now that vila.tscn exists (e08s01).
+func test_tapping_the_vila_door_opens_the_vila() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
 	await wait_process_frames(3)
 	var vila_door: TapButton = scene.door("VILA")
 	for event: InputEvent in TouchSim.tap_events(vila_door, true):
 		vila_door._gui_input(event)
 	assert_eq(scene.door_taps, 1)
-	assert_true(requested_scenes.is_empty(), "vila.tscn arrives with e08 — log scene.pending instead")
+	assert_eq(requested_scenes, [VILA_PATH])
 
 
 # SC-E02-P1-18
@@ -207,6 +208,9 @@ func test_eight_seconds_of_idle_show_the_wish_and_the_longing_face() -> void:
 	assert_true(scene.bubble.is_showing(), "8.0 s without touch shows the wish bubble")
 	assert_eq(scene.rig.expression_id, "carente", "QuiQui shows she misses the child")
 	assert_eq(scene.bubble.wish_id(), "cenoura", "the first wish of a fresh cycle is food")
+	assert_eq(scene.bubble.urgency(), 0, "the first prompt is calm")
+	scene.advance(6.0)
+	assert_eq(scene.bubble.urgency(), 1, "FIX-01: urgency steps with ESCALATION_SEC")
 	for event: InputEvent in TouchSim.tap_events(scene.rig, true):
 		scene.rig._gui_input(event)
 	assert_false(scene.bubble.is_showing(), "touch answers the wish")

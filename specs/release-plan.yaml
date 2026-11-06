@@ -127,7 +127,7 @@ epics:
     slug: e08-vila-recycling-and-wheel-scenes
     title: "Playable Scenes 9 & 10: Vila QuiQui + Recycling (vila.tscn) & Wheel of Fortune (roda.tscn)"
     playable_scene: "res://scenes/vila.tscn + res://scenes/roda.tscn"
-    status: planned
+    status: done
     bcps: 12
     wsjf: 6.1
     stories: [e08s01, e08s02, e08s03, e08s04]

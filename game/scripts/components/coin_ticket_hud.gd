@@ -1,4 +1,5 @@
 # story: e02s02
+# story: e08s02
 class_name CoinTicketHud
 extends Control
 ## Coins and wheel tickets as icon + numeral, mirroring ProgressManager: it
@@ -20,8 +21,11 @@ var manager_path: String = "/root/ProgressManager"
 var _manager: Node = null
 var _coin_label: Label = null
 var _ticket_label: Label = null
+var _coin_icon: TextureRect = null
 var _coins_shown: int = 0
 var _tickets_shown: int = 0
+var _pulse_tween: Tween = null
+var _fly_tween: Tween = null
 
 
 func _ready() -> void:
@@ -35,6 +39,12 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if _pulse_tween != null:
+		_pulse_tween.kill()
+		_pulse_tween = null
+	if _fly_tween != null:
+		_fly_tween.kill()
+		_fly_tween = null
 	if (
 		_manager != null
 		and _manager.has_signal("progress_changed")
@@ -71,6 +81,55 @@ func ticket_label() -> Label:
 	return _ticket_label
 
 
+func pulse_coin() -> void:
+	if _coin_label == null:
+		return
+	if _pulse_tween != null:
+		_pulse_tween.kill()
+	_pulse_tween = create_tween()
+	var target: Label = _coin_label
+	var base: Vector2 = Vector2.ONE
+	_pulse_tween.tween_property(target, "scale", base * 1.14, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	_pulse_tween.tween_property(target, "scale", base, 0.18).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+
+
+## Cosmetic coin flight into the HUD chip (FIX-03); economy must be updated separately.
+func fly_coin(from_global: Vector2) -> void:
+	if _coin_icon == null or _coin_icon.texture == null:
+		return
+	if _fly_tween != null:
+		_fly_tween.kill()
+	var sprite: TextureRect = _make_fly_sprite()
+	var root: Window = get_tree().root
+	if root == null:
+		sprite.queue_free()
+		return
+	root.add_child(sprite)
+	sprite.global_position = from_global - sprite.size * 0.5
+	var end_pos: Vector2 = _coin_icon.global_position + _coin_icon.size * 0.5 - sprite.size * 0.5
+	_fly_tween = create_tween()
+	_fly_tween.tween_property(sprite, "global_position", end_pos, 0.38).set_trans(Tween.TRANS_QUAD).set_ease(
+		Tween.EASE_IN
+	)
+	_fly_tween.tween_callback(_land_coin.bind(sprite))
+
+
+func _make_fly_sprite() -> TextureRect:
+	var sprite: TextureRect = TextureRect.new()
+	sprite.texture = _coin_icon.texture
+	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sprite.custom_minimum_size = ICON_SIZE
+	sprite.mouse_filter = MOUSE_FILTER_IGNORE
+	return sprite
+
+
+func _land_coin(sprite: TextureRect) -> void:
+	sprite.queue_free()
+	pulse_coin()
+	_fly_tween = null
+
+
 func _build() -> void:
 	var row: HBoxContainer = HBoxContainer.new()
 	row.name = "Row"
@@ -95,6 +154,8 @@ func _build_group(row: HBoxContainer, group_name: String, icon_path: String) -> 
 	icon.name = group_name + "Icon"
 	icon.custom_minimum_size = ICON_SIZE
 	icon.texture = load(icon_path) as Texture2D
+	if group_name == "Coin":
+		_coin_icon = icon
 	icon.mouse_filter = MOUSE_FILTER_IGNORE
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

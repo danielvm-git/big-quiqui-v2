@@ -3,7 +3,7 @@ spec: e08s01.md
 epic_id: e08
 title: 'Playable Scene 9: VilaScene (vila.tscn) Panoramic Hub with 6 POIs + escalating
   Wish Bubble (FIX-01)'
-status: failing
+status: done
 bcps: 4
 playable_scene: res://scenes/vila.tscn + res://scenes/roda.tscn
 tasks:
@@ -21,7 +21,7 @@ tasks:
       - "e08"
       - "unit"
       - "integration"
-  status: failing
+  status: done
 - id: e08s01-t02
   description: 'Implement VilaScene + WishBubble urgency (MAX_URGENCY=2, set_urgency/urgency,
     pulse scaling) + casa.gd escalation (ESCALATION_SEC=6.0) with additive-only changes
@@ -36,7 +36,7 @@ tasks:
       - "e08"
       - "unit"
       - "integration"
-  status: failing
+  status: done
 - id: e08s01-t03
   description: 'Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
     story traceability for e08s01'
@@ -49,4 +49,4 @@ tasks:
     categories:
       - "e08"
       - "audit"
-  status: failing
+  status: done
