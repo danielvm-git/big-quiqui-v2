@@ -2,32 +2,60 @@ story_id: e04s03
 spec: e04s03.md
 epic_id: e04
 title: BathScene Stages 2 & 3 (RINSE Showerhead with gota Stream & DRY Towel -> quiqui_brilhando)
-status: failing
+status: passing
 bcps: 4
 playable_scene: res://scenes/banheiro.tscn
+threat_findings:
+- T-E04-02
+- T-E04-05
+- T-E04-06
 tasks:
 - id: e04s03-t01
-  description: Write failing GUT unit & TouchSim/GeometryOracle tests for e04s03 (BathScene
-    Stages 2 & 3 (RINSE Showerhead with gota Stream & DRY Towel -> quiqui_brilhando))
+  description: 'Write failing tests SC-E04-P0-20..P1-24: stage walk on effort, once-only
+    credit, free-play replay, abandon mid-stage'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e04s03-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e04s03
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  description: 'Implement RINSE and DRY: showerhead and towel as CONTINUOUS_SCRUB
+    devices, hull-gated counters, STAGE_GAP beats, brilhando finish'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: passing
+- id: e04s03-t03
+  description: Credit BATH exactly once (credited guard + care_state check) and refuse
+    a replay (closes T-E04-02)
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: passing
+- id: e04s03-t04
+  description: Abort every device and abandon the uncredited step on HomeButton (closes
+    T-E04-06)
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: passing
+- id: e04s03-t05
+  description: Extend build_banheiro_scene.gd with Shower and Towel parked inside
+    the 36 px inset on every canvas, and regenerate banheiro.tscn
+  verify: godot --headless --path game -s tools/build_banheiro_scene.gd
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e04s03-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e04s03
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  status: passing
+- id: e04s03-t06
+  description: Verify lint, type gate, oracle with STEP_ROOM_SPEC, PII audit and traceability
+    for e04s03
+  verify: gdlint game/ && gdformat --check game/ && bash scripts/logs.sh audit --self-test
+    && bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing

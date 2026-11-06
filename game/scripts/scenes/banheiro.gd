@@ -5,9 +5,9 @@ extends Control
 ## hull, and rubbing the sponge over them soaks them. When the last patch is gone the
 ## stage is done.
 ##
-## Stages 2 and 3 (RINSE, DRY) and the BATH credit arrive in e04s03; the machine here
-## already declares them so the transition is never illegal, and this story stops at
-## `SOAP_DONE`.
+## Stage 2 (RINSE) is the showerhead dragged over her body; stage 3 (DRY) is the towel.
+## Both report through the same hull, so the whole room has one interaction contract.
+## The last dry pass credits BATH exactly once (T-E04-02) and goes home.
 ##
 ## Geometry of the blobs is solved from `QuiQuiRig.scrub_hull_global()` on every
 ## layout pass and on resize, so a patch can never end up on the wallpaper on 4:3
@@ -18,6 +18,11 @@ const MUSIC_PATH: String = "res://assets/audio/music/banho.ogg"
 const VOICE_PATH: String = "res://assets/audio/voice/banho_hora_do_banho.ogg"
 
 const BLOB_COUNT: int = 8
+## A stage ends on effort, not on a timer: the child scrubs/rinses/dries her body.
+const RINSE_POINTS: int = 10
+const DRY_POINTS: int = 8
+## Beat between stages so the change is visible instead of instant.
+const STAGE_GAP_SEC: float = 0.8
 ## Blob diameter as a share of the painted character height.
 const BLOB_RATIO: float = 0.11
 ## Rings the blobs sit on, as a fraction of the hull radius. Two rings read as a
@@ -47,10 +52,18 @@ const MAX_DWELL_SEC: Dictionary = {}
 
 @onready var rig: QuiQuiRig = $QuiQuiRig as QuiQuiRig
 @onready var sponge: TouchDraggable = $Sponge as TouchDraggable
+@onready var shower: TouchDraggable = $Shower as TouchDraggable
+@onready var towel: TouchDraggable = $Towel as TouchDraggable
+@onready var drops: CPUParticles2D = $Gota as CPUParticles2D
+@onready var foams: CPUParticles2D = $Bolhas as CPUParticles2D
 @onready var bubble: WishBubble = $WishBubble as WishBubble
 
 var fsm: Fsm = null
 var soaked: int = 0
+var rinsed: int = 0
+var dried: int = 0
+## BATH is credited once per visit, whatever order the stages finish in (T-E04-02).
+var credited: bool = false
 ## Test seam: when true, only `advance()` steps the machine.
 var manual_step: bool = false
 
@@ -59,12 +72,20 @@ var manual_step: bool = false
 var _slots: Array[Vector2] = []
 var _blobs: Array[FoamBlob] = []
 var _tint: int = 0
+var _clock_sec: float = 0.0
+var _gap_sec: float = 0.0
+var _casa_requested: bool = false
 
 
 func _ready() -> void:
-	fsm = Fsm.new(STATE_SOAP, LEGAL_EDGES, MAX_DWELL_SEC)
+	fsm = Fsm.new(STATE_SOAP, LEGAL_EDGES, MAX_DWELL_SEC, _clock_ms)
 	_wire_sponge()
+	_wire_shower()
+	_wire_towel()
 	_wire_soaps()
+	_set_device(sponge, true)
+	_set_device(shower, false)
+	_set_device(towel, false)
 	($HomeButton as TapButton).tapped.connect(_on_home_tapped)
 	_rebuild_blobs()
 	_apply_tint()
@@ -78,8 +99,14 @@ func _process(delta: float) -> void:
 		advance(delta)
 
 
-func _advance(_delta: float) -> void:
-	pass
+func _advance(delta: float) -> void:
+	_clock_sec += delta
+	if fsm.state == STATE_SOAP_DONE or fsm.state == STATE_RINSE:
+		_gap_sec += delta
+		if fsm.state == STATE_SOAP_DONE and _gap_sec >= STAGE_GAP_SEC:
+			_start_rinse()
+		elif fsm.state == STATE_RINSE and rinsed >= RINSE_POINTS and _gap_sec >= STAGE_GAP_SEC:
+			_start_dry()
 
 
 ## Public step for tests: SOAP -> SOAP_DONE happens on the last soak, not on a timer.
@@ -115,13 +142,104 @@ func _on_scrubbed(point: Vector2) -> void:
 func _finish_stage() -> void:
 	if not fsm.transition_from(STATE_SOAP, STATE_SOAP_DONE):
 		return
+	_gap_sec = 0.0
 	_log("bath.stage", {"stage": STATE_SOAP_DONE})
+
+
+func _start_rinse() -> void:
+	if not fsm.transition_from(STATE_SOAP_DONE, STATE_RINSE):
+		return
+	_gap_sec = 0.0
+	_set_device(sponge, false)
+	_set_device(shower, true)
+	rig.set_expression("molhada")
+	_log("bath.stage", {"stage": STATE_RINSE})
+
+
+func _on_rinsed(point: Vector2) -> void:
+	if fsm.state != STATE_RINSE:
+		return
+	if not _inside_hull(point):
+		return
+	rinsed += 1
+	drops.global_position = point
+	drops.restart()
+	if rinsed >= RINSE_POINTS:
+		_log("bath.rinse_done", {"points": rinsed})
+
+
+func _start_dry() -> void:
+	if not fsm.transition_from(STATE_RINSE, STATE_DRY):
+		return
+	_gap_sec = 0.0
+	_set_device(shower, false)
+	_set_device(towel, true)
+	_log("bath.stage", {"stage": STATE_DRY})
+
+
+func _on_dried(point: Vector2) -> void:
+	if fsm.state != STATE_DRY:
+		return
+	if not _inside_hull(point):
+		return
+	dried += 1
+	foams.global_position = point
+	foams.restart()
+	if dried >= DRY_POINTS:
+		_finish_stage_dry()
+
+
+## The last dry pass: shiny face, BATH credited once, then home (T-E04-02).
+func _finish_stage_dry() -> void:
+	if not fsm.transition_from(STATE_DRY, STATE_FINISHED):
+		return
+	_gap_sec = 0.0
+	_set_device(towel, false)
+	rig.set_expression("brilhando")
+	_credit_bath()
+	_log("bath.stage", {"stage": STATE_FINISHED})
+	_request_casa()
+
+
+## Credited once per visit, and only when BATH is the step the loop is actually in:
+## coming back later must be free play, not a second reward.
+func _credit_bath() -> void:
+	if credited:
+		return
+	if _care_state() != CareSteps.BATH:
+		return
+	credited = true
+	_care_loop().call("complete_step", CareSteps.BATH)
+
+
+func _inside_hull(point: Vector2) -> bool:
+	var hull: PackedVector2Array = rig.scrub_hull_global()
+	return hull.size() >= 3 and Geometry2D.is_point_in_polygon(point, hull)
+
+
+func _set_device(device: TouchDraggable, active: bool) -> void:
+	if device == null:
+		return
+	device.enabled = active
+	device.visible = active
 
 
 func _wire_sponge() -> void:
 	sponge.mode = TouchDraggable.Mode.CONTINUOUS_SCRUB
 	sponge.scrub_target = rig
 	sponge.scrubbed.connect(_on_scrubbed)
+
+
+func _wire_shower() -> void:
+	shower.mode = TouchDraggable.Mode.CONTINUOUS_SCRUB
+	shower.scrub_target = rig
+	shower.scrubbed.connect(_on_rinsed)
+
+
+func _wire_towel() -> void:
+	towel.mode = TouchDraggable.Mode.CONTINUOUS_SCRUB
+	towel.scrub_target = rig
+	towel.scrubbed.connect(_on_dried)
 
 
 func _wire_soaps() -> void:
@@ -190,13 +308,21 @@ func _notification(what: int) -> void:
 		project_blobs()
 
 
+## Leaving mid-stage abandons the step and aborts every device, so no gesture is left
+## latched and no loop is left playing (T-E04-06).
 func _on_home_tapped() -> void:
-	if _care_state() == CareSteps.BATH:
+	for device: TouchDraggable in [sponge, shower, towel]:
+		if device != null:
+			device.abort()
+	if _care_state() == CareSteps.BATH and not credited:
 		_care_loop().call("abandon_step")
 	_request_casa()
 
 
 func _request_casa() -> void:
+	if _casa_requested:
+		return
+	_casa_requested = true
 	var manager: Node = get_node_or_null("/root/SceneManager")
 	if manager != null:
 		manager.call("request_scene", CASA_PATH)
@@ -221,6 +347,10 @@ func _play_stream(method: String, path: String) -> bool:
 		return false
 	manager.call(method, stream)
 	return true
+
+
+func _clock_ms() -> int:
+	return int(_clock_sec * 1000.0)
 
 
 func _log(ev: String, data: Dictionary) -> void:

@@ -10,7 +10,7 @@ development_status:
   e04: in_progress
   e04s01: planned
   e04s02: done
-  e04s03: planned
+  e04s03: done
   e04s04: planned
   e05: planned
   e05s01: planned
@@ -49,6 +49,10 @@ development_status:
 epics:
 
 stories:
+  e04s03:
+    status: done
+    started_at: "2026-11-06T03:00:00-03:00"
+    completed_at: "2026-11-06T03:35:00-03:00"
   e04s02:
     status: done
     started_at: "2026-11-06T02:10:00-03:00"

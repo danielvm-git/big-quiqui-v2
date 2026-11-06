@@ -20,6 +20,8 @@ const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
 const BG_PATH: String = "res://assets/art/backgrounds/bg_banheiro.jpg"
 const SPONGE_ART: String = "res://assets/art/items/esponja.png"
 const SOAP_ART: String = "res://assets/art/items/sabonete.png"
+const SHOWER_ART: String = "res://assets/art/items/chuveirinho.png"
+const TOWEL_ART: String = "res://assets/art/items/toalha.png"
 const BLOB_ART: String = "res://assets/art/efeitos/espuma_media.png"
 const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
 const GOTA_ART: String = "res://assets/art/efeitos/gota.png"
@@ -52,6 +54,8 @@ func _init() -> void:
 	_add_rig(root)
 	_add_blobs(root)
 	_add_sponge(root)
+	_add_device(root, "Shower", SHOWER_ART, 0)
+	_add_device(root, "Towel", TOWEL_ART, 2)
 	_add_soaps(root)
 	_add_home(root)
 	_add_bubble(root)
@@ -116,6 +120,41 @@ func _add_sponge(root: Control) -> void:
 	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	sponge.add_child(art)
 	root.add_child(sponge)
+
+
+## Stage devices share one shape: a scrub target parked at an edge, disabled until its
+## stage starts. `BathScene._set_device` shows and enables them in turn.
+## `side`: 0 centre-bottom, 1 left-bottom, 2 right-bottom. The offsets follow the
+## anchor, so an edge device stays inside the 36 px inset on every canvas.
+func _add_device(root: Control, node_name: String, art_path: String, side: int) -> void:
+	var device: Control = Control.new()
+	device.name = node_name
+	device.set_script(load(SPONGE_SCRIPT))
+	device.add_to_group("hit_target", true)
+	device.set("mode", 1)  # TouchDraggable.Mode.CONTINUOUS_SCRUB
+	device.set("enabled", false)
+	device.visible = false
+	var anchor_x: float = 0.5 if side == 0 else (0.0 if side == 1 else 1.0)
+	var left: float = -SPONGE_SIZE.x * 0.5
+	var right: float = SPONGE_SIZE.x * 0.5
+	if side == 1:
+		left = INSET
+		right = INSET + SPONGE_SIZE.x
+	elif side == 2:
+		left = -INSET - SPONGE_SIZE.x
+		right = -INSET
+	(
+		SceneBuilder
+		. pin(
+			device,
+			Vector4(anchor_x, 1.0, anchor_x, 1.0),
+			Vector4(left, -SPONGE_SIZE.y - INSET, right, -INSET),
+		)
+	)
+	var art: TextureRect = _make_art("Art", art_path)
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	device.add_child(art)
+	root.add_child(device)
 
 
 ## Three soaps along the bottom-left; tapping one recolours the foam.

@@ -157,3 +157,122 @@ func test_the_bath_room_has_no_text() -> void:
 
 	for node: Node in scene.find_children("*", "Label", true, false):
 		assert_true((node as Label).text.is_empty(), "%s carries text" % node.name)
+
+
+# ── SC-E04-P0-20 SOAP -> RINSE -> DRY, on effort ─────────────────────────────
+
+
+func _soak_everything() -> void:
+	for index: int in range(scene.blob_count()):
+		scene.sponge.scrubbed.emit(scene.blob(index).get_global_rect().get_center())
+
+
+func _scrub_body(device: TouchDraggable, points: int) -> void:
+	var centre: Vector2 = scene.rig.get_visual_global_rect().get_center()
+	for step: int in range(points):
+		device.scrubbed.emit(centre + Vector2(float(step % 3) - 1.0, 0.0))
+
+
+func _reach_rinse() -> void:
+	_soak_everything()
+	scene.advance(BathScene.STAGE_GAP_SEC + 0.1)
+
+
+func test_the_stage_machine_walks_soap_rinse_dry_finished() -> void:
+	scene = _mount(Vector2i(1920, 1080))
+	await wait_frames(3)
+	assert_eq(scene.fsm.state, BathScene.STATE_SOAP)
+
+	_reach_rinse()
+	assert_eq(scene.fsm.state, BathScene.STATE_RINSE, "soap done opens the shower")
+	assert_false(scene.sponge.enabled, "and the sponge is put away")
+	assert_true(scene.shower.enabled, "the showerhead is in hand")
+
+	_scrub_body(scene.shower, BathScene.RINSE_POINTS)
+	scene.advance(BathScene.STAGE_GAP_SEC + 0.1)
+	assert_eq(scene.fsm.state, BathScene.STATE_DRY, "rinsing enough opens the towel")
+	assert_false(scene.shower.enabled)
+	assert_true(scene.towel.enabled)
+
+	_scrub_body(scene.towel, BathScene.DRY_POINTS)
+	assert_eq(scene.fsm.state, BathScene.STATE_FINISHED, "drying finishes the bath")
+	assert_eq(scene.rig.expression_id, "brilhando", "she comes out shiny")
+
+
+func test_scrubbing_off_the_body_does_not_advance_a_stage() -> void:
+	scene = _mount(Vector2i(1920, 1080))
+	await wait_frames(3)
+	_reach_rinse()
+
+	for step: int in range(BathScene.RINSE_POINTS * 2):
+		scene.shower.scrubbed.emit(Vector2(6.0, 6.0))
+	scene.advance(BathScene.STAGE_GAP_SEC + 0.1)
+
+	assert_eq(scene.fsm.state, BathScene.STATE_RINSE, "points on the wallpaper are not a rinse")
+	assert_eq(scene.rinsed, 0)
+
+
+# ── SC-E04-P0-21 BATH is credited exactly once (T-E04-02) ───────────────────
+
+
+func test_finishing_the_bath_credits_the_step_once() -> void:
+	var care: Node = get_node("/root/CareLoopManager")
+	care.call("begin_step", CareSteps.FEED)
+	care.call("complete_step", CareSteps.FEED)
+	care.call("begin_step", CareSteps.BATH)
+	assert_eq(care.call("state_id"), CareSteps.BATH)
+
+	scene = _mount(Vector2i(1920, 1080))
+	await wait_frames(3)
+	_reach_rinse()
+	_scrub_body(scene.shower, BathScene.RINSE_POINTS)
+	scene.advance(BathScene.STAGE_GAP_SEC + 0.1)
+	_scrub_body(scene.towel, BathScene.DRY_POINTS)
+
+	assert_true(scene.credited, "the visit credits BATH")
+	assert_eq(str(care.call("state_id")), CareSteps.DRESS, "and the loop moved on")
+	assert_false(care.call("complete_step", CareSteps.BATH), "a second credit is refused")
+
+
+## Coming back after BATH is free play: the room still works, nothing is credited.
+func test_replaying_the_bath_after_the_step_is_free_play() -> void:
+	var care: Node = get_node("/root/CareLoopManager")
+	care.call("begin_step", CareSteps.FEED)
+	care.call("complete_step", CareSteps.FEED)
+	assert_eq(str(care.call("state_id")), CareSteps.BATH)
+
+	scene = _mount(Vector2i(1920, 1080))
+	await wait_frames(3)
+	care.call("begin_step", CareSteps.BATH)
+	care.call("complete_step", CareSteps.BATH)
+	assert_eq(str(care.call("state_id")), CareSteps.DRESS)
+
+	_reach_rinse()
+	_scrub_body(scene.shower, BathScene.RINSE_POINTS)
+	scene.advance(BathScene.STAGE_GAP_SEC + 0.1)
+	_scrub_body(scene.towel, BathScene.DRY_POINTS)
+
+	assert_eq(scene.fsm.state, BathScene.STATE_FINISHED, "the room still finishes")
+	assert_false(scene.credited, "but nothing is credited twice")
+	assert_eq(str(care.call("state_id")), CareSteps.DRESS, "and the loop stays put")
+
+
+# ── SC-E04-P0-22 leaving mid-stage abandons and releases (T-E04-06) ──────────
+
+
+func test_leaving_during_rinse_abandons_the_step_and_releases_the_devices() -> void:
+	var care: Node = get_node("/root/CareLoopManager")
+	care.call("begin_step", CareSteps.FEED)
+	care.call("complete_step", CareSteps.FEED)
+	care.call("begin_step", CareSteps.BATH)
+
+	scene = _mount(Vector2i(1920, 1080))
+	await wait_frames(3)
+	_reach_rinse()
+	_scrub_body(scene.shower, 3)
+
+	(scene.get_node("HomeButton") as TapButton).tapped.emit()
+
+	assert_eq(str(care.call("state_id")), CareSteps.IDLE, "the step is abandoned, not credited")
+	assert_eq(scene.shower.state_id(), "REST", "the device let go of the finger")
+	assert_false(scene.credited)
