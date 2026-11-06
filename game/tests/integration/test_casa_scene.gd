@@ -135,12 +135,13 @@ func test_a_double_tap_on_the_feed_door_asks_for_the_kitchen_once() -> void:
 	assert_eq(get_node("/root/SceneManager").pending_scene, "", "no reload is queued")
 
 
-## BATH (e04s02) and DRESS (e05s02) are no longer pending: their scenes ship, so those
-## doors navigate. Only the rooms that do not exist yet stay pending.
+## BATH (e04s02), DRESS (e05s02) and PLAY (e06s02) are no longer pending: their scenes
+## ship, so those doors navigate. Only the rooms that do not exist yet stay pending —
+## and SLEEP is the last one.
 func test_the_other_care_doors_stay_pending() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
 	await wait_process_frames(3)
-	for step: String in ["PLAY", "SLEEP"]:
+	for step: String in ["SLEEP"]:
 		var door: TapButton = scene.door(step)
 		for event: InputEvent in TouchSim.tap_events(door, true):
 			door._gui_input(event)
@@ -158,6 +159,18 @@ func test_the_bath_door_asks_for_the_bathroom_once() -> void:
 			door._gui_input(event)
 
 	assert_eq(requested_scenes, ["res://scenes/banheiro.tscn"], "one request, not two")
+
+
+## The garden door opens now that the scene exists.
+func test_the_play_door_asks_for_the_garden_once() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
+	await wait_process_frames(3)
+	var door: TapButton = scene.door("PLAY")
+	for tap: int in range(2):
+		for event: InputEvent in TouchSim.tap_events(door, true):
+			door._gui_input(event)
+
+	assert_eq(requested_scenes, ["res://scenes/jardim.tscn"], "one request, not two")
 
 
 ## The closet door opens now that the scene exists.

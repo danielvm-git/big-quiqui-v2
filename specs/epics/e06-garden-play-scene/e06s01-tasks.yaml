@@ -1,35 +1,34 @@
 story_id: e06s01
 spec: e06s01.md
 epic_id: e06
-title: 'Interactive Garden Props: Bouncing Ball (bola), Hug Plushie (pelucia), Spinning
-  Pinwheel (cata_vento) & Tickle Zone'
-status: failing
+title: 'Interactive Garden Props: Bouncing Ball, Hug Plushie, Spinning Pinwheel &
+  Tickle Zone'
+status: passing
 bcps: 4
 playable_scene: res://scenes/jardim.tscn
+threat_findings:
+- T-E06-03
+- T-E06-04
 tasks:
 - id: e06s01-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e06s01
-    (Interactive Garden Props: Bouncing Ball (bola), Hug Plushie (pelucia), Spinning
-    Pinwheel (cata_vento) & Tickle Zone)'
+  description: Write failing tests for the scenarios in e06s01.md
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e06s01-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e06s01
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
-  risk: P1
+  description: Implement the story contract with strict typing, wired at _ready
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
   allure:
-    severity: high
-  status: failing
+    severity: critical
+  status: passing
 - id: e06s01-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e06s01
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  description: Verify lint, type gate, oracle on both canvases, PII audit and traceability
+  verify: gdlint game/ && gdformat --check game/ && bash scripts/logs.sh audit --self-test
+    && bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing
