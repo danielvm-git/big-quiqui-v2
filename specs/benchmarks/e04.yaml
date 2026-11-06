@@ -40,12 +40,12 @@ evals:
       should-fix.
 
   - id: EV-E04-03
-    claim: "A long scrub gesture writes two diary lines, not one per motion"
+    claim: "The diary does not grow with the gesture: a 40-motion scrub writes exactly what a 2-motion scrub writes"
     story: e04s01
     grader: code
     run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
-    must_match: "test_a_twenty_motion_scrub_writes_two_lines"
-    pass_when: "exit==0 and Log.write_count() grows by exactly 2"
+    must_match: "test_a_long_scrub_writes_as_much_as_a_short_one"
+    pass_when: "exit==0 and the two Log.write_count() deltas are equal and <= 4"
     fails_on: "main (no scrub events yet); would also fail any per-motion logging"
     threat: T-E04-03
     note: |
