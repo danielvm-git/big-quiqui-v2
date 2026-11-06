@@ -1,6 +1,6 @@
 ---
 bug_id: BUG-043
-status: open
+status: fixed
 severity: low
 scope: docs
 title: e08 left no threat model, README/TEST_PLAN/state counters stale, and frozen contracts that never shipped are not recorded
@@ -18,3 +18,7 @@ No specs/security/epics/e08/THREAT_MODEL.md (e01-e07 have one). README says v0.9
 from the code: `_roll_prize()`, defaults loaded from a .tres, the `DragHint.play` third argument,
 `mao_dica.png` (a ColorRect ships), a spawn->drag->drop->reward->respawn Fsm (two states ship, no
 respawn). Fix: threat model, counters, test plan, and ADR-010 recording the deliberate trade-offs.
+
+## Fix
+
+threat model, ADR-010, TEST_PLAN section 5, README and state counters.

@@ -1,6 +1,6 @@
 ---
 bug_id: BUG-039
-status: open
+status: fixed
 severity: medium
 scope: code
 title: The recycling coin and hint are guarded per VilaScene instance, so every visit to the Vila pays +1 again
@@ -17,3 +17,7 @@ vila.gd keeps `_recycle_awarded` and `_recycle_hint_done` as instance fields; Sc
 new VilaScene per visit, so Casa->Vila->Casa->Vila farms one coin per trip. e08s02 AC7 says the hint
 is not shown again 'this session' and Review A recorded 'single earn per session by design'. Fix: a
 session-level ledger on the scene class, reset by TestReset.
+
+## Fix
+
+`VilaScene.recycled_this_session` ledger, reset by TestReset.

@@ -1,6 +1,6 @@
 ---
 bug_id: BUG-040
-status: open
+status: fixed
 severity: medium
 scope: tests
 title: "e08 tests: hint-once test never recycles, miss test does not check the bag returned, SC-E08-P0-20 and SC-E08-P1-15 are absent"
@@ -17,3 +17,7 @@ test_hint_runs_once_then_skips_after_success declares bag and bin and never uses
 promises 'after success'); test_miss_returns_without_paying never asserts the start position (AC11);
 test_economy_properties has no wheel/recycle interleave (SC-E08-P0-20), no seeded-determinism case
 (SC-E08-P1-15) and no insufficient-tickets case. Fix: add the missing assertions and scenarios.
+
+## Fix
+
+hint, miss, session and interleave tests now assert the claim in their names.

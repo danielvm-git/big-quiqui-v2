@@ -1,6 +1,6 @@
 ---
 bug_id: BUG-042
-status: open
+status: fixed
 severity: low
 scope: code
 title: wheel.badge_hide is logged on every progress_changed while the badge is hidden, with a reason that is only true once
@@ -16,3 +16,7 @@ title: wheel.badge_hide is logged on every progress_changed while the badge is h
 roda.gd:_refresh_badge logs 'first_spin_done' whenever show_badge is false, including before any
 spin when the child has 0 tickets, and again on each coin change. Misleading diary and log noise.
 Fix: log once, on the visible->hidden transition.
+
+## Fix
+
+log only on the visible->hidden transition after a spin.
