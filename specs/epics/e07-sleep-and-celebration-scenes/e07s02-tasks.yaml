@@ -1,35 +1,36 @@
 story_id: e07s02
 spec: e07s02.md
 epic_id: e07
-title: 'Playable Scene 8: CelebrationScene (celebracao.tscn) with Confetti, PT-BR
-  Voice & Atomic +5 Coins / +1 Ticket Grant'
+title: 'Playable Scene 8: CelebrationScene — confetti, PT-BR voice, atomic +5 coins
+  / +1 ticket'
 status: failing
 bcps: 4
 playable_scene: res://scenes/quarto_sono.tscn + res://scenes/celebracao.tscn
+threat_findings:
+- T-E07-03
+- T-E07-04
 tasks:
 - id: e07s02-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e07s02
-    (Playable Scene 8: CelebrationScene (celebracao.tscn) with Confetti, PT-BR Voice
-    & Atomic +5 Coins / +1 Ticket Grant)'
+  description: Write the failing tests for SC-E07-P0-07, SC-E07-P0-08, SC-E07-P1-09,
+    SC-E07-P1-10, SC-E07-P2-11
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
   status: failing
 - id: e07s02-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e07s02
+  description: Implement the story contract (strict typing, Fsm where stateful, wired
+    at _ready)
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
     addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: failing
+- id: e07s02-t03
+  description: Verify lint, type gate, oracle on both canvases, PII audit and traceability
+  verify: bash scripts/preflight.sh && bash scripts/trace-stories.sh --strict
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e07s02-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e07s02
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
-  risk: P2
-  allure:
-    severity: normal
   status: failing
