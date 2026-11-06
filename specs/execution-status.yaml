@@ -12,7 +12,6 @@ development_status:
   e04s02: done
   e04s03: done
   e04s04: done
-  e05: done
   e05s01: done
   e05s02: done
   e05s03: done
@@ -45,51 +44,121 @@ development_status:
   e11s02: planned
   e11s03: planned
   e11s04: planned
-
-epics:
-
+epics: null
 stories:
+  e01s01:
+    status: done
+    started_at: null
+    completed_at: null
+    completed_on: '2026-11-04'
+    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
+      clock times were recorded at the time, so none are invented'
+    evidence: specs/verifications/e01s01-2026-11-04.md
+  e01s02:
+    status: done
+    started_at: null
+    completed_at: null
+    completed_on: '2026-11-04'
+    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
+      clock times were recorded at the time, so none are invented'
+    evidence: specs/verifications/e01s02-2026-11-04.md
+  e01s03:
+    status: done
+    started_at: null
+    completed_at: null
+    completed_on: '2026-11-04'
+    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
+      clock times were recorded at the time, so none are invented'
+    evidence: specs/verifications/e01s03-2026-11-04.md
+  e01s04:
+    status: done
+    started_at: null
+    completed_at: null
+    completed_on: '2026-11-04'
+    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
+      clock times were recorded at the time, so none are invented'
+    evidence: specs/verifications/e01s04-2026-11-04.md
+  e01s05:
+    status: done
+    started_at: null
+    completed_at: null
+    completed_on: '2026-11-04'
+    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
+      clock times were recorded at the time, so none are invented'
+    evidence: specs/verifications/e01s05-2026-11-04.md
+  e02s01:
+    status: done
+    started_at: null
+    completed_at: null
+    completed_on: '2026-11-04'
+    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
+      clock times were recorded at the time, so none are invented'
+    evidence: specs/verifications/e02s01-2026-11-04.md
+  e02s02:
+    status: done
+    started_at: null
+    completed_at: null
+    completed_on: '2026-11-04'
+    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
+      clock times were recorded at the time, so none are invented'
+    evidence: specs/verifications/e02s02-2026-11-04.md
+  e02s03:
+    status: done
+    started_at: null
+    completed_at: null
+    completed_on: '2026-11-04'
+    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
+      clock times were recorded at the time, so none are invented'
+    evidence: specs/verifications/e02s03-2026-11-04.md
+  e02s04:
+    status: done
+    started_at: null
+    completed_at: null
+    completed_on: '2026-11-04'
+    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
+      clock times were recorded at the time, so none are invented'
+    evidence: specs/verifications/e02s04-2026-11-04.md
   e05s03:
     status: done
-    started_at: "2026-11-06T05:50:00-03:00"
-    completed_at: "2026-11-06T06:20:00-03:00"
+    started_at: '2026-11-06T05:50:00-03:00'
+    completed_at: '2026-11-06T06:20:00-03:00'
   e05s02:
     status: done
-    started_at: "2026-11-06T05:05:00-03:00"
-    completed_at: "2026-11-06T05:45:00-03:00"
+    started_at: '2026-11-06T05:05:00-03:00'
+    completed_at: '2026-11-06T05:45:00-03:00'
   e05s01:
     status: done
-    started_at: "2026-11-06T04:20:00-03:00"
-    completed_at: "2026-11-06T05:00:00-03:00"
+    started_at: '2026-11-06T04:20:00-03:00'
+    completed_at: '2026-11-06T05:00:00-03:00'
   e04s04:
     status: done
-    started_at: "2026-11-06T03:40:00-03:00"
-    completed_at: "2026-11-06T04:10:00-03:00"
+    started_at: '2026-11-06T03:40:00-03:00'
+    completed_at: '2026-11-06T04:10:00-03:00'
   e04s03:
     status: done
-    started_at: "2026-11-06T03:00:00-03:00"
-    completed_at: "2026-11-06T03:35:00-03:00"
+    started_at: '2026-11-06T03:00:00-03:00'
+    completed_at: '2026-11-06T03:35:00-03:00'
   e04s02:
     status: done
-    started_at: "2026-11-06T02:10:00-03:00"
-    completed_at: "2026-11-06T02:55:00-03:00"
+    started_at: '2026-11-06T02:10:00-03:00'
+    completed_at: '2026-11-06T02:55:00-03:00'
   e04s01:
     status: done
-    started_at: "2026-11-06T01:05:00-03:00"
-    completed_at: "2026-11-06T01:40:00-03:00"
+    started_at: '2026-11-06T01:05:00-03:00'
+    completed_at: '2026-11-06T01:40:00-03:00'
   e03s01:
     status: done
-    started_at: "2026-11-05T13:53:00-03:00"
-    completed_at: "2026-11-05T14:05:00-03:00"
+    started_at: '2026-11-05T13:53:00-03:00'
+    completed_at: '2026-11-05T14:05:00-03:00'
   e03s02:
     status: done
-    started_at: "2026-11-05T13:53:00-03:00"
-    completed_at: "2026-11-05T14:00:00-03:00"
+    started_at: '2026-11-05T13:53:00-03:00'
+    completed_at: '2026-11-05T14:00:00-03:00'
   e03s03:
     status: done
-    started_at: "2026-11-05T14:06:00-03:00"
-    completed_at: "2026-11-05T14:35:00-03:00"
+    started_at: '2026-11-05T14:06:00-03:00'
+    completed_at: '2026-11-05T14:35:00-03:00'
   e03s04:
     status: done
-    started_at: "2026-11-05T14:35:00-03:00"
-    completed_at: "2026-11-05T14:45:04-03:00"
+    started_at: '2026-11-05T14:35:00-03:00'
+    completed_at: '2026-11-05T14:45:04-03:00'
