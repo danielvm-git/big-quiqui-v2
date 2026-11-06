@@ -2,10 +2,10 @@
 project: big-quiqui-v2
 version: 0.3.1-dev
 workflow_mode: solo-git
-active_flow: epic_cycle
+active_flow: build_epic
 lifecycle_phase: build
-current_epic: e03-kitchen-feed-scene
-current_story: e03s04
+current_epic: e04-bathroom-bath-scene
+current_story: e04s01
 review_gate:
   skill: request-review
   method: "dual-blind AND gate: 2 reviewers, different agents, no shared context"
@@ -75,11 +75,13 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: release-branch
+  next_skill: build-epic
   context: "Dual-blind review gate PASSED (100% / 100%). BUG-013, BUG-014, and BUG-015 (all residual e01-e03 audit/review advisories) are closed on epic/e03-kitchen-feed-scene."
   epic: e03-kitchen-feed-scene
   bug_fix: "BUG-013 + BUG-014 + BUG-015 closed. Suite: 26 scripts / 311 tests / 1441 asserts on epic/e03-kitchen-feed-scene (0 files > 300 lines, 0 functions > 20 lines)."
   open_decisions:
+    - "Ghost-hand drag affordance (Smolsies benchmark) is ADOPTED but deferred to e04: the bath step has the same teach-without-words problem. It becomes an e04 story plus a `model`-rubric eval; do not bolt it onto the released e03."
+    - "Benchmark divergences are deliberate and recorded in TEST_PLAN section 4: our 120 px hit-target floor and 36 px insets are stricter than the five measured TutoTOONS titles (76-96 px chrome, 7-19 px insets). A review that asks us to align downward is wrong."
     - "Branch protection and repository rulesets return 403 on this private repo (needs GitHub Pro). Mitigation: harness blocks direct main commits; land through PRs with required check 'gate' manually enforced until the plan is upgraded or the repo is made public."
     - "Version delivered by CI is only meaningful on main: big-release silently no-ops when HEAD is not a configured release branch."
     - "Hero-scale contract: DECIDED — the ratio on the opaque character is the requirement, the px figures in DESIGN section 3 are per-canvas illustrations. `QuiQuiRig` fits the box to the opaque art, so box height == painted height at rest."

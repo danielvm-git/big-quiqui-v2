@@ -129,6 +129,26 @@ timer-gated and taught by icon, never text.
 7. **Diegetic targets**: everything tappable is a drawn object in the scene, not a UI button. Matches our
    door/tool model; no evidence for a HUD-button-heavy design.
 
+## Disposition — what we adopted, declined, and where it is gated
+
+Every measured finding has exactly one home. This is the traceability from "seen in the wild" to
+"asserted here"; a finding with no disposition is a finding nobody acted on.
+
+| Finding | Disposition | Landed as | Enforced by |
+|---|---|---|---|
+| Hero 55–65 % of height, feet on the line | **already gated** (BUG-013) | `GeometryOracle` painted-rect contract | `TEST_PLAN` §3 row 2 · `EV-E03-01` |
+| Icon bubble anchored to the head line | **gated + generalised** | `wish_bubble` group, clearance test per scene | `TEST_PLAN` §3 row 3 · `EV-E03-02` |
+| Zero text in play frames | **already a convention** | scene-level no-text test | `TEST_PLAN` §3 row 6 · `EV-E03-03` |
+| 36 px insets / 120×120 px targets (stricter than theirs) | **keep ours, recorded** | `TEST_PLAN` §4 declined list | `TEST_PLAN` §3 rows 4–5 · `EV-E03-04` |
+| Multi-character rooms with depth scaling (15–44 %) | **declined** for the slice | `TEST_PLAN` §4 | revisit at e10 (friends on screen) |
+| 76–96 px chrome, 7–19 px HUD insets | **declined** | `TEST_PLAN` §4 | prevents a future "alignment" pass |
+| Flat dark-outline art | **declined** | `TEST_PLAN` §4 | `DESIGN.md` art direction |
+| **Ghost-hand drag affordance** | **adopted, deferred to e04** | recorded in `state.yaml` open decisions | e04 story + a `model`-rubric eval when e04 starts |
+
+Ghost-hand is deferred rather than opened as `e03s05` because e03 is released (`v0.4.0`); the bath
+step has the same teach-without-words problem, so the affordance belongs where it will be designed,
+not bolted onto a closed epic.
+
 ## What this does NOT license
 
 Numbers and mechanics are fair to learn from; **pixels are not**. No asset, sprite, animation, audio
