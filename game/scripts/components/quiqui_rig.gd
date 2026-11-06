@@ -14,6 +14,21 @@ const BREATH_Y: float = 0.022
 const BLINK_MIN_SEC: float = 2.8
 const BLINK_MAX_SEC: float = 5.2
 const BLINK_HOLD_SEC: float = 0.130
+## Accessory slots (ADR-003). One item per slot: a second hat replaces the first
+## instead of stacking, which is what keeps the character readable.
+const SLOT_BODY: String = "body"
+const SLOT_HEAD: String = "head"
+const SLOT_NECK: String = "neck"
+const SLOT_EYES: String = "eyes"
+## Accessory width as a share of the character height. Small on purpose: an accessory
+## that reads as a blob is worse than none (DESIGN §4.5).
+const SLOT_SIZES: Dictionary = {
+	SLOT_HEAD: 0.34,
+	SLOT_NECK: 0.26,
+	SLOT_EYES: 0.22,
+}
+const ACCESSORY_ROOT: String = "res://assets/art/items/"
+
 const Z_BODY: int = 0
 const Z_OUTFIT: int = 10
 const Z_EXPRESSION: int = 20
@@ -42,6 +57,8 @@ var glasses: Sprite2D = null
 var mouth_zone: Control = null
 var expression_id: String = ""
 var outfit_id: String = ""
+## slot -> id, mirroring `SaveData.equipped_outfits`.
+var accessory_ids: Dictionary = {}
 var manual_step: bool = false
 var seed_value: int = 20261104
 var taps: int = 0
@@ -152,6 +169,88 @@ func set_expression(id: String) -> bool:
 		return false
 	_apply_expression(id)
 	return true
+
+
+## Equips an accessory in its slot. One item per slot: the previous one is replaced,
+## never stacked, so the character stays readable (T-E05-05).
+func set_accessory(slot: String, id: String) -> bool:
+	var sprite: Sprite2D = _accessory_sprite(slot)
+	if sprite == null:
+		LogSink.emit_from(self, "rig.invalid_slot", {"slot": "invalid"})
+		return false
+	if id.is_empty():
+		sprite.visible = false
+		sprite.texture = null
+		accessory_ids.erase(slot)
+		LogSink.emit_from(self, "rig.accessory_off", {"slot": slot})
+		return true
+	if not Ids.is_valid(id):
+		LogSink.emit_from(self, "rig.invalid_accessory", {"slot": slot, "accessory": "invalid"})
+		return false
+	var texture: Texture2D = _load_accessory_art(id)
+	if texture == null:
+		LogSink.emit_from(self, "rig.missing_art", {"accessory": id})
+		return false
+	sprite.texture = texture
+	sprite.visible = true
+	accessory_ids[slot] = id
+	_place_accessory(sprite, slot)
+	LogSink.emit_from(self, "rig.accessory_on", {"slot": slot, "accessory": id})
+	return true
+
+
+func accessory_id(slot: String) -> String:
+	return str(accessory_ids.get(slot, ""))
+
+
+func clear_accessories() -> void:
+	for slot: String in [SLOT_HEAD, SLOT_NECK, SLOT_EYES]:
+		set_accessory(slot, "")
+
+
+## An accessory is placed relative to the **mouth zone**, not at a fixed height: the
+## mouth is a drag target (e03) and the face is the feedback channel (T-E05-06), so
+## every slot is offset by its own art height plus a margin. That makes "does not
+## cover the mouth" true by construction instead of by tuning.
+func _place_accessory(sprite: Sprite2D, slot: String) -> void:
+	if sprite == null or sprite.texture == null or mouth_zone == null:
+		return
+	var character: float = size.y if size.y > 1.0 else 620.0
+	var art: Vector2 = sprite.texture.get_size()
+	var factor: float = character * float(SLOT_SIZES.get(slot, 0.3)) / maxf(art.x, 1.0)
+	var half_height: float = art.y * factor * 0.5
+	var mouth_from_feet: float = size.y - mouth_zone.position.y
+	var height: float = mouth_from_feet
+	match slot:
+		SLOT_EYES:
+			height = mouth_from_feet + half_height + character * 0.02
+		SLOT_HEAD:
+			height = mouth_from_feet + half_height + character * 0.06
+		SLOT_NECK:
+			height = mouth_from_feet - half_height - character * 0.02
+		_:
+			height = mouth_from_feet
+	sprite.scale = Vector2.ONE * factor
+	sprite.position = Vector2(0.0, -height)
+
+
+func _accessory_sprite(slot: String) -> Sprite2D:
+	match slot:
+		SLOT_HEAD:
+			return headwear
+		SLOT_NECK:
+			return neck
+		SLOT_EYES:
+			return glasses
+		_:
+			return null
+
+
+func _load_accessory_art(id: String) -> Texture2D:
+	var path: String = "%s%s.png" % [ACCESSORY_ROOT, id]
+	if not ResourceLoader.exists(path):
+		return null
+	return load(path) as Texture2D
 
 
 func set_outfit(id: String) -> bool:

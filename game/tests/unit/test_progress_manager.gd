@@ -173,3 +173,29 @@ func test_complete_cycle_announces_once() -> void:
 	assert_eq(announced.size(), 1, "one cycle, one signal — the HUD repaints once")
 	assert_eq(pm.get_coins(), pm.CYCLE_COINS_REWARD)
 	assert_eq(pm.get_tickets(), pm.CYCLE_TICKETS_REWARD)
+
+
+# e05s01 / T-E05-01: the look survives a restart, and an id that cannot be a path
+# never reaches disk.
+func test_equipping_persists_and_round_trips_through_disk() -> void:
+	pm.set_test_mode(true)
+	pm.load_or_default()
+	assert_true(pm.call("equip", SaveData.SLOT_BODY, "vestido_vermelho"))
+	assert_true(pm.call("equip", SaveData.SLOT_HEAD, "coroa"))
+	assert_eq(str(pm.call("equipped", SaveData.SLOT_HEAD)), "coroa")
+
+	assert_true(pm.save())
+	pm.reset()
+	assert_eq(str(pm.call("equipped", SaveData.SLOT_BODY)), "", "reset clears memory")
+	pm.load_or_default()
+	assert_eq(str(pm.call("equipped", SaveData.SLOT_BODY)), "vestido_vermelho", "and disk brings it back")
+	assert_eq(str(pm.call("equipped", SaveData.SLOT_HEAD)), "coroa")
+
+
+func test_an_invalid_equip_is_refused() -> void:
+	pm.set_test_mode(true)
+	pm.load_or_default()
+	for bad: String in ["../etc/passwd", "TIARA", "a".repeat(65)]:
+		assert_false(pm.call("equip", SaveData.SLOT_HEAD, bad), bad)
+		assert_false(pm.call("equip", "bad slot!", "coroa"), "slot must be an id too")
+	assert_eq(pm.call("equipped", SaveData.SLOT_HEAD), "")

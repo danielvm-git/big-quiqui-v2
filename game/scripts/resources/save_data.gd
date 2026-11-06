@@ -11,6 +11,14 @@ const MAX_TICKETS: int = 9_999
 const MAX_CYCLES: int = 999_999
 const MAX_STARS: int = 5
 
+## The slots an outfit choice can fill. Kept here because the save is what has to stay
+## compatible; the rig mirrors them as its layer names.
+const SLOT_BODY: String = "body"
+const SLOT_HEAD: String = "head"
+const SLOT_NECK: String = "neck"
+const SLOT_EYES: String = "eyes"
+const SLOTS: Array[String] = [SLOT_BODY, SLOT_HEAD, SLOT_NECK, SLOT_EYES]
+
 @export var version: int = 1
 @export var coins: int = 0
 @export var tickets: int = 0
