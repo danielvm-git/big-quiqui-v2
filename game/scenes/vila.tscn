@@ -1,36 +1,41 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/scenes/vila.gd" id="1_xry82"]
-[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_vila.jpg" id="2_q2d3l"]
-[ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_rcddy"]
-[ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="4_wnybt"]
-[ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="5_v6rbp"]
-[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="6_xu8eu"]
-[ext_resource type="Script" path="res://scripts/components/wish_bubble.gd" id="7_4lixn"]
-[ext_resource type="Texture2D" path="res://assets/art/moveis/porta.png" id="8_ge51p"]
-[ext_resource type="Texture2D" path="res://assets/art/items/roda_fortuna.png" id="9_u757e"]
-[ext_resource type="Texture2D" path="res://assets/art/items/saquinho_lixo.png" id="10_6ahex"]
-[ext_resource type="Texture2D" path="res://assets/art/items/melancia.png" id="11_7w3pu"]
-[ext_resource type="Texture2D" path="res://assets/art/items/patinho.png" id="12_gqmhq"]
-[ext_resource type="Texture2D" path="res://assets/art/items/coroa.png" id="13_cqodo"]
+[ext_resource type="Script" path="res://scripts/scenes/vila.gd" id="1_xu8eu"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_vila.jpg" id="2_4lixn"]
+[ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_ge51p"]
+[ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="4_u757e"]
+[ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="5_6ahex"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="6_7w3pu"]
+[ext_resource type="Script" path="res://scripts/components/wish_bubble.gd" id="7_gqmhq"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/porta.png" id="8_cqodo"]
+[ext_resource type="Texture2D" path="res://assets/art/items/roda_fortuna.png" id="9_cnm8j"]
+[ext_resource type="Texture2D" path="res://assets/art/items/melancia.png" id="10_a1eos"]
+[ext_resource type="Texture2D" path="res://assets/art/items/patinho.png" id="11_bh6nw"]
+[ext_resource type="Texture2D" path="res://assets/art/items/coroa.png" id="12_b7swl"]
+[ext_resource type="Texture2D" path="res://assets/art/items/chuveirinho.png" id="13_myncn"]
+[ext_resource type="Script" path="res://scripts/components/touch_draggable.gd" id="14_n6a0q"]
+[ext_resource type="Texture2D" path="res://assets/art/items/saquinho_lixo.png" id="15_sxhq3"]
+[ext_resource type="Script" path="res://scripts/components/drag_hint.gd" id="16_1m3mf"]
+[ext_resource type="Script" path="res://scripts/components/hint_manager.gd" id="17_7d53h"]
+[ext_resource type="Texture2D" path="res://assets/art/efeitos/confete.png" id="18_hnhw3"]
 
-[node name="Vila" type="Control" unique_id=189267085]
+[node name="Vila" type="Control" unique_id=116141932]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource("1_xry82")
+script = ExtResource("1_xu8eu")
 
-[node name="Background" type="TextureRect" parent="." unique_id=1296837238 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=2064000065 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-texture = ExtResource("2_q2d3l")
+texture = ExtResource("2_4lixn")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=2026774519 groups=["rig"]]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=74252509 groups=["rig"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -38,9 +43,9 @@ anchor_right = 0.5
 anchor_bottom = 0.78
 offset_left = -320.0
 offset_right = 320.0
-script = ExtResource("3_rcddy")
+script = ExtResource("3_ge51p")
 
-[node name="CoinTicketHud" type="Control" parent="." unique_id=971998129 groups=["ui_top_right"]]
+[node name="CoinTicketHud" type="Control" parent="." unique_id=1745446329 groups=["ui_top_right"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -48,26 +53,26 @@ offset_left = -416.0
 offset_top = 36.0
 offset_right = -36.0
 offset_bottom = 124.0
-script = ExtResource("4_wnybt")
+script = ExtResource("4_u757e")
 
-[node name="HomeButton" type="Control" parent="." unique_id=954941428 groups=["hit_target"]]
+[node name="HomeButton" type="Control" parent="." unique_id=6919764 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 36.0
 offset_right = 156.0
 offset_bottom = 156.0
-script = ExtResource("5_v6rbp")
+script = ExtResource("5_6ahex")
 
-[node name="Art" type="TextureRect" parent="HomeButton" unique_id=340913378]
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=352370124]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-texture = ExtResource("6_xu8eu")
+texture = ExtResource("6_7w3pu")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="WishBubble" type="Control" parent="." unique_id=2130264569 groups=["wish_bubble"]]
+[node name="WishBubble" type="Control" parent="." unique_id=1259630020 groups=["wish_bubble"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -77,9 +82,9 @@ offset_left = -110.0
 offset_top = -228.0
 offset_right = 110.0
 offset_bottom = -8.0
-script = ExtResource("7_4lixn")
+script = ExtResource("7_gqmhq")
 
-[node name="PoiCASA" type="Control" parent="." unique_id=1407256987 groups=["hit_target"]]
+[node name="PoiCASA" type="Control" parent="." unique_id=516629967 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.12
 anchor_top = 0.44
@@ -89,18 +94,18 @@ offset_left = -84.0
 offset_top = -84.0
 offset_right = 84.0
 offset_bottom = 84.0
-script = ExtResource("5_v6rbp")
+script = ExtResource("5_6ahex")
 
-[node name="Art" type="TextureRect" parent="PoiCASA" unique_id=2129720466]
+[node name="Art" type="TextureRect" parent="PoiCASA" unique_id=75477546]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-texture = ExtResource("8_ge51p")
+texture = ExtResource("8_cqodo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PoiRODA" type="Control" parent="." unique_id=965777630 groups=["hit_target"]]
+[node name="PoiRODA" type="Control" parent="." unique_id=2036495921 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.86
 anchor_top = 0.4
@@ -110,39 +115,18 @@ offset_left = -84.0
 offset_top = -84.0
 offset_right = 84.0
 offset_bottom = 84.0
-script = ExtResource("5_v6rbp")
+script = ExtResource("5_6ahex")
 
-[node name="Art" type="TextureRect" parent="PoiRODA" unique_id=1189500618]
+[node name="Art" type="TextureRect" parent="PoiRODA" unique_id=1334875938]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-texture = ExtResource("9_u757e")
+texture = ExtResource("9_cnm8j")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PoiRECYCLING" type="Control" parent="." unique_id=2109947911 groups=["hit_target"]]
-anchors_preset = 0
-anchor_left = 0.16
-anchor_top = 0.7
-anchor_right = 0.16
-anchor_bottom = 0.7
-offset_left = -84.0
-offset_top = -84.0
-offset_right = 84.0
-offset_bottom = 84.0
-script = ExtResource("5_v6rbp")
-
-[node name="Art" type="TextureRect" parent="PoiRECYCLING" unique_id=1173256029]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-texture = ExtResource("10_6ahex")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="PoiMERCADO" type="Control" parent="." unique_id=62234135 groups=["hit_target"]]
+[node name="PoiMERCADO" type="Control" parent="." unique_id=1986252114 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.84
 anchor_top = 0.68
@@ -152,18 +136,18 @@ offset_left = -84.0
 offset_top = -84.0
 offset_right = 84.0
 offset_bottom = 84.0
-script = ExtResource("5_v6rbp")
+script = ExtResource("5_6ahex")
 
-[node name="Art" type="TextureRect" parent="PoiMERCADO" unique_id=261728066]
+[node name="Art" type="TextureRect" parent="PoiMERCADO" unique_id=249390711]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-texture = ExtResource("11_7w3pu")
+texture = ExtResource("10_a1eos")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PoiCASINHA" type="Control" parent="." unique_id=1334131005 groups=["hit_target"]]
+[node name="PoiCASINHA" type="Control" parent="." unique_id=937095521 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.36
 anchor_top = 0.36
@@ -173,18 +157,18 @@ offset_left = -84.0
 offset_top = -84.0
 offset_right = 84.0
 offset_bottom = 84.0
-script = ExtResource("5_v6rbp")
+script = ExtResource("5_6ahex")
 
-[node name="Art" type="TextureRect" parent="PoiCASINHA" unique_id=389378408]
+[node name="Art" type="TextureRect" parent="PoiCASINHA" unique_id=476990795]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-texture = ExtResource("12_gqmhq")
+texture = ExtResource("11_bh6nw")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PoiFESTA" type="Control" parent="." unique_id=1080339081 groups=["hit_target"]]
+[node name="PoiFESTA" type="Control" parent="." unique_id=1353861187 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.64
 anchor_top = 0.34
@@ -194,13 +178,88 @@ offset_left = -84.0
 offset_top = -84.0
 offset_right = 84.0
 offset_bottom = 84.0
-script = ExtResource("5_v6rbp")
+script = ExtResource("5_6ahex")
 
-[node name="Art" type="TextureRect" parent="PoiFESTA" unique_id=855194181]
+[node name="Art" type="TextureRect" parent="PoiFESTA" unique_id=729475028]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-texture = ExtResource("13_cqodo")
+texture = ExtResource("12_b7swl")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="RecycleBin" type="Control" parent="." unique_id=2040820054 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.72
+anchor_top = 0.78
+anchor_right = 0.72
+anchor_bottom = 0.78
+offset_left = -84.0
+offset_top = -84.0
+offset_right = 84.0
+offset_bottom = 84.0
+mouse_filter = 2
+
+[node name="Visual" type="Control" parent="RecycleBin" unique_id=1232778691]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="RecycleBin/Visual" unique_id=1374955308]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("13_myncn")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RecycleBag" type="Control" parent="." unique_id=620755134 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.16
+anchor_top = 0.7
+anchor_right = 0.16
+anchor_bottom = 0.7
+offset_left = -74.0
+offset_top = -74.0
+offset_right = 74.0
+offset_bottom = 74.0
+script = ExtResource("14_n6a0q")
+
+[node name="Art" type="TextureRect" parent="RecycleBag" unique_id=762675215]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("15_sxhq3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HintLayer" type="Control" parent="." unique_id=1967556874]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="DragHint" type="Control" parent="HintLayer" unique_id=1227646231]
+visible = false
+anchors_preset = 0
+script = ExtResource("16_1m3mf")
+
+[node name="HintManager" type="Node" parent="." unique_id=86387461]
+script = ExtResource("17_7d53h")
+
+[node name="Sparkle" type="CPUParticles2D" parent="." unique_id=1848278709]
+z_index = 40
+emitting = false
+amount = 24
+texture = ExtResource("18_hnhw3")
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+direction = Vector2(0, -1)
+gravity = Vector2(0, 120)
+initial_velocity_min = 80.0
+initial_velocity_max = 220.0

@@ -1,14 +1,15 @@
 # story: e08s01
+# story: e08s02
 class_name VilaScene
 extends Control
 ## Outdoor hub: six building taps, the same wish bubble semantics as the Casa,
-## and honest `scene.pending` for doors whose scenes are not shipped yet.
+## honest `scene.pending` for POIs without scenes, and the recycling drag (e08s02).
 
 signal poi_requested(poi: String)
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
-## Set when e08s03 generates the wheel scene; until then the POI logs pending.
 const RODA_PATH: String = "res://scenes/roda.tscn"
+const SPARKLE_SFX: String = "res://assets/audio/sfx/confete.ogg"
 
 const POI_SCENE_CASA: String = "CASA"
 const POI_SCENE_RODA: String = "RODA"
@@ -17,7 +18,6 @@ const POI_MERCADO: String = "MERCADO"
 const POI_CASINHA: String = "CASINHA"
 const POI_FESTA: String = "FESTA"
 
-## Six POI ids -> scene path or "" when still under construction.
 const POI_SCENES: Dictionary = {
 	POI_SCENE_CASA: CASA_PATH,
 	POI_SCENE_RODA: RODA_PATH,
@@ -41,22 +41,48 @@ const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
 const IDLE_WISH_SEC: float = 8.0
 const ESCALATION_SEC: float = 6.0
 
-@onready var rig: QuiQuiRig = $QuiQuiRig as QuiQuiRig
-@onready var bubble: WishBubble = $WishBubble as WishBubble
-@onready var hud: CoinTicketHud = $CoinTicketHud as CoinTicketHud
+const RECYCLE_READY: String = "READY"
+const RECYCLE_PAY: String = "PAY"
+const RECYCLE_LEGAL: Dictionary = {RECYCLE_READY: [RECYCLE_PAY], RECYCLE_PAY: [RECYCLE_READY]}
+
+var rig: QuiQuiRig = null
+var bubble: WishBubble = null
+var hud: CoinTicketHud = null
+var recycle_bag: TouchDraggable = null
+var recycle_bin: Control = null
+var hint_layer: Control = null
+var hint_manager: Node = null
+var drag_hint: Node = null
+var sparkle: CPUParticles2D = null
 
 var manual_step: bool = false
 var voice_started: bool = false
 
 var poi_taps: int = 0
-## Test observable: last slug passed to `scene.pending` (empty if none this session).
 var last_pending_slug: String = ""
 var _idle_sec: float = 0.0
 var _wish_shown_for_idle: bool = false
 
+var recycle_fsm: Fsm = null
+var recycle_earns: int = 0
+var _recycle_hint_done: bool = false
+var _recycle_awarded: bool = false
+
 
 func _ready() -> void:
+	rig = get_node_or_null("QuiQuiRig") as QuiQuiRig
+	bubble = get_node_or_null("WishBubble") as WishBubble
+	hud = get_node_or_null("CoinTicketHud") as CoinTicketHud
+	recycle_bag = get_node_or_null("RecycleBag") as TouchDraggable
+	recycle_bin = get_node_or_null("RecycleBin") as Control
+	hint_layer = get_node_or_null("HintLayer") as Control
+	hint_manager = get_node_or_null("HintManager")
+	drag_hint = get_node_or_null("HintLayer/DragHint")
+	sparkle = get_node_or_null("Sparkle") as CPUParticles2D
 	close_celebrate_if_needed()
+	recycle_fsm = Fsm.new(RECYCLE_READY, RECYCLE_LEGAL, {})
+	_setup_recycle()
+	_setup_hints()
 	var home: TapButton = get_node_or_null("HomeButton") as TapButton
 	if home != null:
 		home.tapped.connect(_on_home_tapped)
@@ -71,13 +97,30 @@ func _ready() -> void:
 	_log("scene.ready", {"scene": "vila"})
 
 
+func _setup_recycle() -> void:
+	if recycle_bag != null:
+		recycle_bag.mode = TouchDraggable.Mode.CONSUME_ON_DROP
+		recycle_bag.drop_target = recycle_bin
+		recycle_bag.drop_margin = 8.0
+		recycle_bag.consumed.connect(_on_recycle_consumed)
+		recycle_bag.drag_started.connect(_on_recycle_drag_started)
+	if sparkle != null:
+		sparkle.emitting = false
+
+
+func _setup_hints() -> void:
+	if hint_manager != null and drag_hint != null:
+		hint_manager.call("enqueue", drag_hint)
+
+
 func _process(delta: float) -> void:
 	if manual_step:
 		return
 	advance(delta)
+	if hint_manager != null and hint_manager.has_method("advance"):
+		hint_manager.call("advance", delta)
 
 
-## Idle timer for wish + escalation (FIX-01), same constants as CasaScene.
 func advance(delta: float) -> void:
 	_idle_sec += maxf(delta, 0.0)
 	if _idle_sec < IDLE_WISH_SEC:
@@ -105,6 +148,59 @@ func close_celebrate_if_needed() -> void:
 
 func poi(id: String) -> TapButton:
 	return get_node_or_null("Poi" + id) as TapButton
+
+
+func _maybe_start_recycle_hint() -> void:
+	if _recycle_hint_done or hint_manager == null or drag_hint == null:
+		return
+	if recycle_bag == null or recycle_bin == null:
+		return
+	if not bool(hint_manager.call("try_show_next")):
+		return
+	var from_g: Vector2 = recycle_bag.get_global_rect().get_center()
+	var to_g: Vector2 = recycle_bin.get_global_rect().get_center()
+	var pulse_target: Control = recycle_bin.get_node_or_null("Visual") as Control
+	drag_hint.call("play", from_g, to_g, pulse_target)
+
+
+func _on_recycle_drag_started() -> void:
+	if hint_manager != null:
+		hint_manager.call("stop_current")
+		hint_manager.call("begin_cooldown", 1.5)
+
+
+func _on_recycle_consumed() -> void:
+	if _recycle_awarded or recycle_fsm == null or recycle_fsm.state != RECYCLE_READY:
+		return
+	if not recycle_fsm.transition_to(RECYCLE_PAY):
+		return
+	var progress: Node = get_node_or_null("/root/ProgressManager")
+	if progress != null:
+		progress.call("add_coins", 1)
+	recycle_earns += 1
+	_recycle_awarded = true
+	_log("vila.recycle_earn", {"coins": 1})
+	if hud != null and recycle_bin != null:
+		hud.fly_coin(recycle_bin.get_global_rect().get_center())
+	_play_sparkle()
+	_recycle_finish_payment()
+
+
+func _recycle_finish_payment() -> void:
+	_recycle_hint_done = true
+	if recycle_bag != null:
+		recycle_bag.visible = false
+		recycle_bag.enabled = false
+	if recycle_fsm != null:
+		recycle_fsm.transition_to(RECYCLE_READY)
+
+
+func _play_sparkle() -> void:
+	if sparkle == null or recycle_bin == null:
+		return
+	sparkle.global_position = recycle_bin.get_global_rect().get_center()
+	sparkle.restart()
+	_play_stream("play_sfx", SPARKLE_SFX)
 
 
 func _on_poi_tapped(poi_id: String) -> void:
@@ -170,9 +266,13 @@ func _play_stream(method: String, path: String) -> bool:
 	var audio: Node = get_node_or_null("/root/AudioManager")
 	if audio == null:
 		return false
-	voice_started = bool(audio.call(method, stream))
-	return voice_started
+	return bool(audio.call(method, stream))
 
 
 func _log(ev: String, data: Dictionary) -> void:
 	LogSink.emit_from(self, ev, data)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_VISIBILITY_CHANGED and visible:
+		call_deferred("_maybe_start_recycle_hint")

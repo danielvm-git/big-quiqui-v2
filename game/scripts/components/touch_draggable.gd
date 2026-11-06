@@ -1,4 +1,5 @@
 # story: e03s01
+# story: e08s02
 class_name TouchDraggable
 extends Control
 ## The one drag surface (ADR-004): a prop picked up by one finger, which is either
@@ -39,7 +40,7 @@ const LEGAL_EDGES: Dictionary = {
 	STATE_RETURNING: [STATE_REST, STATE_DRAGGING],
 	STATE_SCRUBBING: [STATE_REST, STATE_ABORTED],
 	STATE_ABORTED: [STATE_REST],
-	STATE_CONSUMED: [],
+	STATE_CONSUMED: [STATE_REST],
 }
 const MAX_DWELL_SEC: Dictionary = {STATE_RETURNING: 1.0}
 ## Stands in for a touch index when a real mouse holds the prop.
@@ -87,6 +88,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_NONE
 	size = size.max(MIN_HIT_SIZE)
+	_rest_position = position
 
 
 func _process(delta: float) -> void:
@@ -137,6 +139,17 @@ func advance(delta: float) -> void:
 
 func state_id() -> String:
 	return fsm.state
+
+
+## Brings a consumed prop back to REST at its spawn pose (e08 recycle respawn).
+func respawn_at_rest() -> void:
+	if fsm.state != STATE_CONSUMED:
+		return
+	position = _rest_position
+	_holder = null
+	visible = true
+	enabled = true
+	fsm.transition_to(STATE_REST)
 
 
 ## A cancelled touch is the system taking the finger back, not the child letting

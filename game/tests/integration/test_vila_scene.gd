@@ -1,4 +1,5 @@
 # story: e08s01
+# story: e08s02
 extends GutTest
 ## SC-E08-P0-01..02, SC-E08-P1-03..05 — the outdoor hub layout, honest pending
 ## navigation, wish escalation and touch reset.
@@ -42,7 +43,7 @@ func test_vila_boots_with_six_pois_and_oracle_passes_both_aspects() -> void:
 		var oracle: GeometryOracle = GeometryOracle.new()
 		var findings: Array[String] = oracle.audit(mounted, size, GeometryOracle.STEP_ROOM_SPEC)
 		assert_true(findings.is_empty(), "%s: %s" % [size, oracle.summary()])
-		var poi_ids: Array[String] = ["CASA", "RODA", "RECYCLING", "MERCADO", "CASINHA", "FESTA"]
+		var poi_ids: Array[String] = ["CASA", "RODA", "MERCADO", "CASINHA", "FESTA"]
 		for poi_id: String in poi_ids:
 			var door: TapButton = mounted.get_node_or_null("Poi" + poi_id) as TapButton
 			assert_not_null(door, "missing POI %s" % poi_id)
@@ -50,6 +51,9 @@ func test_vila_boots_with_six_pois_and_oracle_passes_both_aspects() -> void:
 			var rect: Rect2 = door.get_global_rect()
 			assert_gte(rect.size.x, 120.0, poi_id)
 			assert_gte(rect.size.y, 120.0, poi_id)
+		var bag: Control = mounted.get_node_or_null("RecycleBag") as Control
+		assert_not_null(bag, "recycle bag hit target")
+		assert_true(bag.is_in_group(GeometryOracle.HIT_GROUP), "recycle bag")
 		mounted.queue_free()
 
 
@@ -57,10 +61,10 @@ func test_pending_poi_logs_scene_pending_and_casa_navigates() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9)
 	assert_eq(scene.get_script(), VILA_SCRIPT)
 	await wait_process_frames(3)
-	var recycling: TapButton = scene.call("poi", "RECYCLING") as TapButton
-	for event: InputEvent in TouchSim.tap_events(recycling, true):
-		recycling._gui_input(event)
-	assert_eq(scene.get("last_pending_slug"), "recycling")
+	var casinha: TapButton = scene.call("poi", "CASINHA") as TapButton
+	for event: InputEvent in TouchSim.tap_events(casinha, true):
+		casinha._gui_input(event)
+	assert_eq(scene.get("last_pending_slug"), "casinha")
 
 	var requested: Array[String] = []
 	var manager: Node = get_node("/root/SceneManager")
