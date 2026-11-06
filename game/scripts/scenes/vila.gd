@@ -63,6 +63,9 @@ var last_pending_slug: String = ""
 var _idle_sec: float = 0.0
 var _wish_shown_for_idle: bool = false
 
+## The bag pays once per session, not once per visit (e08s02 AC7, BUG-039). `TestReset` clears it.
+static var recycled_this_session: bool = false
+
 var recycle_fsm: Fsm = null
 var recycle_earns: int = 0
 var _recycle_hint_done: bool = false
@@ -70,6 +73,18 @@ var _recycle_awarded: bool = false
 
 
 func _ready() -> void:
+	_bind_nodes()
+	close_celebrate_if_needed()
+	recycle_fsm = Fsm.new(RECYCLE_READY, RECYCLE_LEGAL, {})
+	_setup_recycle()
+	_setup_hints()
+	_connect_inputs()
+	_play_stream("play_voice", VOICE_PATH)
+	_restore_music()
+	_log("scene.ready", {"scene": "vila"})
+
+
+func _bind_nodes() -> void:
 	rig = get_node_or_null("QuiQuiRig") as QuiQuiRig
 	bubble = get_node_or_null("WishBubble") as WishBubble
 	hud = get_node_or_null("CoinTicketHud") as CoinTicketHud
@@ -79,10 +94,9 @@ func _ready() -> void:
 	hint_manager = get_node_or_null("HintManager")
 	drag_hint = get_node_or_null("HintLayer/DragHint")
 	sparkle = get_node_or_null("Sparkle") as CPUParticles2D
-	close_celebrate_if_needed()
-	recycle_fsm = Fsm.new(RECYCLE_READY, RECYCLE_LEGAL, {})
-	_setup_recycle()
-	_setup_hints()
+
+
+func _connect_inputs() -> void:
 	var home: TapButton = get_node_or_null("HomeButton") as TapButton
 	if home != null:
 		home.tapped.connect(_on_home_tapped)
@@ -92,12 +106,19 @@ func _ready() -> void:
 			door.tapped.connect(_on_poi_tapped.bind(key))
 	if rig != null:
 		rig.tapped.connect(_on_rig_tapped)
-	_play_stream("play_voice", VOICE_PATH)
-	_restore_music()
-	_log("scene.ready", {"scene": "vila"})
+
+
+static func reset_session() -> void:
+	recycled_this_session = false
 
 
 func _setup_recycle() -> void:
+	if recycled_this_session:
+		_recycle_hint_done = true
+		_recycle_awarded = true
+		if recycle_bag != null:
+			recycle_bag.visible = false
+			recycle_bag.enabled = false
 	if recycle_bag != null:
 		recycle_bag.mode = TouchDraggable.Mode.CONSUME_ON_DROP
 		recycle_bag.drop_target = recycle_bin
@@ -179,6 +200,7 @@ func _on_recycle_consumed() -> void:
 		progress.call("add_coins", 1)
 	recycle_earns += 1
 	_recycle_awarded = true
+	recycled_this_session = true
 	_log("vila.recycle_earn", {"coins": 1})
 	if hud != null and recycle_bin != null:
 		hud.fly_coin(recycle_bin.get_global_rect().get_center())

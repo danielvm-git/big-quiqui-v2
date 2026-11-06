@@ -61,9 +61,12 @@ func test_miss_returns_without_paying() -> void:
 	await wait_process_frames(3)
 	var bag: TouchDraggable = scene.get_node("RecycleBag") as TouchDraggable
 	var progress: Node = get_node("/root/ProgressManager")
+	var start: Vector2 = bag.global_position
 	var miss: Vector2 = Vector2(80.0, 80.0)
 	_deliver(bag, TouchSim.drag_events(bag, miss, 8, true))
 	bag.advance(1.0)
+	assert_eq(bag.global_position, start, "a missed drop returns the bag to its start")
+	assert_true(bag.visible, "and the bag is still there to try again")
 	assert_eq(int(progress.call("get_coins")), 0)
 	assert_eq(scene.get("recycle_earns"), 0)
 
@@ -84,6 +87,34 @@ func test_hint_runs_once_then_skips_after_success() -> void:
 			break
 	assert_true(bool(hint.call("done")), "hint animation finishes")
 	assert_false(bool(mgr.call("try_show_next")), "queue empty after first dequeue")
+	_deliver(bag, TouchSim.drag_events(bag, bin.get_global_rect().get_center(), 8, true))
+	assert_eq(scene.get("recycle_earns"), 1, "the recycle happened")
+	scene.call("_maybe_start_recycle_hint")
+	assert_false(hint.visible, "no hint after a successful recycle")
+
+
+## BUG-039 / AC7: the earn and the hint are per session, not per visit to the Vila.
+func test_second_visit_to_the_vila_pays_and_teaches_nothing() -> void:
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	scene.set("manual_step", true)
+	await wait_process_frames(3)
+	var bag: TouchDraggable = scene.get_node("RecycleBag") as TouchDraggable
+	var bin: Control = scene.get_node("RecycleBin") as Control
+	var progress: Node = get_node("/root/ProgressManager")
+	_deliver(bag, TouchSim.drag_events(bag, bin.get_global_rect().get_center(), 8, true))
+	assert_eq(int(progress.call("get_coins")), 1)
+	scene.queue_free()
+	await wait_process_frames(2)
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	scene.set("manual_step", true)
+	await wait_process_frames(3)
+	var again: TouchDraggable = scene.get_node("RecycleBag") as TouchDraggable
+	assert_false(again.visible, "no second bag this session")
+	scene.call("_maybe_start_recycle_hint")
+	assert_false((scene.get_node("HintLayer/DragHint") as Control).visible, "no second lesson")
+	assert_eq(int(progress.call("get_coins")), 1, "coins unchanged")
+	TestReset.reset_all()
+	assert_false(VilaScene.recycled_this_session, "a new session starts clean")
 
 
 func test_fly_coin_and_pulse_are_cosmetic_only() -> void:
