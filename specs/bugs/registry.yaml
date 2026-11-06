@@ -399,3 +399,12 @@ bugs:
   file: specs/bugs/BUG-044-wheel-ticket-cost-unclamped.md
   status: fixed
   found_by: e08 post-epic review
+- bug_id: BUG-045
+  date: '2026-11-07'
+  severity: low
+  priority: P3
+  scope: code
+  summary: "TouchDraggable.respawn_at_rest() is dead code and its CONSUMED->REST edge weakens the terminal state"
+  file: specs/bugs/BUG-045-dead-respawn-widens-consumed-edge.md
+  status: fixed
+  found_by: e08 post-epic review, second pass

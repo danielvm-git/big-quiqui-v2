@@ -40,7 +40,7 @@ const LEGAL_EDGES: Dictionary = {
 	STATE_RETURNING: [STATE_REST, STATE_DRAGGING],
 	STATE_SCRUBBING: [STATE_REST, STATE_ABORTED],
 	STATE_ABORTED: [STATE_REST],
-	STATE_CONSUMED: [STATE_REST],
+	STATE_CONSUMED: [],
 }
 const MAX_DWELL_SEC: Dictionary = {STATE_RETURNING: 1.0}
 ## Stands in for a touch index when a real mouse holds the prop.
@@ -139,17 +139,6 @@ func advance(delta: float) -> void:
 
 func state_id() -> String:
 	return fsm.state
-
-
-## Brings a consumed prop back to REST at its spawn pose (e08 recycle respawn).
-func respawn_at_rest() -> void:
-	if fsm.state != STATE_CONSUMED:
-		return
-	position = _rest_position
-	_holder = null
-	visible = true
-	enabled = true
-	fsm.transition_to(STATE_REST)
 
 
 ## A cancelled touch is the system taking the finger back, not the child letting
