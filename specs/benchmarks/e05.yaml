@@ -1,0 +1,64 @@
+# story: e05s02
+# Evals — e05 (Closet & Accessories, DRESS). Schema: specs/benchmarks/SCHEMA.md
+# Skill: run-evals · kind: capability + regression
+#
+# Provenance: specs/security/epics/e05/THREAT_MODEL.md (T-E05-01..07) and
+# specs/product/TUTOTOONS_REFERENCE.md (icon-only prompting, no text in play frames).
+epic: e05
+kind: capability
+evals:
+  - id: EV-E05-01
+    claim: "The face is never hidden by what she wears, on either canvas"
+    story: e05s01
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "test_the_expression_layer_sits_above_outfit_and_accessories"
+    also_requires:
+      - "test_the_journey_dresses_her_and_keeps_her_face_on_ipad"
+    pass_when: "exit==0 and both scenarios pass"
+    threat: T-E05-03
+    note: |
+      A layer inversion is invisible to a test that only asserts "outfit visible",
+      which is why this eval names the z-order assertion AND the iPad journey.
+
+  - id: EV-E05-02
+    claim: "An id that cannot be a safe path never reaches the save or the art loader"
+    story: e05s01
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "test_an_invalid_equip_is_refused"
+    also_requires:
+      - "test_an_invalid_accessory_is_refused_and_changes_nothing"
+    pass_when: "exit==0 and both scenarios pass"
+    threat: T-E05-01
+    note: "../etc/passwd, TIARA, 65 chars and id.with.dot are the four cases."
+
+  - id: EV-E05-03
+    claim: "The look survives a restart: equip, save, reload, and a fresh mount shows it"
+    story: e05s03
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "test_the_look_survives_leaving_and_returning"
+    pass_when: "exit==0 and the scenario passes"
+    threat: T-E05-04
+    note: "This is the first save field a child can see on screen; a lost write is a visible bug."
+
+  - id: EV-E05-04
+    claim: "DRESS is credited exactly once, and free play afterwards credits nothing more"
+    story: e05s02
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "test_replaying_the_same_outfit_credits_nothing_more"
+    also_requires:
+      - "test_equipping_credits_dress_once_and_moves_on"
+    pass_when: "exit==0 and both scenarios pass"
+    threat: T-E05-02
+
+  - id: EV-E05-05
+    claim: "Nothing in the closet requires reading"
+    story: e05s02
+    grader: code
+    run: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+    must_match: "test_the_closet_has_no_text"
+    pass_when: "exit==0 and the scenario passes"
+    source: "TUTOTOONS_REFERENCE.md: zero text in any measured gameplay frame"

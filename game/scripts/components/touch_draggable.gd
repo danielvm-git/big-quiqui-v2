@@ -208,21 +208,10 @@ func _drop(point: Vector2, cancelled: bool) -> void:
 		_end_scrub()
 		return
 	if not cancelled and _is_on_target(point):
-		fsm.transition_to(STATE_CONSUMED)
-		drag_ended.emit()
-		_emit("drag.drop", {"outcome": "consumed"})
-		consumed.emit()
-		_emit("drag.consume")
+		_consume()
 		return
 	if not cancelled and _is_on_snap_target(point):
-		# The item flies home afterwards: the wardrobe keeps its contents, the
-		# character takes the look.
-		fsm.transition_to(STATE_RETURNING)
-		_return_from = position
-		_return_elapsed = 0.0
-		drag_ended.emit()
-		_emit("drag.drop", {"outcome": "snapped"})
-		snapped.emit(payload_slot, payload_id)
+		_snap()
 		return
 	fsm.transition_to(STATE_RETURNING)
 	_return_from = position
@@ -291,6 +280,25 @@ func _hull() -> PackedVector2Array:
 		return PackedVector2Array()
 	var hull: Variant = scrub_target.call("scrub_hull_global")
 	return hull if hull is PackedVector2Array else PackedVector2Array()
+
+
+func _consume() -> void:
+	fsm.transition_to(STATE_CONSUMED)
+	drag_ended.emit()
+	_emit("drag.drop", {"outcome": "consumed"})
+	consumed.emit()
+	_emit("drag.consume")
+
+
+## The item flies home afterwards: the wardrobe keeps its contents, the character
+## takes the look.
+func _snap() -> void:
+	fsm.transition_to(STATE_RETURNING)
+	_return_from = position
+	_return_elapsed = 0.0
+	drag_ended.emit()
+	_emit("drag.drop", {"outcome": "snapped"})
+	snapped.emit(payload_slot, payload_id)
 
 
 func _owns(index: int) -> bool:

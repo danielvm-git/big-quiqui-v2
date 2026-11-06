@@ -1,34 +1,36 @@
 story_id: e05s03
 spec: e05s03.md
 epic_id: e05
-title: ClosetScene E2E Outfit-Preserves-Expression Invariant & Disk Round-Trip Persistence
-  Tests
-status: failing
+title: 'ClosetScene E2E: outfit preserves the expression and survives a fresh mount'
+status: passing
 bcps: 2
 playable_scene: res://scenes/closet.tscn
+threat_findings:
+- T-E05-02
+- T-E05-03
+- T-E05-04
 tasks:
 - id: e05s03-t01
-  description: Write failing GUT unit & TouchSim/GeometryOracle tests for e05s03 (ClosetScene
-    E2E Outfit-Preserves-Expression Invariant & Disk Round-Trip Persistence Tests)
+  description: 'Write test_closet_e2e.gd: journey per canvas, expression invariant,
+    disk round-trip, replay, abandon'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e05s03-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e05s03
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
-  risk: P1
+  description: 'Fix the two design bugs the E2E exposed: the closet refused equips
+    after crediting DRESS, and a shared two-canvas loop carried singleton state'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
   allure:
-    severity: high
-  status: failing
+    severity: critical
+  status: passing
 - id: e05s03-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e05s03
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  description: Verify lint, type gate, PII audit and traceability for e05s03
+  verify: gdlint game/ && gdformat --check game/ && bash scripts/logs.sh audit --self-test
+    && bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing

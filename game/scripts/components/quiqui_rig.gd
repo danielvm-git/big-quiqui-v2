@@ -14,19 +14,8 @@ const BREATH_Y: float = 0.022
 const BLINK_MIN_SEC: float = 2.8
 const BLINK_MAX_SEC: float = 5.2
 const BLINK_HOLD_SEC: float = 0.130
-## Accessory slots (ADR-003). One item per slot: a second hat replaces the first
-## instead of stacking, which is what keeps the character readable.
-const SLOT_BODY: String = "body"
-const SLOT_HEAD: String = "head"
-const SLOT_NECK: String = "neck"
-const SLOT_EYES: String = "eyes"
-## Accessory width as a share of the character height. Small on purpose: an accessory
-## that reads as a blob is worse than none (DESIGN §4.5).
-const SLOT_SIZES: Dictionary = {
-	SLOT_HEAD: 0.34,
-	SLOT_NECK: 0.26,
-	SLOT_EYES: 0.22,
-}
+## Accessory slots live in `AccessorySlots` (vocabulary + placement maths); the rig
+## owns only the layers and the art loading.
 const ACCESSORY_ROOT: String = "res://assets/art/items/"
 
 const Z_BODY: int = 0
@@ -179,11 +168,12 @@ func set_accessory(slot: String, id: String) -> bool:
 		LogSink.emit_from(self, "rig.invalid_slot", {"slot": "invalid"})
 		return false
 	if id.is_empty():
-		sprite.visible = false
-		sprite.texture = null
-		accessory_ids.erase(slot)
-		LogSink.emit_from(self, "rig.accessory_off", {"slot": slot})
+		_take_accessory_off(sprite, slot)
 		return true
+	return _equip_accessory(sprite, slot, id)
+
+
+func _equip_accessory(sprite: Sprite2D, slot: String, id: String) -> bool:
 	if not Ids.is_valid(id):
 		LogSink.emit_from(self, "rig.invalid_accessory", {"slot": slot, "accessory": "invalid"})
 		return false
@@ -199,12 +189,19 @@ func set_accessory(slot: String, id: String) -> bool:
 	return true
 
 
+func _take_accessory_off(sprite: Sprite2D, slot: String) -> void:
+	sprite.visible = false
+	sprite.texture = null
+	accessory_ids.erase(slot)
+	LogSink.emit_from(self, "rig.accessory_off", {"slot": slot})
+
+
 func accessory_id(slot: String) -> String:
 	return str(accessory_ids.get(slot, ""))
 
 
 func clear_accessories() -> void:
-	for slot: String in [SLOT_HEAD, SLOT_NECK, SLOT_EYES]:
+	for slot: String in AccessorySlots.NAMES:
 		set_accessory(slot, "")
 
 
@@ -217,30 +214,18 @@ func _place_accessory(sprite: Sprite2D, slot: String) -> void:
 		return
 	var character: float = size.y if size.y > 1.0 else 620.0
 	var art: Vector2 = sprite.texture.get_size()
-	var factor: float = character * float(SLOT_SIZES.get(slot, 0.3)) / maxf(art.x, 1.0)
-	var half_height: float = art.y * factor * 0.5
-	var mouth_from_feet: float = size.y - mouth_zone.position.y
-	var height: float = mouth_from_feet
-	match slot:
-		SLOT_EYES:
-			height = mouth_from_feet + half_height + character * 0.02
-		SLOT_HEAD:
-			height = mouth_from_feet + half_height + character * 0.06
-		SLOT_NECK:
-			height = mouth_from_feet - half_height - character * 0.02
-		_:
-			height = mouth_from_feet
+	var factor: float = AccessorySlots.scale_for(slot, art.x, character)
 	sprite.scale = Vector2.ONE * factor
-	sprite.position = Vector2(0.0, -height)
+	sprite.position = AccessorySlots.position_for(slot, art, factor, character, size.y - mouth_zone.position.y)
 
 
 func _accessory_sprite(slot: String) -> Sprite2D:
 	match slot:
-		SLOT_HEAD:
+		AccessorySlots.SLOT_HEAD:
 			return headwear
-		SLOT_NECK:
+		AccessorySlots.SLOT_NECK:
 			return neck
-		SLOT_EYES:
+		AccessorySlots.SLOT_EYES:
 			return glasses
 		_:
 			return null

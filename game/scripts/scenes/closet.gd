@@ -89,9 +89,9 @@ func accessory_item(index: int) -> TouchDraggable:
 
 ## A drop on her body equips. The payload is what the hanger carries, so the same
 ## handler serves outfits and accessories.
+## Free play continues after DRESS is credited: the child may keep changing her
+## clothes, and the step stays credited (the loop's machine has moved on).
 func _on_snapped(slot: String, id: String) -> void:
-	if fsm.state != STATE_DRESSING:
-		return
 	var applied: bool = false
 	if slot == SaveData.SLOT_BODY:
 		applied = rig.set_outfit(id)
