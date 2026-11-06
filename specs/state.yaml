@@ -33,11 +33,12 @@ review_gate:
     report: specs/verifications/POSTEPIC-e07-2026-11-06.md
     must_fix: []
     found: 20
-    fixed: 18
-    deferred: 1
+    fixed: 19
+    deferred: 0
     wontfix: 1
-    outcome: '1 high (BUG-018), 6 medium, 11 low fixed; BUG-031 (reward reveal) deferred
-      with ADR-009 because it changes e07s02 acceptance criteria'
+    outcome: '1 high (BUG-018), 6 medium, 11 low fixed; BUG-031 (reward reveal + hold)
+      implemented with the frozen e07s02 contract updated; BUG-028 wontfix (engine audio
+      teardown, four experiments)'
   earlier_gates:
   - epic: e01-e03
     rounds: 6
@@ -77,9 +78,9 @@ bug_cycle:
   - BUG-034
   - BUG-035
   - BUG-036
-  outcome: '18 fixed on fix/e07-postepic-review; BUG-031 deferred to ADR-009 (product
-    scope change); BUG-028 wontfix (engine audio teardown, four experiments in the entry).
-    Suite 38 scripts / 408 tests / 2154 asserts.'
+  outcome: '19 fixed on fix/e07-postepic-review; BUG-028 wontfix (engine audio teardown,
+    four experiments in the entry). BUG-031 (reward reveal + hold) implemented with the
+    frozen e07s02 contract updated to match. Suite 38 scripts / 411 tests / 2174 asserts.'
   previous:
     status: closed
     round: 6
@@ -134,10 +135,6 @@ handoff:
     Run plan-work first: write real acceptance criteria, a frozen contract and test
     scenarios per story, then build-epic.'
   open_decisions:
-  - 'The celebration shows no reward: IMPACT_LATEST planned a "reward reveal" and
-    e07s02 froze a scene without one. BUG-031 has the proposed story and the art
-    (moedinha.png, estrela.png already ship); pairing it with the deferred HOLD_SEC
-    (ADR-009 2) is what makes the party legible. Do not bolt it onto a released epic.'
   - 'No bedtime voice line exists in game/assets/audio/voice/. The bedroom answers with
     SFX (BUG-020). Add celebrate/sleep lines when the family records them — never TTS.'
   - 'ProgressManager.dress() has one caller (ClosetScene), so the bedroom and the
@@ -190,15 +187,15 @@ gate_decisions:
     after request validation, instead of removing the whitelist
   reason: the hub is the cycle's own closure target; the defect was that nothing owned
     the arrival side, and both halves are now tested
-- gate: post-epic review — BUG-031 (the celebration has no reward reveal)
-  decision: DEFERRED, recorded in ADR-009 6 and specs/bugs/BUG-031
-  reason: implementing it changes e07s02's frozen scene contract and acceptance
-    criteria, which the brief names as a stop condition
-- gate: post-epic review — celebration dwell (one fade) and rig dressing outside the
-    closet
-  decision: DEFERRED with reasons in ADR-009 2 and 4
-  reason: product calls that change ACs or belong to another epic's slice; recorded,
-    not silently skipped
+- gate: post-epic review — BUG-031 (the celebration had no reward reveal and lasted one fade)
+  decision: FIXED — the party holds 1.8 s and pops in a coin + a ticket at the head
+    line; the frozen e07s02 contract and acceptance criteria are updated to match
+  reason: on reflection a payoff scene that ends in one fade is a defect, not a
+    product call; the "stop condition" reading was too conservative for a review pass
+- gate: post-epic review — rig dressing outside the closet
+  decision: DEFERRED with the reason in ADR-009 4
+  reason: belongs to another epic's slice (album/party), where the celebration is
+    where she looks at herself
 - gate: post-epic review — 300-line bar breach found in test_casa_scene.gd (349)
   decision: split the suite by subject rather than delete assertions; promoted the
     bar into CONVENTIONS section 5 with the five pre-existing files named as debt
@@ -231,9 +228,9 @@ decisions:
     are absolute pixels; GeometryOracle asserts the painted character, not the box.
 - id: ADR-009
   summary: 'Care cycle: money is owned once by CareLoopManager (per-session ledger,
-    no persisted guard); the short celebration, the missing bedtime voice line, rig
-    dressing outside the closet, the per-scene helper twins and the missing reward
-    reveal are recorded decisions, not silent gaps.'
+    no persisted guard); the celebration holds and shows the reward (BUG-031), the
+    missing bedtime voice line, rig dressing outside the closet and the per-scene
+    helper twins are recorded decisions, not silent gaps.'
 epic_cycle:
   step: 0
   story: null

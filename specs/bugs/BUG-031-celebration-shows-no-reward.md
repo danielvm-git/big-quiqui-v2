@@ -1,48 +1,53 @@
 ---
 bug_id: BUG-031
-status: deferred
+status: fixed
 severity: low
 scope: ui
-title: The celebration pays +5/+1 but never shows it; the impact assessment planned a "reward reveal"
+title: The celebration paid +5/+1 but never showed it, and it lasted a single fade
 ---
-# BUG-031 (deferred): the party is the payoff, but the coins are revealed elsewhere
+# BUG-031: the party is the payoff, so it now shows what she earned
 
 <!-- story: e07s02 -->
 
 **Found by:** e07 post-epic review (comparing the epic against `specs/IMPACT_LATEST.md` and
-`specs/tech-architecture/DESIGN_PLAN_LATEST.md`, which is what the review brief asks for).
+`specs/tech-architecture/DESIGN_PLAN_LATEST.md`, both of which planned a "reward reveal").
 
 ## Problem
 
-`IMPACT_LATEST.md` describes `celebracao.gd` as "CELEBRATE scene: confetti, **reward reveal**,
+`IMPACT_LATEST.md` described `celebracao.gd` as "CELEBRATE scene: confetti, **reward reveal**,
 `complete_cycle`", and `DESIGN_PLAN_LATEST.md`'s e07 row lists `moedinha.png` / `estrela.png` for the
-celebration. What shipped is confetti + voice + a one-fade return to the hub, whose `CoinTicketHud` then
-shows the new totals.
+celebration. What shipped was confetti + voice + an immediate return to the hub: the reward was paid
+(+5 coins, +1 ticket) but **shown nowhere in the party**, and the party lasted roughly one 0.4 s fade
+(closed and `_leave()`d in `_ready`). For a pre-reading child the reward was therefore disconnected from
+the celebration — the coins appeared one fade later, on a different scene, in a corner.
 
-For a pre-reading child the reward is therefore **not** connected to the party: five coins and a ticket
-appear one fade later, on a different scene, in a corner. The frozen contract in `e07s02.md` §3 does not
-list a HUD, and its acceptance criteria do not mention a reveal, so the epic is internally consistent —
-it is the plan that was not delivered.
+## Root Cause
 
-## Why it is not fixed in this pass
+The frozen e07s02 contract (`celebracao.tscn`: background, rig, `HomeButton`, `Confetti`) had no reward
+icon and no hold, and the acceptance criteria said only "the Casa is requested exactly once", which the
+immediate return satisfied. The plan wanted more than the spec froze; nothing connected the two.
 
-Implementing the reveal means new nodes in `celebracao.tscn` (a coin and a ticket bursting from the
-confetti centre, no text) and a change to e07s02's frozen scene contract and acceptance criteria. That is
-a **product scope change**, not a review fix: it belongs to a story with its own ACs, its own oracle run
-and a playtest question ("does a 4-year-old look at the corner or at the confetti?"). Adding it silently
-inside a post-epic pass would be exactly the kind of scope creep the gate exists to prevent.
+## Fix
 
-`moedinha.png` and `estrela.png` already exist and are already used by `CoinTicketHud`, so the art is
-available; nothing is blocked on assets.
+- `CelebrationScene` now holds `HOLD_SEC = 1.8` before `_leave()`, driven by the scene's own
+  `advance(delta)` clock (no timers, so tests step it exactly).
+- `_reveal_progress()` pops in one `Coin` (`moedinha.png`) and one `Ticket` (`roda_fortuna.png`) at the
+  head line after `REVEAL_LEAD_SEC`, cubic-eased, fading and scaling in over `REVEAL_POP_SEC`.
+- `build_celebracao_scene.gd` adds the two `TextureRect`s: anchored to the rig's head line, one each
+  side, `MOUSE_FILTER_IGNORE`, **not** in `hit_target` — they are art, not buttons. The `.tscn` is
+  regenerated (8 nodes).
+- The same two icons are already what `CoinTicketHud` uses, so the party and the counter tell one story.
+- `test_cycle_e2e.gd`'s loader steps every stage's `advance()` so the party ends during the journey
+  (previously only `SceneManager` was stepped).
 
-## Proposed story (for the next planning pass)
+## Verification
 
-> e??: the celebration shows what she earned — a coin and a ticket arc out of the burst before the
-> return to the hub, one `moedinha.png` + one `estrela.png`, `GeometryOracle` `STEP_ROOM_SPEC` green on
-> both canvases, no text, and a `HOLD_SEC` long enough to see them (see ADR-009 item 2 — the same hold
-> the celebration needs).
-
-## Verification of the current behaviour
-
-`test_entering_pays_once_and_moves_the_loop_to_idle` pins the payment and the single Casa request; no
-test (and no code) claims a visible reveal. Recorded in ADR-009 item 6.
+- `test_the_party_holds_then_shows_what_she_earned` — hidden at start, `revealed` after the lead, full
+  opacity/scale, no Casa request while the party is on.
+- `test_the_reward_icons_are_art_not_buttons` — both icons ignore the mouse and never join
+  `hit_target`.
+- `test_the_party_leaves_by_itself_after_the_hold` — halfway: still on; after `HOLD_SEC`: one Casa
+  request.
+- `test_entering_pays_once_and_moves_the_loop_to_idle` updated: the Casa is requested **after** the
+  hold, not in `_ready`.
+- Full gate: **411 tests / 2174 asserts** green (was 408 / 2154); the celebration suite has 11 tests.

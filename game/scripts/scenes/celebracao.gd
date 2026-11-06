@@ -14,12 +14,24 @@ const CASA_PATH: String = "res://scenes/casa.tscn"
 const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
 const VOICE_PATH: String = "res://assets/audio/voice/celebrate_parabens.ogg"
 
+## The party is the payoff of the whole cycle, so it is not a single fade: it holds long
+## enough for a four-year-old to see the confetti settle and the reward arrive, then goes
+## home by itself. `advance()` is the only clock (no timers), so tests drive it exactly.
+const HOLD_SEC: float = 1.8
+## The reveal waits for the voice to start, then pops in over `REVEAL_POP_SEC`.
+const REVEAL_LEAD_SEC: float = 0.35
+const REVEAL_POP_SEC: float = 0.5
+const REVEAL_START_SCALE: float = 0.4
+
 @onready var rig: QuiQuiRig = $QuiQuiRig as QuiQuiRig
 @onready var confetti: CPUParticles2D = $Confetti as CPUParticles2D
+@onready var coin: TextureRect = get_node_or_null("Coin") as TextureRect
+@onready var ticket: TextureRect = get_node_or_null("Ticket") as TextureRect
 
 var credited_cycle: int = -1
 var paid_coins: int = 0
 var paid_tickets: int = 0
+var revealed: bool = false
 var manual_step: bool = false
 
 var _clock_sec: float = 0.0
@@ -34,10 +46,10 @@ func _ready() -> void:
 	_play_music_once()
 	_play_stream("play_voice", VOICE_PATH)
 	_log("scene.ready", {"scene": "celebracao"})
-	# Close if we can, and leave either way: every other room returns to the hub by
-	# itself, and a celebration that only escapes through the corner button is a trap.
+	# Close if we can, then hold: every other room returns to the hub by itself, and a
+	# celebration that only escapes through the corner button is a trap.
 	close_cycle()
-	_leave()
+	_hide_reward()
 
 
 func _process(delta: float) -> void:
@@ -46,11 +58,40 @@ func _process(delta: float) -> void:
 	advance(delta)
 
 
-## The party's clock. Nothing reads it yet: the scene closes and leaves in `_ready`, and the
-## deferred hold + reward reveal (ADR-009 2 and 6, BUG-031) is what will consume it, through
-## this seam and `manual_step`, not through wall-clock timers.
+## The party's clock: reveals the reward, then goes home once `HOLD_SEC` has passed. Driven
+## by `_process` in play and by tests through `manual_step`, so nobody waits on wall time.
 func advance(delta: float) -> void:
 	_clock_sec += maxf(delta, 0.0)
+	_reveal_progress()
+	if _clock_sec >= HOLD_SEC:
+		_leave()
+
+
+## What she earned, shown without a word: one coin and one ticket pop out of the burst.
+## Nothing to read, nothing to tap (they ignore the mouse), and the hub's HUD still owns
+## the exact totals.
+func _reveal_progress() -> void:
+	var elapsed: float = _clock_sec - REVEAL_LEAD_SEC
+	if elapsed < 0.0:
+		return
+	if not revealed:
+		revealed = true
+		_log("celebrate.reveal", {"coins": paid_coins, "tickets": paid_tickets})
+	var ratio: float = clampf(elapsed / REVEAL_POP_SEC, 0.0, 1.0)
+	var eased: float = 1.0 - pow(1.0 - ratio, 3.0)
+	for icon: TextureRect in [coin, ticket]:
+		if icon == null:
+			continue
+		icon.visible = true
+		icon.pivot_offset = icon.size * 0.5
+		icon.modulate.a = clampf(ratio * 2.0, 0.0, 1.0)
+		icon.scale = Vector2.ONE * lerpf(REVEAL_START_SCALE, 1.0, eased)
+
+
+func _hide_reward() -> void:
+	for icon: TextureRect in [coin, ticket]:
+		if icon != null:
+			icon.visible = false
 
 
 ## Closes the cycle: `CELEBRATE -> IDLE` through the loop's own machine, which is also
@@ -77,7 +118,6 @@ func close_cycle() -> bool:
 		paid_coins = int(progress.call("get_coins"))
 		paid_tickets = int(progress.call("get_tickets"))
 	_log("celebrate.closed", {"coins": paid_coins, "tickets": paid_tickets, "cycle": cycle})
-	_leave()
 	return true
 
 

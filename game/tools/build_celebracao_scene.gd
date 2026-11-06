@@ -10,11 +10,17 @@ const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
 const BG_PATH: String = "res://assets/art/backgrounds/bg_celebracao.jpg"
 const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
 const CONFETTI_ART: String = "res://assets/art/efeitos/confete.png"
+## The same two icons the hub's HUD uses, so the party and the counter tell one story.
+const COIN_ART: String = "res://assets/art/ui/moedinha.png"
+const TICKET_ART: String = "res://assets/art/items/roda_fortuna.png"
 
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0
 const FEET_RATIO: float = 0.78
 const INSET: float = 36.0
+const REWARD_SIZE: Vector2 = Vector2(96.0, 96.0)
+const REWARD_GAP: float = 30.0
+const REWARD_LIFT: float = 24.0
 
 
 func _init() -> void:
@@ -24,6 +30,8 @@ func _init() -> void:
 	root.set_script(load(SCENE_SCRIPT))
 	root.add_child(_art("Background", BG_PATH, "background", true))
 	_add_rig(root)
+	_add_reward(root, "Coin", COIN_ART, -1.0)
+	_add_reward(root, "Ticket", TICKET_ART, 1.0)
 	_add_home(root)
 	root.add_child(_confetti())
 	var saved: bool = SceneBuilder.pack_and_save(root, SCENE_PATH, "build_celebracao_scene")
@@ -46,6 +54,24 @@ func _add_rig(root: Control) -> void:
 		)
 	)
 	root.add_child(rig)
+
+
+## The reward icons sit at the head line, one each side, hidden until the scene reveals them.
+## `side` is -1 for the coin (left of the head) and +1 for the ticket. They are art, not
+## targets: they ignore the mouse and never join the `hit_target` group.
+func _add_reward(root: Control, node_name: String, path: String, side: float) -> void:
+	var icon: TextureRect = _art(node_name, path, "", false)
+	icon.visible = false
+	var head_ratio: float = FEET_RATIO - RIG_HEIGHT_RATIO
+	var inner: float = REWARD_GAP * 0.5
+	var outer: float = inner + REWARD_SIZE.x
+	var left: float = -outer if side < 0.0 else inner
+	var right: float = -inner if side < 0.0 else outer
+	var bottom: float = -REWARD_LIFT
+	SceneBuilder.pin(
+		icon, Vector4(0.5, head_ratio, 0.5, head_ratio), Vector4(left, bottom - REWARD_SIZE.y, right, bottom)
+	)
+	root.add_child(icon)
 
 
 func _add_home(root: Control) -> void:

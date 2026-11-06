@@ -48,6 +48,12 @@ func _tap(control: Control) -> void:
 	_deliver(control, TouchSim.tap_events(control, true))
 
 
+## The party holds for HOLD_SEC and then leaves by itself; in tests the scene's clock is
+## stepped by hand (`manual_step`), so "the party is over" is an explicit call.
+func _end_party() -> void:
+	scene.advance(CelebrationScene.HOLD_SEC)
+
+
 func _mount(size: Vector2i = GeometryOracle.DESKTOP_16_9) -> CelebrationScene:
 	viewport = SubViewport.new()
 	viewport.size = size
@@ -79,7 +85,11 @@ func test_entering_pays_once_and_moves_the_loop_to_idle() -> void:
 	assert_eq(pm.call("get_tickets"), pm.CYCLE_TICKETS_REWARD)
 	assert_eq(int(pm.data.completed_cycles), 1, "the counter moved with the reward")
 	assert_eq(str(clm.call("state_id")), CareSteps.IDLE, "the cycle closed")
-	assert_eq(requested, [CASA_PATH], "the Casa is requested once")
+	assert_eq(requested, [], "and the party is still on: the child gets to see it")
+
+	_end_party()
+
+	assert_eq(requested, [CASA_PATH], "then the Casa is requested once")
 
 
 # ── SC-E07-P0-08 re-entering the same cycle pays nothing ──────────────────
@@ -92,8 +102,10 @@ func test_re_entering_the_same_cycle_pays_nothing() -> void:
 	await wait_process_frames(3)
 	assert_eq(pm.call("get_coins"), pm.CYCLE_COINS_REWARD)
 
+	_end_party()
 	scene.queue_free()
 	scene = null
+	requested = []
 	_mount()
 	await wait_process_frames(3)
 
@@ -146,6 +158,9 @@ func test_the_celebration_passes_the_oracle_and_has_no_text() -> void:
 func test_the_celebration_leaves_even_when_the_cycle_was_not_open() -> void:
 	_mount()
 	await wait_process_frames(3)
+	assert_eq(requested, [], "the party holds first")
+
+	_end_party()
 
 	assert_eq(requested, [CASA_PATH], "the only exit is not a 120 px corner button")
 
@@ -188,5 +203,51 @@ func test_home_leaves_early_and_the_reward_is_already_paid() -> void:
 	_tap(scene.get_node("HomeButton") as TapButton)
 
 	assert_eq(requested, [CASA_PATH], "the Casa is requested once, early or late")
+	_end_party()
+	assert_eq(requested, [CASA_PATH], "and the hold does not request it again")
 	assert_eq(pm.call("get_coins"), pm.CYCLE_COINS_REWARD, "and nothing was paid twice")
 	assert_eq(int(pm.data.completed_cycles), 1)
+
+
+# ── SC-E07-P1-18 the reward is revealed, and the party holds (BUG-031) ────
+
+
+func test_the_party_holds_then_shows_what_she_earned() -> void:
+	_walk_to_celebrate()
+	_mount()
+	await wait_process_frames(3)
+
+	assert_false(scene.revealed, "the burst lands first")
+	assert_false(scene.coin.visible, "the coin is hidden at the start")
+	assert_false(scene.ticket.visible)
+
+	scene.advance(CelebrationScene.REVEAL_LEAD_SEC + CelebrationScene.REVEAL_POP_SEC)
+
+	assert_true(scene.revealed, "then the reward arrives")
+	assert_true(scene.coin.visible, "one coin")
+	assert_true(scene.ticket.visible, "one ticket")
+	assert_almost_eq(scene.coin.modulate.a, 1.0, 0.01, "at full opacity")
+	assert_almost_eq(scene.coin.scale.x, 1.0, 0.01, "and full size")
+	assert_eq(requested, [], "while the party is still on")
+
+
+func test_the_reward_icons_are_art_not_buttons() -> void:
+	_mount()
+	await wait_process_frames(3)
+	for icon: TextureRect in [scene.coin, scene.ticket]:
+		assert_not_null(icon, "the generated scene declares it")
+		assert_eq(icon.mouse_filter, Control.MOUSE_FILTER_IGNORE, "%s is not a target" % icon.name)
+		assert_false(icon.is_in_group("hit_target"), "%s never joins the hit targets" % icon.name)
+
+
+func test_the_party_leaves_by_itself_after_the_hold() -> void:
+	_walk_to_celebrate()
+	_mount()
+	await wait_process_frames(3)
+	var half: float = CelebrationScene.HOLD_SEC * 0.5
+
+	scene.advance(half)
+	assert_eq(requested, [], "halfway through: still on")
+
+	scene.advance(half + 0.01)
+	assert_eq(requested, [CASA_PATH], "and then home, once")

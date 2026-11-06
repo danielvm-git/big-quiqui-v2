@@ -102,9 +102,14 @@ func _tap(control: Control) -> void:
 	_deliver(control, TouchSim.tap_events(control, true))
 
 
+## Steps the transition machine **and** the mounted stage's own clock: every room in this
+## project advances through `advance(delta)` (the celebration holds for HOLD_SEC before it
+## goes home), so a manual-step test must drive both or the party never ends.
 func _follow() -> void:
 	for step: int in range(STEPS):
 		sm.advance(STEP_SEC)
+		if stage != null and stage.has_method("advance"):
+			stage.call("advance", STEP_SEC)
 	await _settle()
 
 
