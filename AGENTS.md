@@ -20,6 +20,24 @@ Stack: GDScript / Godot 4.7 / GUT 9.x / iPadOS (4:3) & 16:9 Responsive Canvas
 | CI | `gh pr checks` — portfolio Godot template copy: gate → verify → build → export → release (ADR-007) |
 | Release | `big-release release --dry-run --verbose` (real releases run in CI on `main` via the central workflow) |
 
+## Observability
+
+The game writes **structured JSONL** to `user://logs/` (`game/scripts/autoloads/log.gd`), validated and
+audited by `scripts/log_tool.py`. Nothing leaves the device; the diary is for parents and agents alike.
+
+| What | Command |
+|---|---|
+| Is anything broken right now | `bash scripts/health.sh` (12 checks, exit 1 on failure) |
+| View the diary | `bash scripts/logs.sh tail -n 40` |
+| Session summary (crash vs clean exit, scenes, steps, errors) | `bash scripts/logs.sh summary --sessions 3` |
+| Validate the diary: schema + PII | `bash scripts/logs.sh audit` / `--self-test` |
+| Where the logs live | `bash scripts/logs.sh path` |
+| Full gate | `bash scripts/preflight.sh` |
+
+Field names are compact on purpose and fixed by the auditor: `lvl` (level), `ts` (timestamp), `ev`
+(event id), plus `seq`, `session`, `t_ms` and the event's own keys. `msg` carries an **id, never prose** —
+that is the PII policy, pinned by a test (BUG-004).
+
 ## Architecture
 Five autoload singletons coordinate the game: `Log` (schema-validated JSONL local diary with PII redaction), `SceneManager` (table-driven FSM transitions with 1-slot pending queue and 2.0s watchdog), `CareLoopManager` (table-driven FSM `IDLE -> FEED -> BATH -> DRESS -> PLAY -> SLEEP -> CELEBRATE`), `AudioManager` (music crossfade, 8-channel SFX pool, `-9 dB` voice ducking), and `ProgressManager` (typed `SaveData` resource with atomic `.tmp` rename). Every scene uses a `Control` root (`PRESET_FULL_RECT`) under `stretch/aspect="expand"` and composes `QuiQuiRig` (layered body + outfit + facial expression + accessories) and `TouchDraggable` (4 interaction modes with `device == -1` mouse-echo filtering).
 

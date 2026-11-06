@@ -44,6 +44,17 @@ Two rules the project holds itself to, mechanically:
 - **No network** — `HTTPRequest`, `HTTPClient` and `WebSocketPeer` never appear in `game/`. The game is
   offline by construction, not by policy.
 
+## Observability
+
+```bash
+bash scripts/health.sh                  # 12 checks: toolchain, gate scripts, hooks, diary, offline invariant
+bash scripts/logs.sh tail -n 40         # the game's structured JSONL diary
+bash scripts/logs.sh summary            # per session: clean exit vs crash, scenes, care steps, errors
+bash scripts/logs.sh audit              # schema + PII validation, exits 1 on a bad line
+```
+
+Logs stay on the device (`user://logs/`). Full table in [`AGENTS.md`](AGENTS.md#observability).
+
 ## Layout
 
 ```
