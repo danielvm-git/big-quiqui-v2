@@ -33,8 +33,9 @@ review_gate:
     report: specs/verifications/POSTEPIC-e07-2026-11-06.md
     must_fix: []
     found: 20
-    fixed: 19
+    fixed: 18
     deferred: 1
+    wontfix: 1
     outcome: '1 high (BUG-018), 6 medium, 11 low fixed; BUG-031 (reward reveal) deferred
       with ADR-009 because it changes e07s02 acceptance criteria'
   earlier_gates:
@@ -76,8 +77,9 @@ bug_cycle:
   - BUG-034
   - BUG-035
   - BUG-036
-  outcome: '19 fixed on fix/e07-postepic-review, BUG-031 deferred to ADR-009 (product
-    scope change). Suite 38 scripts / 408 tests / 2154 asserts.'
+  outcome: '18 fixed on fix/e07-postepic-review; BUG-031 deferred to ADR-009 (product
+    scope change); BUG-028 wontfix (engine audio teardown, four experiments in the entry).
+    Suite 38 scripts / 408 tests / 2154 asserts.'
   previous:
     status: closed
     round: 6

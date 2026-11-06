@@ -233,9 +233,14 @@ func reset() -> void:
 	_apply_bus_volumes()
 
 
-## Stops every player and drops its stream, so the engine can collect the audio resources.
-## Called from `reset()` and on quit: without it, Godot frees the players while their Ogg
-## playback is still live and reports four leaked objects and two resources at exit (BUG-028).
+## Stops every player and drops its stream. `reset()` uses it for test isolation and
+## `_exit_tree()` for a clean teardown (a real quit should not leave the audio session open).
+##
+## It does **not** silence the engine's exit report: with music playing,
+## `godot --headless --quit-after 3` still logs four leaked audio objects and two resources on
+## the way out, and stopping, nulling and even freeing the players in `_exit_tree()` does not
+## change that (BUG-028 has the three experiments). The reference lives in the engine's audio
+## teardown, not in this node.
 func release_streams() -> void:
 	for player: AudioStreamPlayer in _all_players():
 		player.stop()
@@ -243,6 +248,7 @@ func release_streams() -> void:
 		player.volume_db = 0.0
 
 
+## Best-effort teardown: the engine's own exit report is unaffected (BUG-028).
 func _exit_tree() -> void:
 	release_streams()
 

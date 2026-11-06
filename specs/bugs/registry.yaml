@@ -251,9 +251,9 @@ bugs:
   severity: low
   priority: P3
   scope: core
-  summary: AudioManager never released its streams, so every quit leaked 4 objects and 2 resources and tema_principal.ogg stayed in use
+  summary: With music playing the engine reports 4 leaked audio objects and 2 resources at exit; stopping/nulling/freeing the players and releasing streams changes nothing, so it is engine teardown, not game code
   file: specs/bugs/BUG-028-audio-leaks-on-quit.md
-  status: fixed
+  status: wontfix
   found_by: e07 post-epic review cold-start smoke (verify-work)
 - bug_id: BUG-029
   date: '2026-11-06'
