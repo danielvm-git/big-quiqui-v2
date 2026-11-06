@@ -99,30 +99,35 @@ func fly_coin(from_global: Vector2) -> void:
 		return
 	if _fly_tween != null:
 		_fly_tween.kill()
-	var sprite: TextureRect = TextureRect.new()
-	sprite.texture = _coin_icon.texture
-	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	sprite.custom_minimum_size = ICON_SIZE
-	sprite.mouse_filter = MOUSE_FILTER_IGNORE
+	var sprite: TextureRect = _make_fly_sprite()
 	var root: Window = get_tree().root
 	if root == null:
 		sprite.queue_free()
 		return
 	root.add_child(sprite)
 	sprite.global_position = from_global - sprite.size * 0.5
-	_fly_tween = create_tween()
 	var end_pos: Vector2 = _coin_icon.global_position + _coin_icon.size * 0.5 - sprite.size * 0.5
+	_fly_tween = create_tween()
 	_fly_tween.tween_property(sprite, "global_position", end_pos, 0.38).set_trans(Tween.TRANS_QUAD).set_ease(
 		Tween.EASE_IN
 	)
-	_fly_tween.tween_callback(
-		func() -> void:
-			sprite.queue_free()
-			pulse_coin()
-			if _fly_tween != null:
-				_fly_tween = null
-	)
+	_fly_tween.tween_callback(_land_coin.bind(sprite))
+
+
+func _make_fly_sprite() -> TextureRect:
+	var sprite: TextureRect = TextureRect.new()
+	sprite.texture = _coin_icon.texture
+	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sprite.custom_minimum_size = ICON_SIZE
+	sprite.mouse_filter = MOUSE_FILTER_IGNORE
+	return sprite
+
+
+func _land_coin(sprite: TextureRect) -> void:
+	sprite.queue_free()
+	pulse_coin()
+	_fly_tween = null
 
 
 func _build() -> void:
