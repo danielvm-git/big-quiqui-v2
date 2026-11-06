@@ -96,5 +96,5 @@ Five autoload singletons coordinate the game: `Log` (schema-validated JSONL loca
 ## Workspace Facts
 - Godot 4.7, GDScript strict typing, GUT 9.x for testing, `gdtoolkit` (`gdlint` + `gdformat`).
 - 5 autoloads: `Log`, `SceneManager`, `CareLoopManager`, `AudioManager`, `ProgressManager`.
-- 98 glossy art assets in `game/assets/art/` + 35 `.ogg` audio files in `game/assets/audio/`.
+- 100 glossy art assets (87 `.png` + 13 `.jpg`) in `game/assets/art/` + 35 `.ogg` audio files in `game/assets/audio/`.
 <!-- END bigpowers:learned-preferences -->

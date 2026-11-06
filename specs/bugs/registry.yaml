@@ -282,3 +282,12 @@ bugs:
   file: specs/bugs/BUG-031-celebration-shows-no-reward.md
   status: deferred
   found_by: e07 post-epic review (epic vs IMPACT_LATEST / DESIGN_PLAN_LATEST)
+- bug_id: BUG-032
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: README claimed v0.6.0, 5 of 11 epics, 361 tests and 5 playable scenes while main was v0.9.0, 7 of 11, 408 tests and 8 scenes
+  file: specs/bugs/BUG-032-readme-status-block-stale.md
+  status: fixed
+  found_by: e07 post-epic review, third pass (maintain-wiki sweep)
