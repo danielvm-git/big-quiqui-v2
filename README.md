@@ -12,11 +12,11 @@ bars on either.
 
 | | |
 |---|---|
-| Latest release | **v0.9.0** |
-| Epics shipped | 7 of 11 (`e01`–`e07`) |
-| Stories | 27 of 43 |
-| Playable scenes | `titulo` · `casa` · `cozinha` · `banheiro` · `closet` · `jardim` · `quarto_sono` · `celebracao` |
-| Gate | `PREFLIGHT GREEN` — 38 scripts / 408 tests / 2154 asserts |
+| Latest release | **v0.9.1** (e08 merged on `main`, release to cut) |
+| Epics shipped | 8 of 11 (`e01`–`e08`) |
+| Stories | 31 of 43 |
+| Playable scenes | `titulo` · `casa` · `cozinha` · `banheiro` · `closet` · `jardim` · `quarto_sono` · `celebracao` · `vila` · `roda` |
+| Gate | `PREFLIGHT GREEN` — 42 scripts / 432 tests / 2418 asserts |
 
 Run `bash scripts/status-counts.sh` for the numbers computed from the plan itself (rather than from a
 dashboard that counts keys).
@@ -65,7 +65,7 @@ game/
     components/  QuiQuiRig · TouchDraggable · TapButton · WishBubble · FoamBlob …
     core/        Fsm · Ids · CareSteps · FoodCatalog · LogSink · SquashSpring
     resources/   SaveData (typed save model, ADR-005)
-  tests/         408 GUT tests, unit + integration
+  tests/         432 GUT tests, unit + integration
   tools/         scene builders (the .tscn files are generated, never hand-edited)
   assets/        art · audio (family-recorded PT-BR voice)
 specs/           state, release plan, ADRs, threat models, audits, evals, benchmarks

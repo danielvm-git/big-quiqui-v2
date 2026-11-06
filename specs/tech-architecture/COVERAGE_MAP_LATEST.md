@@ -9,9 +9,9 @@ production script, the tests that exercise it, and the gaps.
 |---|---|---|
 | `game/scripts/autoloads/audio_manager.gd` | `AudioManager` | 14 |
 | `game/scripts/autoloads/care_loop_manager.gd` | `CareLoopManager` | 15 |
-| `game/scripts/autoloads/log.gd` | `Log` | 9 |
+| `game/scripts/autoloads/log.gd` | `Log` | 10 |
 | `game/scripts/autoloads/progress_manager.gd` | `ProgressManager` | 12 |
-| `game/scripts/autoloads/scene_manager.gd` | `SceneManager` | 15 |
+| `game/scripts/autoloads/scene_manager.gd` | `SceneManager` | 16 |
 | `game/scripts/components/accessory_slots.gd` | `AccessorySlots` | indirect via `quiqui_rig.gd` |
 | `game/scripts/components/bath_room_view.gd` | `BathRoomView` | indirect via `banheiro.gd` |
 | `game/scripts/components/care_dots_bar.gd` | `CareDotsBar` | 1 |
@@ -21,7 +21,7 @@ production script, the tests that exercise it, and the gaps.
 | `game/scripts/components/garden_prop.gd` | `GardenProp` | 2 |
 | `game/scripts/components/hint_manager.gd` | `HintManager` | 1 |
 | `game/scripts/components/quiqui_rig.gd` | `QuiQuiRig` | 10 |
-| `game/scripts/components/tap_button.gd` | `TapButton` | 18 |
+| `game/scripts/components/tap_button.gd` | `TapButton` | 19 |
 | `game/scripts/components/touch_draggable.gd` | `TouchDraggable` | 15 |
 | `game/scripts/components/wish_bubble.gd` | `WishBubble` | 2 |
 | `game/scripts/core/care_steps.gd` | `CareSteps` | 15 |
@@ -40,17 +40,17 @@ production script, the tests that exercise it, and the gaps.
 | `game/scripts/scenes/cozinha.gd` | `KitchenScene` | 4 |
 | `game/scripts/scenes/jardim.gd` | `GardenScene` | 2 |
 | `game/scripts/scenes/quarto_sono.gd` | `SleepScene` | 2 |
-| `game/scripts/scenes/roda.gd` | `WheelScene` | 1 |
+| `game/scripts/scenes/roda.gd` | `WheelScene` | 2 |
 | `game/scripts/scenes/titulo.gd` | `TituloScene` | 2 |
 | `game/scripts/scenes/vila.gd` | `VilaScene` | 2 |
 | `game/tools/build_banheiro_scene.gd` | `banheiro.tscn` | 4 |
-| `game/tools/build_casa_scene.gd` | `casa.tscn` | 13 |
+| `game/tools/build_casa_scene.gd` | `casa.tscn` | 14 |
 | `game/tools/build_celebracao_scene.gd` | `celebracao.tscn` | 2 |
 | `game/tools/build_closet_scene.gd` | `closet.tscn` | 3 |
 | `game/tools/build_cozinha_scene.gd` | `cozinha.tscn` | 4 |
 | `game/tools/build_jardim_scene.gd` | `jardim.tscn` | 3 |
 | `game/tools/build_quarto_sono_scene.gd` | `quarto_sono.tscn` | 3 |
-| `game/tools/build_roda_scene.gd` | `roda.tscn` | 1 |
+| `game/tools/build_roda_scene.gd` | `roda.tscn` | 2 |
 | `game/tools/build_titulo_scene.gd` | `titulo.tscn` | 2 |
 | `game/tools/build_vila_scene.gd` | `vila.tscn` | 3 |
 | `game/tools/measure_hero_scale.gd` | `MeasureHeroScale` | **GAP** |
