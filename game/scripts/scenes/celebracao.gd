@@ -46,6 +46,9 @@ func _process(delta: float) -> void:
 	advance(delta)
 
 
+## The party's clock. Nothing reads it yet: the scene closes and leaves in `_ready`, and the
+## deferred hold + reward reveal (ADR-009 2 and 6, BUG-031) is what will consume it, through
+## this seam and `manual_step`, not through wall-clock timers.
 func advance(delta: float) -> void:
 	_clock_sec += maxf(delta, 0.0)
 
