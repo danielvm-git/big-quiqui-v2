@@ -291,3 +291,21 @@ bugs:
   file: specs/bugs/BUG-032-readme-status-block-stale.md
   status: fixed
   found_by: e07 post-epic review, third pass (maintain-wiki sweep)
+- bug_id: BUG-033
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: tests
+  summary: test_casa_scene.gd reached 349 lines, over the 300-line ceiling, and had regrown after every epic that added a door
+  file: specs/bugs/BUG-033-casa-suite-over-300-lines.md
+  status: fixed
+  found_by: e07 post-epic review, third pass (file-size sweep)
+- bug_id: BUG-034
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: docs
+  summary: COVERAGE_MAP_LATEST and HOTSPOTS_LATEST were left at e06, so the coverage map omitted the two new scenes and their tests
+  file: specs/bugs/BUG-034-generated-latest-docs-stale.md
+  status: fixed
+  found_by: e07 post-epic review, third pass (maintain-wiki)

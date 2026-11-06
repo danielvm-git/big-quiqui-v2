@@ -16,7 +16,7 @@ bars on either.
 | Epics shipped | 7 of 11 (`e01`–`e07`) |
 | Stories | 27 of 43 |
 | Playable scenes | `titulo` · `casa` · `cozinha` · `banheiro` · `closet` · `jardim` · `quarto_sono` · `celebracao` |
-| Gate | `PREFLIGHT GREEN` — 37 scripts / 408 tests / 2154 asserts |
+| Gate | `PREFLIGHT GREEN` — 38 scripts / 408 tests / 2154 asserts |
 
 Run `bash scripts/status-counts.sh` for the numbers computed from the plan itself (rather than from a
 dashboard that counts keys).
