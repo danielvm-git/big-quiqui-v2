@@ -4,8 +4,11 @@ extends Control
 ## Closing the care cycle: confetti, the family voice, and the cycle's reward paid
 ## exactly once — atomically with the cycle counter (T-E07-03, T-E07-04).
 ##
-## Coming back after the celebration is free play: the loop is already IDLE and
-## `ProgressManager` refuses a second payment for the same cycle.
+## Coming back after the celebration is free play: the loop is already IDLE, so no second payment
+## is possible in the same session. The only thing that refuses a second payment is
+## `CareLoopManager._rewarded_cycle_id` — an in-memory, per-session ledger. `ProgressManager` has no
+## per-cycle guard of its own, and `close_cycle()`'s `credited_cycle` latch covers one mount only
+## (ADR-009).
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
 const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
