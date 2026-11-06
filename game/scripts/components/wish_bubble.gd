@@ -1,9 +1,12 @@
 # story: e02s02
+# story: e08s01
 class_name WishBubble
 extends Control
 ## The wish bubble (balao_desejo) is a two-state overlay: HIDDEN or SHOWN with
 ## the icon of what QuiQui wants next. It breathes with a subtle pulse while
 ## shown (DESIGN.md §4.3) and never eats a tap — it is a prompt, not a button.
+
+const MAX_URGENCY: int = 2
 
 const STATE_HIDDEN: String = "HIDDEN"
 const STATE_SHOWN: String = "SHOWN"
@@ -21,6 +24,8 @@ const ART_PATH_PATTERN: String = "\\Ares://assets/art/([a-z0-9_]+/)*[a-z0-9_]+\\
 
 const PULSE_AMPLITUDE: float = 0.04
 const PULSE_SPEED: float = 3.0
+const URGENCY_AMPLITUDE_STEP: float = 0.03
+const URGENCY_SPEED_STEP: float = 1.2
 
 var fsm: Fsm = null
 ## Test seam: when true, `_process` does nothing and only `advance()` steps the
@@ -33,6 +38,7 @@ var _visual: Control = null
 var _wish_id: String = ""
 var _pulse_time: float = 0.0
 var _pulse_scale: float = 1.0
+var _urgency: int = 0
 var _art_path_re: RegEx = RegEx.new()
 
 
@@ -62,8 +68,10 @@ func advance(delta: float) -> void:
 		_pulse_scale = 1.0
 		_visual.scale = Vector2.ONE
 		return
+	var amp: float = PULSE_AMPLITUDE + URGENCY_AMPLITUDE_STEP * float(_urgency)
+	var speed: float = PULSE_SPEED + URGENCY_SPEED_STEP * float(_urgency)
 	_pulse_time += maxf(delta, 0.0)
-	_pulse_scale = 1.0 + PULSE_AMPLITUDE * sin(_pulse_time * PULSE_SPEED)
+	_pulse_scale = 1.0 + amp * sin(_pulse_time * speed)
 	_visual.pivot_offset = _visual.size * 0.5
 	_visual.scale = Vector2(_pulse_scale, _pulse_scale)
 
@@ -80,6 +88,7 @@ func show_wish(icon_path: String) -> bool:
 
 	_icon.texture = load(icon_path) as Texture2D
 	_wish_id = icon_path.get_file().get_basename()
+	_urgency = 0
 	if fsm.state == STATE_HIDDEN:
 		fsm.transition_to(STATE_SHOWN)
 	_pulse_time = 0.0
@@ -90,6 +99,7 @@ func show_wish(icon_path: String) -> bool:
 
 func hide_wish() -> bool:
 	_wish_id = ""
+	_urgency = 0
 	_pulse_time = 0.0
 	_pulse_scale = 1.0
 	if _icon != null:
@@ -120,8 +130,19 @@ func pulse_scale() -> float:
 	return _pulse_scale
 
 
+func set_urgency(level: int) -> void:
+	if fsm == null or fsm.state != STATE_SHOWN:
+		return
+	_urgency = clampi(level, 0, MAX_URGENCY)
+
+
+func urgency() -> int:
+	return _urgency
+
+
 func reset() -> void:
 	_wish_id = ""
+	_urgency = 0
 	_pulse_time = 0.0
 	_pulse_scale = 1.0
 	if _visual != null:

@@ -1,0 +1,206 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/scenes/vila.gd" id="1_xry82"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_vila.jpg" id="2_q2d3l"]
+[ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_rcddy"]
+[ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="4_wnybt"]
+[ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="5_v6rbp"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="6_xu8eu"]
+[ext_resource type="Script" path="res://scripts/components/wish_bubble.gd" id="7_4lixn"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/porta.png" id="8_ge51p"]
+[ext_resource type="Texture2D" path="res://assets/art/items/roda_fortuna.png" id="9_u757e"]
+[ext_resource type="Texture2D" path="res://assets/art/items/saquinho_lixo.png" id="10_6ahex"]
+[ext_resource type="Texture2D" path="res://assets/art/items/melancia.png" id="11_7w3pu"]
+[ext_resource type="Texture2D" path="res://assets/art/items/patinho.png" id="12_gqmhq"]
+[ext_resource type="Texture2D" path="res://assets/art/items/coroa.png" id="13_cqodo"]
+
+[node name="Vila" type="Control" unique_id=189267085]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_xry82")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1296837238 groups=["background"]]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_q2d3l")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="QuiQuiRig" type="Control" parent="." unique_id=2026774519 groups=["rig"]]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.20592593
+anchor_right = 0.5
+anchor_bottom = 0.78
+offset_left = -320.0
+offset_right = 320.0
+script = ExtResource("3_rcddy")
+
+[node name="CoinTicketHud" type="Control" parent="." unique_id=971998129 groups=["ui_top_right"]]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -416.0
+offset_top = 36.0
+offset_right = -36.0
+offset_bottom = 124.0
+script = ExtResource("4_wnybt")
+
+[node name="HomeButton" type="Control" parent="." unique_id=954941428 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 36.0
+offset_top = 36.0
+offset_right = 156.0
+offset_bottom = 156.0
+script = ExtResource("5_v6rbp")
+
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=340913378]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("6_xu8eu")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WishBubble" type="Control" parent="." unique_id=2130264569 groups=["wish_bubble"]]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.20592593
+anchor_right = 0.5
+anchor_bottom = 0.20592593
+offset_left = -110.0
+offset_top = -228.0
+offset_right = 110.0
+offset_bottom = -8.0
+script = ExtResource("7_4lixn")
+
+[node name="PoiCASA" type="Control" parent="." unique_id=1407256987 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.12
+anchor_top = 0.44
+anchor_right = 0.12
+anchor_bottom = 0.44
+offset_left = -84.0
+offset_top = -84.0
+offset_right = 84.0
+offset_bottom = 84.0
+script = ExtResource("5_v6rbp")
+
+[node name="Art" type="TextureRect" parent="PoiCASA" unique_id=2129720466]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("8_ge51p")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PoiRODA" type="Control" parent="." unique_id=965777630 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.86
+anchor_top = 0.4
+anchor_right = 0.86
+anchor_bottom = 0.4
+offset_left = -84.0
+offset_top = -84.0
+offset_right = 84.0
+offset_bottom = 84.0
+script = ExtResource("5_v6rbp")
+
+[node name="Art" type="TextureRect" parent="PoiRODA" unique_id=1189500618]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_u757e")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PoiRECYCLING" type="Control" parent="." unique_id=2109947911 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.16
+anchor_top = 0.7
+anchor_right = 0.16
+anchor_bottom = 0.7
+offset_left = -84.0
+offset_top = -84.0
+offset_right = 84.0
+offset_bottom = 84.0
+script = ExtResource("5_v6rbp")
+
+[node name="Art" type="TextureRect" parent="PoiRECYCLING" unique_id=1173256029]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("10_6ahex")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PoiMERCADO" type="Control" parent="." unique_id=62234135 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.84
+anchor_top = 0.68
+anchor_right = 0.84
+anchor_bottom = 0.68
+offset_left = -84.0
+offset_top = -84.0
+offset_right = 84.0
+offset_bottom = 84.0
+script = ExtResource("5_v6rbp")
+
+[node name="Art" type="TextureRect" parent="PoiMERCADO" unique_id=261728066]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("11_7w3pu")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PoiCASINHA" type="Control" parent="." unique_id=1334131005 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.36
+anchor_top = 0.36
+anchor_right = 0.36
+anchor_bottom = 0.36
+offset_left = -84.0
+offset_top = -84.0
+offset_right = 84.0
+offset_bottom = 84.0
+script = ExtResource("5_v6rbp")
+
+[node name="Art" type="TextureRect" parent="PoiCASINHA" unique_id=389378408]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("12_gqmhq")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PoiFESTA" type="Control" parent="." unique_id=1080339081 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.64
+anchor_top = 0.34
+anchor_right = 0.64
+anchor_bottom = 0.34
+offset_left = -84.0
+offset_top = -84.0
+offset_right = 84.0
+offset_bottom = 84.0
+script = ExtResource("5_v6rbp")
+
+[node name="Art" type="TextureRect" parent="PoiFESTA" unique_id=855194181]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("13_cqodo")
+expand_mode = 1
+stretch_mode = 5

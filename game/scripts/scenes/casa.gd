@@ -1,4 +1,5 @@
 # story: e02s03
+# story: e08s01
 class_name CasaScene
 extends Control
 ## The hub of the game: QuiQui in her sala, five room doors plus the Vila door,
@@ -38,6 +39,7 @@ const WISH_ICONS: Dictionary = {
 const VOICE_PATH: String = "res://assets/audio/voice/hub_bem_vindo.ogg"
 const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
 const IDLE_WISH_SEC: float = 8.0
+const ESCALATION_SEC: float = 6.0
 const DOOR_DIM_ALPHA: float = 0.72
 
 @onready var rig: QuiQuiRig = get_node_or_null("QuiQuiRig") as QuiQuiRig
@@ -81,16 +83,24 @@ func _process(delta: float) -> void:
 ## carente face and asks for the next step of the cycle (DESIGN.md §4.3).
 func advance(delta: float) -> void:
 	_idle_sec += maxf(delta, 0.0)
-	if _idle_sec < IDLE_WISH_SEC or _wish_shown_for_idle:
+	if _idle_sec < IDLE_WISH_SEC:
 		return
 	var step: String = _care_next_step()
 	if step.is_empty() or not WISH_ICONS.has(step):
 		return
-	_wish_shown_for_idle = true
-	if rig != null:
-		rig.set_expression("carente")
-	if bubble != null:
-		bubble.show_wish(WISH_ICONS[step])
+	if not _wish_shown_for_idle:
+		_wish_shown_for_idle = true
+		if rig != null:
+			rig.set_expression("carente")
+		if bubble != null:
+			bubble.show_wish(WISH_ICONS[step])
+		return
+	if bubble != null and bubble.is_showing():
+		var level: int = mini(
+			WishBubble.MAX_URGENCY,
+			floori((_idle_sec - IDLE_WISH_SEC) / ESCALATION_SEC),
+		)
+		bubble.set_urgency(level)
 
 
 ## The hub is a whitelisted target of `SceneManager`'s detour guard, so it must close a
