@@ -164,3 +164,13 @@ bugs:
   file: specs/bugs/BUG-018-hub-arrives-inside-celebrate.md
   status: fixed
   found_by: e07 post-epic review (reviewer A should-fix 2, reviewer B consider 10)
+- bug_id: BUG-019
+  date: '2026-11-06'
+  severity: medium
+  priority: P1
+  scope: ui
+  title: The bedroom and the celebration restart the shared theme under the voice
+  summary: SleepScene and CelebrationScene called play_music(tema_principal) unconditionally, so the hub's theme restarted from 0 s twice per cycle and under the congratulation voice
+  file: specs/bugs/BUG-019-new-scenes-restart-the-theme.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 5)

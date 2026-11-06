@@ -204,3 +204,17 @@ func test_an_uncredited_finish_goes_home_instead_of_the_celebration() -> void:
 	assert_eq(scene.fsm.state, SleepScene.STATE_FINISHED)
 	assert_false(scene.credited, "the loop was never in SLEEP")
 	assert_eq(requested, [SleepScene.CASA_PATH], "the hub, not a rewardless celebration")
+
+
+## e07 post-epic (review B should-fix 5): `play_music` always swaps players, so an unguarded
+## call restarts the hub's theme from 0 s under the zzz. The threat model promises the opposite:
+## "music continues rather than restarting".
+func test_the_bedroom_does_not_restart_the_theme_it_arrives_on() -> void:
+	var audio: Node = get_node("/root/AudioManager")
+	audio.call("play_music", load(SleepScene.MUSIC_PATH) as AudioStream)
+	var active: AudioStreamPlayer = audio.get("_active_music")
+
+	_mount()
+
+	assert_eq(audio.get("_active_music"), active, "play_music swaps players: it was not called")
+	assert_true(bool(audio.call("is_music_playing", load(SleepScene.MUSIC_PATH) as AudioStream)))

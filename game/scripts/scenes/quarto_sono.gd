@@ -47,7 +47,7 @@ func _ready() -> void:
 	plush.payload_id = "plush"
 	plush.snapped.connect(_on_snapped)
 	_apply_lamp()
-	_play_stream("play_music", MUSIC_PATH)
+	_play_music_once()
 	_log("scene.ready", {"scene": "quarto_sono"})
 
 
@@ -138,6 +138,20 @@ func _care_state() -> String:
 
 func _care_loop() -> Node:
 	return get_node_or_null("/root/CareLoopManager")
+
+
+## The hub's theme keeps running into the room: `play_music` always restarts and swaps
+## players, and a bedroom is a place, not a track change (threat model: "music continues
+## rather than restarting").
+func _play_music_once() -> void:
+	if not ResourceLoader.exists(MUSIC_PATH):
+		_log("audio.missing_art", {"track": MUSIC_PATH.get_file().get_basename()})
+		return
+	var audio: Node = get_node_or_null("/root/AudioManager")
+	var stream: AudioStream = load(MUSIC_PATH) as AudioStream
+	if audio == null or stream == null or bool(audio.call("is_music_playing", stream)):
+		return
+	audio.call("play_music", stream)
 
 
 func _play_stream(method: String, path: String) -> bool:

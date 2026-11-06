@@ -31,7 +31,7 @@ func _ready() -> void:
 	rig.set_expression("pulando")
 	confetti.global_position = rig.get_visual_global_rect().get_center()
 	confetti.restart()
-	_play_stream("play_music", MUSIC_PATH)
+	_play_music_once()
 	_play_stream("play_voice", VOICE_PATH)
 	_log("scene.ready", {"scene": "celebracao"})
 	# Close if we can, and leave either way: every other room returns to the hub by
@@ -93,6 +93,19 @@ func _care_loop() -> Node:
 
 func _progress() -> Node:
 	return get_node_or_null("/root/ProgressManager")
+
+
+## The party is louder than the room, not a different song: restarting the shared theme would
+## put its first note under "parabéns" every cycle (threat model, kids row).
+func _play_music_once() -> void:
+	if not ResourceLoader.exists(MUSIC_PATH):
+		_log("audio.missing_art", {"track": MUSIC_PATH.get_file().get_basename()})
+		return
+	var audio: Node = get_node_or_null("/root/AudioManager")
+	var stream: AudioStream = load(MUSIC_PATH) as AudioStream
+	if audio == null or stream == null or bool(audio.call("is_music_playing", stream)):
+		return
+	audio.call("play_music", stream)
 
 
 func _play_stream(method: String, path: String) -> bool:

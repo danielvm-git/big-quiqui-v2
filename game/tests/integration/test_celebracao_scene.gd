@@ -139,3 +139,16 @@ func test_the_celebration_leaves_even_when_the_cycle_was_not_open() -> void:
 	await wait_process_frames(3)
 
 	assert_eq(requested, [CASA_PATH], "the only exit is not a 120 px corner button")
+
+
+## e07 post-epic (review B should-fix 5): the party plays a voice over the hub's theme.
+## Restarting that theme puts the first note of the track under "parabéns".
+func test_the_celebration_does_not_restart_the_theme_it_arrives_on() -> void:
+	var audio: Node = get_node("/root/AudioManager")
+	audio.call("play_music", load(CelebrationScene.MUSIC_PATH) as AudioStream)
+	var active: AudioStreamPlayer = audio.get("_active_music")
+
+	_mount()
+
+	assert_eq(audio.get("_active_music"), active, "play_music swaps players: it was not called")
+	assert_true(bool(audio.call("is_music_playing", load(CelebrationScene.MUSIC_PATH) as AudioStream)))
