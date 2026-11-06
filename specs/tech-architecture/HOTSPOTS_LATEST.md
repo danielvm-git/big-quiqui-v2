@@ -7,21 +7,21 @@ Churn is the number of commits touching the file; `lines` is its current size;
 
 | Rank | File | Commits | Lines | Tests |
 |---|---|---|---|---|
-| 1 | `game/tests/integration/test_casa_scene.gd` | 9 | 277 | 1 |
+| 1 | `game/tests/integration/test_casa_scene.gd` | 10 | 282 | 1 |
 | 2 | `.github/workflows/ci-cd.yml` | 7 | 341 | 0 |
 | 3 | `game/tests/unit/test_quiqui_rig.gd` | 6 | 404 | 0 |
-| 4 | `game/tests/integration/test_quarto_sono_scene.gd` | 6 | 269 | 0 |
-| 5 | `game/scripts/components/quiqui_rig.gd` | 6 | 427 | 9 |
-| 6 | `game/scripts/autoloads/scene_manager.gd` | 6 | 279 | 14 |
-| 7 | `game/scripts/autoloads/progress_manager.gd` | 6 | 196 | 9 |
+| 4 | `game/scripts/components/quiqui_rig.gd` | 6 | 427 | 10 |
+| 5 | `game/scripts/autoloads/scene_manager.gd` | 6 | 279 | 15 |
+| 6 | `game/scripts/autoloads/progress_manager.gd` | 6 | 196 | 12 |
+| 7 | `game/project.godot` | 6 | 49 | 1 |
 | 8 | `scripts/preflight.sh` | 5 | 155 | 1 |
 | 9 | `game/tests/unit/test_progress_manager.gd` | 5 | 217 | 0 |
 | 10 | `game/tests/integration/test_titulo_scene.gd` | 5 | 112 | 0 |
-| 11 | `game/scripts/scenes/quarto_sono.gd` | 5 | 187 | 3 |
-| 12 | `game/scripts/scenes/celebracao.gd` | 5 | 127 | 2 |
-| 13 | `game/project.godot` | 5 | 49 | 1 |
-| 14 | `game/tools/type_gate.gd` | 4 | 66 | 1 |
-| 15 | `game/tools/build_titulo_scene.gd` | 4 | 92 | 0 |
+| 11 | `game/scripts/scenes/casa.gd` | 5 | 213 | 20 |
+| 12 | `game/scripts/components/wish_bubble.gd` | 5 | 202 | 2 |
+| 13 | `game/tools/type_gate.gd` | 4 | 66 | 1 |
+| 14 | `game/tools/build_titulo_scene.gd` | 4 | 92 | 0 |
+| 15 | `game/tools/build_casa_scene.gd` | 4 | 190 | 0 |
 
 **Read this as:** a high-churn, high-line file is where the next bug lives; a
 high-churn, low-test file is where the next regression goes unnoticed.
