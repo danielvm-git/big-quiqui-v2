@@ -234,3 +234,14 @@ func test_the_lamp_and_the_tuck_make_a_sound() -> void:
 
 	_tuck()
 	assert_eq(int(audio.call("sfx_cursor")), plays + 3, "a thud, then the success chime that ends the step")
+
+
+## e07 post-epic (review B should-fix 4): the frozen contract promises `tuck() -> bool`, and the
+## suite only drove the drag slot. The seam is the contract; the drag is one of its callers.
+func test_the_tuck_seam_reports_the_first_tuck_only() -> void:
+	_mount()
+	await wait_process_frames(3)
+
+	assert_true(scene.tuck(), "the first tuck happens")
+	assert_false(scene.tuck(), "the second one is a no-op")
+	assert_eq(scene.rig.expression_id, "sono")

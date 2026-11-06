@@ -152,3 +152,18 @@ func test_the_celebration_does_not_restart_the_theme_it_arrives_on() -> void:
 
 	assert_eq(audio.get("_active_music"), active, "play_music swaps players: it was not called")
 	assert_true(bool(audio.call("is_music_playing", load(CelebrationScene.MUSIC_PATH) as AudioStream)))
+
+
+## e07s02 AC2: "the once-per-cycle guard is asserted from the scene, not assumed". The ledger
+## lives in `CareLoopManager`; a second grant in the same cycle must pay nothing.
+func test_a_second_grant_in_the_same_cycle_pays_nothing() -> void:
+	_walk_to_celebrate()
+	var clm: Node = get_node("/root/CareLoopManager")
+	var pm: Node = get_node("/root/ProgressManager")
+	var paid_cycle: int = int(clm.get("_rewarded_cycle_id"))
+	assert_eq(paid_cycle, int(clm.get("cycle_id")), "the ledger names the cycle it paid")
+
+	clm.call("_grant_cycle_reward")
+
+	assert_eq(pm.call("get_coins"), CelebrationScene.COINS, "the ledger refuses a second payment")
+	assert_eq(int(pm.data.completed_cycles), 1)

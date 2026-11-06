@@ -80,8 +80,14 @@ func toggle_lamp() -> bool:
 ## The plush lands on her: she lies down, the zzz burst starts. Idempotent — a second
 ## tuck does not restart the particles (a restart reads as a glitch to a child).
 func _on_snapped(_slot: String, _id: String) -> void:
+	tuck()
+
+
+## Public seam of the frozen contract (e07s01 §3): the drag slot calls it, so does a test.
+## Returns true only when this call is the one that tucked her in.
+func tuck() -> bool:
 	if tucked:
-		return
+		return false
 	tucked = true
 	rig.set_expression("sono")
 	zzz.global_position = rig.get_visual_global_rect().get_center()
@@ -89,6 +95,7 @@ func _on_snapped(_slot: String, _id: String) -> void:
 	_play_stream("play_sfx", TUCK_SFX_PATH)
 	_log("sleep.tuck", {"tucked": true})
 	_try_finish()
+	return true
 
 
 func _try_finish() -> void:

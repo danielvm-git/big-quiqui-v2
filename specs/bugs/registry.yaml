@@ -183,3 +183,12 @@ bugs:
   file: specs/bugs/BUG-020-bedroom-silent-and-dead-voice-const.md
   status: fixed
   found_by: e07 post-epic review (reviewer B should-fix 6)
+- bug_id: BUG-022
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: SleepScene.tuck(), CycleE2eTestCase, the ledger assertion and the celebration WishBubble were frozen contracts that never shipped, while the audit reported PASS
+  file: specs/bugs/BUG-022-frozen-contracts-never-built.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 4)
