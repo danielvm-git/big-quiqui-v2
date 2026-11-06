@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/guarda_roupa.ogg-97bc8c36f397154bb4f4ae77455f
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

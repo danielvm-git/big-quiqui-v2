@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/cozinha.ogg-08e03134d21d6bb5dee848fe85a44876.
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

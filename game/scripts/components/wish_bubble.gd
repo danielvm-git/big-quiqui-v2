@@ -17,7 +17,7 @@ const FRAME_PATH: String = "res://assets/art/ui/balao_desejo.png"
 const ART_ROOT: String = "res://assets/art/"
 ## Only a literal art path may be loaded: no `.`, `..` or scheme tricks. Prefix
 ## and suffix checks alone accepted `res://assets/art/../../x.png`.
-const ART_PATH_PATTERN: String = "^res://assets/art/([a-z0-9_]+/)*[a-z0-9_]+\\.png$"
+const ART_PATH_PATTERN: String = "\\Ares://assets/art/([a-z0-9_]+/)*[a-z0-9_]+\\.png\\z"
 
 const PULSE_AMPLITUDE: float = 0.04
 const PULSE_SPEED: float = 3.0
@@ -124,6 +124,8 @@ func reset() -> void:
 	_wish_id = ""
 	_pulse_time = 0.0
 	_pulse_scale = 1.0
+	if _visual != null:
+		_visual.scale = Vector2.ONE  # the getter and the transform must agree (BUG-005)
 	if _icon != null:
 		_icon.texture = null
 	if fsm != null and fsm.state != STATE_HIDDEN:
@@ -138,27 +140,26 @@ func _build_visual() -> void:
 	_visual.mouse_filter = MOUSE_FILTER_IGNORE
 	_visual.pivot_offset = size * 0.5
 	add_child(_visual)
-
-	_frame = TextureRect.new()
-	_frame.name = "Frame"
-	_frame.texture = load(FRAME_PATH) as Texture2D
-	_frame.set_anchors_preset(PRESET_FULL_RECT)
-	_frame.mouse_filter = MOUSE_FILTER_IGNORE
-	_frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_frame = _make_texture("Frame", load(FRAME_PATH) as Texture2D)
 	_visual.add_child(_frame)
-
-	_icon = TextureRect.new()
-	_icon.name = "Icon"
+	_icon = _make_texture("Icon", null)
 	_icon.set_anchors_preset(PRESET_CENTER)
-	_icon.mouse_filter = MOUSE_FILTER_IGNORE
-	_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_icon.anchor_left = 0.26
 	_icon.anchor_right = 0.74
 	_icon.anchor_top = 0.18
 	_icon.anchor_bottom = 0.66
 	_visual.add_child(_icon)
+
+
+func _make_texture(node_name: String, tex: Texture2D) -> TextureRect:
+	var rect: TextureRect = TextureRect.new()
+	rect.name = node_name
+	rect.texture = tex
+	rect.set_anchors_preset(PRESET_FULL_RECT)
+	rect.mouse_filter = MOUSE_FILTER_IGNORE
+	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	return rect
 
 
 func _is_valid_art_path(path: String) -> bool:

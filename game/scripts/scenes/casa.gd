@@ -36,6 +36,7 @@ const WISH_ICONS: Dictionary = {
 }
 
 const VOICE_PATH: String = "res://assets/audio/voice/hub_bem_vindo.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
 const IDLE_WISH_SEC: float = 8.0
 const DOOR_DIM_ALPHA: float = 0.72
 
@@ -63,6 +64,7 @@ func _ready() -> void:
 	if rig != null:
 		rig.tapped.connect(_on_rig_tapped)
 	_connect_care_loop()
+	_restore_music()
 	_play_voice()
 	_refresh_from_care_loop()
 	_log("scene.ready", {"scene": "casa"})
@@ -158,6 +160,19 @@ func _care_next_step() -> String:
 	if manager != null and manager.has_method("next_step"):
 		return str(manager.call("next_step"))
 	return CareSteps.FEED
+
+
+## A room's theme stops at the hub; arriving from the title keeps the theme running.
+func _restore_music() -> void:
+	if not ResourceLoader.exists(MUSIC_PATH):
+		_log("audio.missing_art", {"track": "tema_principal"})
+		return
+	var manager: Node = get_node_or_null("/root/AudioManager")
+	var stream: AudioStream = load(MUSIC_PATH) as AudioStream
+	if manager == null or stream == null or bool(manager.call("is_music_playing", stream)):
+		return
+	manager.call("play_music", stream)
+	_log("music.start", {"track": "tema_principal"})
 
 
 func _play_voice() -> void:

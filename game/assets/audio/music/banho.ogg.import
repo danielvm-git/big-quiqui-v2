@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/banho.ogg-7ac16178ea341b9e7867b594cd5c8f63.og
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

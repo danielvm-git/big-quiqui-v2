@@ -59,7 +59,7 @@ epics:
     slug: e03-kitchen-feed-scene
     title: "Playable Scene 3: TutoTOONS Kitchen — FEED Step (cozinha.tscn)"
     playable_scene: "res://scenes/cozinha.tscn"
-    status: planned
+    status: done
     bcps: 12
     wsjf: 7.8
     stories: [e03s01, e03s02, e03s03, e03s04]

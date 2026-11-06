@@ -105,7 +105,7 @@ bugs:
     scope: ui
     summary: "On 4:3 QuiQui is painted at 42% of the height while the oracle proves the empty Control box"
     file: specs/bugs/BUG-013-hero-scale-measures-box-not-art.md
-    status: open
+    status: fixed
     found_by: "request-review round 1/5 (both reviewers, must-fix)"
   - bug_id: BUG-014
     date: "2026-11-05"
@@ -114,5 +114,14 @@ bugs:
     scope: docs
     summary: "BUG-002 closure evidence mixes art-before with box-after; DESIGN section 3 states an offsets rule both shipped scenes break"
     file: specs/bugs/BUG-014-records-overclaim-4x3-closure.md
-    status: open
+    status: fixed
     found_by: "request-review round 1/5 (reviewer A should-fix 3, reviewer B must-fix 2)"
+  - bug_id: BUG-015
+    date: "2026-11-05"
+    severity: medium
+    priority: P1
+    scope: core
+    summary: "Residual e01-e03 audit advisories: unwired kitchen dwell check, QuiQuiRig right-click/pre-ready guards, SceneManager _swapped flag, FoodCatalog missing_data seam, CoinTicketHud Demeter getters, and doc/file-size ceilings"
+    file: specs/bugs/BUG-015-e03-audit-and-review-gaps.md
+    status: fixed
+    found_by: "fix-bug audit sweep across e01-e03 verification records"

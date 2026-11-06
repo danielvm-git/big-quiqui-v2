@@ -2,7 +2,7 @@ epic_id: e03
 slug: e03-kitchen-feed-scene
 title: 'Playable Scene 3: TutoTOONS Kitchen — FEED Step (cozinha.tscn)'
 playable_scene: res://scenes/cozinha.tscn
-status: planned
+status: done
 bcps: 12
 wsjf: 7.8
 stories:
@@ -10,23 +10,23 @@ stories:
   title: TouchDraggable Component (CONSUME_ON_DROP Mode, device==-1 Mouse-Echo Filter
     & Single-Finger Lock)
   bcps: 3
-  status: planned
+  status: done
   delta: ADDED
 - id: e03s02
   title: ItemData Resource & 10-Food Glossy Catalog + QuiQuiRig Mouth Proximity Anticipation
     (<220px -> boca_aberta)
   bcps: 3
-  status: planned
+  status: done
   delta: ADDED
 - id: e03s03
   title: 'Playable Scene 3: KitchenScene (cozinha.tscn) with 3-Item Tray, Chewing/Pleasure
     Reactions, Particles & nhami SFX'
   bcps: 4
-  status: planned
+  status: done
   delta: ADDED
 - id: e03s04
   title: KitchenScene E2E TouchSim Drag-to-Mouth, Double-Drop Idempotency & Dual-Aspect
     GeometryOracle Tests
   bcps: 2
-  status: planned
+  status: done
   delta: ADDED

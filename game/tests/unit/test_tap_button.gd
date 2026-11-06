@@ -45,6 +45,22 @@ func test_a_real_mouse_click_is_a_legitimate_tap() -> void:
 	assert_eq(taps, 1, "device 0 is a real mouse, not an echo")
 
 
+func test_a_real_mouse_with_its_emulated_touch_fires_exactly_once() -> void:
+	_deliver(TouchSim.mouse_click_events(button))
+
+	assert_eq(taps, 1, "the device -1 touch is the echo of the click")
+	assert_eq(button.taps, 1)
+
+
+func test_a_real_touch_on_any_real_device_still_fires() -> void:
+	var touch: InputEventScreenTouch = InputEventScreenTouch.new()
+	touch.pressed = true
+	touch.device = 1
+	button._gui_input(touch)
+
+	assert_eq(taps, 1)
+
+
 func test_disabled_button_ignores_input() -> void:
 	button.enabled = false
 	_deliver(TouchSim.tap_events(button, true))
@@ -65,13 +81,13 @@ func test_squash_runs_its_three_steps_and_returns_to_rest() -> void:
 	button.press()
 
 	assert_true(button.is_squashing())
-	assert_eq(button.visual.scale, TapButton.SQUASH_STEPS[0], "first spring keyframe")
+	assert_eq(button.visual.scale, SquashSpring.STEPS[0], "first spring keyframe")
 
 	button.advance(0.08)
-	assert_eq(button.visual.scale, TapButton.SQUASH_STEPS[1], "second keyframe")
+	assert_eq(button.visual.scale, SquashSpring.STEPS[1], "second keyframe")
 
 	button.advance(0.10)
-	assert_eq(button.visual.scale, TapButton.SQUASH_STEPS[2], "third keyframe")
+	assert_eq(button.visual.scale, SquashSpring.STEPS[2], "third keyframe")
 
 	button.advance(0.12)
 	assert_false(button.is_squashing(), "the spring ends")
@@ -83,7 +99,7 @@ func test_squash_never_changes_the_hit_box() -> void:
 	button.advance(0.01)
 
 	assert_eq(button.size, Vector2(148.0, 148.0), "the layout rect is untouched")
-	assert_eq(button.visual.scale, TapButton.SQUASH_STEPS[0], "only the art pops")
+	assert_eq(button.visual.scale, SquashSpring.STEPS[0], "only the art pops")
 
 
 func test_reset_restores_counters_and_rest_pose() -> void:

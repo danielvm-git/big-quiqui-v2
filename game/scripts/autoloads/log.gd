@@ -53,8 +53,18 @@ func _exit_tree() -> void:
 
 
 func event(ev: String, data: Dictionary = {}, level: String = "info") -> void:
+	last_line = {}  # never mirror a stale line when the diary is closed
 	if _file == null:
 		return
+	var line: Dictionary = _build_line(ev, data, level)
+	last_line = line
+	_file.store_line(JSON.stringify(line))
+	_file.flush()
+	_seq += 1
+	_writes += 1
+
+
+func _build_line(ev: String, data: Dictionary, level: String) -> Dictionary:
 	var dropped: int = 0
 	var line: Dictionary = {
 		"ts": _timestamp(),
@@ -66,20 +76,14 @@ func event(ev: String, data: Dictionary = {}, level: String = "info") -> void:
 	}
 	for key: Variant in data.keys():
 		var name: String = _safe_id(str(key), "")
-		if name.is_empty():
-			continue
-		var value: Variant = data[key]
-		if value is Dictionary or value is Array:
-			dropped += 1
-			continue
-		line[name] = _safe_value(name, value)
+		if not name.is_empty():
+			if data[key] is Dictionary or data[key] is Array:
+				dropped += 1
+			else:
+				line[name] = _safe_value(name, data[key])
 	if dropped > 0:
 		line["dropped"] = dropped
-	last_line = line
-	_file.store_line(JSON.stringify(line))
-	_file.flush()
-	_seq += 1
-	_writes += 1
+	return line
 
 
 func set_context(scene_id: String = "", state_id: String = "") -> void:
