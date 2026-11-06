@@ -3,7 +3,7 @@ bug_id: BUG-040
 status: open
 severity: medium
 scope: tests
-title: e08 tests: hint-once test never recycles, miss test does not check the bag returned, SC-E08-P0-20 and SC-E08-P1-15 are absent
+title: "e08 tests: hint-once test never recycles, miss test does not check the bag returned, SC-E08-P0-20 and SC-E08-P1-15 are absent"
 ---
 # BUG-040: e08 tests: hint-once test never recycles, miss test does not check the bag returned, SC-E08-P0-20 and SC-E08-P1-15 are absent
 
