@@ -19,6 +19,7 @@ updates:
 
   - package-ecosystem: "pip"
     directory: "/"
+    # watches requirements-dev.txt: CI and scripts/setup.sh install from it
     schedule:
       interval: "monthly"
     open-pull-requests-limit: 1

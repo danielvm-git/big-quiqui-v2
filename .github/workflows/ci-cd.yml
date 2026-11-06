@@ -61,8 +61,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install PyYAML
-        run: pip install pyyaml
+      - name: Install dev tooling (PyYAML for ci-lint)
+        run: pip install -r requirements-dev.txt
 
       - name: Workflow structure (pinning, permissions, timeouts, concurrency)
         run: bash scripts/ci-lint.sh
@@ -82,9 +82,10 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: requirements-dev.txt
 
-      - name: Install gdtoolkit (gdlint + gdformat)
-        run: pip install "gdtoolkit==4.*" pyyaml
+      - name: Install dev tooling (gdlint, gdformat, PyYAML)
+        run: pip install -r requirements-dev.txt
 
       - uses: chickensoft-games/setup-godot@ac93246ea68518a384c1c280a496e5989341f2f6  # v2.4.0
         with:

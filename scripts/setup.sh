@@ -14,10 +14,11 @@ case "$(godot --version)" in
   *) echo "aviso: projeto usa Godot 4.7, encontrado $(godot --version)";;
 esac
 
-if command -v gdlint >/dev/null 2>&1; then
-  echo "ok: gdtoolkit já instalado"
+# One source of truth for dev tooling: requirements-dev.txt (CI and Dependabot read it too).
+if command -v gdlint >/dev/null 2>&1 && python3 -c "import yaml" >/dev/null 2>&1; then
+  echo "ok: gdtoolkit + PyYAML já instalados"
 else
-  python3 -m pip install --user "gdtoolkit==4.*"
+  python3 -m pip install --user -r requirements-dev.txt
 fi
 
 if [ -d node_modules/husky ]; then

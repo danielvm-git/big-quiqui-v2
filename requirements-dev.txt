@@ -1,0 +1,6 @@
+# story: e06s03
+# Development tooling, pinned in one place: CI installs from here, scripts/setup.sh
+# installs from here, and Dependabot watches here. `cache: pip` in the workflow needs
+# a dependency file to key on — which is what surfaced this file.
+gdtoolkit==4.*
+PyYAML==6.*
