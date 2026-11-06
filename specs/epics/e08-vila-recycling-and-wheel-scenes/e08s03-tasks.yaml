@@ -8,28 +8,43 @@ bcps: 3
 playable_scene: res://scenes/vila.tscn + res://scenes/roda.tscn
 tasks:
 - id: e08s03-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e08s03
-    (Playable Scene 10: WheelScene (roda.tscn) with Single-Spin Lock Fsm, Ticket Deduction
-    & Seeded Prize Table)'
+  description: 'Write failing GUT tests: WheelScene boots oracle-clean on 16:9/4:3; spin
+    TapButton ≥120px; one spin spends exactly one ticket and pays seeded prize coins;
+    double-tap does not spend twice; badge shows before first spin and hides after;
+    SC-E08-P0-12..14, SC-E08-P1-15..16'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
+  security: none
   allure:
     severity: critical
+    categories:
+      - "e08"
+      - "unit"
+      - "integration"
   status: failing
 - id: e08s03-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e08s03
+  description: 'Implement EconomyData resource, WheelScene Fsm (IDLE/SPINNING/REWARD), ProgressManager
+    spend path for tickets, FIX-04 session badge, build_roda_scene.gd + regenerate roda.tscn'
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
     addons/gut/gut_cmdln.gd -gexit
   risk: P1
+  security: none
   allure:
     severity: high
+    categories:
+      - "e08"
+      - "unit"
+      - "integration"
   status: failing
 - id: e08s03-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e08s03
+  description: 'Verify PII log audit and story traceability for e08s03'
   verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
     --strict
   risk: P2
+  security: none
   allure:
     severity: normal
+    categories:
+      - "e08"
+      - "audit"
   status: failing
