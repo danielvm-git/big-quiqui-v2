@@ -318,3 +318,12 @@ bugs:
   file: specs/bugs/BUG-035-review-bars-undocumented.md
   status: fixed
   found_by: e07 post-epic review, fourth pass (tree-wide size sweep)
+- bug_id: BUG-036
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: execution-status.yaml said e06s01-e06s03 were "planned" in development_status while its own stories block said done
+  file: specs/bugs/BUG-036-execution-status-self-contradiction.md
+  status: fixed
+  found_by: e07 post-epic review, fifth pass (SoT self-consistency check)
