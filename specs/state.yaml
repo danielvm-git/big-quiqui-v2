@@ -4,7 +4,7 @@ version: 0.3.1-dev
 workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: build
-current_epic: e05-closet-dress-scene
+current_epic: e06-garden-play-scene
 current_story: e05s01
 review_gate:
   skill: request-review
@@ -88,12 +88,12 @@ handoff:
 epic_cycle:
   step: 8
   story: e05s03
-  story_bcps: 4
+  story_bcps: 2
   epic_epic_bcps: 11
   fast_mode: true
   started_at: "2026-11-06T04:20:00-03:00"
-  completed_at: null
-  audit_result: null
+  completed_at: "2026-11-06T06:45:00-03:00"
+  audit_result: pass
 metrics:
   story_start: null
   story_end: null
