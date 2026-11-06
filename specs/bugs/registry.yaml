@@ -228,3 +228,12 @@ bugs:
   file: specs/bugs/BUG-027-false-guard-claim.md
   status: fixed
   found_by: e07 post-epic review (reviewer A consider 1)
+- bug_id: BUG-023
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: execution-status recorded a nonexistent instant (16:60:00) and release-plan still called e04-e07 "planned" while every capsule was done and archived
+  file: specs/bugs/BUG-023-bookkeeping-invalid-timestamp.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 8, plus the epic-vs-capsule check)
