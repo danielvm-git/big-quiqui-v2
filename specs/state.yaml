@@ -1,82 +1,53 @@
 project: big-quiqui-v2
-version: 0.3.1-dev
+version: 0.9.0
 workflow_mode: solo-git
-active_flow: build_epic
+active_flow: null
 lifecycle_phase: build
-current_epic: e08-vila-recycling-and-wheel-scenes
-current_story: e08s01
+current_epic: null
+current_story: null
 review_gate:
   skill: request-review
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
-  round: 6
+  epic: e07-sleep-and-celebration-scenes
+  round: 1
   max_rounds: 6
   verdict: PASS
   history:
-  - round: 1
+  - epic: e07
+    round: 1
     verdict: FAIL
     scores:
-      reviewer_a: 72
-      reviewer_b: 62
+      reviewer_a: 75
+      reviewer_b: 78
     reports:
-    - specs/verifications/REVIEW-A-e01-e02-2026-11-04.md
-    - specs/verifications/REVIEW-B-e01-e02-2026-11-04.md
+    - specs/verifications/REVIEW-A-e07-2026-11-06.md
+    - specs/verifications/REVIEW-B-e07-2026-11-06.md
     must_fix:
-    - BUG-013
-    - BUG-014
-  - round: 2
-    verdict: FAIL
-    scores:
-      reviewer_a: 80
-      reviewer_b: 70
-    reports:
-    - specs/verifications/REVIEW-A2-e01-e02-round2-2026-11-05.md
-    - specs/verifications/REVIEW-B2-e01-e02-round2-2026-11-05.md
-    must_fix: opaque-pixel hero scale; oracle must fail closed; DESIGN px reading;
-      false WishBubble closure
-  - round: 3
-    verdict: FAIL
-    scores:
-      reviewer_a: 60
-      reviewer_b: 76
-    reports:
-    - specs/verifications/REVIEW-A3-e01-e02-round3-2026-11-05.md
-    - specs/verifications/REVIEW-B3-e01-e02-round3-2026-11-05.md
-    must_fix: wish bubble covered her face on 4:3; newline test did not discriminate;
-      opaque_rect still failed open; records' rest numbers
-  - round: 4
-    verdict: FAIL
-    scores:
-      reviewer_a: 99
-      reviewer_b: 70
-    reports:
-    - specs/verifications/REVIEW-A4-e01-e02-round4-2026-11-05.md
-    - specs/verifications/REVIEW-B4-e01-e02-round4-2026-11-05.md
-    must_fix: two records quoted the pre-manual_step breathing phase as tool output
-  - round: 5
-    verdict: CAP_EXHAUSTED
-    scores:
-      reviewer_a: PASS_92
-      reviewer_b: 72
-    reports:
-    - specs/verifications/REVIEW-A5-e01-e02-round5-2026-11-05.md
-    - specs/verifications/REVIEW-B5-e01-e02-round5-2026-11-05.md
-    must_fix: nothing distinguished get_visual_global_rect() from the box (mutation
-      stayed green); RED recipe, mechanism and universal claims were wrong
-  - round: 6
+    - 'A1/B1: the cycle reward was paid in RAM and never written to disk'
+    - 'B2: the celebration was reachable with zero reward and could not leave by itself'
+    outcome: 'both must-fixes closed in the epic (f77d3a8) before the v0.9.0 release; the
+      remaining should-fix/consider items were carried into the post-epic review'
+  - epic: e07
+    round: post-epic
     verdict: PASS
-    scores:
-      reviewer_a: 100
-      reviewer_b: 100
+    report: specs/verifications/POSTEPIC-e07-2026-11-06.md
+    must_fix: []
+    found: 19
+    fixed: 18
+    deferred: 1
+    outcome: '1 high (BUG-018), 6 medium, 11 low fixed; BUG-031 (reward reveal) deferred
+      with ADR-009 because it changes e07s02 acceptance criteria'
+  earlier_gates:
+  - epic: e01-e03
+    rounds: 6
+    final: 'PASS — reviewer A 100 %, reviewer B 100 %, 0 must-fix (2026-11-05)'
     reports:
     - specs/verifications/REVIEW-A6-e01-e03-2026-11-05.md
     - specs/verifications/REVIEW-B6-e01-e03-2026-11-05.md
-    must_fix: []
-  must_fix: []
-  must_fix_status: 'Dual-blind AND-gate PASS (Reviewer A: 100%, Reviewer B: 100%,
-    0 must-fix, 0 should-fix)'
+    closed: BUG-013, BUG-014, BUG-015
 bug_cycle:
   status: closed
-  round: 6
+  round: 1
   current_step: 5
   completed_steps:
   - 1
@@ -85,18 +56,31 @@ bug_cycle:
   - 4
   - 5
   ids:
-  - BUG-013
-  - BUG-014
-  - BUG-015
+  - BUG-017
+  - BUG-018
+  - BUG-019
+  - BUG-020
+  - BUG-021
+  - BUG-022
+  - BUG-023
+  - BUG-024
+  - BUG-025
+  - BUG-026
+  - BUG-027
+  - BUG-028
+  - BUG-029
+  - BUG-030
+  - BUG-031
+  - BUG-032
+  - BUG-033
+  - BUG-034
+  - BUG-035
+  outcome: '18 fixed on fix/e07-postepic-review, BUG-031 deferred to ADR-009 (product
+    scope change). Suite 38 scripts / 408 tests / 2154 asserts.'
   previous:
     status: closed
+    round: 6
     closed_in: 'PR #7 (squash 328a94c) -> v0.3.1'
-    completed_steps:
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
     ids:
     - BUG-001
     - BUG-002
@@ -111,7 +95,7 @@ bug_cycle:
     - BUG-011
     - BUG-012
     outcome: 11 fixed, BUG-004 wontfix (PII policy, pinned by test)
-last_updated: '2026-11-05T21:10:00-03:00'
+last_updated: '2026-11-06T19:30:00-03:00'
 release:
   ci_verified: true
   last_released: v0.9.0
@@ -135,17 +119,30 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: survey-context
-  context: Dual-blind review gate PASSED (100% / 100%). BUG-013, BUG-014, and BUG-015
-    (all residual e01-e03 audit/review advisories) are closed on epic/e03-kitchen-feed-scene.
-  epic: e03-kitchen-feed-scene
-  bug_fix: 'BUG-013 + BUG-014 + BUG-015 closed. Suite: 26 scripts / 311 tests / 1441
-    asserts on epic/e03-kitchen-feed-scene (0 files > 300 lines, 0 functions > 20
-    lines).'
+  next_skill: plan-work
+  epic: e08-vila-recycling-and-wheel-scenes
+  epic_wsjf: 6.1
+  first_story: e08s01
+  context: 'e07 (bedroom + celebration) is closed: v0.9.0 released from main, the
+    capsule is archived, and the post-epic review closed 18 findings. The next epic
+    by WSJF is e08 (vila + roda). Its capsule is BOILERPLATE — generic goals, one
+    generic AC list, and three template tasks per story with placeholder verify
+    commands (exactly what e07s01..s04 looked like before plan-work rewrote them).
+    Run plan-work first: write real acceptance criteria, a frozen contract and test
+    scenarios per story, then build-epic.'
   open_decisions:
-  - 'Ghost-hand drag affordance (Smolsies benchmark) is ADOPTED but deferred to e04:
-    the bath step has the same teach-without-words problem. It becomes an e04 story
-    plus a `model`-rubric eval; do not bolt it onto the released e03.'
+  - 'The celebration shows no reward: IMPACT_LATEST planned a "reward reveal" and
+    e07s02 froze a scene without one. BUG-031 has the proposed story and the art
+    (moedinha.png, estrela.png already ship); pairing it with the deferred HOLD_SEC
+    (ADR-009 2) is what makes the party legible. Do not bolt it onto a released epic.'
+  - 'No bedtime voice line exists in game/assets/audio/voice/. The bedroom answers with
+    SFX (BUG-020). Add celebrate/sleep lines when the family records them — never TTS.'
+  - 'ProgressManager.dress() has one caller (ClosetScene), so the bedroom and the
+    celebration show the neutral rig. A story in e09/e10 territory (album/party) is the
+    honest home for dressing every room (ADR-009 4).'
+  - 'The care cycle reward is guarded once per cycle PER SESSION (in-memory ledger).
+    A persisted guard would need a SaveData schema change; ADR-009 1 explains why it
+    was not done for a path that does not exist outside tests.'
   - 'Benchmark divergences are deliberate and recorded in TEST_PLAN section 4: our
     120 px hit-target floor and 36 px insets are stricter than the five measured TutoTOONS
     titles (76-96 px chrome, 7-19 px insets). A review that asks us to align downward
@@ -159,11 +156,12 @@ handoff:
   - 'Hero-scale contract: DECIDED — the ratio on the opaque character is the requirement,
     the px figures in DESIGN section 3 are per-canvas illustrations. `QuiQuiRig` fits
     the box to the opaque art, so box height == painted height at rest.'
+  - 'CONVENTIONS section 5 now states the 300-line/20-line bar with five grandfathered
+    files named as debt (quiqui_rig 427, test_quiqui_rig 404, ci-cd.yml 341,
+    touch_draggable 331, banheiro 326). Growing one is a violation.'
+  - 'Regenerate specs/tech-architecture/COVERAGE_MAP_LATEST.md and HOTSPOTS_LATEST.md
+    at every epic close (BUG-034); they were two epics behind before this pass.'
 gate_decisions:
-- gate: planning spine (e07 tasks were boilerplate)
-  decision: wrote specs + tasks + verify commands for e07s01..s04 before coding
-  reason: the capsule's task files were template placeholders; a task without a real
-    verify command is not a gate
 - gate: build-epic step 0 (threat model)
   decision: completed the draft e07 model written by the adoption audit and closed
     all six findings in-story
@@ -177,6 +175,32 @@ gate_decisions:
   decision: responded to all 3 must-fixes instead of merging; re-ran the gate
   reason: both reviewers independently found the same data-loss bug; a red review
     is a red gate
+- gate: post-epic review (standing approval — recommended path, no prompt)
+  decision: fixed every finding with a real defect behind it on ONE review branch
+    (fix/e07-postepic-review), one conventional commit per finding; did not merge,
+    push, tag or open a PR
+  reason: the brief grants standing approval to take the recommended path at
+    checkpoints, and merging/outward-facing actions stay forbidden without asking
+- gate: post-epic review — reviewer A should-fix 2 (Casa whitelisted from the detour
+    guard)
+  decision: fixed by making CasaScene close the cycle on arrival AND moving the guard
+    after request validation, instead of removing the whitelist
+  reason: the hub is the cycle's own closure target; the defect was that nothing owned
+    the arrival side, and both halves are now tested
+- gate: post-epic review — BUG-031 (the celebration has no reward reveal)
+  decision: DEFERRED, recorded in ADR-009 6 and specs/bugs/BUG-031
+  reason: implementing it changes e07s02's frozen scene contract and acceptance
+    criteria, which the brief names as a stop condition
+- gate: post-epic review — celebration dwell (one fade) and rig dressing outside the
+    closet
+  decision: DEFERRED with reasons in ADR-009 2 and 4
+  reason: product calls that change ACs or belong to another epic's slice; recorded,
+    not silently skipped
+- gate: post-epic review — 300-line bar breach found in test_casa_scene.gd (349)
+  decision: split the suite by subject rather than delete assertions; promoted the
+    bar into CONVENTIONS section 5 with the five pre-existing files named as debt
+  reason: an unwritten rule is read differently by every audit (it already was);
+    refactoring quiqui_rig.gd (427) inside a review pass is a separate story
 decisions:
 - id: ADR-001
   summary: Table-driven Fsm (res://scripts/core/fsm.gd) required for all state machines;
@@ -196,17 +220,28 @@ decisions:
 - id: ADR-006
   summary: 'Scene-by-Scene Vertical Slicing: Every epic (e01..e11) ends with at least
     one bootable, playable, end-to-end tested scene.'
+- id: ADR-007
+  summary: Centralised CI/CD (one self-contained workflow, ci-lint -> test -> verify
+    -> build -> export -> release) and big-release for the version ladder.
+- id: ADR-008
+  summary: Edge-anchored responsive composition — anchors are canvas ratios, offsets
+    are absolute pixels; GeometryOracle asserts the painted character, not the box.
+- id: ADR-009
+  summary: 'Care cycle: money is owned once by CareLoopManager (per-session ledger,
+    no persisted guard); the short celebration, the missing bedtime voice line, rig
+    dressing outside the closet, the per-scene helper twins and the missing reward
+    reveal are recorded decisions, not silent gaps.'
 epic_cycle:
-  step: 8
-  story: e06s03
-  story_bcps: 2
-  epic_epic_bcps: 10
-  fast_mode: true
-  started_at: '2026-11-06T07:55:00-03:00'
-  completed_at: '2026-11-06T09:20:00-03:00'
+  step: 0
+  story: null
+  story_bcps: 0
+  epic_epic_bcps: 0
+  fast_mode: false
+  started_at: null
+  completed_at: '2026-11-06T19:30:00-03:00'
   audit_result: pass
-  review_result: 'round 1: FAIL (A 75%, B 78%); 3 must-fixes closed; gate re-run green
-    (396 tests)'
+  review_result: 'epic review FAIL (A 75 %, B 78 %) -> two must-fixes closed in the
+    epic -> post-epic review PASS (18 fixed, 1 deferred, 408 tests)'
 metrics:
   story_start: null
   story_end: null
