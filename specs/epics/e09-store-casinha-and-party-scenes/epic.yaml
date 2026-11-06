@@ -6,6 +6,14 @@ playable_scene: res://scenes/mercado.tscn + res://scenes/casinha.tscn + res://sc
 status: planned
 bcps: 13
 wsjf: 5.7
+parity:
+  source: specs/product/QUIQUI2_TUTOTOONS_PARITY_BACKLOG.md
+  notes: >
+    Store + casinha are the first purchase and free-placement verbs: reuse the e08
+    hint layer for FREE_PLACEMENT teaching (FIX-02), coin-travel juice on purchase
+    (FIX-03), unlock badges on the party door (FIX-04), and furniture prices as
+    EconomyData (FIX-05).
+  fixes: [FIX-02, FIX-03, FIX-04, FIX-05]
 stories:
 - id: e09s01
   title: 'FurnitureData Catalog (12 Lote-6 Pieces) & Playable Scene 11: StoreScene
