@@ -33,6 +33,16 @@ replace.
 
 ## Adopted convention (CONVENTIONS §2)
 
+**Verified mechanism (e07, second failure):** GitHub's squash takes the **branch commit messages**, not
+the PR body. With seven commits on the branch, `Story: e07` — present in the PR body — never reached the
+squash commit. The reliable form is to pass it at merge time:
+
+```bash
+gh pr merge <n> --squash --delete-branch \
+  --subject "feat(eNN): <epic title>" \
+  --body "Story: eNN"
+```
+
 One **epic-level** trailer on the single squash commit:
 
 ```text

@@ -2,7 +2,7 @@ epic_id: e07
 slug: e07-sleep-and-celebration-scenes
 title: 'Playable Scenes 7 & 8: Bedroom Sleep (quarto_sono.tscn) & Celebration (celebracao.tscn)'
 playable_scene: res://scenes/quarto_sono.tscn + res://scenes/celebracao.tscn
-status: in_progress
+status: done
 bcps: 12
 wsjf: 6.5
 stories:
@@ -10,23 +10,23 @@ stories:
   title: 'Playable Scene 7: SleepScene (quarto_sono.tscn) with Lamp Toggle (abajur),
     Night Tint, Blanket Tuck & zzz Particles'
   bcps: 4
-  status: planned
+  status: done
   delta: ADDED
 - id: e07s02
   title: 'Playable Scene 8: CelebrationScene (celebracao.tscn) with Confetti, PT-BR
     Voice & Atomic +5 Coins / +1 Ticket Grant'
   bcps: 4
-  status: planned
+  status: done
   delta: ADDED
 - id: e07s03
   title: Safe Detour Auto-Completion Guard (Opening Album/Vila Mid-Celebration Never
     Bricks CasaScene)
   bcps: 2
-  status: planned
+  status: done
   delta: ADDED
 - id: e07s04
   title: Full 5-Step Care Cycle E2E Integration Test (Casa -> Cozinha -> Banheiro
     -> Closet -> Jardim -> Sono -> Celebracao -> Casa)
   bcps: 2
-  status: planned
+  status: done
   delta: ADDED
