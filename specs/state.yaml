@@ -103,9 +103,9 @@ bug_cycle:
 last_updated: '2026-11-06T19:30:00-03:00'
 release:
   ci_verified: true
-  last_released: v0.9.0
-  last_released_at: '2026-11-06T16:50:29Z'
-  ci_verified_commit: 4108396
+  last_released: v0.9.1
+  last_released_at: '2026-11-06T19:16:06Z'
+  ci_verified_commit: cbd00d3
 release_target:
   version: 1.0.0
   codename: Repaginada TutoTOONS Vertical
@@ -213,6 +213,19 @@ gate_decisions:
     bar into CONVENTIONS section 5 with the five pre-existing files named as debt
   reason: an unwritten rule is read differently by every audit (it already was); refactoring
     quiqui_rig.gd (427) inside a review pass is a separate story
+- gate: release-branch (Phase 4 ship of fix/e07-postepic-review)
+  decision: used the PR flow (gh pr create, squash merge PR 33) instead of
+    scripts/land-branch.sh solo-local, then confirmed main CI green and the v0.9.1
+    patch tag
+  reason: state.yaml open_decisions records that this repo lands through PRs with
+    a required check gate (branch protection rulesets 403 on this private repo),
+    and the run brief named the PR path explicitly
+- gate: preflight L5c (version drift after the v0.9.1 patch release)
+  decision: fixed by running scripts/sync-project-version.sh (project.godot 0.9.0
+    to 0.9.1) and landing it as chore(release)
+  reason: big-release cuts the patch tag on main but nothing re-syncs project.godot
+    for a patch (the epic train pre-bumps at epic close; patches do not), so the
+    version sync is the designed follow-up chore (BUG-016 lineage)
 decisions:
 - id: ADR-001
   summary: Table-driven Fsm (res://scripts/core/fsm.gd) required for all state machines;
