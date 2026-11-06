@@ -173,10 +173,9 @@ metrics:
   story_end: null
   skill_timings:
     release-branch:
-      calls: 1
-      total_seconds: 531.0
-      avg_seconds: 531.0
-      _start: '2026-11-06T14:16:23Z'
+      calls: 2
+      total_seconds: 850.0
+      avg_seconds: 425.0
 decisions:
 - id: ADR-001
   summary: Table-driven Fsm (res://scripts/core/fsm.gd) required for all state machines;
