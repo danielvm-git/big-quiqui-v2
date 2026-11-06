@@ -218,3 +218,19 @@ func test_the_bedroom_does_not_restart_the_theme_it_arrives_on() -> void:
 
 	assert_eq(audio.get("_active_music"), active, "play_music swaps players: it was not called")
 	assert_true(bool(audio.call("is_music_playing", load(SleepScene.MUSIC_PATH) as AudioStream)))
+
+
+## e07 post-epic (review B should-fix 6): the bedroom was the only care room that made no sound
+## at all, and it carried a dead VOICE_PATH constant pointing at the celebration's clip. There is
+## no bedtime line in the set (recorded in ADR-009), so the room answers with shipped SFX.
+func test_the_lamp_and_the_tuck_make_a_sound() -> void:
+	var audio: Node = get_node("/root/AudioManager")
+	_mount()
+	await wait_process_frames(3)
+	var plays: int = int(audio.call("sfx_cursor"))
+
+	_tap(scene.lamp)
+	assert_eq(int(audio.call("sfx_cursor")), plays + 1, "the lamp clicks")
+
+	_tuck()
+	assert_eq(int(audio.call("sfx_cursor")), plays + 3, "a thud, then the success chime that ends the step")

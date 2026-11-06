@@ -174,3 +174,12 @@ bugs:
   file: specs/bugs/BUG-019-new-scenes-restart-the-theme.md
   status: fixed
   found_by: e07 post-epic review (reviewer B should-fix 5)
+- bug_id: BUG-020
+  date: '2026-11-06'
+  severity: medium
+  priority: P2
+  scope: ui
+  summary: SleepScene carried a dead VOICE_PATH constant (pointing at the celebration clip) and was the only care room with no sound at all
+  file: specs/bugs/BUG-020-bedroom-silent-and-dead-voice-const.md
+  status: fixed
+  found_by: e07 post-epic review (reviewer B should-fix 6)

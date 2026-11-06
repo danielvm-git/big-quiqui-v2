@@ -11,7 +11,10 @@ extends Control
 const CELEBRACAO_PATH: String = "res://scenes/celebracao.tscn"
 const CASA_PATH: String = "res://scenes/casa.tscn"
 const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/celebrate_parabens.ogg"
+## No bedtime voice line exists in the set (ADR-009), so the room answers with SFX.
+const LAMP_SFX_PATH: String = "res://assets/audio/sfx/tap.ogg"
+const TUCK_SFX_PATH: String = "res://assets/audio/sfx/drop.ogg"
+const DONE_SFX_PATH: String = "res://assets/audio/sfx/success.ogg"
 
 const NIGHT_TINT: Color = Color(0.42, 0.45, 0.72)
 const LIT_TINT: Color = Color.WHITE
@@ -68,6 +71,7 @@ func toggle_lamp() -> bool:
 		return false
 	lamp_on = not lamp_on
 	_apply_lamp()
+	_play_stream("play_sfx", LAMP_SFX_PATH)
 	_log("sleep.lamp", {"on": lamp_on})
 	_try_finish()
 	return true
@@ -82,6 +86,7 @@ func _on_snapped(_slot: String, _id: String) -> void:
 	rig.set_expression("sono")
 	zzz.global_position = rig.get_visual_global_rect().get_center()
 	zzz.restart()
+	_play_stream("play_sfx", TUCK_SFX_PATH)
 	_log("sleep.tuck", {"tucked": true})
 	_try_finish()
 
@@ -95,6 +100,7 @@ func _finish() -> void:
 	if not fsm.transition_from(STATE_SLEEPING, STATE_FINISHED):
 		return
 	_credit_sleep()
+	_play_stream("play_sfx", DONE_SFX_PATH)
 	_log("sleep.finished", {"lamp_on": lamp_on})
 	# Only a credited SLEEP opens the party. Coming back after the step is free play, and
 	# a celebration with no reward behind it is worse than going home (review B).
