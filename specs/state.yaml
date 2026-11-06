@@ -115,7 +115,7 @@ last_updated: '2026-11-05T21:10:00-03:00'
 release:
   ci_verified: true
   last_released: v0.7.0
-  last_released_at: "2026-11-06T12:39:26Z"
+  last_released_at: '2026-11-06T12:39:26Z'
   ci_verified_commit: b06f891
 release_target:
   version: 1.0.0
@@ -165,8 +165,8 @@ epic_cycle:
   story_bcps: 2
   epic_epic_bcps: 10
   fast_mode: true
-  started_at: "2026-11-06T07:55:00-03:00"
-  completed_at: "2026-11-06T09:20:00-03:00"
+  started_at: '2026-11-06T07:55:00-03:00'
+  completed_at: '2026-11-06T09:20:00-03:00'
   audit_result: pass
 metrics:
   story_start: null
@@ -176,6 +176,7 @@ metrics:
       calls: 1
       total_seconds: 531.0
       avg_seconds: 531.0
+      _start: '2026-11-06T14:16:23Z'
 decisions:
 - id: ADR-001
   summary: Table-driven Fsm (res://scripts/core/fsm.gd) required for all state machines;
