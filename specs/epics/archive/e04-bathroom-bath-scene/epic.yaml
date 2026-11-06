@@ -2,29 +2,29 @@ epic_id: e04
 slug: e04-bathroom-bath-scene
 title: 'Playable Scene 4: TutoTOONS Bathroom — BATH Step (banheiro.tscn)'
 playable_scene: res://scenes/banheiro.tscn
-status: planned
+status: done
 bcps: 13
 wsjf: 7.4
 stories:
 - id: e04s01
   title: TouchDraggable CONTINUOUS_SCRUB Mode & QuiQuiRig Local-Space ScrubHull Polygon
   bcps: 3
-  status: planned
+  status: done
   delta: ADDED
 - id: e04s02
   title: 'BathScene Stage 1 (SOAP): Sponge & Scented Soaps Spawning 8 Aligned Foam
     Blobs Strictly Inside ScrubHull'
   bcps: 4
-  status: planned
+  status: done
   delta: ADDED
 - id: e04s03
   title: BathScene Stages 2 & 3 (RINSE Showerhead with gota Stream & DRY Towel ->
     quiqui_brilhando)
   bcps: 4
-  status: planned
+  status: done
   delta: ADDED
 - id: e04s04
   title: BathScene 3-Stage E2E TouchSim & 4:3 iPad Foam-Hull Containment Oracle Tests
   bcps: 2
-  status: planned
+  status: done
   delta: ADDED
