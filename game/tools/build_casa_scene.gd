@@ -21,7 +21,7 @@ const HUD_SCRIPT: String = "res://scripts/components/coin_ticket_hud.gd"
 const BG_PATH: String = "res://assets/art/backgrounds/bg_sala.jpg"
 const DOOR_ART: String = "res://assets/art/moveis/porta.png"
 
-## Initial box width only: `QuiQuiRig._fit_box_to_art()` rewrites it from the
+## Initial box width only: `QuiQuiRig._refit()` rewrites it from the
 ## opaque art aspect on every layout pass, so the packed value is a placeholder.
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0
@@ -38,7 +38,6 @@ const BUBBLE_SIZE: Vector2 = Vector2(220.0, 220.0)
 ## not at a fixed distance from the floor: an absolute offset was tuned for a 620 px
 ## character and covered her face on 4:3 once she was correctly sized (round 3, BUG-013).
 const BUBBLE_GAP: float = 8.0
-const BUBBLE_HEAD_CLEARANCE: float = 0.0  # the bubble's bottom sits on the head line
 const VILA: String = "VILA"
 
 
@@ -47,7 +46,18 @@ func _init() -> void:
 	root.name = "Casa"
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.set_script(load(SCENE_SCRIPT))
+	_add_background(root)
+	_add_rig(root)
+	_add_door_columns(root)
+	_add_bubble(root)
+	_add_dots(root)
+	_add_hud(root)
+	var saved: bool = SceneBuilder.pack_and_save(root, SCENE_PATH, "build_casa_scene")
+	root.free()
+	quit(0 if saved else 1)
 
+
+func _add_background(root: Control) -> void:
 	var background: TextureRect = TextureRect.new()
 	background.name = "Background"
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -57,16 +67,6 @@ func _init() -> void:
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	background.add_to_group("background", true)
 	root.add_child(background)
-
-	_add_rig(root)
-	_add_door_columns(root)
-	_add_bubble(root)
-	_add_dots(root)
-	_add_hud(root)
-
-	var saved: bool = SceneBuilder.pack_and_save(root, SCENE_PATH, "build_casa_scene")
-	root.free()
-	quit(0 if saved else 1)
 
 
 ## QuiQui: 55–65 % of the canvas height, centred, feet on the 78 % line.
@@ -90,7 +90,7 @@ func _add_rig(root: Control) -> void:
 ## Three care doors down each edge; the Vila door rides the right column.
 func _add_door_columns(root: Control) -> void:
 	var right_steps: Array[String] = []
-	for index: int in range(3, CareSteps.ORDER.size()):
+	for index: int in range(DOOR_ROWS.size(), CareSteps.ORDER.size()):
 		right_steps.append(CareSteps.ORDER[index])
 	right_steps.append(VILA)
 	for row: int in range(DOOR_ROWS.size()):
@@ -103,23 +103,20 @@ func _add_door(root: Control, step: String, row_ratio: float, on_left: bool) -> 
 	door.name = "Door" + step
 	door.set_script(load(BUTTON_SCRIPT))
 	door.add_to_group("hit_target", true)
-	var anchors: Vector4 = (
-		Vector4(0.0, row_ratio, 0.0, row_ratio) if on_left else Vector4(1.0, row_ratio, 1.0, row_ratio)
-	)
-	var offsets: Vector4 = (
-		Vector4(DOOR_INSET, -DOOR_SIZE * 0.5, DOOR_INSET + DOOR_SIZE, DOOR_SIZE * 0.5)
-		if on_left
-		else Vector4(-DOOR_INSET - DOOR_SIZE, -DOOR_SIZE * 0.5, -DOOR_INSET, DOOR_SIZE * 0.5)
-	)
-	SceneBuilder.pin(door, anchors, offsets)
+	var x_anchor: float = 0.0 if on_left else 1.0
+	var left: float = DOOR_INSET if on_left else -DOOR_INSET - DOOR_SIZE
+	var offsets: Vector4 = Vector4(left, -DOOR_SIZE * 0.5, left + DOOR_SIZE, DOOR_SIZE * 0.5)
+	SceneBuilder.pin(door, Vector4(x_anchor, row_ratio, x_anchor, row_ratio), offsets)
 	root.add_child(door)
+	_add_door_visual(door)
 
+
+func _add_door_visual(door: Control) -> void:
 	var visual: Control = Control.new()
 	visual.name = "Visual"
 	visual.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	door.add_child(visual)
-
 	var art: TextureRect = TextureRect.new()
 	art.name = "Art"
 	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -136,7 +133,7 @@ func _add_bubble(root: Control) -> void:
 	var bubble: Control = Control.new()
 	bubble.name = "WishBubble"
 	bubble.set_script(load(BUBBLE_SCRIPT))
-	var head_ratio: float = FEET_RATIO - RIG_HEIGHT_RATIO + BUBBLE_HEAD_CLEARANCE
+	var head_ratio: float = FEET_RATIO - RIG_HEIGHT_RATIO
 	bubble.add_to_group("wish_bubble", true)
 	(
 		SceneBuilder

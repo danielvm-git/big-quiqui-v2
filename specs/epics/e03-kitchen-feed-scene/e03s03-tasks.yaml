@@ -1,35 +1,33 @@
 story_id: e03s03
 spec: e03s03.md
 epic_id: e03
-title: 'Playable Scene 3: KitchenScene (cozinha.tscn) with 3-Item Tray, Chewing/Pleasure
-  Reactions, Particles & nhami SFX'
-status: failing
+title: 'Playable Scene 3: KitchenScene (cozinha.tscn) with 3-Item Tray, Chewing/Pleasure Reactions,
+  Particles & nhami SFX'
+status: passing
 bcps: 4
 playable_scene: res://scenes/cozinha.tscn
 tasks:
 - id: e03s03-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e03s03
-    (Playable Scene 3: KitchenScene (cozinha.tscn) with 3-Item Tray, Chewing/Pleasure
-    Reactions, Particles & nhami SFX)'
+  description: Write failing test_cozinha_scene.gd for SC-E03-P0-14..P1-21
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e03s03-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e03s03
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  description: Implement build_cozinha_scene.gd, cozinha.tscn, KitchenScene with the kitchen_feed
+    Fsm, and Casa music restore
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s addons/gut/gut_cmdln.gd
+    -gexit
   risk: P1
   allure:
     severity: high
-  status: failing
+  status: passing
 - id: e03s03-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e03s03
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  description: Verify both aspects, a windowed real-input run, PII log audit and story traceability
+    for e03s03
+  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing

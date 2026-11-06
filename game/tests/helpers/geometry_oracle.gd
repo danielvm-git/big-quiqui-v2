@@ -1,22 +1,10 @@
 # story: e01s01
 class_name GeometryOracle
 extends RefCounted
-## Dual-aspect layout assertions (ADR-002 / ADR-008 / TEST_PLAN §1.4).
-##
-## The contract has three parts, and the oracle is only useful because each one
-## is checked in *both* directions:
-##   - the background `TextureRect` matches the viewport exactly (no bars, no
-##     2x-oversized canvas that passes a `>=` test while zooming the art), and
-##     uses `STRETCH_KEEP_ASPECT_COVERED`
-##   - every node in the `hit_target` group is at least 120x120 px and inside the
-##     viewport
-##   - a scene that declares layout groups keeps them anchored: `rig` (height
-##     ratio + feet line + horizontal centre), `ui_bottom`, `ui_top_right`
-##
-## The ratios are passed in by the caller (`CARE_ROOM_SPEC`/`TITLE_SPEC`), so the
-## product requirement is written where it is asserted instead of being implied.
-## The oracle never resizes the window: the caller puts the scene in a
-## SubViewport of the target size, so the same code runs headless in CI.
+## Dual-aspect layout assertions (ADR-002 / ADR-008 / TEST_PLAN §1.4):
+## background matches viewport (STRETCH_KEEP_ASPECT_COVERED), hit targets >=120x120
+## inside viewport, and declared layout groups (`rig`, `ui_bottom`, `ui_top_right`)
+## stay anchored to their spec (`CARE_ROOM_SPEC`, `STEP_ROOM_SPEC`, `TITLE_SPEC`).
 
 const MIN_HIT_SIZE: Vector2 = Vector2(120.0, 120.0)
 const HIT_GROUP: String = "hit_target"
@@ -24,19 +12,15 @@ const BACKGROUND_GROUP: String = "background"
 const RIG_GROUP: String = "rig"
 const BOTTOM_GROUP: String = "ui_bottom"
 const TOP_RIGHT_GROUP: String = "ui_top_right"
-
 const COVER_TOLERANCE: float = 1.0
 const RATIO_TOLERANCE: float = 0.02
-## A rig box that keeps more than this share of the canvas height above the art
-## is a taller frame than the character (BUG-013).
 const BOX_DEAD_SPACE_TOLERANCE: float = 0.03
 
 const DESKTOP_16_9: Vector2i = Vector2i(1920, 1080)
 const IPAD_4_3: Vector2i = Vector2i(2048, 1536)
-const ASPECTS: Array[Vector2i] = [DESKTOP_16_9, IPAD_4_3]
+const CANVAS_4_3: Vector2i = Vector2i(1920, 1440)
+const ASPECTS: Array[Vector2i] = [DESKTOP_16_9, IPAD_4_3, CANVAS_4_3]
 
-## DESIGN.md §layout: care rooms put QuiQui at 55–65 % of the height with her
-## feet on the 78 % line, the dots 36 px above the bottom, the HUD 36 px in.
 const CARE_ROOM_SPEC: Dictionary = {
 	"rig_feet_ratio": 0.78,
 	"rig_height_min": 0.55,
@@ -45,7 +29,12 @@ const CARE_ROOM_SPEC: Dictionary = {
 	"top_right_gap_max": 60.0,
 	"required_groups": [RIG_GROUP, BOTTOM_GROUP, TOP_RIGHT_GROUP],
 }
-## The title screen stands her lower, above the Play button, on the 92.6 % line.
+const STEP_ROOM_SPEC: Dictionary = {
+	"rig_feet_ratio": 0.78,
+	"rig_height_min": 0.55,
+	"rig_height_max": 0.65,
+	"required_groups": [RIG_GROUP],
+}
 const TITLE_SPEC: Dictionary = {
 	"rig_feet_ratio": 0.926,
 	"rig_height_min": 0.55,
@@ -199,15 +188,23 @@ static func _painted_rect(control: Control) -> Rect2:
 	return painted if painted is Rect2 else Rect2()
 
 
-## A box much taller than the art is dead space: the child sees a smaller
-## character than the spec claims, and taps above her head still land on her.
+## A box much larger than the art is dead space: the child sees a smaller or
+## narrower character than the box claims, and empty space around her is exposed.
 func _audit_rig_box_is_the_character(control: Control, box: Rect2, painted: Rect2, canvas: Rect2) -> void:
-	var dead: float = maxf(box.size.y - painted.size.y, 0.0) / canvas.size.y
-	if dead > BOX_DEAD_SPACE_TOLERANCE:
+	var dead_y: float = maxf(box.size.y - painted.size.y, 0.0) / canvas.size.y
+	if dead_y > BOX_DEAD_SPACE_TOLERANCE:
 		findings.append(
 			(
 				"rig %s box is %.2f of the canvas but the character is only %.2f (%.2f of empty space above her head)"
-				% [control.name, box.size.y / canvas.size.y, painted.size.y / canvas.size.y, dead]
+				% [control.name, box.size.y / canvas.size.y, painted.size.y / canvas.size.y, dead_y]
+			)
+		)
+	var dead_x: float = maxf(box.size.x - painted.size.x, 0.0) / canvas.size.x
+	if dead_x > BOX_DEAD_SPACE_TOLERANCE:
+		findings.append(
+			(
+				"rig %s box width is %.2f of the canvas but the character is only %.2f (%.2f of empty horizontal space)"
+				% [control.name, box.size.x / canvas.size.x, painted.size.x / canvas.size.x, dead_x]
 			)
 		)
 

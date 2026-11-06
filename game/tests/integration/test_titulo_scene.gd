@@ -39,7 +39,7 @@ func _mount(size: Vector2i) -> Control:
 func test_both_aspects_pass_the_geometry_oracle() -> void:
 	for size: Vector2i in GeometryOracle.ASPECTS:
 		var stage: Control = _mount(size)
-		await wait_frames(3)
+		await wait_process_frames(3)
 
 		var oracle: GeometryOracle = GeometryOracle.new()
 		var findings: Array[String] = oracle.audit(stage, size, GeometryOracle.TITLE_SPEC)
@@ -51,7 +51,7 @@ func test_both_aspects_pass_the_geometry_oracle() -> void:
 # SC-E01-P1-07
 func test_the_scene_has_a_rig_that_is_alive_and_a_giant_play_button() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as TituloScene
-	await wait_frames(3)
+	await wait_process_frames(3)
 
 	assert_not_null(scene.rig, "the rig must be in the scene")
 	assert_true(scene.rig.get_visual_global_rect().has_area(), "QuiQui is visible")
@@ -65,7 +65,7 @@ func test_the_scene_has_a_rig_that_is_alive_and_a_giant_play_button() -> void:
 # SC-E01-P1-07 (updated by e02s04: casa now exists)
 func test_tapping_play_fires_once_and_requests_casa() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as TituloScene
-	await wait_frames(3)
+	await wait_process_frames(3)
 	var requested: Array[bool] = []
 	scene.play_requested.connect(func() -> void: requested.append(true))
 	var navigations: Array[String] = []
@@ -83,14 +83,14 @@ func test_tapping_play_fires_once_and_requests_casa() -> void:
 
 func test_the_main_theme_starts_with_the_scene() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as TituloScene
-	await wait_frames(3)
+	await wait_process_frames(3)
 
 	assert_true(scene.music_started, "tema_principal.ogg must start on the title screen")
 
 
 func test_tapping_quiqui_makes_her_laugh() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as TituloScene
-	await wait_frames(3)
+	await wait_process_frames(3)
 
 	for event: InputEvent in TouchSim.tap_events(scene.rig, true):
 		scene.rig._gui_input(event)
@@ -102,7 +102,7 @@ func test_tapping_quiqui_makes_her_laugh() -> void:
 # BUG-013: the title screen keeps the same character scale on the iPad canvas.
 func test_the_painted_character_keeps_the_design_height_on_ipad() -> void:
 	scene = _mount(GeometryOracle.IPAD_4_3) as TituloScene
-	await wait_frames(3)
+	await wait_process_frames(3)
 
 	var painted: Rect2 = scene.rig.get_visual_global_rect()
 	var canvas: Vector2 = Vector2(GeometryOracle.IPAD_4_3)

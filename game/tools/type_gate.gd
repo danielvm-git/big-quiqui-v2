@@ -50,24 +50,15 @@ func _walk(path: String) -> void:
 	dir.list_dir_end()
 
 
+## Loads the real script and reloads it so parse errors count instead of aborting.
 func _check(path: String) -> void:
 	if path == SELF_PATH:
 		return
 	_checked += 1
-	# Load the REAL script and re-parse it. A compiled copy cannot work: keeping the
-	# declaration collides with the registered global class, and rewriting it breaks
-	# the file's own `-> SelfName` return types. `load()` also survives a parse error
-	# here (it returns the broken script, `reload()` reports 43), so the loop keeps
-	# counting instead of aborting on the first bad file.
-	var loaded: Variant = load(path)
-	if loaded == null:
-		_failed += 1
-		printerr("type_gate: FAILED %s (not loadable)" % path)
-		return
-	var script: GDScript = loaded as GDScript
+	var script: GDScript = load(path) as GDScript
 	if script == null:
 		_failed += 1
-		printerr("type_gate: FAILED %s (not a GDScript)" % path)
+		printerr("type_gate: FAILED %s (not a loadable GDScript)" % path)
 		return
 	var err: int = script.reload()
 	if err != OK:

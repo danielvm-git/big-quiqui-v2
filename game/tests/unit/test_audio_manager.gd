@@ -3,6 +3,9 @@ extends GutTest
 ## SC-E01-P1-03 — four buses, 8-player SFX pool, 0.4 s crossfade and −9 dB
 ## voice ducking that restores the exact previous level.
 
+const MUSIC_DIR: String = "res://assets/audio/music/"
+const MUSIC_TRACK_COUNT: int = 5
+
 var am: Node = null
 var stream: AudioStreamWAV = null
 
@@ -19,6 +22,20 @@ func before_each() -> void:
 func after_each() -> void:
 	am.reset()
 	am.manual_step = false
+
+
+# Review M1: looping is an import setting, and AudioManager never sets it.
+func test_every_music_track_is_imported_to_loop() -> void:
+	var tracks: Array[String] = []
+	for file_name: String in ResourceLoader.list_directory(MUSIC_DIR):
+		if file_name.ends_with(".ogg"):
+			tracks.append(file_name)
+	assert_eq(tracks.size(), MUSIC_TRACK_COUNT, "the test must see every track")
+
+	for file_name: String in tracks:
+		var music: AudioStreamOggVorbis = load(MUSIC_DIR + file_name) as AudioStreamOggVorbis
+		assert_not_null(music, file_name)
+		assert_true(music.loop, "%s must loop" % file_name)
 
 
 func test_the_four_buses_exist_and_feed_master() -> void:
@@ -98,6 +115,29 @@ func test_music_crossfade_completes_in_four_tenths_of_a_second() -> void:
 	am.advance(0.25)
 	assert_false(am.is_crossfading(), "0.4 s ends the crossfade")
 	assert_almost_eq(am._active_music.volume_db, am.music_db, 0.01)
+
+
+func test_is_music_playing_names_only_the_active_stream() -> void:
+	var other: AudioStreamWAV = AudioStreamWAV.new()
+	assert_false(am.is_music_playing(stream), "nothing plays yet")
+
+	am.play_music(stream)
+
+	assert_true(am.is_music_playing(stream))
+	assert_false(am.is_music_playing(other))
+	assert_false(am.is_music_playing(null))
+
+	am.play_music(other)
+
+	assert_false(am.is_music_playing(stream), "the outgoing track is not the music any more")
+	assert_true(am.is_music_playing(other))
+
+
+func test_is_music_playing_is_false_after_a_reset() -> void:
+	am.play_music(stream)
+	am.reset()
+
+	assert_false(am.is_music_playing(stream))
 
 
 func test_reset_clears_duck_and_cursor() -> void:

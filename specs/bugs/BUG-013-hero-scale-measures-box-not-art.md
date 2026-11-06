@@ -48,14 +48,14 @@ Consequences the reviewers found from the same cause:
 RED state, reproduced independently by review round 1 (their measured table: 0.418 / 0.446 on 4:3) and
 by round 3's probe. To rerun it, restore **both** pre-fix conditions: `_update_layout`'s width-limited
 `minf(box.x/art.x, box.y/art.y)` **and** a `get_visual_global_rect()` that returns the 1024x1024 frame
-(pre-`cd97e88`). Reverting only `_fit_box_to_art` is not enough and prints 0.574 — the width fit shapes
+(pre-`cd97e88`). Reverting only the box-width fit in `_refit()` is not enough and prints 0.574 — the width fit shapes
 the box and the tap surface, while the height-driven factor below delivers the requirement.
 
-1. `QuiQuiRig._fit_box_to_art()` — the builder's ratio anchors own the **height**; the width now follows
+1. `QuiQuiRig._refit()` — the builder's ratio anchors own the **height**; the width now follows
    the art aspect (`offset_left/right = ±size.y * art_aspect / 2`), only for the centred `0.5/0.5`
    anchor column every builder pins. `_refit()` runs from `_ready`, `_apply_expression` and
    `NOTIFICATION_RESIZED`, so the box is art-shaped on every layout pass and `_update_layout`'s
-   `minf` fit becomes height-driven.
+   height-driven fit (`factor = box.y / seen.y`) keeps the painted height equal to the box height.
 2. `GeometryOracle` measures `get_visual_global_rect()`, keeps the box check as a second assertion (`box is N of the canvas but the character is only M` when dead space > 3 %), and
    now audits the **scene root** rect and optional `required_groups` — the two ways a scene could still
    opt out of its own layout gate.
@@ -68,7 +68,7 @@ the box and the tap surface, while the height-driven factor below delivers the r
    fitted on its own opaque rect, so `carente` (wider, shorter) keeps the same seen height instead of
    pulsing between poses.
 4. Measured after with `game/tools/measure_hero_scale.gd` (opaque, at rest — the tool pins the pose):
-   **0.574 on all six rows** (casa and titulo at 16:9, 1920×1440 and 2048×1536), feet 0.780 / 0.926.
+   **0.574 on all nine rows** (`casa`, `titulo`, and `cozinha` at 16:9, 1920×1440 and 2048×1536), feet 0.780 / 0.926 / 0.780.
    A raw `_process` run adds ±2 % of idle breathing (0.561–0.587), so any figure that differs from
    0.574 came from a breathing phase, not from the layout.
 5. **Round 3** found the visible consequence of the size change: the wish bubble was pinned with an
@@ -86,16 +86,21 @@ the box and the tap surface, while the height-driven factor below delivers the r
 Deferred reviewer items closed in the same commits: `Ids.PATTERN` and `WishBubble.ART_PATH_PATTERN` are
 `\A…\z` with trailing-newline tests (`test_a_newline_suffixed_path_is_refused` for the art path); `GeometryOracle`'s dead `EDGE_INSET_TOLERANCE` and
 `get_tree_nodes_in_group` are gone; `WishBubble.reset()` resets `_visual.scale`; `Log.event()` clears
-`last_line` so a closed diary cannot leave a stale mirror.
+`last_line` so a closed diary cannot leave a stale mirror (and `test_log.gd` reopens the diary in
+`after_each()` so later suites never inherit a closed session); `QuiQuiRig._hits_character()` filters
+`_gui_input` to `get_visual_global_rect()` so taps outside the painted character are ignored even on a
+stretched box; `GeometryOracle._audit_rig_box_is_the_character` checks both vertical and horizontal
+dead space; `LogSink`, `ProgressManager`, and `TapButton` deduplicate their helpers; and `quiqui_rig.gd`
+is trimmed under the 300-line ceiling.
 
-Not done, deliberately: the tap filter reviewer B suggested is unnecessary once the box **is** the art
-(the dead space is what made blank pixels tappable), and `SceneBuilder.pin`'s `Vector4` slots keep their
-`scene_builder.gd` docstring rather than a typed record — both are recorded here as accepted.
+Not done, deliberately: `SceneBuilder.pin`'s `Vector4` slots keep their
+`scene_builder.gd` docstring rather than a typed record — recorded here as accepted.
 
 ## Verification
 
-`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **163 tests, 637 asserts** (was 143/567).
+`bash scripts/preflight.sh` → **PREFLIGHT GREEN**: 19 scripts, **165 tests, 647 asserts** on `fix/bug-013-hero-scale` (**24 scripts, 308 tests, 1429 asserts** after merging into `epic/e03-kitchen-feed-scene`).
 New guards: `test_a_character_that_paints_smaller_than_its_box_is_caught`,
+`test_a_character_with_horizontal_dead_space_in_its_box_is_caught`,
 `test_a_character_that_fills_its_box_passes`, `test_an_oversized_scene_root_is_caught`,
 `test_a_scene_that_forgets_a_declared_group_is_caught`,
 `test_the_box_widens_with_the_height_on_a_centre_anchored_rig`,
@@ -103,7 +108,8 @@ New guards: `test_a_character_that_paints_smaller_than_its_box_is_caught`,
 `test_a_rig_that_cannot_report_painted_geometry_is_caught`,
 `test_the_painted_character_keeps_the_design_height_on_ipad` (casa and titulo),
 `test_a_trailing_newline_is_refused`, `test_reset_mid_pulse_returns_the_visual_to_rest`,
-`test_last_line_never_survives_a_closed_diary`, `test_the_painted_rect_is_not_the_control_box`.
+`test_last_line_never_survives_a_closed_diary`, `test_the_painted_rect_is_not_the_control_box`,
+`test_taps_outside_the_painted_character_are_ignored`.
 
 **Mutation-checked (round 5):** replacing the body of `get_visual_global_rect()` with
 `return get_global_rect()` — the natural "cleanup" — now fails

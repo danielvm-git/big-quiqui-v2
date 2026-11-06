@@ -58,7 +58,7 @@ func _drive_to_idle(seconds: float = 3.0) -> void:
 # SC-E02-P0-11
 func test_one_play_tap_drives_the_full_transition_to_casa() -> void:
 	var stage: TituloScene = _mount(TITULO_PATH, GeometryOracle.DESKTOP_16_9) as TituloScene
-	await wait_frames(3)
+	await wait_process_frames(3)
 	var probe: FsmProbe = FsmProbe.new().attach(sm.fsm)
 
 	# Deterministic navigation: the test owns SceneManager's timeline.
@@ -86,7 +86,7 @@ func test_one_play_tap_drives_the_full_transition_to_casa() -> void:
 func test_the_navigation_target_passes_the_geometry_oracle_on_both_aspects() -> void:
 	for size: Vector2i in GeometryOracle.ASPECTS:
 		var stage: Control = _mount(CASA_PATH, size)
-		await wait_frames(3)
+		await wait_process_frames(3)
 
 		var oracle: GeometryOracle = GeometryOracle.new()
 		var findings: Array[String] = oracle.audit(stage, size, GeometryOracle.CARE_ROOM_SPEC)

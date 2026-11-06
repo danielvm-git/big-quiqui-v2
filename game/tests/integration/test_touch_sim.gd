@@ -63,6 +63,38 @@ func test_tap_events_are_touch_press_echo_press_echo_release_touch_release() -> 
 	assert_false((events[3] as InputEventScreenTouch).pressed)
 
 
+func test_touches_are_real_device_zero_events() -> void:
+	var control: Control = _spawn(Control.new(), Vector2(60.0, 60.0))
+	var events: Array[InputEvent] = TouchSim.drag_events(control, Vector2(400.0, 400.0), 2, false)
+	events.append_array(TouchSim.tap_events(control, false))
+
+	for event: InputEvent in events:
+		assert_eq(event.device, 0, "a finger is a real device, not an echo")
+
+
+func test_a_mouse_click_pairs_each_real_button_event_with_an_emulated_touch() -> void:
+	var control: Control = _spawn(Control.new(), Vector2(60.0, 60.0))
+	var events: Array[InputEvent] = TouchSim.mouse_click_events(control)
+
+	assert_eq(events.size(), 4)
+	for pair: int in range(2):
+		assert_true(events[pair * 2] is InputEventScreenTouch)
+		assert_eq(events[pair * 2].device, -1, "the touch is the emulated one")
+		assert_true(events[pair * 2 + 1] is InputEventMouseButton)
+		assert_eq(events[pair * 2 + 1].device, 0, "the mouse is the real one")
+
+
+func test_a_mouse_drag_presses_moves_and_releases_as_emulated_pairs() -> void:
+	var control: Control = _spawn(Control.new(), Vector2(60.0, 60.0))
+	var events: Array[InputEvent] = TouchSim.mouse_drag_events(control, Vector2(400.0, 400.0), 2)
+
+	assert_eq(events.size(), 8, "press pair + 2 motion pairs + release pair")
+	assert_true(events[2] is InputEventScreenDrag)
+	assert_eq(events[2].device, -1)
+	assert_true(events[3] is InputEventMouseMotion)
+	assert_eq(events[3].device, 0)
+
+
 func test_no_echo_means_only_the_touch_pair() -> void:
 	var control: Control = _spawn(Control.new(), Vector2(320.0, 60.0))
 	var events: Array[InputEvent] = TouchSim.tap_events(control, false)

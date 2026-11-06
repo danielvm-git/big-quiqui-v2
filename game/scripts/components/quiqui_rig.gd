@@ -1,48 +1,28 @@
 # story: e01s04
 class_name QuiQuiRig
 extends Control
-## Layered character rig (ADR-003): a `Control` box owns the layout, an inner
-## foot-pivoted `Node2D` owns the art, so breathing/scaling never moves the feet
-## and never fights the anchors (ADR-008 re-anchors the pivot on resize).
-##
-## Layer order is fixed by DESIGN §4.5 — an outfit must never hide the face:
-## Body(0) → Outfit(10) → Expression(20) → Headwear(30) → Neck(40) → Glasses(50).
-## The accessory layers are the ADR-003 contract (art lands in e10).
-##
-## Stepped by `advance(delta)` so tests are deterministic; the blink interval is
-## the only randomness and it comes from an injectable RNG.
+## Layered character rig (ADR-003): `Control` layout box + foot-pivoted `Node2D` art stack.
 
 const ART_ROOT: String = "res://assets/art/quiqui/"
-
 const NEUTRAL_EXPRESSION: String = "base"
 const BLINK_EXPRESSION: String = "pisca"
-
-## DESIGN §4.1/§4.2
+const MOUTH_ANTICIPATION_PX: float = 220.0
+const ANTICIPATION_EXPRESSION: String = "boca_aberta"
 const BREATH_PERIOD_SEC: float = 2.2
 const BREATH_X: float = 0.018
 const BREATH_Y: float = 0.022
 const BLINK_MIN_SEC: float = 2.8
 const BLINK_MAX_SEC: float = 5.2
 const BLINK_HOLD_SEC: float = 0.130
-
 const Z_BODY: int = 0
 const Z_OUTFIT: int = 10
 const Z_EXPRESSION: int = 20
 const Z_HEADWEAR: int = 30
 const Z_NECK: int = 40
 const Z_GLASSES: int = 50
-
-## The art is square (1024x1024). The box is fitted to this aspect on resize so
-## the *painted* character keeps DESIGN §3's 55-65 % on every canvas instead of
-## the box keeping it while the art shrinks (BUG-013).
 const DEFAULT_ART_ASPECT: float = 1.0
-## Re-entrancy guard for `_fit_box_to_art`, which rewrites offsets inside
-## `NOTIFICATION_RESIZED`: a second pass is a no-op, so the fit converges in one
-## pass and cannot loop. (The oracle's dead-space rule lives in `GeometryOracle`.)
 const BOX_FIT_EPSILON: float = 0.5
 
-## Legacy composition: these are full-body images, so only one may be visible at
-## a time until e10 ships separate body/outfit/expression layers.
 signal expression_changed(expression_id: String)
 signal outfit_changed(outfit_id: String)
 signal tapped
@@ -55,129 +35,90 @@ var headwear: Sprite2D = null
 var neck: Sprite2D = null
 var glasses: Sprite2D = null
 var mouth_zone: Control = null
-
 var expression_id: String = ""
 var outfit_id: String = ""
 var manual_step: bool = false
 var seed_value: int = 20261104
 var taps: int = 0
-
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _spring: SquashSpring = SquashSpring.new()
 var _time: float = 0.0
 var _next_blink_at: float = 0.0
 var _blink_until: float = -1.0
-## texture instance id -> opaque rect in frame pixels. The shipped art carries an
-## 8 % transparent margin; DESIGN §3 measures the character the child sees, so the
-## layout and the oracle both work on the opaque rect (round-2 review, BUG-013).
+var _face_before_anticipation: String = ""
 var _opaque: Dictionary = {}
 
 
 func _ready() -> void:
 	_rng.seed = seed_value
-	_reset_blink_schedule()
+	_next_blink_at = _rng.randf_range(BLINK_MIN_SEC, BLINK_MAX_SEC)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build_rig()
 	set_expression(NEUTRAL_EXPRESSION)
-	_refit()  # the first layout pass can land before the pivot exists
+	_refit()
 
 
-## The responsive layout, in one place: fit the box to the art, re-anchor the
-## feet on the bottom edge, re-fit the sprites. Safe to call any number of times.
 func _refit() -> void:
 	if pivot == null:
 		return
-	_fit_box_to_art()
+	if is_equal_approx(anchor_left, 0.5) and is_equal_approx(anchor_right, 0.5):
+		var seen: Rect2 = opaque_rect(expression.texture) if expression != null else Rect2()
+		var wanted: float = size.y * (seen.size.x / seen.size.y if seen.has_area() else DEFAULT_ART_ASPECT)
+		if wanted > 1.0 and absf(size.x - wanted) >= BOX_FIT_EPSILON:
+			offset_left = -wanted * 0.5
+			offset_right = wanted * 0.5
 	pivot.position = Vector2(size.x * 0.5, size.y)
 	_update_layout()
 
 
-## A responsive box (ADR-008) may be laid out after `_ready`: fit the box to the
-## art and re-anchor instead of keeping the first frame's geometry.
 func _notification(what: int) -> void:
-	if what != NOTIFICATION_RESIZED:
-		return
-	_refit()
-
-
-## The builder's ratio anchors own the **height**; the width has to follow the
-## art, or `_update_layout`'s width-limited fit shrinks the character on taller
-## canvases (BUG-013). Only valid for the centred 0.5/0.5 anchor column every
-## builder pins — symmetric offsets then keep her centred at any width.
-func _fit_box_to_art() -> void:
-	if not is_equal_approx(anchor_left, anchor_right) or not is_equal_approx(anchor_left, 0.5):
-		return
-	var wanted: float = size.y * _visible_aspect()
-	if wanted <= 1.0 or absf(size.x - wanted) < BOX_FIT_EPSILON:
-		return
-	offset_left = -wanted * 0.5
-	offset_right = wanted * 0.5
+	if what == NOTIFICATION_RESIZED:
+		_refit()
 
 
 func _process(delta: float) -> void:
-	if manual_step:
-		return
-	advance(delta)
+	if not manual_step:
+		advance(delta)
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouse:
-		if (event as InputEventMouse).device == -1:
-			return
-		if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
-			_tap()
+	if event.device == -1:
 		return
-	if event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
-		_tap()
+	var is_left_click: bool = (
+		event is InputEventMouseButton and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT
+	)
+	if (is_left_click or event is InputEventScreenTouch) and bool(event.get("pressed")):
+		if _hits_character(event.get("position") as Vector2):
+			taps += 1
+			play_squash()
+			tapped.emit()
+			LogSink.emit_from(self, "rig.tap", {"expression": expression_id})
 
 
-# ── stepping ─────────────────────────────────────────────────────────────────
+func _hits_character(point: Vector2) -> bool:
+	var painted: Rect2 = get_visual_global_rect()
+	return not painted.has_area() or painted.has_point(point) or painted.has_point(global_position + point)
 
 
 func advance(delta: float) -> void:
 	var step: float = maxf(delta, 0.0)
 	_time += step
-	_apply_breathing()
-	_advance_blink()
-	_advance_squash(step)
-
-
-func _apply_breathing() -> void:
-	if pivot == null or _spring.is_running():
-		return  # the tap spring owns the transform while it runs
-	var wave: float = sin(_time * BREATH_PERIOD_SEC)
-	pivot.scale = Vector2(1.0 - BREATH_X * wave, 1.0 + BREATH_Y * wave)
-
-
-func _advance_blink() -> void:
-	if _blink_until >= 0.0:
-		if _time >= _blink_until:
-			_blink_until = -1.0
-			if expression_id == BLINK_EXPRESSION:
-				_apply_expression(NEUTRAL_EXPRESSION)
-		return
-	if _time < _next_blink_at:
-		return
-	# Only a neutral face blinks; an active expression must not be overwritten.
-	if expression_id == NEUTRAL_EXPRESSION:
-		_apply_expression(BLINK_EXPRESSION)
-		_blink_until = _time + BLINK_HOLD_SEC
-	_reset_blink_schedule()
-
-
-func _reset_blink_schedule() -> void:
-	_next_blink_at = _time + _rng.randf_range(BLINK_MIN_SEC, BLINK_MAX_SEC)
-
-
-func _advance_squash(delta: float) -> void:
-	if not _spring.is_running():
-		return
-	_spring.advance(delta)
-	if pivot != null:
-		pivot.scale = _spring.scale
-
-
-# ── public API ───────────────────────────────────────────────────────────────
+	if pivot != null and not _spring.is_running():
+		var wave: float = sin(_time * BREATH_PERIOD_SEC)
+		pivot.scale = Vector2(1.0 - BREATH_X * wave, 1.0 + BREATH_Y * wave)
+	if _blink_until >= 0.0 and _time >= _blink_until:
+		_blink_until = -1.0
+		if expression_id == BLINK_EXPRESSION:
+			_apply_expression(NEUTRAL_EXPRESSION)
+	elif _blink_until < 0.0 and _time >= _next_blink_at:
+		if expression_id == NEUTRAL_EXPRESSION:
+			_apply_expression(BLINK_EXPRESSION)
+			_blink_until = _time + BLINK_HOLD_SEC
+		_next_blink_at = _time + _rng.randf_range(BLINK_MIN_SEC, BLINK_MAX_SEC)
+	if _spring.is_running():
+		_spring.advance(step)
+		if pivot != null:
+			pivot.scale = _spring.scale
 
 
 func play_squash() -> void:
@@ -194,16 +135,14 @@ func is_blinking() -> bool:
 	return _blink_until >= 0.0
 
 
-## Returns false and keeps the current art when the id does not exist.
 func set_expression(id: String) -> bool:
 	if not Ids.is_valid(id):
-		_emit("rig.invalid_expression", {"expression": "invalid"})
+		LogSink.emit_from(self, "rig.invalid_expression", {"expression": "invalid"})
 		return false
 	if id == expression_id and expression != null:
 		return true
-	var texture: Texture2D = _load_art(id)
-	if texture == null:
-		_emit("rig.missing_art", {"expression": id})
+	if _load_art(id) == null:
+		LogSink.emit_from(self, "rig.missing_art", {"expression": id})
 		return false
 	_apply_expression(id)
 	return true
@@ -218,11 +157,11 @@ func set_outfit(id: String) -> bool:
 		outfit_changed.emit("")
 		return true
 	if not Ids.is_valid(id):
-		_emit("rig.invalid_outfit", {"outfit": "invalid"})
+		LogSink.emit_from(self, "rig.invalid_outfit", {"outfit": "invalid"})
 		return false
 	var texture: Texture2D = _load_art(id)
 	if texture == null:
-		_emit("rig.missing_art", {"outfit": id})
+		LogSink.emit_from(self, "rig.missing_art", {"outfit": id})
 		return false
 	outfit.texture = texture
 	outfit.visible = true
@@ -231,35 +170,24 @@ func set_outfit(id: String) -> bool:
 	return true
 
 
-## The union of every visible sprite's **opaque** pixels, in global coordinates:
-## the character the child sees, not the 1024x1024 frame around it. The mouth zone
-## and the scrub hull must live inside this rect (TEST_PLAN §1.4).
+## Union of every visible sprite's opaque pixels in global coordinates.
 func get_visual_global_rect() -> Rect2:
 	var rect: Rect2 = Rect2()
 	var started: bool = false
 	for sprite: Sprite2D in [body, outfit, expression, headwear, neck, glasses]:
 		if sprite == null or not sprite.visible or sprite.texture == null:
 			continue
-		var sprite_rect: Rect2 = _opaque_global_rect(sprite)
+		var used: Rect2 = opaque_rect(sprite.texture)
+		if not used.has_area():
+			continue
+		var top_left: Vector2 = sprite.global_position - sprite.texture.get_size() * 0.5 * sprite.global_scale
+		var sprite_rect: Rect2 = Rect2(top_left + used.position * sprite.global_scale, used.size * sprite.global_scale)
 		rect = sprite_rect if not started else rect.merge(sprite_rect)
 		started = true
 	return rect
 
 
-func _opaque_global_rect(sprite: Sprite2D) -> Rect2:
-	var frame: Rect2 = Rect2(
-		sprite.global_position - sprite.texture.get_size() * 0.5 * sprite.global_scale,
-		sprite.texture.get_size() * sprite.global_scale,
-	)
-	var used: Rect2 = opaque_rect(sprite.texture)
-	if used.size.x <= 0.0 or used.size.y <= 0.0:
-		return Rect2()  # cannot measure: contributes nothing, so the gate fails closed
-	return Rect2(frame.position + used.position * sprite.global_scale, used.size * sprite.global_scale)
-
-
-## The opaque box of a texture in frame pixels, cached. Returns an **empty** rect
-## when the image cannot be read: the caller must treat "cannot measure" as a
-## failure, never as "the frame is the character" (round 3, BUG-013).
+## Opaque box in frame pixels, cached by `get_instance_id()` (logs once per unreadable texture).
 func opaque_rect(texture: Texture2D) -> Rect2:
 	if texture == null:
 		return Rect2()
@@ -272,60 +200,58 @@ func opaque_rect(texture: Texture2D) -> Rect2:
 		var opaque: Rect2i = image.get_used_rect()
 		if opaque.size.x > 0 and opaque.size.y > 0:
 			used = Rect2(Vector2(opaque.position), Vector2(opaque.size))
-	if used.size.x <= 0.0 or used.size.y <= 0.0:
-		_emit("rig.opaque_unreadable", {"art": texture.resource_path.get_file()})
+	if not used.has_area():
+		LogSink.emit_from(self, "rig.opaque_unreadable", {"art": texture.resource_path.get_file()})
 	_opaque[key] = used
 	return used
 
 
-## Width over height of the opaque character: the design unit, not the frame.
-func _visible_aspect() -> float:
-	var seen: Rect2 = _visible_box()
-	if seen.size.x <= 0.0 or seen.size.y <= 0.0:
-		return DEFAULT_ART_ASPECT
-	return seen.size.x / seen.size.y
+func mouth_global_center() -> Vector2:
+	return global_position if mouth_zone == null else mouth_zone.get_global_rect().get_center()
 
 
-## The character's opaque box in frame pixels, or an empty rect when unreadable.
-func _visible_box() -> Rect2:
-	if expression == null or expression.texture == null:
-		return Rect2()
-	return opaque_rect(expression.texture)
+func update_food_proximity(global_point: Vector2) -> void:
+	if global_point.distance_to(mouth_global_center()) >= MOUTH_ANTICIPATION_PX:
+		clear_food_proximity()
+	elif _face_before_anticipation.is_empty():
+		_face_before_anticipation = NEUTRAL_EXPRESSION if expression_id == BLINK_EXPRESSION else expression_id
+		set_expression(ANTICIPATION_EXPRESSION)
+
+
+func clear_food_proximity() -> void:
+	var face: String = _face_before_anticipation
+	_face_before_anticipation = ""
+	if not face.is_empty() and expression_id == ANTICIPATION_EXPRESSION:
+		set_expression(face)
 
 
 func reset() -> void:
+	_face_before_anticipation = ""
 	taps = 0
 	_time = 0.0
 	_blink_until = -1.0
 	_spring.stop()
 	_rng.seed = seed_value
-	_reset_blink_schedule()
-	set_outfit("")  # the outfit layer is owned by set_outfit, never by a flag
+	_next_blink_at = _rng.randf_range(BLINK_MIN_SEC, BLINK_MAX_SEC)
+	set_outfit("")
 	if pivot != null:
 		pivot.scale = Vector2.ONE
 	set_expression(NEUTRAL_EXPRESSION)
 
 
-# ── construction ─────────────────────────────────────────────────────────────
-
-
 func _build_rig() -> void:
 	pivot = Node2D.new()
 	pivot.name = "Pivot"
-	pivot.position = Vector2(size.x * 0.5, size.y)  # feet anchor
+	pivot.position = Vector2(size.x * 0.5, size.y)
 	add_child(pivot)
-
 	body = _make_sprite("Body", Z_BODY)
 	outfit = _make_sprite("Outfit", Z_OUTFIT)
 	expression = _make_sprite("Expression", Z_EXPRESSION)
 	headwear = _make_sprite("Headwear", Z_HEADWEAR)
 	neck = _make_sprite("Neck", Z_NECK)
 	glasses = _make_sprite("Glasses", Z_GLASSES)
-	outfit.visible = false
-	headwear.visible = false
-	neck.visible = false
-	glasses.visible = false
-
+	for layer: Sprite2D in [outfit, headwear, neck, glasses]:
+		layer.visible = false
 	mouth_zone = Control.new()
 	mouth_zone.name = "MouthZone"
 	mouth_zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -352,52 +278,23 @@ func _apply_expression(id: String) -> void:
 	expression_changed.emit(id)
 
 
-## Feet-anchored layout on the **opaque** character: the seen height is the box
-## height, the seen feet sit on the pivot, and the seen centre is the box centre.
-## The frame's transparent margin is allowed to overflow the box — nothing clips a
-## `Node2D` child, and `get_visual_global_rect` reports what a child sees.
 func _update_layout() -> void:
 	if expression == null or expression.texture == null:
 		return
 	var art: Vector2 = expression.texture.get_size()
-	var used: Rect2 = _visible_box()
-	# Unreadable art still renders (the frame is all we have) but reports nothing,
-	# so `GeometryOracle` says "no painted geometry" instead of measuring a frame.
-	var seen: Vector2 = used.size if used.size.x > 0.0 and used.size.y > 0.0 else art
-	var box: Vector2 = size if size.y > 1.0 else seen
-	var factor: float = box.y / seen.y if seen.y > 0.0 else 1.0
-	# The frame is centred on the sprite position; shift it so the opaque rect's
-	# bottom edge lands on the pivot and its centre on the box centre.
-	var shift: Vector2 = Vector2(
-		art.x * factor * 0.5 - (used.position.x + used.size.x * 0.5) * factor,
-		art.y * factor - (used.position.y + used.size.y) * factor,
-	)
+	var used: Rect2 = opaque_rect(expression.texture)
+	var seen: Vector2 = used.size if used.has_area() else art
+	var factor: float = (size.y if size.y > 1.0 else seen.y) / seen.y if seen.y > 0.0 else 1.0
+	var shift: Vector2 = (art - used.size) * Vector2(0.5, 1.0) - used.position if used.has_area() else Vector2.ZERO
 	for sprite: Sprite2D in [body, outfit, expression, headwear, neck, glasses]:
-		if sprite == null:
-			continue
-		sprite.scale = Vector2.ONE * factor
-		sprite.position = Vector2(0.0, -art.y * factor * 0.5) + shift
+		if sprite != null:
+			sprite.scale = Vector2.ONE * factor
+			sprite.position = (Vector2(0.0, -art.y * 0.5) + shift) * factor
 	if mouth_zone != null:
 		mouth_zone.size = seen * factor * 0.18
-		mouth_zone.position = Vector2(
-			size.x * 0.5 - mouth_zone.size.x * 0.5,
-			size.y - seen.y * factor * 0.62,
-		)
+		mouth_zone.position = Vector2(size.x * 0.5 - mouth_zone.size.x * 0.5, size.y - seen.y * factor * 0.62)
 
 
 func _load_art(id: String) -> Texture2D:
 	var path: String = "%squiqui_%s.png" % [ART_ROOT, id]
-	if not ResourceLoader.exists(path):
-		return null
-	return load(path) as Texture2D
-
-
-func _tap() -> void:
-	taps += 1
-	play_squash()
-	tapped.emit()
-	_emit("rig.tap", {"expression": expression_id})
-
-
-func _emit(ev: String, data: Dictionary) -> void:
-	LogSink.emit_from(self, ev, data)
+	return load(path) as Texture2D if ResourceLoader.exists(path) else null

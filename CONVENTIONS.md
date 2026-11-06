@@ -63,6 +63,7 @@ When any gate fails, you MUST either fix it immediately (`quick-fix` if data-onl
 ### 3.4 Touch-First Input & Mouse-Echo Filtering
 - Godot's `emulate_touch_from_mouse = true` synthesizes `InputEventMouse` with `device == -1` for every touch.
 - Every input handler (`_input`, `_gui_input`, `TouchDraggable`, `TapButton`) MUST ignore synthesized mouse events when handling touch or deduplicate via `TouchDraggable`/`TapButton`.
+- The `device == -1` filter covers both echo directions: the mouse synthesized from a touch and the touch synthesized from a real mouse (`emulate_touch_from_mouse`), so handlers ignore any event with that device.
 - Minimum interactive hit target for ages 4–7 is **`120×120 px`**.
 
 ---

@@ -13,6 +13,11 @@ func before_each() -> void:
 	assert_not_null(log, "Log must be registered as an autoload in project.godot")
 
 
+func after_each() -> void:
+	if log != null and log.get("_file") == null:
+		log.call("_start_session")
+
+
 func test_line_carries_the_required_context_fields() -> void:
 	log.call("event", "test.ping", {"item": "mesa"})
 	var line: Dictionary = _last_line()

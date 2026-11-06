@@ -31,7 +31,7 @@ the design's first option (edge anchoring) is used, because it keeps the approve
 pixel-identical and needs no new node in the tree.
 
 - `QuiQuiRig`: `anchor_left = anchor_right = 0.5`, with a width fitted to the art aspect on every
-  layout pass (`_fit_box_to_art`), `anchor_top = feet - height`,
+  layout pass (`_refit`), `anchor_top = feet - height`,
   `anchor_bottom = 0.78` (care rooms) so the box grows with the canvas and the feet stay on the line.
 - Doors: fixed 168×168 boxes, edge columns (`anchor_left = 0`/`1`), row centres as ratios.
 - `CareDotsBar`: bottom edge, 36 px inset, horizontally centred.
@@ -43,10 +43,13 @@ pixel-identical and needs no new node in the tree.
 - Builders pin ratios through `SceneBuilder.pin(node, anchors, offsets)`.
 
 The requirement is delivered by `_update_layout`'s **height-driven** factor
-(`factor = box.y / opaque_height`), which makes the painted height equal the box height identically.
-`_fit_box_to_art` is what makes the **box** art-shaped, so the tap surface is the character rather than a
+(`factor = box.y / opaque_height`), which makes the painted height equal the box height identically on
+every expression swap (`_apply_expression` calls `_refit()`, normalizing each pose's opaque height to the
+box height and keeping its opaque bottom on the foot pivot).
+`_refit` makes the **box** art-shaped, and `_hits_character` filters `_gui_input` to
+`get_visual_global_rect()`, so the tap surface is strictly the painted character rather than a
 column of empty space (BUG-013). `GeometryOracle` now checks the
-contract in both directions and takes a **spec** at the call site
+contract in both directions (including vertical and horizontal dead space between box and painted rect) and takes a **spec** at the call site
 (`CARE_ROOM_SPEC`, `TITLE_SPEC`): background size == canvas (letterbox *and* oversized), hit targets
 ≥120×120 inside the canvas, `rig` height ratio 0.55–0.65 and feet on the declared line and
 horizontally centred, `ui_bottom` within 60 px of the bottom, `ui_top_right` within 60 px of the

@@ -41,7 +41,7 @@ cycle's own documentation.
 1. Land BUG-013 first, then **re-measure** and rewrite the three tables with two explicit columns —
    `box` and `painted` — labelled as such.
 2. Correct `DESIGN.md:29` to: anchors are ratios, offsets are absolute pixels (insets, fixed hit-target
-   sizes, feet-line offset), **and the rig box height is a ratio**.
+   sizes, and the rig's art-fitted half-width), **and the rig box height is a ratio**.
 3. Fix the test name in `BUG-002:34`; keep BUG-002 `fixed` only for the root-size half and point its
    hero-scale half at BUG-013.
 
@@ -66,5 +66,5 @@ cycle's own documentation.
 
 ## Verification
 
-`bash scripts/preflight.sh` → PREFLIGHT GREEN (19 scripts, 163 tests, 637 asserts). Every number quoted in these records **for the current layout** comes from `game/tools/measure_hero_scale.gd`, which is committed and pins the rest pose
+`bash scripts/preflight.sh` → PREFLIGHT GREEN (19 scripts, 165 tests, 647 asserts on `fix/bug-013-hero-scale`; 24 scripts, 308 tests, 1429 asserts on `epic/e03-kitchen-feed-scene`). Every number quoted in these records **for the current layout** comes from `game/tools/measure_hero_scale.gd`, which is committed and pins the rest pose
 (`manual_step` + `pivot.scale = ONE`), so a reviewer reproduces 0.574 exactly.

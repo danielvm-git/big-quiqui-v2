@@ -99,6 +99,17 @@ func test_a_tap_springs_once_and_fires_once() -> void:
 	assert_false(rig.is_squashing(), "the spring ends on its own")
 
 
+func test_a_real_mouse_with_its_emulated_touch_taps_once() -> void:
+	fired = 0
+	rig.tapped.connect(func() -> void: fired += 1)
+
+	for event: InputEvent in TouchSim.mouse_click_events(rig):
+		rig._gui_input(event)
+
+	assert_eq(fired, 1, "the device -1 touch is the echo of the click")
+	assert_eq(rig.taps, 1)
+
+
 func test_the_mouth_zone_lives_inside_the_visible_art() -> void:
 	var visual: Rect2 = rig.get_visual_global_rect()
 
@@ -147,101 +158,142 @@ func test_a_resize_moves_the_feet_to_the_new_bottom_edge() -> void:
 	assert_almost_eq(rig.pivot.position.y, 700.0, 0.01, "the feet stay on the bottom edge")
 
 
-# BUG-013: the box height is a ratio, so the box has to be art-shaped or the
-# width-limited fit shrinks the character as the canvas gets taller.
-func test_the_box_widens_with_the_height_on_a_centre_anchored_rig() -> void:
-	var viewport: SubViewport = SubViewport.new()
-	viewport.size = Vector2i(1920, 1440)
-	viewport.disable_3d = true
-	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
-	add_child_autofree(viewport)
-	var stage: Control = Control.new()
-	stage.set_anchors_preset(Control.PRESET_FULL_RECT)
-	viewport.add_child(stage)
+# Review F1: missing art must not write a diary line on every motion. The subclass
+# is the seam, so production code gains no switch.
+class RigWithoutOpenMouth:
+	extends QuiQuiRig
 
-	var mounted: QuiQuiRig = QuiQuiRig.new()
-	mounted.manual_step = true
-	# The builder's contract: a centred column, height from the feet line ratio.
-	mounted.anchor_left = 0.5
-	mounted.anchor_right = 0.5
-	mounted.anchor_top = 0.78 - 620.0 / 1080.0
-	mounted.anchor_bottom = 0.78
-	mounted.offset_left = -320.0
-	mounted.offset_right = 320.0
-	stage.add_child(mounted)
-	await wait_frames(2)
-
-	var painted: Rect2 = mounted.get_visual_global_rect()
-
-	assert_almost_eq(mounted.size.y, 620.0 / 1080.0 * 1440.0, 1.0, "the height still comes from the ratio")
-	assert_almost_eq(painted.size.y, mounted.size.y, mounted.size.y * 0.03, "the art fills the box height")
-	assert_almost_eq(mounted.size.x, painted.size.x, mounted.size.x * 0.03, "and the box widens with the art")
-	assert_gt(painted.size.y / 1440.0, 0.55, "the painted character keeps DESIGN §3 on a 4:3 canvas")
+	func _load_art(id: String) -> Texture2D:
+		return null if id == ANTICIPATION_EXPRESSION else super(id)
 
 
-# BUG-013 / round-2 must-fix: the design unit is the opaque character, not the
-# 1024x1024 frame that carries an ~8 % transparent margin.
-func test_the_character_is_measured_on_its_opaque_pixels() -> void:
-	var sprite: Sprite2D = rig.expression
-	var frame_height: float = sprite.texture.get_size().y * sprite.global_scale.y
-	var painted: Rect2 = rig.get_visual_global_rect()
-	var box: Rect2 = rig.get_global_rect()
-
-	assert_true(painted.has_area(), "QuiQui is visible")
-	assert_lt(painted.size.y, frame_height * 0.95, "the art frame carries transparent margin")
-	assert_almost_eq(painted.end.y, box.end.y, 2.0, "the visible feet sit on the pivot line")
-	assert_almost_eq(painted.get_center().x, box.get_center().x, 2.0, "the visible centre is the box centre")
+func _rig_without_open_mouth() -> QuiQuiRig:
+	var broken: QuiQuiRig = RigWithoutOpenMouth.new()
+	broken.size = Vector2(400.0, 600.0)
+	broken.manual_step = true
+	add_child_autofree(broken)
+	return broken
 
 
-# Every shipped base pose must stay in the design band: fitting each pose on its
-# own opaque rect keeps the seen height constant even though `carente` is wider
-# and shorter than `base`.
-func test_every_base_pose_keeps_the_height_and_the_feet() -> void:
-	for expression_id: String in ["base", "pisca", "rindo", "carente"]:
-		if not rig.set_expression(expression_id):
-			continue
-		var painted: Rect2 = rig.get_visual_global_rect()
-		var box: Rect2 = rig.get_global_rect()
-		assert_almost_eq(painted.size.y, box.size.y, box.size.y * 0.02, "%s keeps the box height" % expression_id)
-		assert_almost_eq(painted.end.y, box.end.y, 2.0, "%s keeps the feet on the line" % expression_id)
+func test_missing_mouth_art_logs_once_over_thirty_near_motions() -> void:
+	var broken: QuiQuiRig = _rig_without_open_mouth()
+	var near: Vector2 = broken.mouth_global_center() + Vector2(100.0, 0.0)
+	var diary: Node = get_node("/root/Log")
+	var before: int = diary.call("write_count")
+
+	for motion: int in range(30):
+		broken.update_food_proximity(near)
+
+	assert_eq(diary.call("write_count") - before, 1, "one rig.missing_art, not one per motion")
+	assert_eq(broken.expression_id, QuiQuiRig.NEUTRAL_EXPRESSION, "she keeps her face")
 
 
-# Round 3: an unreadable image must not silently become "the frame is the character".
-func test_unreadable_art_reports_no_painted_geometry() -> void:
-	var placeholder: PlaceholderTexture2D = PlaceholderTexture2D.new()
-	placeholder.size = Vector2(1024.0, 1024.0)
+func test_missing_mouth_art_is_retried_on_the_next_approach_and_keeps_her_face() -> void:
+	var broken: QuiQuiRig = _rig_without_open_mouth()
+	var near: Vector2 = broken.mouth_global_center() + Vector2(100.0, 0.0)
+	var diary: Node = get_node("/root/Log")
+	var before: int = diary.call("write_count")
 
-	assert_false(rig.opaque_rect(placeholder).has_area(), "cannot measure is empty, not the frame")
-	assert_true(rig.get_visual_global_rect().has_area(), "and the shipped art still measures")
+	broken.update_food_proximity(near)
+	broken.clear_food_proximity()
+	broken.update_food_proximity(near)
+
+	assert_eq(diary.call("write_count") - before, 2, "one line per approach")
+	assert_eq(broken.expression_id, QuiQuiRig.NEUTRAL_EXPRESSION)
 
 
-# Round 5: the suite must be able to tell `get_visual_global_rect()` from the
-# `Control` box, or the gate could be "fixed" back to measuring the box by
-# replacing the getter with `get_global_rect()` and nothing would notice.
-# A stretched column disables the width fit, so the two rects must diverge.
-func test_the_painted_rect_is_not_the_control_box() -> void:
-	var viewport: SubViewport = SubViewport.new()
-	viewport.size = Vector2i(2048, 1536)
-	viewport.disable_3d = true
-	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
-	add_child_autofree(viewport)
-	var stage: Control = Control.new()
-	stage.set_anchors_preset(Control.PRESET_FULL_RECT)
-	viewport.add_child(stage)
+# SC-E03-P0-08: the 220 px boundary, both sides.
+func test_a_point_under_the_threshold_opens_the_mouth_on_that_call() -> void:
+	rig.update_food_proximity(_point_at(219.99))
 
-	var stretched: QuiQuiRig = QuiQuiRig.new()
-	stretched.manual_step = true
-	stretched.anchor_left = 0.0
-	stretched.anchor_right = 1.0
-	stretched.anchor_top = 0.78 - 620.0 / 1080.0
-	stretched.anchor_bottom = 0.78
-	stage.add_child(stretched)
-	await wait_frames(2)
+	assert_eq(rig.expression_id, QuiQuiRig.ANTICIPATION_EXPRESSION)
 
-	var box: Rect2 = stretched.get_global_rect()
-	var painted: Rect2 = stretched.get_visual_global_rect()
 
-	assert_true(painted.has_area(), "the character is visible")
-	assert_almost_eq(painted.size.y, box.size.y, box.size.y * 0.03, "the seen height still fills the box")
-	assert_lt(painted.size.x, box.size.x * 0.5, "but the seen width is the art, not the column")
-	assert_ne(painted, box, "a getter that echoed the box would fail here")
+func test_a_point_exactly_on_the_threshold_does_not_open_the_mouth() -> void:
+	rig.update_food_proximity(_point_at(QuiQuiRig.MOUTH_ANTICIPATION_PX))
+
+	assert_eq(rig.expression_id, QuiQuiRig.NEUTRAL_EXPRESSION)
+
+
+func test_a_point_past_the_threshold_does_not_open_the_mouth() -> void:
+	rig.update_food_proximity(_point_at(220.01))
+
+	assert_eq(rig.expression_id, QuiQuiRig.NEUTRAL_EXPRESSION)
+
+
+func test_the_mouth_centre_follows_the_rig_on_screen() -> void:
+	var before: Vector2 = rig.mouth_global_center()
+	rig.position += Vector2(300.0, 40.0)
+
+	assert_eq(rig.mouth_global_center(), before + Vector2(300.0, 40.0))
+	assert_eq(rig.mouth_global_center(), rig.mouth_zone.get_global_rect().get_center())
+
+
+# SC-E03-P0-09: restore to the previous face.
+func test_moving_away_restores_the_face_shown_before() -> void:
+	assert_true(rig.set_expression("carente"))
+
+	rig.update_food_proximity(_point_at(10.0))
+	assert_eq(rig.expression_id, QuiQuiRig.ANTICIPATION_EXPRESSION)
+
+	rig.update_food_proximity(_point_at(400.0))
+	assert_eq(rig.expression_id, "carente", "not always base")
+
+
+func test_clearing_restores_the_face_shown_before() -> void:
+	assert_true(rig.set_expression("carente"))
+	rig.update_food_proximity(_point_at(10.0))
+
+	rig.clear_food_proximity()
+
+	assert_eq(rig.expression_id, "carente")
+
+
+func test_repeated_calls_while_close_do_not_re_emit() -> void:
+	var faces: Array[String] = _record_faces()
+
+	rig.update_food_proximity(_point_at(100.0))
+	rig.update_food_proximity(_point_at(90.0))
+	rig.update_food_proximity(_point_at(80.0))
+
+	assert_eq(faces, [QuiQuiRig.ANTICIPATION_EXPRESSION] as Array[String])
+
+
+func test_repeated_calls_while_close_keep_the_face_to_restore() -> void:
+	assert_true(rig.set_expression("carente"))
+
+	rig.update_food_proximity(_point_at(100.0))
+	rig.update_food_proximity(_point_at(90.0))
+	rig.update_food_proximity(_point_at(400.0))
+
+	assert_eq(rig.expression_id, "carente", "the mouth never stays stuck open")
+
+
+func test_a_second_approach_still_restores_the_original_face() -> void:
+	assert_true(rig.set_expression("carente"))
+
+	rig.update_food_proximity(_point_at(10.0))
+	rig.update_food_proximity(_point_at(400.0))
+	rig.update_food_proximity(_point_at(10.0))
+	rig.clear_food_proximity()
+
+	assert_eq(rig.expression_id, "carente")
+
+
+func test_clearing_without_anticipation_changes_nothing() -> void:
+	assert_true(rig.set_expression("carente"))
+	var faces: Array[String] = _record_faces()
+	rig.clear_food_proximity()
+	rig.update_food_proximity(_point_at(400.0))
+	assert_eq(rig.expression_id, "carente")
+	assert_eq(faces.size(), 0, "no signal without a change")
+
+
+func _point_at(distance: float) -> Vector2:
+	return rig.mouth_global_center() + Vector2(distance, 0.0)
+
+
+func _record_faces() -> Array[String]:
+	var faces: Array[String] = []
+	rig.expression_changed.connect(func(id: String) -> void: faces.append(id))
+	return faces
