@@ -36,10 +36,12 @@ When any gate fails, you MUST either fix it immediately (`quick-fix` if data-onl
 - **Story Traceability:** Include the story ID in commit scopes or bodies (e.g., `feat(e01s02): implement table-driven Fsm and FsmProbe`).
 - **No AI Attribution:** NEVER include `Co-authored-by`, `Co-Authored-By`, or any AI footer in commits.
 - **Branch Protection:** Work on feature branches (`feat/eNNsYY-slug`); merge only when Preflight is green. Direct commits to `main` are blocked by the agent harness and by branch protection.
-- **Story trailer for metrics:** the epic squash commit (and the PR body it is built from) MUST carry
-  one `Story: eNNsYY` trailer per story. `scripts/record-cycle-time.sh` attributes effort and lead time
-  through that trailer only; without it the story has no metrics row. e01–e05 are missing theirs and are
-  deliberately not back-filled — see `specs/metrics/README.md`.
+- **Metrics trailer:** the single epic squash commit MUST carry one **epic-level** trailer,
+  `Story: eNN`. `scripts/record-cycle-time.sh` attributes effort and lead time through that trailer, and
+  it reads exactly **one value per commit** — so three `Story: eNNsYY` trailers collapse into one key and
+  attribute nothing. Per-story effort is unavailable by construction in a squash-per-epic workflow and is
+  reported as such; see `specs/metrics/README.md`. e01–e06 carry no rows and are deliberately not
+  back-filled.
 - **Hooks:** `git config core.hooksPath .githooks` (done by `scripts/setup.sh`). `pre-commit` runs `bash scripts/preflight.sh --fast`; `commit-msg` enforces Conventional Commits, the 72-char subject limit, and bans AI attribution.
 - **Epic release train (version ladder):** `main` takes **exactly one squash-merge per epic** — `feat(eNN): <scene>` — which is what makes `big-release` cut one version per epic: `v0.1.0` (house) → `v0.2.0` (e01) → … → `v0.11.0` (e10) → `v1.0.0` (e11, via `feat(e11)!:`). Story commits (`feat(eNNsYY): …`) land on `epic/eNN-slug` and produce **no** release, because `big-release` only releases from `main`. Hotfixes land as `fix(...)`: patch bump (`v0.5.1`), ladder intact. `chore`/`docs`/`test`/`refactor`/`ci` never release. `specs/release-plan.yaml` → `release.versions` is the source of truth for the ladder.
 
