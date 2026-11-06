@@ -3,7 +3,7 @@ version: 0.3.1-dev
 workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: build
-current_epic: e06-garden-play-scene
+current_epic: e07-sleep-and-celebration-scenes
 current_story: e05s01
 review_gate:
   skill: request-review
@@ -161,12 +161,12 @@ handoff:
     the box to the opaque art, so box height == painted height at rest.'
 epic_cycle:
   step: 8
-  story: e05s03
+  story: e06s03
   story_bcps: 2
-  epic_epic_bcps: 11
+  epic_epic_bcps: 10
   fast_mode: true
-  started_at: '2026-11-06T04:20:00-03:00'
-  completed_at: '2026-11-06T06:45:00-03:00'
+  started_at: "2026-11-06T07:55:00-03:00"
+  completed_at: "2026-11-06T09:20:00-03:00"
   audit_result: pass
 metrics:
   story_start: null

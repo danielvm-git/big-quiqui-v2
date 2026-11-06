@@ -2,32 +2,33 @@ story_id: e06s03
 spec: e06s03.md
 epic_id: e06
 title: GardenPlayScene E2E TouchSim & Dual-Aspect GeometryOracle Tests
-status: failing
+status: passing
 bcps: 2
 playable_scene: res://scenes/jardim.tscn
+threat_findings:
+- T-E06-01
+- T-E06-05
+- T-E06-06
 tasks:
 - id: e06s03-t01
-  description: Write failing GUT unit & TouchSim/GeometryOracle tests for e06s03 (GardenPlayScene
-    E2E TouchSim & Dual-Aspect GeometryOracle Tests)
+  description: Write failing tests for the scenarios in e06s03.md
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: passing
 - id: e06s03-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e06s03
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
-  risk: P1
+  description: Implement the story contract with strict typing, wired at _ready
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
   allure:
-    severity: high
-  status: failing
+    severity: critical
+  status: passing
 - id: e06s03-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e06s03
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  description: Verify lint, type gate, oracle on both canvases, PII audit and traceability
+  verify: gdlint game/ && gdformat --check game/ && bash scripts/logs.sh audit --self-test
+    && bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: passing
