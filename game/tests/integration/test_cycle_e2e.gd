@@ -13,8 +13,8 @@ func test_the_full_cycle_at_16_9() -> void:
 
 	assert_eq(str(clm.call("state_id")), CareSteps.IDLE, "the cycle closed")
 	assert_eq(clm.call("completed_steps"), 0, "the counter resets with the closed cycle")
-	assert_eq(pm.call("get_coins"), 5, "+5 coins once")
-	assert_eq(pm.call("get_tickets"), 1, "+1 ticket once")
+	assert_eq(pm.call("get_coins"), pm.CYCLE_COINS_REWARD, "the reward, exactly once")
+	assert_eq(pm.call("get_tickets"), pm.CYCLE_TICKETS_REWARD)
 	assert_eq(int(pm.data.completed_cycles), 1, "one cycle closed")
 	assert_true(stage is CasaScene, "and we are back at the hub")
 	_assert_probes_clean()
@@ -23,7 +23,7 @@ func test_the_full_cycle_at_16_9() -> void:
 func test_the_full_cycle_on_ipad() -> void:
 	await _walk_cycle(GeometryOracle.IPAD_4_3)
 
-	assert_eq(pm.call("get_coins"), 5, "the reward does not depend on the canvas")
+	assert_eq(pm.call("get_coins"), pm.CYCLE_COINS_REWARD, "the reward does not depend on the canvas")
 	assert_eq(str(clm.call("state_id")), CareSteps.IDLE)
 	_assert_probes_clean()
 

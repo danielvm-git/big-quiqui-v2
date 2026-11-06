@@ -264,3 +264,12 @@ bugs:
   file: specs/bugs/BUG-029-readme-adr-range-stale.md
   status: fixed
   found_by: e07 post-epic review, second pass (documentation sweep)
+- bug_id: BUG-030
+  date: '2026-11-06'
+  severity: low
+  priority: P3
+  scope: tests
+  summary: The cycle E2E asserted the reward against literals 5 and 1 instead of ProgressManager's economy constants
+  file: specs/bugs/BUG-030-cycle-e2e-hardcodes-the-price.md
+  status: fixed
+  found_by: e07 post-epic review, second pass (same class as BUG-026)
