@@ -42,7 +42,7 @@ tasks:
     severity: high
     categories:
     - integration
-  status: failing
+  status: passing
 - id: e10s04-t04
   description: 'Integration: test_album_scene.gd — mount/refresh/Home to vila, vila ALBUM door
     navigates, both aspects clean (SC-E10-P0-22); trace + lint green'
