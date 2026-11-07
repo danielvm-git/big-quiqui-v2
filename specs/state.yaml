@@ -4,7 +4,7 @@ workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: build
 current_epic: e10-friends-minigames-and-album-scenes
-current_story: e10s03
+current_story: e10s04
 review_gate:
   skill: null
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'

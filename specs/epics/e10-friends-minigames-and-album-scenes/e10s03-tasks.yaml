@@ -3,7 +3,7 @@ spec: e10s03.md
 epic_id: e10
 title: 'Playable Scene 16: PenguinScene (pinguim_jogo.tscn) Interactive Ball/Bubble
   Catch Mini-Game'
-status: failing
+status: passing
 bcps: 3
 playable_scene: res://scenes/pinguim_jogo.tscn
 tasks:
@@ -44,4 +44,4 @@ tasks:
     severity: high
     categories:
     - integration
-  status: failing
+  status: passing
