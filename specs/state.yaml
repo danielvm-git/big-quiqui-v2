@@ -120,12 +120,12 @@ bug_cycle:
     - BUG-011
     - BUG-012
     outcome: 11 fixed, BUG-004 wontfix (PII policy, pinned by test)
-last_updated: '2026-11-07T10:30:00-03:00'
+last_updated: '2026-11-07T11:05:00-03:00'
 release:
-  ci_verified: false
+  ci_verified: true
   last_released: v0.9.1
   last_released_at: '2026-11-06T19:16:06Z'
-  ci_verified_commit: cbd00d3
+  ci_verified_commit: a1f2c5a
 release_target:
   version: 1.0.0
   codename: Repaginada TutoTOONS Vertical
@@ -208,6 +208,26 @@ run_baseline:
     e10 and e11.
 
 gate_decisions:
+- gate: ship e09 (release-branch, standing approval)
+  decision: >-
+    pruned nothing; opened PR 37 and squash-merged it with the title
+    `chore(e09): land the store, casinha and party scenes`, then confirmed main's pipeline:
+    ci-lint, test, verify, build, export-preset all success, export/release correctly skipped,
+    no tag created (v0.9.1 is still the latest)
+  reason: >-
+    this run's approval covers commit/push/PR/merge/cleanup but not tagging or releasing, and a
+    feat/fix commit on main makes big-release cut a version. Same path as PR 35 for e08, recorded
+    so a future run does not read the missing v0.10.0/v0.11.0 tags as a regression.
+- gate: worktree and branch cleanup (safe cleanup only)
+  decision: >-
+    removed the e09 branch (gh deleted it on merge); left the five remaining local branches and the
+    two orca review-e07 worktrees alone
+  reason: >-
+    none of them is provably merged into the current main (epic branches are squash-merged, so no
+    tip is an ancestor), and deleting unmerged work is outside this run's approval.
+- gate: CI repair (phase 5)
+  decision: nothing to repair — no workflow failed on the PR or on main
+  reason: every job on run 42328928831 (main) and 42328689295 (PR) concluded success or by-design skip
 - gate: preflight L1 blind spot found during e09s04 (a test file that fails to parse is
     IGNORED with a warning while GUT exits 0, so its tests vanish and the suite still looks green)
   decision: >-
