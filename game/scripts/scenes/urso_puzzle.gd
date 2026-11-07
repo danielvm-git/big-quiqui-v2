@@ -22,28 +22,16 @@ const LEGAL_EDGES: Dictionary = {
 	STATE_PLAYING: [STATE_REWARD],
 	STATE_REWARD: [STATE_INTRO],
 }
-const MAX_DWELL: Dictionary = {
-	STATE_INTRO: 4.0,
-	STATE_PLAYING: 240.0,
-}
-
+const MAX_DWELL: Dictionary = {STATE_INTRO: 4.0, STATE_PLAYING: 240.0}
 const INTRO_SEC: float = 1.0
-const TRAY_OFFSETS: Array[Vector2] = [
-	Vector2(0.0, 0.0),
-	Vector2(210.0, 0.0),
-	Vector2(420.0, 0.0),
-	Vector2(630.0, 0.0),
-]
 
 var fsm: Fsm = null
 var manual_step: bool = false
 
 var board: Control = null
-var tray: Control = null
 var hud: CoinTicketHud = null
 var confetti: CPUParticles2D = null
 var replay: Control = null
-var hint_layer: Control = null
 var hint_manager: Node = null
 var drag_hint: Node = null
 
@@ -60,17 +48,15 @@ var _fsm_clock_sec: float = 0.0
 
 func _ready() -> void:
 	board = get_node_or_null("Board") as Control
-	tray = get_node_or_null("Tray") as Control
 	hud = get_node_or_null("CoinTicketHud") as CoinTicketHud
 	confetti = get_node_or_null("Confetti") as CPUParticles2D
 	replay = get_node_or_null("ReplayButton") as Control
-	hint_layer = get_node_or_null("HintLayer") as Control
 	hint_manager = get_node_or_null("HintManager")
 	drag_hint = get_node_or_null("HintLayer/DragHint")
 	fsm = Fsm.new(STATE_INTRO, LEGAL_EDGES, MAX_DWELL, Callable(self, "_fsm_clock_ms"))
-	_bind_slots()
-	_bind_pieces()
-	_setup_hints()
+	_bind_slots_and_pieces()
+	if hint_manager != null and drag_hint != null:
+		hint_manager.call("enqueue", drag_hint)
 	_connect_chrome()
 	close_celebrate_if_needed()
 	_enter_state(STATE_INTRO)
@@ -79,35 +65,24 @@ func _ready() -> void:
 	_log("scene.ready", {"scene": "urso_puzzle"})
 
 
-func _bind_slots() -> void:
+func _bind_slots_and_pieces() -> void:
 	_slots.clear()
+	_pieces.clear()
+	var art_path: String = FriendCatalog.art_path(FRIEND_ID)
+	var art: Texture2D = load(art_path) as Texture2D if ResourceLoader.exists(art_path) else null
+	var sz: Vector2 = art.get_size() if art != null else Vector2(1024.0, 1024.0)
 	for i: int in range(PIECE_COUNT):
 		var slot: Control = get_node_or_null("Board/Slot%d" % i) as Control
 		if slot != null:
 			_slots.append(slot)
-
-
-func _bind_pieces() -> void:
-	_pieces.clear()
-	var art_path: String = FriendCatalog.art_path(FRIEND_ID)
-	var art: Texture2D = load(art_path) as Texture2D if ResourceLoader.exists(art_path) else null
-	var tex_size: Vector2 = art.get_size() if art != null else Vector2(1024.0, 1024.0)
-	for i: int in range(PIECE_COUNT):
 		var piece: PuzzlePiece = get_node_or_null("Tray/Piece%d" % i) as PuzzlePiece
 		if piece != null:
 			piece.piece_id = i
-			var slot: Control = _slots[i] if i < _slots.size() else null
-			var region: Rect2 = PuzzlePiece.quadrant_region(i, tex_size)
-			piece.setup_quadrant(art, region, slot)
+			piece.setup_quadrant(art, PuzzlePiece.quadrant_region(i, sz), slot)
 			piece.locked.connect(_on_piece_locked)
 			if piece.draggable != null:
 				piece.draggable.drag_started.connect(_stop_hint)
 			_pieces.append(piece)
-
-
-func _setup_hints() -> void:
-	if hint_manager != null and drag_hint != null:
-		hint_manager.call("enqueue", drag_hint)
 
 
 func _connect_chrome() -> void:
@@ -152,7 +127,6 @@ func apply_economy(data: EconomyData) -> void:
 
 
 func seed_shuffle(order: Array[int]) -> void:
-	_seeded_order.clear()
 	_seeded_order.assign(order)
 	_apply_tray_order(_seeded_order)
 
@@ -180,9 +154,8 @@ func _on_piece_locked(id: int) -> void:
 
 
 func _go(next_state: String) -> void:
-	if not fsm.transition_from(fsm.state, next_state):
-		return
-	_enter_state(next_state)
+	if fsm.transition_from(fsm.state, next_state):
+		_enter_state(next_state)
 
 
 func _enter_state(state: String) -> void:
@@ -239,12 +212,7 @@ func _shuffle_tray() -> void:
 func _apply_tray_order(order: Array[int]) -> void:
 	_tray_order.clear()
 	_tray_order.assign(order)
-	for slot_idx: int in range(order.size()):
-		var piece_id: int = order[slot_idx]
-		if piece_id < _pieces.size():
-			var piece: PuzzlePiece = _pieces[piece_id]
-			if piece != null and slot_idx < TRAY_OFFSETS.size():
-				piece.position = TRAY_OFFSETS[slot_idx]
+	PuzzlePiece.apply_tray_layout(_pieces, order)
 
 
 func _maybe_start_hint() -> void:
@@ -278,17 +246,13 @@ func _stop_hint() -> void:
 
 
 func _on_home_tapped() -> void:
-	_request(FESTA_PATH)
+	var manager: Node = get_node_or_null("/root/SceneManager")
+	if manager != null:
+		manager.call("request_scene", FESTA_PATH)
 
 
 func _on_replay_tapped() -> void:
 	_go(STATE_INTRO)
-
-
-func _request(path: String) -> void:
-	var manager: Node = get_node_or_null("/root/SceneManager")
-	if manager != null:
-		manager.call("request_scene", path)
 
 
 func close_celebrate_if_needed() -> void:
@@ -303,10 +267,9 @@ func _restore_music() -> void:
 		return
 	var manager: Node = get_node_or_null("/root/AudioManager")
 	var stream: AudioStream = load(MUSIC_PATH) as AudioStream
-	if manager == null or stream == null or bool(manager.call("is_music_playing", stream)):
-		return
-	manager.call("play_music", stream)
-	_log("music.start", {"track": "tema_principal"})
+	if manager != null and stream != null and not bool(manager.call("is_music_playing", stream)):
+		manager.call("play_music", stream)
+		_log("music.start", {"track": "tema_principal"})
 
 
 func _play_stream(method: String, path: String) -> bool:
@@ -315,17 +278,14 @@ func _play_stream(method: String, path: String) -> bool:
 		_log("audio.missing_art", {"track": path.get_file().get_basename()})
 		return false
 	var audio: Node = get_node_or_null("/root/AudioManager")
-	if audio == null:
-		return false
-	return bool(audio.call(method, stream))
+	return bool(audio.call(method, stream)) if audio != null else false
 
 
 func _set_confetti(on: bool) -> void:
-	if confetti == null:
-		return
-	confetti.emitting = on
-	if on:
-		confetti.restart()
+	if confetti != null:
+		confetti.emitting = on
+		if on:
+			confetti.restart()
 
 
 func _fsm_clock_ms() -> int:

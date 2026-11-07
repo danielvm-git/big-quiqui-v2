@@ -8,12 +8,27 @@ extends Control
 signal locked(piece_id: int)
 
 const SNAP_MARGIN: float = 32.0
+const TRAY_OFFSETS: Array[Vector2] = [
+	Vector2(0.0, 0.0),
+	Vector2(210.0, 0.0),
+	Vector2(420.0, 0.0),
+	Vector2(630.0, 0.0),
+]
 
 var piece_id: int = -1
 var draggable: TouchDraggable = null
 
 var _locked: bool = false
 var _slot: Control = null
+
+
+static func apply_tray_layout(pieces: Array[PuzzlePiece], order: Array[int]) -> void:
+	for slot_idx: int in range(order.size()):
+		var piece_id: int = order[slot_idx]
+		if piece_id < pieces.size() and slot_idx < TRAY_OFFSETS.size():
+			var piece: PuzzlePiece = pieces[piece_id]
+			if piece != null:
+				piece.position = TRAY_OFFSETS[slot_idx]
 
 
 static func quadrant_region(index: int, texture_size: Vector2) -> Rect2:

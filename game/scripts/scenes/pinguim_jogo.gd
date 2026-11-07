@@ -11,8 +11,6 @@ const POP_SFX: String = "res://assets/audio/sfx/bolha.ogg"
 const CONFETTI_SFX: String = "res://assets/audio/sfx/confete.ogg"
 const SUCCESS_SFX: String = "res://assets/audio/sfx/success.ogg"
 
-const BOLA_ART: String = "res://assets/art/items/bola.png"
-const BOLHA_ART: String = "res://assets/art/efeitos/bolha.png"
 const FRIEND_ID: String = "pinguim"
 
 const STATE_INTRO: String = "INTRO"
@@ -25,17 +23,12 @@ const LEGAL_EDGES: Dictionary = {
 	STATE_RESULT: [STATE_REWARD],
 	STATE_REWARD: [STATE_INTRO],
 }
-const MAX_DWELL: Dictionary = {
-	STATE_INTRO: 4.0,
-	STATE_RUNNING: 60.0,
-	STATE_RESULT: 10.0,
-}
+const MAX_DWELL: Dictionary = {STATE_INTRO: 4.0, STATE_RUNNING: 60.0, STATE_RESULT: 10.0}
 
 const INTRO_SEC: float = 1.0
 const RESULT_SEC: float = 1.5
 const ROUND_SEC: float = 20.0
 const STAR_TARGET: int = 6
-const ITEM_SIZE: Vector2 = Vector2(80.0, 80.0)
 
 var fsm: Fsm = null
 var manual_step: bool = false
@@ -79,13 +72,12 @@ func _ready() -> void:
 
 
 func _setup_penguin_draggable() -> void:
-	if penguin == null:
-		return
-	penguin_draggable = penguin.get_node_or_null("Draggable") as TouchDraggable
-	if penguin_draggable != null and lane != null:
-		penguin_draggable.mode = TouchDraggable.Mode.CONTINUOUS_SCRUB
-		penguin_draggable.scrub_target = lane
-		penguin_draggable.scrubbed.connect(_on_penguin_scrubbed)
+	if penguin != null and lane != null:
+		penguin_draggable = penguin.get_node_or_null("Draggable") as TouchDraggable
+		if penguin_draggable != null:
+			penguin_draggable.mode = TouchDraggable.Mode.CONTINUOUS_SCRUB
+			penguin_draggable.scrub_target = lane
+			penguin_draggable.scrubbed.connect(_on_penguin_scrubbed)
 
 
 func _connect_chrome() -> void:
@@ -97,9 +89,8 @@ func _connect_chrome() -> void:
 
 
 func _process(delta: float) -> void:
-	if manual_step:
-		return
-	advance(delta)
+	if not manual_step:
+		advance(delta)
 
 
 func advance(delta: float) -> void:
@@ -132,7 +123,6 @@ func apply_economy(data: EconomyData) -> void:
 
 
 func seed_spawns(types: Array[String]) -> void:
-	_seeded_spawns.clear()
 	_seeded_spawns.assign(types)
 
 
@@ -141,14 +131,9 @@ func catch_count() -> int:
 
 
 func _on_penguin_scrubbed(global_point: Vector2) -> void:
-	if lane == null or penguin == null:
-		return
-	var lane_rect: Rect2 = lane.get_global_rect()
-	var half_w: float = penguin.size.x * 0.5
-	var min_x: float = lane_rect.position.x + half_w
-	var max_x: float = lane_rect.end.x - half_w
-	var target_x: float = clampf(global_point.x, min_x, max_x)
-	penguin.global_position.x = target_x - half_w
+	if lane != null and penguin != null:
+		var lane_obj: IceLane = lane as IceLane
+		penguin.global_position.x = lane_obj.clamp_penguin_x(global_point.x, penguin.size.x)
 
 
 func _step_items(delta: float) -> void:
@@ -173,10 +158,10 @@ func _step_items(delta: float) -> void:
 func _catch_item(item: CatchItem, to_remove: Array[CatchItem]) -> void:
 	item.popped = true
 	_catches += 1
-	_play_stream("play_sfx", POP_SFX)
-	_log("penguin.catch", {"item": item.kind, "total": _catches})
 	item.visible = false
 	to_remove.append(item)
+	_play_stream("play_sfx", POP_SFX)
+	_log("penguin.catch", {"item": item.kind, "total": _catches})
 
 
 func _cleanup_items(to_remove: Array[CatchItem]) -> void:
@@ -187,26 +172,14 @@ func _cleanup_items(to_remove: Array[CatchItem]) -> void:
 
 
 func _spawn_next_item() -> void:
-	var kind: String = "bola"
 	if not _seeded_spawns.is_empty():
-		kind = _seeded_spawns.pop_front()
-	elif randf() > 0.5:
-		kind = "bolha"
-	spawn_item(kind)
+		spawn_item(_seeded_spawns.pop_front())
+	else:
+		spawn_item("bolha" if randf() > 0.5 else "bola")
 
 
 func spawn_item(kind: String, at_x: float = -1.0) -> CatchItem:
-	var art_path: String = BOLA_ART if kind == "bola" else BOLHA_ART
-	var texture: Texture2D = load(art_path) as Texture2D if ResourceLoader.exists(art_path) else null
-	var item: CatchItem = CatchItem.new()
-	item.kind = kind
-	item.texture = texture
-	item.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	item.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	item.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	item.size = ITEM_SIZE
-	var spawn_pos: Vector2 = _calc_spawn_pos(at_x)
-	item.position = spawn_pos
+	var item: CatchItem = CatchItem.create(kind, _calc_spawn_pos(at_x))
 	_items.append(item)
 	var parent_node: Node = items_container if items_container != null else self
 	parent_node.add_child(item)
@@ -214,55 +187,42 @@ func spawn_item(kind: String, at_x: float = -1.0) -> CatchItem:
 
 
 func _calc_spawn_pos(explicit_x: float) -> Vector2:
-	var spawn_y: float = 60.0
 	if explicit_x >= 0.0:
-		return Vector2(explicit_x, spawn_y)
+		return Vector2(explicit_x, 60.0)
 	if lane != null:
-		var lane_rect: Rect2 = lane.get_global_rect()
-		var x_min: float = lane_rect.position.x + ITEM_SIZE.x * 0.5
-		var x_max: float = lane_rect.end.x - ITEM_SIZE.x * 0.5
-		return Vector2(randf_range(x_min, x_max), spawn_y)
-	return Vector2(400.0, spawn_y)
+		var r: Rect2 = lane.get_global_rect()
+		return Vector2(randf_range(r.position.x + 40.0, r.end.x - 40.0), 60.0)
+	return Vector2(400.0, 60.0)
 
 
 func _penguin_catch_rect() -> Rect2:
-	if penguin == null:
-		return Rect2()
-	return penguin.get_global_rect()
+	return penguin.get_global_rect() if penguin != null else Rect2()
 
 
 func _floor_y() -> float:
-	if lane != null:
-		return lane.get_global_rect().end.y + 40.0
-	return 1000.0
+	return lane.get_global_rect().end.y + 40.0 if lane != null else 1000.0
 
 
 func _go(next_state: String) -> void:
-	if not fsm.transition_from(fsm.state, next_state):
-		return
-	_enter_state(next_state)
+	if fsm.transition_from(fsm.state, next_state):
+		_enter_state(next_state)
 
 
 func _enter_state(state: String) -> void:
 	_state_t = 0.0
+	if replay != null:
+		replay.visible = (state == STATE_REWARD)
 	match state:
 		STATE_INTRO:
 			round_sec = 0.0
 			_catches = 0
 			_reward_paid = false
 			_set_confetti(false)
-			if replay != null:
-				replay.visible = false
 			_clear_all_items()
-		STATE_RUNNING:
-			if replay != null:
-				replay.visible = false
 		STATE_RESULT:
 			_settle_reward()
 		STATE_REWARD:
 			_set_confetti(true)
-			if replay != null:
-				replay.visible = true
 
 
 func _clear_all_items() -> void:
@@ -281,9 +241,7 @@ func _settle_reward() -> void:
 		return
 	var coins: int = _catches
 	progress.call("add_coins", coins)
-	var star: bool = false
-	if _catches >= STAR_TARGET:
-		star = bool(progress.call("add_star", FRIEND_ID))
+	var star: bool = _catches >= STAR_TARGET and bool(progress.call("add_star", FRIEND_ID))
 	if hud != null and penguin != null:
 		hud.fly_coin(penguin.get_global_rect().get_center())
 	_play_stream("play_sfx", CONFETTI_SFX)
@@ -291,17 +249,13 @@ func _settle_reward() -> void:
 
 
 func _on_home_tapped() -> void:
-	_request(FESTA_PATH)
+	var manager: Node = get_node_or_null("/root/SceneManager")
+	if manager != null:
+		manager.call("request_scene", FESTA_PATH)
 
 
 func _on_replay_tapped() -> void:
 	_go(STATE_INTRO)
-
-
-func _request(path: String) -> void:
-	var manager: Node = get_node_or_null("/root/SceneManager")
-	if manager != null:
-		manager.call("request_scene", path)
 
 
 func close_celebrate_if_needed() -> void:
@@ -316,10 +270,9 @@ func _restore_music() -> void:
 		return
 	var manager: Node = get_node_or_null("/root/AudioManager")
 	var stream: AudioStream = load(MUSIC_PATH) as AudioStream
-	if manager == null or stream == null or bool(manager.call("is_music_playing", stream)):
-		return
-	manager.call("play_music", stream)
-	_log("music.start", {"track": "tema_principal"})
+	if manager != null and stream != null and not bool(manager.call("is_music_playing", stream)):
+		manager.call("play_music", stream)
+		_log("music.start", {"track": "tema_principal"})
 
 
 func _play_stream(method: String, path: String) -> bool:
@@ -328,17 +281,14 @@ func _play_stream(method: String, path: String) -> bool:
 		_log("audio.missing_art", {"track": path.get_file().get_basename()})
 		return false
 	var audio: Node = get_node_or_null("/root/AudioManager")
-	if audio == null:
-		return false
-	return bool(audio.call(method, stream))
+	return bool(audio.call(method, stream)) if audio != null else false
 
 
 func _set_confetti(on: bool) -> void:
-	if confetti == null:
-		return
-	confetti.emitting = on
-	if on:
-		confetti.restart()
+	if confetti != null:
+		confetti.emitting = on
+		if on:
+			confetti.restart()
 
 
 func _fsm_clock_ms() -> int:

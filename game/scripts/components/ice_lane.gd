@@ -15,3 +15,9 @@ func scrub_hull_global() -> PackedVector2Array:
 			Vector2(rect.position.x, rect.end.y),
 		]
 	)
+
+
+func clamp_penguin_x(global_x: float, penguin_w: float) -> float:
+	var rect: Rect2 = get_global_rect()
+	var half_w: float = penguin_w * 0.5
+	return clampf(global_x, rect.position.x + half_w, rect.end.x - half_w) - half_w
