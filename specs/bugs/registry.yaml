@@ -487,6 +487,6 @@ bugs:
   scope: tests
   summary: "DoorBadge texture swapping untested with real Art child in test_door_badge.gd"
   file: specs/bugs/BUG-054-door-badge-art-texture-untested.md
-  status: open
+  status: fixed
   found_by: e09 post-epic review
 
