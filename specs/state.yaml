@@ -130,7 +130,7 @@ bug_cycle:
     - BUG-011
     - BUG-012
     outcome: 11 fixed, BUG-004 wontfix (PII policy, pinned by test)
-last_updated: '2026-11-07T11:05:00-03:00'
+last_updated: '2026-11-07T18:05:00-03:00'
 release:
   ci_verified: true
   last_released: v0.9.1
@@ -228,6 +228,25 @@ run_baseline:
     forward instead of inventing a story; e10 keeps its place in the ladder.
 
 gate_decisions:
+- gate: ship e11s01/e11s02 (release-branch, standing approval)
+  decision: >-
+    opened PR 40 titled `test(e11): the invariant gate — 10 new layers, 5 live defects found
+    and fixed`, squash-merged it after all six checks were green, confirmed main's pipeline
+    green (run 42413014671: ci-lint, test, verify, build, export-preset, release), and left
+    the tag ladder alone: big-release reported "No relevant changes, skipping release", so
+    v0.9.1 is still the latest tag.
+  reason: >-
+    a `test(...)` squash type is what keeps the release a human decision, exactly as PR 37
+    (e09) and PR 35 (e08) did. The run's approval covers commit/push/PR/merge/cleanup, not
+    tagging or publishing.
+- gate: worktree and branch cleanup (safe cleanup only)
+  decision: >-
+    removed nothing but my own branch (gh deleted it on merge, remote pruned). Left alone:
+    `~/Developer/big-quiqui-v2-e10` on `epic/e11-mbt-monkey-and-ipad-release` (50ca163) and
+    the two orca review-e07 worktrees.
+  reason: >-
+    none of the three is provably merged into the current main, and one is not even mine.
+    Deleting unmerged work is outside this run's approval.
 - gate: grill-me (design decisions before enacting the plan)
   decision: >-
     G1 adversarial/invariant layer rather than more per-scene scenarios (all 54 historical
