@@ -48,15 +48,19 @@ func to_dictionary() -> Dictionary:
 
 
 ## Rebuilds from an untrusted dictionary, dropping anything malformed.
+##
+## **Total by contract:** any Dictionary in, a legal `SaveData` out. The JSON parser hands us
+## `Variant`s and GDScript's `int(null)` is a runtime error, not a zero, so every scalar goes
+## through `_int_of` (BUG-055).
 static func from_dictionary(raw: Dictionary) -> SaveData:
 	var data: SaveData = SaveData.new()
-	data.version = maxi(int(raw.get("version", 1)), 1)
-	data.coins = clampi(int(raw.get("coins", 0)), 0, MAX_COINS)
-	data.tickets = clampi(int(raw.get("tickets", 0)), 0, MAX_TICKETS)
-	data.completed_cycles = clampi(int(raw.get("completed_cycles", 0)), 0, MAX_CYCLES)
+	data.version = maxi(_int_of(raw.get("version", 1), 1), 1)
+	data.coins = clampi(_int_of(raw.get("coins", 0), 0), 0, MAX_COINS)
+	data.tickets = clampi(_int_of(raw.get("tickets", 0), 0), 0, MAX_TICKETS)
+	data.completed_cycles = clampi(_int_of(raw.get("completed_cycles", 0), 0), 0, MAX_CYCLES)
 	data.equipped_outfits = _clean_id_map(raw.get("equipped_outfits", {}))
 	data.owned_furniture = _clean_id_array(raw.get("owned_furniture", []))
-	data.placed_furniture = _clean_placement(raw.get("placed_furniture", []))
+	data.placed_furniture = _clean_placement(raw.get("placed_furniture", []), data.owned_furniture)
 	data.friend_stars = _clean_stars(raw.get("friend_stars", {}))
 	return data
 
@@ -67,7 +71,8 @@ func clamp_to_rules() -> void:
 	completed_cycles = clampi(completed_cycles, 0, MAX_CYCLES)
 	equipped_outfits = _clean_id_map(equipped_outfits)
 	owned_furniture = _clean_id_array(owned_furniture)
-	placed_furniture = _clean_placement(placed_furniture)
+	# Ownership first: a placement can only be judged once we know what she owns (BUG-056).
+	placed_furniture = _clean_placement(placed_furniture, owned_furniture)
 	friend_stars = _clean_stars(friend_stars)
 
 
@@ -100,7 +105,7 @@ static func _clean_id_array(raw: Variant) -> Array[String]:
 	return clean
 
 
-static func _clean_placement(raw: Variant) -> Array[Dictionary]:
+static func _clean_placement(raw: Variant, owned: Array[String] = []) -> Array[Dictionary]:
 	var clean: Array[Dictionary] = []
 	if not raw is Array:
 		return clean
@@ -110,15 +115,55 @@ static func _clean_placement(raw: Variant) -> Array[Dictionary]:
 			continue
 		var entry: Dictionary = item as Dictionary
 		var raw_id: Variant = entry.get("id", "")
-		if raw_id is String and is_valid_id(raw_id as String):
-			var id_str: String = raw_id as String
-			if seen.has(id_str):
-				continue
-			seen[id_str] = true
-			var px: float = clampf(float(entry.get("x", 0.5)), 0.0, 1.0)
-			var py: float = clampf(float(entry.get("y", 0.5)), 0.0, 1.0)
-			clean.append({"id": id_str, "x": px, "y": py})
+		if not raw_id is String or not is_valid_id(raw_id as String):
+			continue
+		var id_str: String = raw_id as String
+		# A placement she never bought cannot stand in the room (BUG-056), and a duplicate
+		# id would let an edited file count one piece five times (BUG-048).
+		if seen.has(id_str) or not owned.has(id_str):
+			continue
+		seen[id_str] = true
+		var px: float = _ratio_of(entry.get("x", 0.5))
+		var py: float = _ratio_of(entry.get("y", 0.5))
+		clean.append({"id": id_str, "x": px, "y": py})
 	return clean
+
+
+## A ratio must be finite before it can be clamped: `clampf(NAN, 0, 1)` is NAN, because every
+## comparison against NaN is false, and a NaN reaches a `Control.position` unchanged (BUG-057).
+static func _ratio_of(value: Variant) -> float:
+	var number: float = _float_of(value, 0.5)
+	if not is_finite(number):
+		return 0.5
+	return clampf(number, 0.0, 1.0)
+
+
+## JSON scalars only: an int, a finite float, a numeric string or a bool. Anything else —
+## `null`, an array, a dictionary — is the declared default, never a runtime error.
+static func _int_of(value: Variant, fallback: int) -> int:
+	if value is int:
+		return value as int
+	if value is bool:
+		return 1 if bool(value) else 0
+	if value is float:
+		var number: float = value as float
+		return int(number) if is_finite(number) else fallback
+	if value is String:
+		return (value as String).strip_edges().to_int()
+	return fallback
+
+
+static func _float_of(value: Variant, fallback: float) -> float:
+	if value is float:
+		var number: float = value as float
+		return number if is_finite(number) else fallback
+	if value is int:
+		return float(value as int)
+	if value is bool:
+		return 1.0 if bool(value) else 0.0
+	if value is String:
+		return (value as String).strip_edges().to_float()
+	return fallback
 
 
 static func _clean_stars(raw: Variant) -> Dictionary:
@@ -128,5 +173,5 @@ static func _clean_stars(raw: Variant) -> Dictionary:
 	for key: Variant in (raw as Dictionary).keys():
 		var friend: String = str(key)
 		if is_valid_id(friend):
-			clean[friend] = clampi(int((raw as Dictionary)[key]), 0, MAX_STARS)
+			clean[friend] = clampi(_int_of((raw as Dictionary)[key], 0), 0, MAX_STARS)
 	return clean
