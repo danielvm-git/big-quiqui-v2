@@ -139,18 +139,26 @@ func _price_badge(index: int) -> Control:
 			Vector4(-half + SHELF_SIZE * 0.5, 0.0, half + SHELF_SIZE * 0.5, PRICE_SIZE.y),
 		)
 	)
+	badge.add_child(_badge_coin())
+	badge.add_child(_badge_label(PRICES[index]))
+	return badge
+
+
+func _badge_coin() -> TextureRect:
 	var coin: TextureRect = _full_rect_art("Coin", COIN_ART, "", false)
 	coin.custom_minimum_size = Vector2(32.0, 32.0)
 	SceneBuilder.pin(coin, Vector4(0.0, 0.0, 0.0, 0.0), Vector4(0.0, 0.0, 32.0, 32.0))
-	badge.add_child(coin)
+	return coin
+
+
+func _badge_label(price: int) -> Label:
 	var label: Label = Label.new()
 	label.name = "Price"
-	label.text = str(PRICES[index])
+	label.text = str(price)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	label.add_theme_font_size_override("font_size", 28)
 	SceneBuilder.pin(label, Vector4(0.0, 0.0, 0.0, 0.0), Vector4(36.0, 0.0, PRICE_SIZE.x, 32.0))
-	badge.add_child(label)
-	return badge
+	return label
 
 
 func _sold_badge(index: int) -> Control:

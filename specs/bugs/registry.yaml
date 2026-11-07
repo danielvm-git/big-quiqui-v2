@@ -478,7 +478,7 @@ bugs:
   scope: code
   summary: "Functions in build_mercado_scene.gd, casinha.gd, and placement_oracle.gd exceed the 20-line bar"
   file: specs/bugs/BUG-053-functions-over-20-line-bar.md
-  status: open
+  status: fixed
   found_by: e09 post-epic review
 - bug_id: BUG-054
   date: '2026-11-07'
