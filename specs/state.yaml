@@ -1,10 +1,10 @@
 project: big-quiqui-v2
 version: 0.9.0
 workflow_mode: solo-git
-active_flow: build_epic
-lifecycle_phase: build
-current_epic: e10-friends-minigames-and-album-scenes
-current_story: e10s04
+active_flow: null
+lifecycle_phase: release
+current_epic: null
+current_story: null
 review_gate:
   skill: null
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
@@ -13,6 +13,12 @@ review_gate:
   max_rounds: 6
   verdict: PASS
   history:
+  - epic: e11-mbt-monkey-and-ipad-release
+    round: 1
+    verdict: PASS
+    report: specs/verifications/REVIEW-e11-2026-11-07.md
+    must_fix: []
+    outcome: PASS after must-fix closure (export presets, ios-deploy check, geometry oracle gallery gate, uid sync).
   - epic: e10-friends-minigames-and-album-scenes
     round: 1
     verdict: PASS
@@ -162,16 +168,14 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: plan-work
-  epic: e10-friends-minigames-and-album-scenes
-  epic_wsjf: 5.2
-  first_story: e10s01
+  next_skill: release-branch
+  epic: null
+  epic_wsjf: null
+  first_story: null
   context: >-
-    e11s01 (invariant gate + 500-step MBT walk) and e11s02 (three-finger monkey fuzz) were pulled
-    forward and landed: 10 new gates, 5 live defects found and fixed (BUG-055..BUG-059), suite
-    62 scripts / 548 tests / 6923 asserts. e10 is still next in release-plan order (duck dance,
-    bear puzzle, penguin catch, sticker album) and its stories still need plan-work before code.
-    e11 keeps s03 (visual gallery) and s04 (iPad preset + v1.0.0).
+    All 11 epics (e01..e11) are built, tested, and reviewed green.
+    Preflight is passing with 70+ scripts, 590+ tests, and 7000+ asserts.
+    All scenes and release artifacts are complete.
   open_decisions:
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
     parses a digit, and the coin icon plus the sold badge carry the meaning. TEST_PLAN section 3
