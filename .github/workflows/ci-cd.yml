@@ -208,7 +208,7 @@ jobs:
     # Self-enables at e11 when game/export_presets.cfg gains an iOS preset.
     needs: [ci-lint, test, export-preset]
     if: needs.export-preset.outputs.enabled == 'true'
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 40
     permissions:
       contents: read
