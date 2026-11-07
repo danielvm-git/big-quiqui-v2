@@ -442,7 +442,7 @@ bugs:
   scope: telemetry
   summary: "place_furniture logs item invalid for valid but unowned furniture IDs instead of not_owned"
   file: specs/bugs/BUG-049-place-refused-unowned-logged-as-invalid.md
-  status: open
+  status: fixed
   found_by: e09 post-epic review
 - bug_id: BUG-050
   date: '2026-11-07'
