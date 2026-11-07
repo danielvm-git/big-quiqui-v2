@@ -490,3 +490,57 @@ bugs:
   status: fixed
   found_by: e09 post-epic review
 
+- bug_id: BUG-055
+  date: '2026-11-07'
+  severity: high
+  priority: P0
+  scope: persistence
+  summary: "SaveData.from_dictionary is not total — a scalar of the wrong type (null,
+    array, dictionary) raises \"Invalid call. Nonexistent 'int' constructor\", the loader
+    returns null and the next money path dereferences it"
+  file: specs/bugs/BUG-055-save-loader-not-total.md
+  status: fixed
+  found_by: e11s01 INV-01 adversarial save corpus
+- bug_id: BUG-056
+  date: '2026-11-07'
+  severity: high
+  priority: P0
+  scope: security
+  summary: "Placements for furniture the child never owned survive the save loader and
+    placed_count() counts them, so an edited save opens the party with an empty room
+    (incomplete fix of BUG-048)"
+  file: specs/bugs/BUG-056-unowned-placements-survive-load.md
+  status: fixed
+  found_by: e11s01 INV-01 adversarial save corpus
+- bug_id: BUG-057
+  date: '2026-11-07'
+  severity: medium
+  priority: P1
+  scope: persistence
+  summary: "clampf(NAN, 0, 1) keeps NAN, so a placement coordinate can reach the room
+    transform as a non-finite ratio"
+  file: specs/bugs/BUG-057-nan-placement-survives-clamp.md
+  status: fixed
+  found_by: e11s01 INV-01 adversarial save corpus
+- bug_id: BUG-058
+  date: '2026-11-07'
+  severity: medium
+  priority: P1
+  scope: code
+  summary: "FurnitureCatalog.price_of returns 0 for an id missing from the price table,
+    so the store hands the piece over for free — the exact defect its own docstring claims
+    to prevent (BUG-044 lineage)"
+  file: specs/bugs/BUG-058-unpriced-furniture-is-free.md
+  status: fixed
+  found_by: e11s01 INV-04 economy tables
+- bug_id: BUG-059
+  date: '2026-11-07'
+  severity: medium
+  priority: P1
+  scope: audio
+  summary: "BanheiroScene.VOICE_PATH names banho_hora_do_banho.ogg while the shipped clip
+    is bath_hora_do_banho.ogg, so the bath voice line never plays (BUG-020 lineage: a dead
+    VOICE_PATH constant)"
+  file: specs/bugs/BUG-059-banheiro-voice-path-missing.md
+  status: fixed
+  found_by: e11s01 INV-07b asset integrity

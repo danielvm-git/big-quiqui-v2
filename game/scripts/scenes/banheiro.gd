@@ -15,7 +15,7 @@ extends Control
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
 const MUSIC_PATH: String = "res://assets/audio/music/banho.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/banho_hora_do_banho.ogg"
+const VOICE_PATH: String = "res://assets/audio/voice/bath_hora_do_banho.ogg"
 
 const BLOB_COUNT: int = 8
 ## A stage ends on effort, not on a timer: the child scrubs/rinses/dries her body.

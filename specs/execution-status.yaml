@@ -39,9 +39,9 @@ development_status:
   e10s02: planned
   e10s03: planned
   e10s04: planned
-  e11: planned
-  e11s01: planned
-  e11s02: planned
+  e11: in_progress
+  e11s01: done
+  e11s02: done
   e11s03: planned
   e11s04: planned
 epics: null
