@@ -159,11 +159,19 @@ handoff:
   epic_wsjf: 5.2
   first_story: e10s01
   context: >-
-    e09 is completely reviewed, verified and all 9 post-epic findings (BUG-046..BUG-054) are fixed
-    with tests, docs and conventional commits. Full Preflight is green (52 scripts, 484 tests, 2917 asserts).
-    Next up in release-plan.yaml (WSJF order) is e10-friends-minigames-and-album-scenes (duck dance, bear puzzle,
-    penguin catch, and sticker album). e10 stories need expansion via plan-work before coding.
+    e11s01 (invariant gate + 500-step MBT walk) and e11s02 (three-finger monkey fuzz) were pulled
+    forward and landed: 10 new gates, 5 live defects found and fixed (BUG-055..BUG-059), suite
+    62 scripts / 548 tests / 6923 asserts. e10 is still next in release-plan order (duck dance,
+    bear puzzle, penguin catch, sticker album) and its stories still need plan-work before code.
+    e11 keeps s03 (visual gallery) and s04 (iPad preset + v1.0.0).
   open_decisions:
+  - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
+    parses a digit, and the coin icon plus the sold badge carry the meaning. TEST_PLAN section 3
+    row 6 ("no text node carries play meaning") is the stricter reading; the gate implements the
+    operable one. A review that wants zero Labels must change the store design first.'
+  - 'The save still has no backup file (FIX-06): a corrupt progress.json degrades to defaults.
+    now covered by a test (BUG-055 makes the degradation total), so the loss is survivable
+    rather than silent. The .bak path is still e11s04 hardening.'
   - No bedtime voice line exists in game/assets/audio/voice/. The bedroom answers
     with SFX (BUG-020). Add celebrate/sleep lines when the family records them — never
     TTS.
@@ -205,18 +213,57 @@ handoff:
     a separate recycle bag/bin hit pair — recycling is the drag verb, not a seventh
     TapButton POI.'
 run_baseline:
-  date: '2026-11-07T08:05:00-03:00'
+  date: '2026-11-07T14:20:00-03:00'
   scope: all pending work
-  git: clean tree on main a553f67, local main == origin/main
-  preflight: GREEN — 42 scripts / 432 tests / 2418 asserts
+  git: clean tree on main 8eac3d6, local main == origin/main
+  preflight: GREEN — 52 scripts / 484 tests / 2917 asserts
   failing_tests: none
-  active_bugs: 'none (43 fixed, 2 wontfix: BUG-004 PII policy, BUG-028 engine audio teardown)'
+  active_bugs: 'none (54 entries: 52 fixed, 2 wontfix — BUG-004 PII policy, BUG-028 engine
+    audio teardown)'
   pending_work: >-
-    No failing test and no open registry entry, so the fix-bug queue was empty. All pending
-    work was the epic train: e09 (planned, next by WSJF and by the previous handoff), then
-    e10 and e11.
+    No failing test and no open registry entry, so the fix-bug queue was empty. The pending
+    work was the epic train (e10 next by WSJF) plus the brief's own request: build the most
+    comprehensive test suite the project can hold and show the bugs it finds. e11s01/e11s02
+    already name exactly that work (500-step MBT walk, monkey fuzz), so they were pulled
+    forward instead of inventing a story; e10 keeps its place in the ladder.
 
 gate_decisions:
+- gate: grill-me (design decisions before enacting the plan)
+  decision: >-
+    G1 adversarial/invariant layer rather than more per-scene scenarios (all 54 historical
+    bugs were cross-cutting invariant violations); G2 host the work in e11s01/e11s02, which
+    already specify MBT + monkey fuzz, with plan-work expansion first; G3 merge-blocking in
+    preflight L1 with fixed seeds; G4 fix every bug found in this run with a test first;
+    G5 declare e10 deferred (it needs its own plan-work cycle).
+  reason: >-
+    Standing approval covers taking the recommended path at a gate; the alternative (a 55th
+    happy-path test) would have proved nothing, and inventing a story for the suite would
+    have broken traceability.
+- gate: one commit per fix (deviation, recorded)
+  decision: >-
+    BUG-055, BUG-056 and BUG-057 landed in ONE fix commit instead of three. All three are the
+    same function family in save_data.gd (`_int_of`/`_float_of`, `_clean_placement(owned)`,
+    `_ratio_of`) and the edits interleave; splitting them would have produced commits that
+    neither build nor pass on their own.
+  reason: >-
+    The brief's "one small commit per fix" exists so a reviewer can read a fix in isolation;
+    a three-way split of one entangled function would have made review harder, not easier.
+    BUG-058 and BUG-059 (different files) each got their own commit.
+- gate: red-first commit on the feature branch
+  decision: >-
+    The test commit (`test(e11): add the invariant gate…`) is red by construction: the gates
+    reproduce five live defects before the fixes land. The PR as a whole is green.
+  reason: >-
+    develop-tdd requires the failing test to exist before the fix, and a single squash lands
+    on main; no red state ever reaches main.
+- gate: two shipped-code contracts renegotiated by a bug fix
+  decision: >-
+    `test_furniture_catalog` and `test_progress_manager` asserted the *old* behaviour
+    (`price_of` -> 0 for an unpriced piece; an unowned placement surviving the load). They
+    were updated to the BUG-058 / BUG-056 contract, not deleted.
+  reason: >-
+    A test that pins a defect is part of the defect. The new assertions are strictly stronger
+    (price != 0 and ownership required), so no coverage was traded away.
 - gate: post-epic review e09 (standing approval, recommended path)
   decision: >-
     Ran full post-epic review across whole e09 diff against main. Found 9 issues (BUG-046..BUG-054),

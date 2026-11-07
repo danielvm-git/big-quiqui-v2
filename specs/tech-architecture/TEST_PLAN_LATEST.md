@@ -107,3 +107,34 @@ and so a future "alignment" pass does not quietly adopt them.
 adopted after BUG-013. `PlacementOracle` fails closed: an empty save is a finding ("nothing placed
 proves nothing") and a test moves a piece by 10 % of the room to prove the oracle can fail (the e08
 lesson, BUG-040).
+
+## 7. e11s01/e11s02 — the invariant gate (pulled forward)
+
+The 484 tests before this layer answered *"does this scene do what its story says?"*. These
+answer *"can any tampered save, any random tap or any newly added scene reach a state the
+model forbids?"* — the gap where all 54 earlier bugs lived. They run inside L1, so they are
+merge-blocking; the seeds are fixed, so a failure reproduces exactly.
+
+| Layer | Invariant | Where |
+|---|---|---|
+| INV-01 | `from_dictionary` is total; placements are owned-only, deduped, finite, in `0..1` | `unit/test_save_fuzz.gd`, `helpers/save_corpus.gd` |
+| INV-02 | normalising twice == normalising once | `unit/test_save_fuzz.gd` |
+| INV-03 | a refused mutation is invisible; one logical change, one write | `unit/test_persistence_invariants.gd` |
+| INV-04 | price/weight/payout tables cover the catalogue; no zero price, no zero weight | `unit/test_economy_tables.gd` |
+| INV-05 | the diary vocabulary is id-shaped, namespaced, live, and `msg` never carries prose | `unit/test_telemetry_vocabulary.gd`, `helpers/source_scanner.gd` |
+| INV-06 | every `LEGAL_EDGES` table is closed; no undeclared target, no dead state | `unit/test_fsm_tables.gd` |
+| INV-07 | every scene is a Control root filling the canvas, background covered, no word on screen, built by a tool | `unit/test_scene_contracts.gd` |
+| INV-07b | every `res://` literal resolves; every texture decodes; every stream loads | `unit/test_asset_integrity.gd` |
+| INV-08 | each oracle/auditor rejects a deliberately broken input | `integration/test_gate_can_fail.gd` |
+| MBT-01 | seeded 500-step walk: economy bounds, care FSM legality, save reload every 25 steps | `integration/test_mbt_walk.gd` |
+| FZ-01..03 | deterministic 3-finger stream; hub and step room survive 500/200 events | `integration/test_monkey_fuzz.gd`, `helpers/monkey_stream.gd` |
+
+**What it found on its first run (all fixed, BUG-055..BUG-059):** a save loader that
+crashed on `null` scalars, placements for furniture she never bought unlocking the party,
+`NaN` ratios surviving `clampf`, an unpriced catalogue piece being free, and the bath voice
+line pointing at `banho_…` while the shipped clip is `bath_…`.
+
+**Two readings this gate deliberately does NOT take** (recorded so a review does not
+"align" them upward): Labels may carry **numerals** (the store prices) but never words, and
+`anchors_preset = 0` with explicit `anchor_right/bottom = 1.0` is accepted as FULL_RECT —
+what matters is the rect the scene packs to, which `GeometryOracle` asserts at boot.

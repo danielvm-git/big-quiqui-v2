@@ -164,12 +164,13 @@ epics:
   - id: e11
     slug: e11-mbt-monkey-and-ipad-release
     title: "Release Gate (v1.0.0): 500-Step MBT Walk, 3-Finger Monkey Fuzz, Visual Gallery & iPad Build"
-    playable_scene: "ALL (17 scenes verified)"
-    status: planned
+    playable_scene: "ALL (13 scenes verified)"
+    status: in_progress
     bcps: 13
     wsjf: 6.4
     stories: [e11s01, e11s02, e11s03, e11s04]
     summary: >
-      Executes 500-step Model-Based Testing random walk across all scenes, 1,000-event 3-finger Monkey
-      fuzz test, dual-aspect screenshot gallery (1920x1080 & 2048x1536), gate-trace sign-off, and iPad
-      Personal Team deployment script.
+      e11s01 (invariant gate + 500-step MBT walk) and e11s02 (3-finger monkey fuzz) landed early,
+      pulled forward by the test-hardening run: 10 new gates, 5 live defects found and fixed
+      (BUG-055..BUG-059). Remaining: dual-aspect screenshot gallery (1920x1080 & 2048x1536),
+      gate-trace sign-off, and the iPad Personal Team deployment script.
