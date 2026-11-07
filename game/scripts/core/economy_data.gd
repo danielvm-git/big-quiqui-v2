@@ -1,8 +1,10 @@
 # story: e08s03
 # story: e09s01
+# story: e10s01
 class_name EconomyData
 extends Resource
-## FIX-05: tuning table for wheel prizes (weights + coin payouts) and furniture prices.
+## FIX-05: tuning table for wheel prizes (weights + coin payouts), furniture prices
+## and the friends' minigame payouts (e10s01).
 
 @export var wheel_spin_ticket_cost: int = 1
 @export var wheel_prize_weights: Dictionary = {"a": 1, "b": 1, "c": 1}
@@ -23,6 +25,9 @@ extends Resource
 	"tapete": 2,
 	"vaso_planta": 3,
 }
+## One coin bundle per minigame win, keyed by `FriendCatalog.FRIEND_IDS`. Read through
+## `FriendCatalog.coins_of`, which floors missing/negative entries at 0.
+@export var minigame_coins: Dictionary = {"pato": 3, "urso": 3, "pinguim": 3}
 
 
 func pick_prize(rng: RandomNumberGenerator) -> String:
