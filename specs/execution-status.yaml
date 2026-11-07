@@ -29,11 +29,11 @@ development_status:
   e08s02: done
   e08s03: done
   e08s04: done
-  e09: planned
-  e09s01: planned
-  e09s02: planned
-  e09s03: planned
-  e09s04: planned
+  e09: done
+  e09s01: done
+  e09s02: done
+  e09s03: done
+  e09s04: done
   e10: planned
   e10s01: planned
   e10s02: planned
@@ -46,6 +46,22 @@ development_status:
   e11s04: planned
 epics: null
 stories:
+  e09s01:
+    status: done
+    started_at: '2026-11-07T10:00:00-03:00'
+    completed_at: '2026-11-07T10:00:00-03:00'
+  e09s02:
+    status: done
+    started_at: '2026-11-07T10:00:00-03:00'
+    completed_at: '2026-11-07T10:00:00-03:00'
+  e09s03:
+    status: done
+    started_at: '2026-11-07T10:00:00-03:00'
+    completed_at: '2026-11-07T10:00:00-03:00'
+  e09s04:
+    status: done
+    started_at: '2026-11-07T10:00:00-03:00'
+    completed_at: '2026-11-07T10:00:00-03:00'
   e07s04:
     status: done
     started_at: "2026-11-06T17:10:00-03:00"

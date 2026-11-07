@@ -3,7 +3,7 @@ slug: e09-store-casinha-and-party-scenes
 title: 'Playable Scenes 11–13: Furniture Store (mercado.tscn), Casinha (casinha.tscn)
   & Party (festa.tscn)'
 playable_scene: res://scenes/mercado.tscn + res://scenes/casinha.tscn + res://scenes/festa.tscn
-status: in_progress
+status: done
 bcps: 13
 wsjf: 5.7
 parity:
@@ -19,23 +19,23 @@ stories:
   title: 'FurnitureData Catalog (12 Lote-6 Pieces) & Playable Scene 11: StoreScene
     (mercado.tscn) Atomic Coin Purchase'
   bcps: 4
-  status: in_progress
+  status: done
   delta: ADDED
 - id: e09s02
   title: 'TouchDraggable FREE_PLACEMENT Mode & Playable Scene 12: CasinhaScene (casinha.tscn)
     with Normalized (0..1) Coordinates'
   bcps: 4
-  status: planned
+  status: done
   delta: ADDED
 - id: e09s03
   title: 'Playable Scene 13: HousePartyScene (festa.tscn) Unlocked at >=5 Placed Furniture
     Items with Friends Dancing'
   bcps: 3
-  status: planned
+  status: done
   delta: ADDED
 - id: e09s04
   title: Normalized Furniture Coordinate Persistence Oracle Across 16:9 and 4:3 iPad
     Aspect Ratios
   bcps: 2
-  status: planned
+  status: done
   delta: ADDED

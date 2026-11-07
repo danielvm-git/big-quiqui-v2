@@ -2,7 +2,7 @@ story_id: e09s04
 spec: e09s04.md
 epic_id: e09
 title: Normalized Furniture Coordinate Persistence Oracle Across 16:9 and 4:3 iPad Aspect Ratios
-status: pending
+status: done
 bcps: 2
 playable_scene: res://scenes/casinha.tscn
 tasks:
@@ -13,14 +13,14 @@ tasks:
   risk: P1
   allure:
     severity: high
-  status: pending
+  status: done
 - id: e09s04-t02
   description: 'GREEN: game/tests/helpers/placement_oracle.gd'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P1
   allure:
     severity: high
-  status: pending
+  status: done
 - id: e09s04-t03
   description: 'Epic walk test_e09_epic_e2e.gd: buy -> place -> remount on the other canvas -> party
     still locked; exactly one diary event per action'
@@ -28,4 +28,4 @@ tasks:
   risk: P1
   allure:
     severity: high
-  status: pending
+  status: done

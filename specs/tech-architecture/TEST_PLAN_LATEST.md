@@ -87,3 +87,23 @@ and so a future "alignment" pass does not quietly adopt them.
 | SC-E08-P0-18..20 economy never negative, interleave | `test_economy_properties.gd` |
 | Home locked mid-spin, cost floor, badge log once | `test_roda_scene.gd` (BUG-038, 044, 042) |
 
+
+## 6. e09 — Store, casinha, party (added at the e09 epic close)
+
+| Scenario | Test |
+|---|---|
+| SC-E09-P0-01..02 twelve catalog pieces, no path from outside text | `test_furniture_catalog.gd` |
+| SC-E09-P0-03..04 atomic purchase, no overdraw, no double charge, reload | `test_furniture_purchase.gd` |
+| SC-E09-P0-05..07 store layout, one debit per tap, sold badge, poor tap | `test_mercado_scene.gd` |
+| SC-E09-P0-01..03 FREE_PLACEMENT keeps the piece, clamp, other modes unchanged | `test_touch_draggable_placement.gd` |
+| SC-E09-P0-05..06 placements are owned-only, normalized, and reload | `test_furniture_placement.gd` |
+| SC-E09-P0-04..06 casinha restores, drag persists, unowned absent | `test_casinha_scene.gd` |
+| SC-E09-P0-01..04 party threshold, re-lock, deterministic bob | `test_festa_scene.gd` |
+| SC-E09-P1-06..07 DoorBadge follows `progress_changed`; every Vila door opens | `test_door_badge.gd`, `test_vila_scene.gd` |
+| SC-E09-P0-01..03, P1-05..06 cross-canvas ratio oracle (and that it can fail) | `test_placement_oracle.gd` |
+| SC-E09-P0-04 epic walk: buy → place → re-mount → party still locked | `test_e09_epic_e2e.gd` |
+
+**The oracle measures the painted centre, not the anchor box** — the same discipline `GeometryOracle`
+adopted after BUG-013. `PlacementOracle` fails closed: an empty save is a finding ("nothing placed
+proves nothing") and a test moves a piece by 10 % of the room to prove the oracle can fail (the e08
+lesson, BUG-040).

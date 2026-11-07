@@ -3,7 +3,7 @@ spec: e09s02.md
 epic_id: e09
 title: 'TouchDraggable FREE_PLACEMENT Mode & Playable Scene 12: CasinhaScene (casinha.tscn)
   with Normalized (0..1) Coordinates'
-status: in_progress
+status: done
 bcps: 4
 playable_scene: res://scenes/casinha.tscn
 tasks:
@@ -14,7 +14,7 @@ tasks:
   risk: P0
   allure:
     severity: critical
-  status: pending
+  status: done
 - id: e09s02-t02
   description: 'GREEN: FREE_PLACEMENT branch in touch_draggable.gd while shrinking the file
     (shared target-rect helper), ProgressManager place/remove/placed_count'
@@ -22,7 +22,7 @@ tasks:
   risk: P0
   allure:
     severity: critical
-  status: pending
+  status: done
 - id: e09s02-t03
   description: 'RED+GREEN: furniture_prop.gd, casinha.gd (EMPTY/DRESSED Fsm), build_casinha_scene.gd,
     casinha.tscn, integration test_casinha_scene.gd (drag persists, remount restores, both aspects)'
@@ -30,11 +30,11 @@ tasks:
   risk: P1
   allure:
     severity: high
-  status: pending
+  status: done
 - id: e09s02-t04
   description: 'Wire the Vila CASINHA door to casinha.tscn and update the pending-POI test'
   verify: bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: pending
+  status: done
