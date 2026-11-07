@@ -1,5 +1,6 @@
 # story: e08s01
 # story: e08s02
+# story: e10s04
 extends SceneTree
 ## Builds `res://scenes/vila.tscn`. Run:
 ##   godot --headless --path game -s tools/build_vila_scene.gd
@@ -32,13 +33,14 @@ const BUBBLE_GAP: float = 8.0
 const POI_SIZE: float = 168.0
 const BAG_SIZE: float = 148.0
 
-## CASA/RODA/recycling row + mercado + casinha + festa
+## CASA/RODA/recycling row + mercado + casinha + festa + album
 const POI_SPECS: Array[Dictionary] = [
 	{"id": "CASA", "x": 0.12, "y": 0.44, "art": "res://assets/art/moveis/porta.png"},
 	{"id": "RODA", "x": 0.86, "y": 0.40, "art": "res://assets/art/items/roda_fortuna.png"},
 	{"id": "MERCADO", "x": 0.84, "y": 0.68, "art": "res://assets/art/items/melancia.png"},
 	{"id": "CASINHA", "x": 0.36, "y": 0.36, "art": "res://assets/art/items/patinho.png"},
 	{"id": "FESTA", "x": 0.64, "y": 0.34, "art": "res://assets/art/items/coroa.png"},
+	{"id": "ALBUM", "x": 0.24, "y": 0.54, "art": "res://assets/art/moveis/estante.png"},
 ]
 
 
@@ -52,6 +54,7 @@ func _init() -> void:
 	for spec: Dictionary in POI_SPECS:
 		_add_poi(root, str(spec["id"]), float(spec["x"]), float(spec["y"]), str(spec["art"]))
 	_add_party_badge(root)
+	_add_album_badge(root)
 	_add_recycle_bin(root, 0.72, 0.78)
 	_add_recycle_bag(root, 0.16, 0.70)
 	_add_hint_layer(root)
@@ -152,6 +155,23 @@ func _add_party_badge(root: Control) -> void:
 	badge.name = "PartyBadge"
 	badge.set_script(load(DOOR_BADGE_SCRIPT))
 	badge.set("required_placed", 5)
+	badge.set("locked_art", PARTY_LOCKED_ART)
+	badge.set("unlocked_art", PARTY_UNLOCKED_ART)
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	SceneBuilder.pin(badge, Vector4(1.0, 0.0, 1.0, 0.0), Vector4(-48.0, -48.0, 0.0, 0.0))
+	badge.add_child(_full_rect_art("Art", PARTY_LOCKED_ART, "", false))
+	door.add_child(badge)
+
+
+func _add_album_badge(root: Control) -> void:
+	var door: Control = root.get_node_or_null("PoiALBUM") as Control
+	if door == null:
+		return
+	var badge: Control = Control.new()
+	badge.name = "AlbumBadge"
+	badge.set_script(load(DOOR_BADGE_SCRIPT))
+	badge.set("rule", "stars")
+	badge.set("required_stars", 1)
 	badge.set("locked_art", PARTY_LOCKED_ART)
 	badge.set("unlocked_art", PARTY_UNLOCKED_ART)
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE

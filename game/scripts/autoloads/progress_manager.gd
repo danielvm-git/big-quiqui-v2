@@ -1,4 +1,5 @@
 # story: e01s03
+# story: e10s01
 extends Node
 ## Owns the typed save model and its atomic persistence (ADR-005).
 ##
@@ -240,52 +241,55 @@ func place_furniture(id: String, nx: float, ny: float) -> bool:
 	if not owns_furniture(id):
 		_emit("furniture.place_refused", {"item": id, "reason": "not_owned"})
 		return false
-	var entry: Dictionary = {"id": id, "x": clampf(nx, 0.0, 1.0), "y": clampf(ny, 0.0, 1.0)}
-
-	data.placed_furniture = _without(id)
-	data.placed_furniture.append(entry)
+	if not FurnitureLedger.upsert(data, id, nx, ny):
+		_emit("furniture.place_refused", {"item": "invalid"})
+		return false
 	if not save():
 		progress_changed.emit()
 	return true
 
 
 func remove_furniture(id: String) -> bool:
-	if data == null or not _has_placement(id):
+	if not FurnitureLedger.drop(data, id):
 		return false
-	data.placed_furniture = _without(id)
 	if not save():
 		progress_changed.emit()
 	return true
 
 
 func placed() -> Array[Dictionary]:
-	var entries: Array[Dictionary] = []
-	if data == null:
-		return entries
-	for entry: Dictionary in data.placed_furniture:
-		entries.append(entry.duplicate(true))
-	return entries
+	return FurnitureLedger.copies(data)
 
 
 func placed_count() -> int:
-	return 0 if data == null else data.placed_furniture.size()
+	return FurnitureLedger.count(data)
 
 
-func _has_placement(id: String) -> bool:
-	for entry: Dictionary in data.placed_furniture:
-		if str(entry.get("id", "")) == id:
-			return true
-	return false
+# ── friend stars (e10s01) ─────────────────────────────────────────────────────
 
 
-func _without(id: String) -> Array[Dictionary]:
-	var kept: Array[Dictionary] = []
-	if data == null:
-		return kept
-	for entry: Dictionary in data.placed_furniture:
-		if str(entry.get("id", "")) != id:
-			kept.append(entry.duplicate(true))
-	return kept
+## +1 mastery point per friend, capped at `MAX_STARS`. Every refusal (unknown id,
+## capped friend) happens before the first mutation, so a replayed win can never
+## double-pay a star and an unsafe id never reaches the save model.
+func add_star(friend_id: String) -> bool:
+	if not FriendCatalog.is_friend(friend_id):
+		_emit("star.refused", {"friend": "invalid"})
+		return false
+	var current: int = stars_of(friend_id)
+	if current >= SaveData.MAX_STARS:
+		_emit("star.refused", {"friend": friend_id, "reason": "cap"})
+		return false
+	data.friend_stars[friend_id] = current + 1
+	if not save():
+		progress_changed.emit()
+	return true
+
+
+## The clamped read side: a tampered save shows what the rules allow, never more.
+func stars_of(friend_id: String) -> int:
+	if data == null or not data.friend_stars.has(friend_id):
+		return 0
+	return clampi(int(data.friend_stars[friend_id]), 0, SaveData.MAX_STARS)
 
 
 func _emit(ev: String, data_in: Dictionary) -> void:

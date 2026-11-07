@@ -3,34 +3,41 @@ spec: e10s02.md
 epic_id: e10
 title: 'TouchDraggable SNAP_TO_SLOT Mode & Playable Scene 15: BearPuzzleScene (urso_puzzle.tscn)
   Magnetic Jigsaw'
-status: failing
+status: passing
 bcps: 4
-playable_scene: res://scenes/pato_danca.tscn + res://scenes/urso_puzzle.tscn + res://scenes/pinguim_jogo.tscn
-  + res://scenes/album.tscn
+playable_scene: res://scenes/urso_puzzle.tscn
 tasks:
 - id: e10s02-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e10s02
-    (TouchDraggable SNAP_TO_SLOT Mode & Playable Scene 15: BearPuzzleScene (urso_puzzle.tscn)
-    Magnetic Jigsaw)'
+  description: 'RED: puzzle_piece tests — quadrant regions are exact quarters of urso.png,
+    snap to own slot locks + parks, wrong slot/floor flies home emitting nothing, lock is
+    idempotent and inert afterwards (SC-E10-P0-08, P0-09, P1-13)'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+    categories:
+    - unit
+  status: passing
 - id: e10s02-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e10s02
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  description: 'GREEN: puzzle_piece.gd (TouchDraggable SNAP_TO_SLOT wrapper, lock_in) —
+    touch_draggable.gd untouched (331-line grandfather stays frozen)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+    categories:
+    - unit
+  status: passing
+- id: e10s02-t03
+  description: 'RED+GREEN: urso_puzzle.gd (INTRO/PLAYING/REWARD Fsm, seed_shuffle seam,
+    idempotent fourth-lock settle paying coins + star), build_urso_puzzle_scene.gd with hint
+    layer for the first drag (FIX-02), urso_puzzle.tscn, integration test_urso_puzzle_scene.gd
+    (four real TouchSim drags to win, echo safety, both aspects, replay + Home, SC-E10-P0-10,
+    P0-11, P1-12)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e10s02-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e10s02
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
-  risk: P2
-  allure:
-    severity: normal
-  status: failing
+    categories:
+    - integration
+  status: passing

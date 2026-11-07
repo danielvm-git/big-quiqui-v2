@@ -1,5 +1,6 @@
 # story: e08s01
 # story: e08s02
+# story: e10s04
 class_name VilaScene
 extends Control
 ## Outdoor hub: six building taps, the same wish bubble semantics as the Casa,
@@ -7,25 +8,19 @@ extends Control
 
 signal poi_requested(poi: String)
 
-const CASA_PATH: String = "res://scenes/casa.tscn"
-const RODA_PATH: String = "res://scenes/roda.tscn"
+const CASA_PATH: String = PoiTable.CASA_PATH
+const RODA_PATH: String = PoiTable.RODA_PATH
 const SPARKLE_SFX: String = "res://assets/audio/sfx/confete.ogg"
 
-const POI_SCENE_CASA: String = "CASA"
-const POI_SCENE_RODA: String = "RODA"
-const POI_RECYCLING: String = "RECYCLING"
-const POI_MERCADO: String = "MERCADO"
-const POI_CASINHA: String = "CASINHA"
-const POI_FESTA: String = "FESTA"
+const POI_SCENE_CASA: String = PoiTable.POI_CASA
+const POI_SCENE_RODA: String = PoiTable.POI_RODA
+const POI_RECYCLING: String = PoiTable.POI_RECYCLING
+const POI_MERCADO: String = PoiTable.POI_MERCADO
+const POI_CASINHA: String = PoiTable.POI_CASINHA
+const POI_FESTA: String = PoiTable.POI_FESTA
+const POI_ALBUM: String = PoiTable.POI_ALBUM
 
-const POI_SCENES: Dictionary = {
-	POI_SCENE_CASA: CASA_PATH,
-	POI_SCENE_RODA: RODA_PATH,
-	POI_RECYCLING: "",
-	POI_MERCADO: "res://scenes/mercado.tscn",
-	POI_CASINHA: "res://scenes/casinha.tscn",
-	POI_FESTA: "res://scenes/festa.tscn",
-}
+const POI_SCENES: Dictionary = PoiTable.SCENES
 
 const WISH_ICONS: Dictionary = {
 	CareSteps.FEED: "res://assets/art/items/cenoura.png",

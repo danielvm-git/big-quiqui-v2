@@ -1,4 +1,5 @@
 # story: e09s03
+# story: e10s01
 extends SceneTree
 ## Builds `res://scenes/festa.tscn`. Run:
 ##   godot --headless --path game -s tools/build_festa_scene.gd
@@ -63,7 +64,8 @@ func _add_friend(root: Control, spec: Dictionary) -> void:
 	var y: float = float(spec["y"])
 	var holder: Control = Control.new()
 	holder.name = "Friend_" + str(spec["id"])
-	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.set_script(load(BUTTON_SCRIPT))
+	holder.add_to_group("hit_target", true)
 	holder.visible = false
 	var half: float = FRIEND_SIZE * 0.5
 	SceneBuilder.pin(holder, Vector4(x, y, x, y), Vector4(-half, -half, half, half))
