@@ -225,7 +225,7 @@ gate_decisions:
   reason: >-
     Standing approval to resolve all findings without weakening gates; outward-facing actions stay with
     the human.
-- gate: preflight L5/L6 red in the e10 worktree (ModuleNotFoundError: yaml)
+- gate: 'preflight L5/L6 red in the e10 worktree (ModuleNotFoundError: yaml)'
   decision: >-
     Environment, not code: this harness shell's PATH omits the user's pyenv shims
     (~/.pyenv/shims holds gdlint 4.5.0 + python 3.13.13 with PyYAML 6.0.3). Re-ran

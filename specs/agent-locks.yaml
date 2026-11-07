@@ -3,7 +3,7 @@
 # see it, so treat it as self-documentation of intent, not exclusion.
 locks:
 - story_id: e10
-  locked_by: agent: build-epic (zcode e10 session)
+  locked_by: 'agent: build-epic (zcode e10 session)'
   locked_at: '2026-11-07T06:34:44-0300'
   files_touched:
   - specs/epics/e10-friends-minigames-and-album-scenes/
@@ -14,7 +14,7 @@ locks:
   - game/tools/
   - game/tests/
 - story_id: e09
-  locked_by: agent: e09 post-epic review session (separate concurrent session)
+  locked_by: 'agent: e09 post-epic review session (separate concurrent session)'
   locked_at: '2026-11-07T06:20:00-0300'
   files_touched:
   - specs/bugs/ (BUG-046..054)

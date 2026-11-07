@@ -5,32 +5,52 @@ title: 'Playable Scene 14: DuckDanceScene (pato_danca.tscn) 3-Round Pose-Matchin
   Mini-Game Awarding Coins & Star'
 status: failing
 bcps: 4
-playable_scene: res://scenes/pato_danca.tscn + res://scenes/urso_puzzle.tscn + res://scenes/pinguim_jogo.tscn
-  + res://scenes/album.tscn
+playable_scene: res://scenes/pato_danca.tscn
 tasks:
 - id: e10s01-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e10s01
-    (Playable Scene 14: DuckDanceScene (pato_danca.tscn) 3-Round Pose-Matching Mini-Game
-    Awarding Coins & Star)'
+  description: 'RED: FriendCatalog + star rails tests — catalog ids/paths/unsafe-id rejection,
+    add_star 0..5 climb + cap refusal without mutation + bad id refusal + save round-trip,
+    stars_of read side (SC-E10-P0-01, P1-07)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+    - unit
+    - Security Review
+  status: failing
+- id: e10s01-t02
+  description: 'GREEN: friend_catalog.gd, EconomyData.minigame_coins, ProgressManager
+    add_star/stars_of (single atomic write, progress_changed, idempotent cap)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+    - unit
+    - Security Review
+  status: failing
+- id: e10s01-t03
+  description: 'RED+GREEN: pato_danca.gd (INTRO/SHOWING/WAITING/REWARD Fsm, seed_rounds +
+    apply_economy seams, idempotent reward settle), build_pato_danca_scene.gd, pato_danca.tscn,
+    integration test_pato_danca_scene.gd (3 correct rounds, miss replays same pose, echo taps
+    fire once, both aspects, replay + Home, SC-E10-P0-02..05)'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
+    categories:
+    - integration
   status: failing
-- id: e10s01-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e10s01
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+- id: e10s01-t04
+  description: 'Wire the party entry: Friend_* nodes become TapButtons (hit_target, >=120 px)
+    requesting FriendCatalog.scene_path while DANCING; festa tests updated (SC-E10-P1-06)'
+  verify: gdlint game/ && gdformat --check game/ && bash scripts/trace-stories.sh --strict
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e10s01-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e10s01
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
-  risk: P2
-  allure:
-    severity: normal
+    categories:
+    - integration
   status: failing
