@@ -13,10 +13,13 @@ const HUD_SCRIPT: String = "res://scripts/components/coin_ticket_hud.gd"
 const DRAG_SCRIPT: String = "res://scripts/components/touch_draggable.gd"
 const HINT_MGR_SCRIPT: String = "res://scripts/components/hint_manager.gd"
 const DRAG_HINT_SCRIPT: String = "res://scripts/components/drag_hint.gd"
+const DOOR_BADGE_SCRIPT: String = "res://scripts/components/door_badge.gd"
 
 const BG_PATH: String = "res://assets/art/backgrounds/bg_vila.jpg"
 const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
 const CONFETTI_ART: String = "res://assets/art/efeitos/confete.png"
+const PARTY_LOCKED_ART: String = "res://assets/art/ui/bolinha_progresso_vazia.png"
+const PARTY_UNLOCKED_ART: String = "res://assets/art/ui/estrela.png"
 
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0
@@ -48,6 +51,7 @@ func _init() -> void:
 	_add_bubble(root)
 	for spec: Dictionary in POI_SPECS:
 		_add_poi(root, str(spec["id"]), float(spec["x"]), float(spec["y"]), str(spec["art"]))
+	_add_party_badge(root)
 	_add_recycle_bin(root, 0.72, 0.78)
 	_add_recycle_bag(root, 0.16, 0.70)
 	_add_hint_layer(root)
@@ -136,6 +140,24 @@ func _add_poi(root: Control, poi_id: String, x: float, y: float, art_path: Strin
 	SceneBuilder.pin(poi, Vector4(x, y, x, y), Vector4(-half, -half, half, half))
 	poi.add_child(_full_rect_art("Art", art_path, "", false))
 	root.add_child(poi)
+
+
+## FIX-04: the party door says whether the party is open, from the same rule the party
+## scene reads. A component, so the hub never grows a second owner for the threshold.
+func _add_party_badge(root: Control) -> void:
+	var door: Control = root.get_node_or_null("PoiFESTA") as Control
+	if door == null:
+		return
+	var badge: Control = Control.new()
+	badge.name = "PartyBadge"
+	badge.set_script(load(DOOR_BADGE_SCRIPT))
+	badge.set("required_placed", 5)
+	badge.set("locked_art", PARTY_LOCKED_ART)
+	badge.set("unlocked_art", PARTY_UNLOCKED_ART)
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	SceneBuilder.pin(badge, Vector4(1.0, 0.0, 1.0, 0.0), Vector4(-48.0, -48.0, 0.0, 0.0))
+	badge.add_child(_full_rect_art("Art", PARTY_LOCKED_ART, "", false))
+	door.add_child(badge)
 
 
 func _add_recycle_bin(root: Control, x: float, y: float) -> void:

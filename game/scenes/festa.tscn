@@ -1,0 +1,184 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/scenes/festa.gd" id="1_mxfcd"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_casinha.jpg" id="2_dhgbg"]
+[ext_resource type="Texture2D" path="res://assets/art/amigos/pato.png" id="3_q0xur"]
+[ext_resource type="Texture2D" path="res://assets/art/amigos/urso.png" id="4_mp63c"]
+[ext_resource type="Texture2D" path="res://assets/art/amigos/pinguim.png" id="5_b25kk"]
+[ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="6_qikp7"]
+[ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="7_ugjyr"]
+[ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="8_r1bjd"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="9_wdqi2"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/botao_voltar.png" id="10_wats2"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/bolinha_progresso_vazia.png" id="11_k1at0"]
+[ext_resource type="Texture2D" path="res://assets/art/efeitos/confete.png" id="12_lf7lj"]
+
+[node name="Festa" type="Control" unique_id=724994711]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_mxfcd")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1327969802 groups=["background"]]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_dhgbg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Friend_pato" type="Control" parent="." unique_id=992293]
+visible = false
+anchors_preset = 0
+anchor_left = 0.16
+anchor_top = 0.58
+anchor_right = 0.16
+anchor_bottom = 0.58
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Friend_pato" unique_id=1311625652]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("3_q0xur")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Friend_urso" type="Control" parent="." unique_id=2080672310]
+visible = false
+anchors_preset = 0
+anchor_left = 0.84
+anchor_top = 0.58
+anchor_right = 0.84
+anchor_bottom = 0.58
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Friend_urso" unique_id=1097478197]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("4_mp63c")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Friend_pinguim" type="Control" parent="." unique_id=188595350]
+visible = false
+anchors_preset = 0
+anchor_left = 0.28
+anchor_top = 0.34
+anchor_right = 0.28
+anchor_bottom = 0.34
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Friend_pinguim" unique_id=2104464940]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("5_b25kk")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="QuiQuiRig" type="Control" parent="." unique_id=121232597 groups=["rig"]]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.20592593
+anchor_right = 0.5
+anchor_bottom = 0.78
+offset_left = -320.0
+offset_right = 320.0
+script = ExtResource("6_qikp7")
+
+[node name="CoinTicketHud" type="Control" parent="." unique_id=708152984 groups=["ui_top_right"]]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -416.0
+offset_top = 36.0
+offset_right = -36.0
+offset_bottom = 124.0
+script = ExtResource("7_ugjyr")
+
+[node name="HomeButton" type="Control" parent="." unique_id=1933980189 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 36.0
+offset_top = 36.0
+offset_right = 156.0
+offset_bottom = 156.0
+script = ExtResource("8_r1bjd")
+
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=1633908613]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_wdqi2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CasinhaButton" type="Control" parent="." unique_id=450744620 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 176.0
+offset_top = 36.0
+offset_right = 296.0
+offset_bottom = 156.0
+script = ExtResource("8_r1bjd")
+
+[node name="Art" type="TextureRect" parent="CasinhaButton" unique_id=1479656370]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("10_wats2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LockBadge" type="Control" parent="." unique_id=909963634]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.3
+anchor_right = 0.5
+anchor_bottom = 0.3
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="LockBadge" unique_id=1229701020]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("11_k1at0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Confetti" type="CPUParticles2D" parent="." unique_id=1419551563]
+z_index = 40
+position = Vector2(960, 60)
+emitting = false
+amount = 48
+texture = ExtResource("12_lf7lj")
+lifetime = 2.4
+direction = Vector2(0, 1)
+spread = 30.0
+gravity = Vector2(0, 160)
+initial_velocity_min = 60.0
+initial_velocity_max = 180.0

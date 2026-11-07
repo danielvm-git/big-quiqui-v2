@@ -24,7 +24,7 @@ const POI_SCENES: Dictionary = {
 	POI_RECYCLING: "",
 	POI_MERCADO: "res://scenes/mercado.tscn",
 	POI_CASINHA: "res://scenes/casinha.tscn",
-	POI_FESTA: "",
+	POI_FESTA: "res://scenes/festa.tscn",
 }
 
 const WISH_ICONS: Dictionary = {
