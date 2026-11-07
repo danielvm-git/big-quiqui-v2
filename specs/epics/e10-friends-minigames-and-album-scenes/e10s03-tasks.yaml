@@ -19,7 +19,7 @@ tasks:
     categories:
     - unit
     - Security Review
-  status: failing
+  status: passing
 - id: e10s03-t02
   description: 'GREEN: catch_item.gd (step_down), pinguim_jogo.gd (INTRO/RUNNING/RESULT/REWARD
   Fsm, CONTINUOUS_SCRUB lane drag, spawn schedule + seed_spawns seam, everything inside
