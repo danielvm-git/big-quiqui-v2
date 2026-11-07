@@ -118,11 +118,17 @@ audit accepted a 204-line E2E while missing a 349-line one). They are now the st
 - **One file, one subject: 300 lines maximum.** A file that grows past it is split by subject, not
   trimmed by deleting assertions (BUG-033 split `test_casa_scene.gd` 349 → 277 + 109).
 - **One function, one job: 20 non-comment lines maximum.** Extract a helper instead of nesting.
-- **Scope:** the bar applies to every **new or changed** file. Grandfathered debt, as of the e07
-  post-epic review, is exactly: `game/scripts/components/quiqui_rig.gd` (427),
-  `game/tests/unit/test_quiqui_rig.gd` (404), `.github/workflows/ci-cd.yml` (341),
-  `game/scripts/components/touch_draggable.gd` (331), `game/scripts/scenes/banheiro.gd` (326).
+- **Scope:** the bar applies to every **new or changed** file. Grandfathered debt, re-pinned on
+  2026-11-07 (after the e10/e11 landing, when `progress_manager.gd` crossed the bar and nothing
+  noticed), is exactly: `game/scripts/components/quiqui_rig.gd` (427),
+  `game/tests/unit/test_quiqui_rig.gd` (404), `game/scripts/autoloads/progress_manager.gd` (341),
+  `game/scripts/components/touch_draggable.gd` (326), `game/scripts/scenes/banheiro.gd` (326).
   Growing one of those is a violation; shrinking one is welcome whenever a touching change allows it.
+  **This is now machine-enforced** by `game/tests/integration/test_size_bars.gd` (INV-09): a new
+  file over 300 lines fails, a grandfathered file fails if it grows by one line, and a
+  grandfathered file that drops under 300 fails until its allowance is deleted from the map.
+  `.github/workflows/ci-cd.yml` (348) is **not** covered by that gate — it is YAML, and it is now
+  over its old 341 ceiling, which is recorded here as debt rather than hidden.
 - **Generated artifacts are not hand-maintained:** `specs/tech-architecture/COVERAGE_MAP_LATEST.md`
   (`bash scripts/coverage-map.sh --write`) and `HOTSPOTS_LATEST.md`
   (`bash scripts/churn-rank.sh 0 --write`) are regenerated and committed at every epic close

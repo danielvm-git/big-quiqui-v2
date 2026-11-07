@@ -165,3 +165,14 @@ what matters is the rect the scene packs to, which `GeometryOracle` asserts at b
 **Known gaps in the reference map:** `game/tools/measure_hero_scale.gd` and
 `game/tools/scene_builder.gd` have no direct test (`COVERAGE_MAP_LATEST.md`); both are
 dev-time tools whose headless exercise would be a build step, not a test. Accepted, not hidden.
+
+## 10. INV-09 — the size bars are executable (close-out)
+
+`unit/test_*` had no ceiling that could fail; CONVENTIONS §5 was review-only, which is how
+`progress_manager.gd` reached 341 lines during the e10/e11 landing with a green pipeline.
+
+`integration/test_size_bars.gd` (INV-09) scans `scripts/`, `tools/` and `tests/` and asserts:
+a file outside the map is ≤ 300 lines, a grandfathered file does not grow by one line, and a
+grandfathered file that drops under 300 must lose its allowance (so debt that is paid off
+cannot be "grandfathered" twice). `.github/workflows/ci-cd.yml` (348 lines) stays outside the
+gate — it is YAML — and is recorded as debt in CONVENTIONS §5 instead.
