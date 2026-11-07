@@ -83,19 +83,15 @@ func _make_card(friend_id: String, x_ratio: float) -> Control:
 	card.set_script(load(BUTTON_SCRIPT))
 	card.add_to_group("hit_target", true)
 	var half: Vector2 = CARD_SIZE * 0.5
-	(
-		SceneBuilder
-		. pin(
-			card,
-			Vector4(x_ratio, CARD_Y, x_ratio, CARD_Y),
-			Vector4(-half.x, -half.y, half.x, half.y),
-		)
-	)
-	var art_path: String = FriendCatalog.art_path(friend_id)
-	var art: TextureRect = _full_rect_art("Art", art_path, "", false)
+	SceneBuilder.pin(card, Vector4(x_ratio, CARD_Y, x_ratio, CARD_Y), Vector4(-half.x, -half.y, half.x, half.y))
+	var art: TextureRect = _full_rect_art("Art", FriendCatalog.art_path(friend_id), "", false)
 	art.anchor_bottom = 0.75
 	card.add_child(art)
+	card.add_child(_make_star_row())
+	return card
 
+
+func _make_star_row() -> Control:
 	var stars: Control = Control.new()
 	stars.name = "Stars"
 	stars.anchor_top = 0.8
@@ -104,8 +100,7 @@ func _make_card(friend_id: String, x_ratio: float) -> Control:
 	stars.anchor_right = 1.0
 	stars.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_add_stars_to_card(stars)
-	card.add_child(stars)
-	return card
+	return stars
 
 
 func _add_stars_to_card(stars: Control) -> void:

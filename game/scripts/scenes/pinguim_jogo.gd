@@ -9,7 +9,6 @@ const FESTA_PATH: String = "res://scenes/festa.tscn"
 const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
 const POP_SFX: String = "res://assets/audio/sfx/bolha.ogg"
 const CONFETTI_SFX: String = "res://assets/audio/sfx/confete.ogg"
-const SUCCESS_SFX: String = "res://assets/audio/sfx/success.ogg"
 
 const FRIEND_ID: String = "pinguim"
 
@@ -114,8 +113,6 @@ func advance(delta: float) -> void:
 		STATE_RESULT:
 			if _state_t >= RESULT_SEC:
 				_go(STATE_REWARD)
-		STATE_REWARD:
-			pass
 
 
 func apply_economy(data: EconomyData) -> void:
@@ -133,7 +130,8 @@ func catch_count() -> int:
 func _on_penguin_scrubbed(global_point: Vector2) -> void:
 	if lane != null and penguin != null:
 		var lane_obj: IceLane = lane as IceLane
-		penguin.global_position.x = lane_obj.clamp_penguin_x(global_point.x, penguin.size.x)
+		if lane_obj != null:
+			penguin.global_position.x = lane_obj.clamp_penguin_x(global_point.x, penguin.size.x)
 
 
 func _step_items(delta: float) -> void:

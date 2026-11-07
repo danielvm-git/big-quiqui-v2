@@ -32,7 +32,6 @@ const MAX_DWELL: Dictionary = {STATE_INTRO: 4.0, STATE_SHOWING: 6.0, STATE_WAITI
 
 const INTRO_SEC: float = 1.4
 const HOP_SEC: float = 0.6
-const HOP_HEIGHT_PX: float = 60.0
 
 var fsm: Fsm = null
 var manual_step: bool = false
@@ -155,26 +154,22 @@ func _go(next_state: String) -> void:
 
 func _enter_state(state: String) -> void:
 	_state_t = 0.0
+	if replay != null:
+		replay.visible = (state == STATE_REWARD)
 	match state:
 		STATE_INTRO:
 			round_index = 0
 			_pose = ""
 			_reward_paid = false
 			_set_confetti(false)
-			if replay != null:
-				replay.visible = false
 		STATE_SHOWING:
 			if _pose.is_empty():
 				_pose = _next_pose()
-			_hop_from_x = duck.position.x if duck != null else 0.0
-			if replay != null:
-				replay.visible = false
+			_hop_from_x = duck.global_position.x if duck != null else 0.0
 		STATE_WAITING:
 			_log("duck.pose", {"round": round_index + 1, "pad": _pose})
 		STATE_REWARD:
 			_set_confetti(true)
-			if replay != null:
-				replay.visible = true
 			_settle_reward()
 
 

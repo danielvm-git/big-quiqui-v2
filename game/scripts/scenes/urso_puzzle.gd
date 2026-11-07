@@ -160,27 +160,27 @@ func _go(next_state: String) -> void:
 
 func _enter_state(state: String) -> void:
 	_state_t = 0.0
+	if replay != null:
+		replay.visible = (state == STATE_REWARD)
 	match state:
 		STATE_INTRO:
 			_reward_paid = false
 			_set_confetti(false)
-			if replay != null:
-				replay.visible = false
-			for piece: PuzzlePiece in _pieces:
-				if piece != null:
-					piece.unlock()
-			_shuffle_tray()
+			_reset_pieces()
 		STATE_PLAYING:
-			if replay != null:
-				replay.visible = false
 			_hint_done = false
 			call_deferred("_maybe_start_hint")
 		STATE_REWARD:
 			_stop_hint()
 			_set_confetti(true)
-			if replay != null:
-				replay.visible = true
 			_settle_reward()
+
+
+func _reset_pieces() -> void:
+	for piece: PuzzlePiece in _pieces:
+		if piece != null:
+			piece.unlock()
+	_shuffle_tray()
 
 
 func _settle_reward() -> void:
