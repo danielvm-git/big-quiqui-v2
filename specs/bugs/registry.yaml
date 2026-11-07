@@ -469,7 +469,7 @@ bugs:
   scope: code
   summary: "Dead code and unused symbols in e09: _pending_id, last_bought, PLACE_SFX, ART_ROOT and redundant price_coins"
   file: specs/bugs/BUG-052-e09-dead-code-and-unused-symbols.md
-  status: open
+  status: fixed
   found_by: e09 post-epic review
 - bug_id: BUG-053
   date: '2026-11-07'

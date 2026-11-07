@@ -35,11 +35,9 @@ var fsm: Fsm = null
 var manual_step: bool = false
 ## Observable refusals: the child hears a soft no and nothing is charged.
 var denials: int = 0
-var last_bought: String = ""
 
 var _fsm_clock_sec: float = 0.0
 var _state_age: float = 0.0
-var _pending_id: String = ""
 
 
 func _ready() -> void:
@@ -112,8 +110,6 @@ func _charge(id: String, price: int) -> bool:
 func _on_paid(id: String, price: int) -> void:
 	if not fsm.transition_to(STATE_PAYING):
 		return
-	_pending_id = id
-	last_bought = id
 	_state_age = 0.0
 	_fly_coin(id)
 	_refresh_badges()

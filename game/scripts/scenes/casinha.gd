@@ -8,7 +8,6 @@ extends Control
 const CASA_PATH: String = "res://scenes/casa.tscn"
 const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
 const VOICE_PATH: String = "res://assets/audio/voice/hub_bem_vindo.ogg"
-const PLACE_SFX: String = "res://assets/audio/sfx/drop.ogg"
 const POP_SFX: String = "res://assets/audio/sfx/pop_roupa.ogg"
 
 const STATE_EMPTY: String = "EMPTY"

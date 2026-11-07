@@ -6,9 +6,9 @@ extends TouchDraggable
 ## normalized bookkeeping.
 
 const PROP_SIZE: float = 148.0
-const ART_ROOT: String = "res://assets/art/moveis/"
 
 var item_id: String = ""
+
 var data: FurnitureData = null
 
 
