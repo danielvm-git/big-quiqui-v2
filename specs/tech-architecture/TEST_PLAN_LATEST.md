@@ -138,3 +138,30 @@ line pointing at `banho_…` while the shipped clip is `bath_…`.
 "align" them upward): Labels may carry **numerals** (the store prices) but never words, and
 `anchors_preset = 0` with explicit `anchor_right/bottom = 1.0` is accepted as FULL_RECT —
 what matters is the rect the scene packs to, which `GeometryOracle` asserts at boot.
+
+## 8. e10 — friends, minigames, album (added at the close-out pass)
+
+| Scenario | Test |
+|---|---|
+| Friend catalog, minigame coin table, star rails, `SaveData.friend_stars` cap | `unit/test_friend_stars.gd` |
+| Duck dance: 3-round pose match, reward paid once, round escalation | `integration/test_pato_danca_scene.gd` |
+| `PuzzlePiece` SNAP_TO_SLOT wrapper on the existing TouchDraggable mode | `unit/test_puzzle_piece.gd`, `integration/test_urso_puzzle_scene.gd` |
+| Bear puzzle: magnetic snap, wrong-slot refusal, completion reward | `integration/test_urso_puzzle_scene.gd` |
+| Penguin catch: `CatchItem` lifecycle, miss does not lock the loop | `unit/test_catch_item.gd`, `integration/test_pinguim_scene.gd` |
+| Album: stars per friend, owned-only pages, re-lock, back navigation | `integration/test_album_scene.gd` |
+| Album badge rules (NEW! clears once seen) | `unit/test_album_badge.gd` |
+| 300-line bar re-audit on the four new scenes | `refactor(e10)` commit + `audit-code` |
+
+## 9. e11 — release gate additions (s03/s04 and the folded-in FIXes)
+
+| Scenario | Test |
+|---|---|
+| All 17 scenes pass `GeometryOracle` on 1920×1080 and 2048×1536, gallery manifest written | `integration/test_visual_gallery.gd` (MBT-02) |
+| iOS export preset declares the app, the bundle id and excludes `tests/` | `unit/test_export_preset.gd` |
+| Save backup: `.bak` written on a good save, recovered on a corrupt one (FIX-06) | `unit/test_save_backup.gd` |
+| Dev console is compiled out of a release build (FIX-07) | `unit/test_dev_console.gd` |
+| `scripts/ios-deploy.sh` exists, is executable, and refuses without a team id | `unit/test_export_preset.gd` |
+
+**Known gaps in the reference map:** `game/tools/measure_hero_scale.gd` and
+`game/tools/scene_builder.gd` have no direct test (`COVERAGE_MAP_LATEST.md`); both are
+dev-time tools whose headless exercise would be a build step, not a test. Accepted, not hidden.

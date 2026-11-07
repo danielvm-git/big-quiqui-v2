@@ -1,5 +1,5 @@
 project: big-quiqui-v2
-version: 0.9.0
+version: 0.10.0
 workflow_mode: solo-git
 active_flow: null
 lifecycle_phase: release
@@ -147,9 +147,10 @@ bug_cycle:
 last_updated: '2026-11-07T18:15:00-03:00'
 release:
   ci_verified: true
-  last_released: v0.9.1
-  last_released_at: '2026-11-06T19:16:06Z'
-  ci_verified_commit: a1f2c5a
+  last_released: v0.10.0
+  last_released_at: '2026-11-07T22:42:24Z'
+  ci_verified_commit: 911e874
+  next: 'v1.0.0 is the only remaining rung and needs a human decision: `feat(e11)!:` on main'
 release_target:
   version: 1.0.0
   codename: Repaginada TutoTOONS Vertical
@@ -173,9 +174,12 @@ handoff:
   epic_wsjf: null
   first_story: null
   context: >-
-    All 11 epics (e01..e11) are built, tested, and reviewed green.
-    Preflight is passing with 70+ scripts, 590+ tests, and 7000+ asserts.
-    All scenes and release artifacts are complete.
+    All 11 epics (e01..e11) are built, tested and reviewed green: 17 scenes, 75 test scripts,
+    595 tests, 8782 asserts. Preflight is green *after* the close-out pass fixed a red L5c
+    (project.godot still said 0.9.1 while the tag was v0.10.0) and caught the generated docs up
+    two epics. There is **no code work left for v1.0.0**: the only remaining action is the
+    breaking release (`feat(e11)!:` on main), which is deliberately a human decision — agent
+    runs in this repo are approved to commit, push, PR and merge, never to tag or publish.
   open_decisions:
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
     parses a digit, and the coin icon plus the sold badge carry the meaning. TEST_PLAN section 3
