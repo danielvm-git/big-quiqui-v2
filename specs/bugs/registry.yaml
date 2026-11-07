@@ -451,7 +451,7 @@ bugs:
   scope: docs
   summary: "ADR-011 registered in state.yaml is missing from specs/adr/"
   file: specs/bugs/BUG-050-missing-adr-011.md
-  status: open
+  status: fixed
   found_by: e09 post-epic review
 - bug_id: BUG-051
   date: '2026-11-07'
