@@ -74,3 +74,12 @@ func lock_in() -> void:
 		if _slot != null:
 			draggable.global_position = _slot.global_position
 	locked.emit(piece_id)
+
+
+func unlock() -> void:
+	_locked = false
+	if draggable != null:
+		draggable.enabled = true
+		draggable.position = Vector2.ZERO
+		if draggable.fsm != null:
+			draggable.fsm.transition_to(TouchDraggable.STATE_REST)

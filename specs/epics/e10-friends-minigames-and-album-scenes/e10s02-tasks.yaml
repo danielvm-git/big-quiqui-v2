@@ -3,7 +3,7 @@ spec: e10s02.md
 epic_id: e10
 title: 'TouchDraggable SNAP_TO_SLOT Mode & Playable Scene 15: BearPuzzleScene (urso_puzzle.tscn)
   Magnetic Jigsaw'
-status: failing
+status: passing
 bcps: 4
 playable_scene: res://scenes/urso_puzzle.tscn
 tasks:
@@ -40,4 +40,4 @@ tasks:
     severity: high
     categories:
     - integration
-  status: failing
+  status: passing

@@ -108,3 +108,12 @@ func test_lock_is_idempotent_and_inert_afterwards() -> void:
 	# Attempting to drag disabled piece changes nothing
 	_deliver(piece.draggable, TouchSim.drag_events(piece.draggable, Vector2(1000.0, 500.0)))
 	assert_eq(piece.draggable.global_position, slot.global_position, "still parked")
+
+
+func test_unlock_reenables_piece_and_resets_position() -> void:
+	piece.lock_in()
+	assert_true(piece.is_locked())
+	piece.unlock()
+	assert_false(piece.is_locked(), "unlocked")
+	assert_true(piece.draggable.enabled, "draggable re-enabled")
+	assert_eq(piece.draggable.position, Vector2.ZERO, "position reset to piece origin")
