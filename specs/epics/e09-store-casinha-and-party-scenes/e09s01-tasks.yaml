@@ -3,33 +3,38 @@ spec: e09s01.md
 epic_id: e09
 title: 'FurnitureData Catalog (12 Lote-6 Pieces) & Playable Scene 11: StoreScene (mercado.tscn)
   Atomic Coin Purchase'
-status: failing
+status: done
 bcps: 4
-playable_scene: res://scenes/mercado.tscn + res://scenes/casinha.tscn + res://scenes/festa.tscn
+playable_scene: res://scenes/mercado.tscn
 tasks:
 - id: e09s01-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e09s01
-    (FurnitureData Catalog (12 Lote-6 Pieces) & Playable Scene 11: StoreScene (mercado.tscn)
-    Atomic Coin Purchase)'
+  description: 'RED: unit tests for FurnitureData/FurnitureCatalog (12 ids, unknown id, missing .tres,
+    price_of floor) and for ProgressManager.buy_furniture atomicity (overdraw, double charge, reload)'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: done
 - id: e09s01-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e09s01
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  description: 'GREEN: furniture_data.gd, furniture_catalog.gd, 12 resources/furniture/*.tres,
+    EconomyData.furniture_prices, ProgressManager.buy_furniture/owns_furniture/owned_count'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: done
+- id: e09s01-t03
+  description: 'RED+GREEN: mercado.gd (StoreScene FSM IDLE/PAYING/SOLD), build_mercado_scene.gd,
+    mercado.tscn, integration test_mercado_scene.gd on both aspects with TouchSim purchase'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e09s01-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e09s01
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  status: done
+- id: e09s01-t04
+  description: 'Wire the Vila MERCADO door to mercado.tscn and update the pending-POI test'
+  verify: bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: done

@@ -140,7 +140,7 @@ epics:
     slug: e09-store-casinha-and-party-scenes
     title: "Playable Scenes 11–13: Furniture Store (mercado.tscn), Casinha (casinha.tscn) & Party (festa.tscn)"
     playable_scene: "res://scenes/mercado.tscn + res://scenes/casinha.tscn + res://scenes/festa.tscn"
-    status: planned
+    status: done
     bcps: 13
     wsjf: 5.7
     stories: [e09s01, e09s02, e09s03, e09s04]

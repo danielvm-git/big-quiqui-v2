@@ -57,22 +57,29 @@ func test_vila_boots_with_six_pois_and_oracle_passes_both_aspects() -> void:
 		mounted.queue_free()
 
 
-func test_pending_poi_logs_scene_pending_and_casa_navigates() -> void:
+## e09 wired the last three doors (mercado, casinha, festa): every POI now opens a real
+## scene, so nothing logs `scene.pending` any more. The pending path stays in the scene
+## for the next POI that ships ahead of its scene.
+func test_every_poi_door_opens_its_scene_once() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9)
 	assert_eq(scene.get_script(), VILA_SCRIPT)
 	await wait_process_frames(3)
-	var casinha: TapButton = scene.call("poi", "CASINHA") as TapButton
-	for event: InputEvent in TouchSim.tap_events(casinha, true):
-		casinha._gui_input(event)
-	assert_eq(scene.get("last_pending_slug"), "casinha")
-
 	var requested: Array[String] = []
 	var manager: Node = get_node("/root/SceneManager")
 	manager.scene_requested.connect(func(path: String, _queued: bool) -> void: requested.append(path))
-	var casa: TapButton = scene.call("poi", "CASA") as TapButton
-	for event: InputEvent in TouchSim.tap_events(casa, true):
-		casa._gui_input(event)
-	assert_eq(requested, [CASA_PATH])
+	var doors: Dictionary = {"CASA": CASA_PATH, "RODA": "res://scenes/roda.tscn"}
+	doors["MERCADO"] = "res://scenes/mercado.tscn"
+	doors["CASINHA"] = "res://scenes/casinha.tscn"
+	doors["FESTA"] = "res://scenes/festa.tscn"
+	for poi_id: String in doors:
+		var door: TapButton = scene.call("poi", poi_id) as TapButton
+		assert_not_null(door, poi_id)
+		for event: InputEvent in TouchSim.tap_events(door, true):
+			door._gui_input(event)
+		assert_eq(str(scene.get("last_pending_slug")), "", "%s is no longer pending" % poi_id)
+	assert_eq(requested.size(), doors.size(), "one request per door, never two")
+	for poi_id: String in doors:
+		assert_has(requested, str(doors[poi_id]), poi_id)
 
 
 func test_escalation_is_monotonic_and_touch_resets_urgency() -> void:

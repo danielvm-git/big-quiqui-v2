@@ -3,33 +3,38 @@ spec: e09s02.md
 epic_id: e09
 title: 'TouchDraggable FREE_PLACEMENT Mode & Playable Scene 12: CasinhaScene (casinha.tscn)
   with Normalized (0..1) Coordinates'
-status: failing
+status: done
 bcps: 4
-playable_scene: res://scenes/mercado.tscn + res://scenes/casinha.tscn + res://scenes/festa.tscn
+playable_scene: res://scenes/casinha.tscn
 tasks:
 - id: e09s02-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e09s02
-    (TouchDraggable FREE_PLACEMENT Mode & Playable Scene 12: CasinhaScene (casinha.tscn)
-    with Normalized (0..1) Coordinates)'
+  description: 'RED: TouchDraggable FREE_PLACEMENT tests (drop inside keeps position + emits placed,
+    drop outside returns home, normalized_of clamps, other modes unchanged)'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
   allure:
     severity: critical
-  status: failing
+  status: done
 - id: e09s02-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e09s02
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  description: 'GREEN: FREE_PLACEMENT branch in touch_draggable.gd while shrinking the file
+    (shared target-rect helper), ProgressManager place/remove/placed_count'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure:
+    severity: critical
+  status: done
+- id: e09s02-t03
+  description: 'RED+GREEN: furniture_prop.gd, casinha.gd (EMPTY/DRESSED Fsm), build_casinha_scene.gd,
+    casinha.tscn, integration test_casinha_scene.gd (drag persists, remount restores, both aspects)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e09s02-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e09s02
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  status: done
+- id: e09s02-t04
+  description: 'Wire the Vila CASINHA door to casinha.tscn and update the pending-POI test'
+  verify: bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: done

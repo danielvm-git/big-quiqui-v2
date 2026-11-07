@@ -12,11 +12,11 @@ bars on either.
 
 | | |
 |---|---|
-| Latest release | **v0.9.1** (e08 merged on `main`, release to cut) |
-| Epics shipped | 8 of 11 (`e01`–`e08`) |
-| Stories | 31 of 43 |
-| Playable scenes | `titulo` · `casa` · `cozinha` · `banheiro` · `closet` · `jardim` · `quarto_sono` · `celebracao` · `vila` · `roda` |
-| Gate | `PREFLIGHT GREEN` — 42 scripts / 432 tests / 2418 asserts |
+| Latest release | **v0.9.1** (e09 merged on `main`, v0.10.0/v0.11.0 releases to cut) |
+| Epics shipped | 9 of 11 (`e01`–`e09`) |
+| Stories | 35 of 43 |
+| Playable scenes | `titulo` · `casa` · `cozinha` · `banheiro` · `closet` · `jardim` · `quarto_sono` · `celebracao` · `vila` · `roda` · `mercado` · `casinha` · `festa` |
+| Gate | `PREFLIGHT GREEN` — 52 scripts / 480 tests / 2890 asserts |
 
 Run `bash scripts/status-counts.sh` for the numbers computed from the plan itself (rather than from a
 dashboard that counts keys).
@@ -59,13 +59,14 @@ Logs stay on the device (`user://logs/`). Full table in [`AGENTS.md`](AGENTS.md#
 
 ```
 game/
-  scenes/        titulo · casa · cozinha · banheiro · closet          (Control roots, PRESET_FULL_RECT)
+  scenes/        titulo · casa · cozinha · banheiro · closet · vila · mercado · casinha · festa
+                 (Control roots, PRESET_FULL_RECT)
   scripts/
     autoloads/   Log · SceneManager · CareLoopManager · AudioManager · ProgressManager
     components/  QuiQuiRig · TouchDraggable · TapButton · WishBubble · FoamBlob …
-    core/        Fsm · Ids · CareSteps · FoodCatalog · LogSink · SquashSpring
+    core/        Fsm · Ids · CareSteps · FoodCatalog · FurnitureCatalog · LogSink · SquashSpring
     resources/   SaveData (typed save model, ADR-005)
-  tests/         432 GUT tests, unit + integration
+  tests/         480 GUT tests, unit + integration
   tools/         scene builders (the .tscn files are generated, never hand-edited)
   assets/        art · audio (family-recorded PT-BR voice)
 specs/           state, release plan, ADRs, threat models, audits, evals, benchmarks

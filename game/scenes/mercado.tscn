@@ -1,0 +1,891 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/scenes/mercado.gd" id="1_bh8s0"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_mercado.jpg" id="2_rxtdj"]
+[ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_foyy4"]
+[ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="4_86kwd"]
+[ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="5_qss00"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="6_mnmwn"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/abajur.png" id="7_b0cni"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/moedinha.png" id="8_gubbx"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/estrela.png" id="9_r3nr3"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/armario.png" id="10_ybhx2"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/beliche.png" id="11_0ffld"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/cadeira.png" id="12_sxww0"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/cama.png" id="13_s0go8"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/escada.png" id="14_7bs6v"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/estante.png" id="15_oxyso"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/mesa.png" id="16_wcnt0"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/porta.png" id="17_2jxdw"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/sofa.png" id="18_xanx5"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/tapete.png" id="19_tfwqx"]
+[ext_resource type="Texture2D" path="res://assets/art/moveis/vaso_planta.png" id="20_axlns"]
+
+[node name="Mercado" type="Control" unique_id=632357062]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_bh8s0")
+
+[node name="Background" type="TextureRect" parent="." unique_id=262548801 groups=["background"]]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_rxtdj")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="QuiQuiRig" type="Control" parent="." unique_id=1769942107 groups=["rig"]]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.20592593
+anchor_right = 0.5
+anchor_bottom = 0.78
+offset_left = -320.0
+offset_right = 320.0
+script = ExtResource("3_foyy4")
+
+[node name="CoinTicketHud" type="Control" parent="." unique_id=1672576290 groups=["ui_top_right"]]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -416.0
+offset_top = 36.0
+offset_right = -36.0
+offset_bottom = 124.0
+script = ExtResource("4_86kwd")
+
+[node name="HomeButton" type="Control" parent="." unique_id=1977257324 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 36.0
+offset_top = 36.0
+offset_right = 156.0
+offset_bottom = 156.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=349459554]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("6_mnmwn")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf0" type="Control" parent="." unique_id=1599488414 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.7
+anchor_top = 0.28
+anchor_right = 0.7
+anchor_bottom = 0.28
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf0" unique_id=1424183783]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("7_b0cni")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf0" unique_id=1815077668]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf0/PriceBadge" unique_id=2069811651]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf0/PriceBadge" unique_id=1042488421]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "3"
+
+[node name="SoldBadge0" type="Control" parent="Shelf0" unique_id=2104109211]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf0/SoldBadge0" unique_id=1509005808]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf1" type="Control" parent="." unique_id=1816581346 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.775
+anchor_top = 0.28
+anchor_right = 0.775
+anchor_bottom = 0.28
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf1" unique_id=357891366]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("10_ybhx2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf1" unique_id=537147740]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf1/PriceBadge" unique_id=1062478352]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf1/PriceBadge" unique_id=1659114538]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "8"
+
+[node name="SoldBadge1" type="Control" parent="Shelf1" unique_id=34199355]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf1/SoldBadge1" unique_id=464502648]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf2" type="Control" parent="." unique_id=80974029 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.85
+anchor_top = 0.28
+anchor_right = 0.85
+anchor_bottom = 0.28
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf2" unique_id=328930100]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("11_0ffld")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf2" unique_id=1576746155]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf2/PriceBadge" unique_id=1740795367]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf2/PriceBadge" unique_id=1379752196]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "9"
+
+[node name="SoldBadge2" type="Control" parent="Shelf2" unique_id=1004290441]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf2/SoldBadge2" unique_id=1177681576]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf3" type="Control" parent="." unique_id=907346843 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.7
+anchor_top = 0.42
+anchor_right = 0.7
+anchor_bottom = 0.42
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf3" unique_id=828542343]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("12_sxww0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf3" unique_id=1694593629]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf3/PriceBadge" unique_id=679695419]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf3/PriceBadge" unique_id=2086850139]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "3"
+
+[node name="SoldBadge3" type="Control" parent="Shelf3" unique_id=1359599534]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf3/SoldBadge3" unique_id=621026097]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf4" type="Control" parent="." unique_id=2125826288 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.775
+anchor_top = 0.42
+anchor_right = 0.775
+anchor_bottom = 0.42
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf4" unique_id=2105853612]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("13_s0go8")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf4" unique_id=468102353]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf4/PriceBadge" unique_id=1662411061]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf4/PriceBadge" unique_id=2074190155]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "10"
+
+[node name="SoldBadge4" type="Control" parent="Shelf4" unique_id=1563361036]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf4/SoldBadge4" unique_id=227619660]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf5" type="Control" parent="." unique_id=338127718 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.85
+anchor_top = 0.42
+anchor_right = 0.85
+anchor_bottom = 0.42
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf5" unique_id=1444053842]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("14_7bs6v")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf5" unique_id=1252023463]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf5/PriceBadge" unique_id=558751355]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf5/PriceBadge" unique_id=83559020]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "7"
+
+[node name="SoldBadge5" type="Control" parent="Shelf5" unique_id=1611388964]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf5/SoldBadge5" unique_id=426359466]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf6" type="Control" parent="." unique_id=1973655832 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.7
+anchor_top = 0.56
+anchor_right = 0.7
+anchor_bottom = 0.56
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf6" unique_id=1090816476]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("15_oxyso")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf6" unique_id=923384158]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf6/PriceBadge" unique_id=443929558]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf6/PriceBadge" unique_id=750102698]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "6"
+
+[node name="SoldBadge6" type="Control" parent="Shelf6" unique_id=1023038265]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf6/SoldBadge6" unique_id=2146520624]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf7" type="Control" parent="." unique_id=1244958628 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.775
+anchor_top = 0.56
+anchor_right = 0.775
+anchor_bottom = 0.56
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf7" unique_id=743275681]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("16_wcnt0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf7" unique_id=1605402779]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf7/PriceBadge" unique_id=236507775]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf7/PriceBadge" unique_id=712268814]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "4"
+
+[node name="SoldBadge7" type="Control" parent="Shelf7" unique_id=581053267]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf7/SoldBadge7" unique_id=1040631724]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf8" type="Control" parent="." unique_id=266271867 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.85
+anchor_top = 0.56
+anchor_right = 0.85
+anchor_bottom = 0.56
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf8" unique_id=1115645975]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("17_2jxdw")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf8" unique_id=615096306]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf8/PriceBadge" unique_id=755542601]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf8/PriceBadge" unique_id=490544782]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "5"
+
+[node name="SoldBadge8" type="Control" parent="Shelf8" unique_id=39208268]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf8/SoldBadge8" unique_id=143006711]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf9" type="Control" parent="." unique_id=1075417235 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.7
+anchor_top = 0.7
+anchor_right = 0.7
+anchor_bottom = 0.7
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf9" unique_id=1025847277]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("18_xanx5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf9" unique_id=2127339717]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf9/PriceBadge" unique_id=293063292]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf9/PriceBadge" unique_id=251717823]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "8"
+
+[node name="SoldBadge9" type="Control" parent="Shelf9" unique_id=429293347]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf9/SoldBadge9" unique_id=3935229]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf10" type="Control" parent="." unique_id=504918606 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.775
+anchor_top = 0.7
+anchor_right = 0.775
+anchor_bottom = 0.7
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf10" unique_id=669982219]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("19_tfwqx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf10" unique_id=1626257825]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf10/PriceBadge" unique_id=470276915]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf10/PriceBadge" unique_id=433589671]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "2"
+
+[node name="SoldBadge10" type="Control" parent="Shelf10" unique_id=1414245355]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf10/SoldBadge10" unique_id=435882563]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Shelf11" type="Control" parent="." unique_id=1460249080 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.85
+anchor_top = 0.7
+anchor_right = 0.85
+anchor_bottom = 0.7
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+script = ExtResource("5_qss00")
+
+[node name="Art" type="TextureRect" parent="Shelf11" unique_id=799222116]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("20_axlns")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceBadge" type="Control" parent="Shelf11" unique_id=2097101804]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = 108.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Coin" type="TextureRect" parent="Shelf11/PriceBadge" unique_id=136745275]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+texture = ExtResource("8_gubbx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Price" type="Label" parent="Shelf11/PriceBadge" unique_id=1484825587]
+layout_mode = 0
+offset_left = 36.0
+offset_right = 96.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 28
+text = "3"
+
+[node name="SoldBadge11" type="Control" parent="Shelf11" unique_id=1924517004]
+visible = false
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="Shelf11/SoldBadge11" unique_id=1941900157]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("9_r3nr3")
+expand_mode = 1
+stretch_mode = 5

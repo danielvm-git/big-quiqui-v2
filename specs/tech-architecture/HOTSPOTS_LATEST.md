@@ -8,18 +8,18 @@ Churn is the number of commits touching the file; `lines` is its current size;
 | Rank | File | Commits | Lines | Tests |
 |---|---|---|---|---|
 | 1 | `game/tests/integration/test_casa_scene.gd` | 10 | 282 | 1 |
-| 2 | `.github/workflows/ci-cd.yml` | 7 | 341 | 0 |
-| 3 | `game/tests/unit/test_quiqui_rig.gd` | 6 | 404 | 0 |
-| 4 | `game/scripts/components/quiqui_rig.gd` | 6 | 427 | 10 |
-| 5 | `game/scripts/autoloads/scene_manager.gd` | 6 | 279 | 16 |
-| 6 | `game/scripts/autoloads/progress_manager.gd` | 6 | 196 | 12 |
+| 2 | `game/scripts/autoloads/progress_manager.gd` | 8 | 280 | 21 |
+| 3 | `.github/workflows/ci-cd.yml` | 7 | 341 | 0 |
+| 4 | `game/tests/unit/test_quiqui_rig.gd` | 6 | 404 | 0 |
+| 5 | `game/scripts/components/quiqui_rig.gd` | 6 | 427 | 10 |
+| 6 | `game/scripts/autoloads/scene_manager.gd` | 6 | 279 | 19 |
 | 7 | `game/project.godot` | 6 | 49 | 1 |
 | 8 | `scripts/preflight.sh` | 5 | 155 | 1 |
 | 9 | `game/tests/unit/test_progress_manager.gd` | 5 | 217 | 0 |
 | 10 | `game/tests/integration/test_titulo_scene.gd` | 5 | 112 | 0 |
-| 11 | `game/scripts/scenes/casa.gd` | 5 | 213 | 21 |
+| 11 | `game/scripts/scenes/casa.gd` | 5 | 213 | 24 |
 | 12 | `game/scripts/components/wish_bubble.gd` | 5 | 202 | 2 |
-| 13 | `game/scripts/components/touch_draggable.gd` | 5 | 333 | 15 |
+| 13 | `game/scripts/components/touch_draggable.gd` | 5 | 326 | 16 |
 | 14 | `game/tools/type_gate.gd` | 4 | 66 | 1 |
 | 15 | `game/tools/build_titulo_scene.gd` | 4 | 92 | 0 |
 
