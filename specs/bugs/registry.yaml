@@ -433,7 +433,7 @@ bugs:
   scope: security
   summary: "SaveData._clean_placement does not deduplicate IDs, allowing tampered saves to bypass party lock"
   file: specs/bugs/BUG-048-placement-deduplication-save-tampering.md
-  status: open
+  status: fixed
   found_by: e09 post-epic review
 - bug_id: BUG-049
   date: '2026-11-07'
