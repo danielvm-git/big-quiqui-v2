@@ -1,0 +1,105 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/scenes/casinha.gd" id="1_1kumu"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_casinha.jpg" id="2_utolu"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/bandeja.png" id="3_bjnjg"]
+[ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="4_u1s6i"]
+[ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="5_1q80t"]
+[ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="6_bfncu"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="7_fmhih"]
+[ext_resource type="Script" path="res://scripts/components/drag_hint.gd" id="8_fg4i3"]
+[ext_resource type="Script" path="res://scripts/components/hint_manager.gd" id="9_ekwea"]
+
+[node name="Casinha" type="Control" unique_id=269410865]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_1kumu")
+
+[node name="Background" type="TextureRect" parent="." unique_id=608734417 groups=["background"]]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_utolu")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="PlacementArea" type="Control" parent="." unique_id=911632226]
+anchors_preset = 0
+anchor_left = 0.2
+anchor_top = 0.28
+anchor_right = 0.8
+anchor_bottom = 0.74
+mouse_filter = 2
+
+[node name="Tray" type="Control" parent="." unique_id=641646597]
+anchors_preset = 0
+anchor_left = 0.12
+anchor_top = 0.82
+anchor_right = 0.88
+anchor_bottom = 0.96
+mouse_filter = 2
+
+[node name="TrayArt" type="TextureRect" parent="." unique_id=1840741695]
+layout_mode = 0
+anchor_left = 0.12
+anchor_top = 0.82
+anchor_right = 0.88
+anchor_bottom = 0.96
+mouse_filter = 2
+texture = ExtResource("3_bjnjg")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="QuiQuiRig" type="Control" parent="." unique_id=71467648 groups=["rig"]]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.20592593
+anchor_right = 0.5
+anchor_bottom = 0.78
+offset_left = -320.0
+offset_right = 320.0
+script = ExtResource("4_u1s6i")
+
+[node name="CoinTicketHud" type="Control" parent="." unique_id=1449547289 groups=["ui_top_right"]]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -416.0
+offset_top = 36.0
+offset_right = -36.0
+offset_bottom = 124.0
+script = ExtResource("5_1q80t")
+
+[node name="HomeButton" type="Control" parent="." unique_id=1191352325 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 36.0
+offset_top = 36.0
+offset_right = 156.0
+offset_bottom = 156.0
+script = ExtResource("6_bfncu")
+
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=421330239]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("7_fmhih")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HintLayer" type="Control" parent="." unique_id=216066394]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="DragHint" type="Control" parent="HintLayer" unique_id=510969655]
+visible = false
+anchors_preset = 0
+script = ExtResource("8_fg4i3")
+
+[node name="HintManager" type="Node" parent="." unique_id=1757372826]
+script = ExtResource("9_ekwea")

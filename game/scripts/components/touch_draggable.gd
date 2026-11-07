@@ -1,5 +1,6 @@
 # story: e03s01
 # story: e08s02
+# story: e09s02
 class_name TouchDraggable
 extends Control
 ## The one drag surface (ADR-004): a prop picked up by one finger, which is either
@@ -9,10 +10,9 @@ extends Control
 ## back per event: the control itself moves during a drag.
 ##
 ## `CONSUME_ON_DROP` is the eat/apply gesture (e03). `CONTINUOUS_SCRUB` is the e04
-## gesture: the prop does not move, the finger does, and each move inside the
-## target's hull becomes a `scrubbed` point. `SNAP_TO_SLOT` is the e05 gesture: drop
-## it on the character and it *replaces* what is in that slot, then flies home.
-## `FREE_PLACEMENT` still behaves as if there were no target (e09).
+## gesture, whose hull state `ScrubGesture` owns. `SNAP_TO_SLOT` is e05: drop it on the
+## character and it *replaces* what is in that slot, then flies home. `FREE_PLACEMENT`
+## keeps the prop where it lands inside `placement_area` and reports that ratio (e09).
 
 signal drag_started
 signal drag_moved(global_point: Vector2)
@@ -22,6 +22,8 @@ signal consumed
 signal scrubbed(global_point: Vector2)
 ## SNAP_TO_SLOT only, and only when the drop lands on the target.
 signal snapped(slot: String, id: String)
+## FREE_PLACEMENT only, and only when the drop lands inside `placement_area`.
+signal placed(normalized: Vector2)
 
 enum Mode { CONSUME_ON_DROP, CONTINUOUS_SCRUB, SNAP_TO_SLOT, FREE_PLACEMENT }
 
@@ -45,6 +47,9 @@ const LEGAL_EDGES: Dictionary = {
 const MAX_DWELL_SEC: Dictionary = {STATE_RETURNING: 1.0}
 ## Stands in for a touch index when a real mouse holds the prop.
 const MOUSE_INDEX: int = -1
+## A control that is missing, freed or out of the tree gets a rect no point is inside.
+## A zero-size Rect2 would *contain* the origin, so the sentinel is offset instead.
+const NO_RECT: Rect2 = Rect2(Vector2(-1.0e9, -1.0e9), Vector2(1.0, 1.0))
 
 ## The single-finger lock: the one prop held in the whole game (T-E03-01).
 static var _holder: TouchDraggable = null
@@ -61,6 +66,8 @@ var scrub_loop_stream: AudioStream = null
 ## SNAP_TO_SLOT target and payload: what this item puts on, and into which slot.
 var snap_target: Control = null
 var snap_margin: float = 0.0
+## FREE_PLACEMENT destination: the room the piece is dropped into.
+var placement_area: Control = null
 var payload_slot: String = ""
 var payload_id: String = ""
 ## Grows the target rect, in canvas px.
@@ -75,8 +82,7 @@ var _grab_offset: Vector2 = Vector2.ZERO
 var _rest_position: Vector2 = Vector2.ZERO
 var _return_from: Vector2 = Vector2.ZERO
 var _return_elapsed: float = 0.0
-var _scrub_count: int = 0
-var _loop_player: AudioStreamPlayer = null
+var _scrub: ScrubGesture = ScrubGesture.new()
 
 
 func _init() -> void:
@@ -151,12 +157,11 @@ func _on_contact(index: int, pressed: bool, local_point: Vector2, cancelled: boo
 
 
 func _press(index: int, local_point: Vector2) -> void:
-	# `enabled` gates only the press: a held prop must still finish its gesture,
-	# or the lock would wedge.
+	# `enabled` gates only the press: a held prop must finish, or the lock wedges.
 	if not enabled or _holder != null:
 		return
 	if mode == Mode.CONTINUOUS_SCRUB:
-		_press_scrub(index, local_point)
+		_press_scrub(index)
 		return
 	if not fsm.can_transition_to(STATE_DRAGGING):
 		return
@@ -171,16 +176,17 @@ func _press(index: int, local_point: Vector2) -> void:
 
 
 ## A scrub never moves the prop: the finger moves, the sponge stays under it.
-func _press_scrub(index: int, _local_point: Vector2) -> void:
+func _press_scrub(index: int) -> void:
 	if not fsm.can_transition_to(STATE_SCRUBBING):
 		return
 	fsm.transition_to(STATE_SCRUBBING)
 	_holder = self
 	_owner_touch_index = index
-	_scrub_count = 0
-	_start_loop()
+	_scrub.target = scrub_target
+	_scrub.loop_stream = scrub_loop_stream
+	_scrub.begin(self)
 	drag_started.emit()
-	_emit("scrub.start", {"hull": _hull().size()})
+	_emit("scrub.start", {"hull": _scrub.hull_points().size()})
 
 
 func _on_motion(index: int, local_point: Vector2) -> void:
@@ -194,14 +200,10 @@ func _on_motion(index: int, local_point: Vector2) -> void:
 	drag_moved.emit(point)
 
 
-## Only points inside the hull count; a finger that leaves her body and comes back
-## resumes scrubbing without a new gesture.
+## Only points inside the hull count; leaving her body and coming back resumes.
 func _scrub_move(point: Vector2) -> void:
-	var hull: PackedVector2Array = _hull()
-	if hull.size() < 3 or not Geometry2D.is_point_in_polygon(point, hull):
-		return
-	_scrub_count += 1
-	scrubbed.emit(point)
+	if _scrub.consume(point):
+		scrubbed.emit(point)
 
 
 func _drop(point: Vector2, cancelled: bool) -> void:
@@ -209,16 +211,15 @@ func _drop(point: Vector2, cancelled: bool) -> void:
 	if fsm.state == STATE_SCRUBBING:
 		_end_scrub()
 		return
-	if not cancelled and _is_on_target(point):
+	if not cancelled and mode == Mode.CONSUME_ON_DROP and _rect_of(drop_target, drop_margin).has_point(point):
 		_consume()
 		return
-	if not cancelled and _is_on_snap_target(point):
+	if not cancelled and mode == Mode.SNAP_TO_SLOT and _rect_of(snap_target, snap_margin).has_point(point):
 		_snap()
 		return
-	fsm.transition_to(STATE_RETURNING)
-	_return_from = position
-	_return_elapsed = 0.0
-	drag_ended.emit()
+	if not cancelled and _place(point):
+		return
+	_begin_return()
 	_emit("drag.drop", {"outcome": "returned"})
 
 
@@ -226,12 +227,11 @@ func _end_scrub() -> void:
 	_stop_loop()
 	fsm.transition_to(STATE_REST)
 	drag_ended.emit()
-	_emit("scrub.end", {"scrubbed": _scrub_count})
+	_emit("scrub.end", {"scrubbed": _scrub.points})
 
 
-## Scene changes and stage resets call this: it releases the shared owner, stops the
-## loop and returns to rest, so an interrupted gesture can never wedge the next one
-## (T-E04-04).
+## Scene changes and resets call this: release the shared owner, stop the loop and
+## return to rest, so an interrupted gesture can never wedge the next one (T-E04-04).
 func abort() -> void:
 	if fsm.state != STATE_SCRUBBING:
 		_stop_loop()
@@ -241,47 +241,23 @@ func abort() -> void:
 	fsm.transition_to(STATE_REST)
 	_holder = null
 	drag_ended.emit()
-	_emit("scrub.end", {"scrubbed": _scrub_count, "aborted": true})
+	_emit("scrub.end", {"scrubbed": _scrub.points, "aborted": true})
 
 
 func scrub_points_seen() -> int:
-	return _scrub_count
+	return _scrub.points
 
 
 func is_scrub_loop_playing() -> bool:
-	return _loop_player != null and _loop_player.playing
+	return _scrub.is_playing()
 
 
 func scrub_loop_player_count() -> int:
-	return 0 if _loop_player == null else 1
-
-
-func _start_loop() -> void:
-	if scrub_loop_stream == null:
-		return
-	if _loop_player == null:
-		_loop_player = AudioStreamPlayer.new()
-		_loop_player.name = "ScrubLoop"
-		_loop_player.bus = "SFX"
-		add_child(_loop_player)
-	_loop_player.stream = scrub_loop_stream
-	_loop_player.play()
+	return _scrub.loop_player_count()
 
 
 func _stop_loop() -> void:
-	if _loop_player != null and _loop_player.playing:
-		_loop_player.stop()
-
-
-## The target's hull, transformed at call time. A missing or non-polygon target
-## means "no hull, no scrubs" rather than an error.
-func _hull() -> PackedVector2Array:
-	if scrub_target == null or not is_instance_valid(scrub_target) or not scrub_target.is_inside_tree():
-		return PackedVector2Array()
-	if not scrub_target.has_method("scrub_hull_global"):
-		return PackedVector2Array()
-	var hull: Variant = scrub_target.call("scrub_hull_global")
-	return hull if hull is PackedVector2Array else PackedVector2Array()
+	_scrub.stop()
 
 
 func _consume() -> void:
@@ -295,34 +271,51 @@ func _consume() -> void:
 ## The item flies home afterwards: the wardrobe keeps its contents, the character
 ## takes the look.
 func _snap() -> void:
+	_begin_return()
+	_emit("drag.drop", {"outcome": "snapped"})
+	snapped.emit(payload_slot, payload_id)
+
+
+func _begin_return() -> void:
 	fsm.transition_to(STATE_RETURNING)
 	_return_from = position
 	_return_elapsed = 0.0
 	drag_ended.emit()
-	_emit("drag.drop", {"outcome": "snapped"})
-	snapped.emit(payload_slot, payload_id)
 
 
 func _owns(index: int) -> bool:
 	return _holder == self and index == _owner_touch_index
 
 
-func _is_on_snap_target(point: Vector2) -> bool:
-	if mode != Mode.SNAP_TO_SLOT:
-		return false
-	if not is_instance_valid(snap_target) or not snap_target.is_inside_tree():
-		return false
-	var rect: Rect2 = snap_target.get_global_transform_with_canvas() * Rect2(Vector2.ZERO, snap_target.size)
-	return rect.grow(snap_margin).has_point(point)
+## The target's rect on the canvas, grown by `margin`: one owner for every mode.
+func _rect_of(control: Variant, margin: float) -> Rect2:
+	# `Variant` on purpose: a freed target is a miss, and a typed parameter raises first.
+	if typeof(control) != TYPE_OBJECT or not is_instance_valid(control):
+		return NO_RECT
+	var target: Control = control as Control
+	if target == null or not target.is_inside_tree():
+		return NO_RECT
+	return (target.get_global_transform_with_canvas() * Rect2(Vector2.ZERO, target.size)).grow(margin)
 
 
-func _is_on_target(point: Vector2) -> bool:
-	if mode != Mode.CONSUME_ON_DROP:
+## FREE_PLACEMENT: the piece stays where she let go and reports the room ratio (e09).
+func _place(point: Vector2) -> bool:
+	if mode != Mode.FREE_PLACEMENT or not _rect_of(placement_area, 0.0).has_point(point):
 		return false
-	if not is_instance_valid(drop_target) or not drop_target.is_inside_tree():
-		return false
-	var rect: Rect2 = drop_target.get_global_transform_with_canvas() * Rect2(Vector2.ZERO, drop_target.size)
-	return rect.grow(drop_margin).has_point(point)
+	fsm.transition_to(STATE_REST)
+	drag_ended.emit()
+	_emit("drag.drop", {"outcome": "placed"})
+	placed.emit(normalized_of(get_global_rect().get_center()))
+	return true
+
+
+## A point as a ratio of `placement_area`, clamped to 0..1. No area means the origin.
+func normalized_of(global_point: Vector2) -> Vector2:
+	var rect: Rect2 = _rect_of(placement_area, 0.0)
+	if rect == NO_RECT or rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return Vector2.ZERO
+	var ratio: Vector2 = (global_point - rect.position) / rect.size
+	return Vector2(clampf(ratio.x, 0.0, 1.0), clampf(ratio.y, 0.0, 1.0))
 
 
 func _to_global(local_point: Vector2) -> Vector2:

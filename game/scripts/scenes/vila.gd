@@ -23,7 +23,7 @@ const POI_SCENES: Dictionary = {
 	POI_SCENE_RODA: RODA_PATH,
 	POI_RECYCLING: "",
 	POI_MERCADO: "res://scenes/mercado.tscn",
-	POI_CASINHA: "",
+	POI_CASINHA: "res://scenes/casinha.tscn",
 	POI_FESTA: "",
 }
 

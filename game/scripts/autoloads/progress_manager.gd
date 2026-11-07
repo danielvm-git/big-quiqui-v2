@@ -223,5 +223,58 @@ func owned_count() -> int:
 	return 0 if data == null else data.owned_furniture.size()
 
 
+## One placement per piece (e09s02): the ratio is the only thing persisted, so the room
+## lands in the same spot on the iPad and on a desktop canvas. Owned pieces only.
+func place_furniture(id: String, nx: float, ny: float) -> bool:
+	if not Ids.is_valid(id) or not owns_furniture(id):
+		_emit("furniture.place_refused", {"item": "invalid"})
+		return false
+	var entry: Dictionary = {"id": id, "x": clampf(nx, 0.0, 1.0), "y": clampf(ny, 0.0, 1.0)}
+	data.placed_furniture = _without(id)
+	data.placed_furniture.append(entry)
+	if not save():
+		progress_changed.emit()
+	return true
+
+
+func remove_furniture(id: String) -> bool:
+	if data == null or not _has_placement(id):
+		return false
+	data.placed_furniture = _without(id)
+	if not save():
+		progress_changed.emit()
+	return true
+
+
+func placed() -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	if data == null:
+		return entries
+	for entry: Dictionary in data.placed_furniture:
+		entries.append(entry.duplicate(true))
+	return entries
+
+
+func placed_count() -> int:
+	return 0 if data == null else data.placed_furniture.size()
+
+
+func _has_placement(id: String) -> bool:
+	for entry: Dictionary in data.placed_furniture:
+		if str(entry.get("id", "")) == id:
+			return true
+	return false
+
+
+func _without(id: String) -> Array[Dictionary]:
+	var kept: Array[Dictionary] = []
+	if data == null:
+		return kept
+	for entry: Dictionary in data.placed_furniture:
+		if str(entry.get("id", "")) != id:
+			kept.append(entry.duplicate(true))
+	return kept
+
+
 func _emit(ev: String, data_in: Dictionary) -> void:
 	LogSink.emit_from(self, ev, data_in)
