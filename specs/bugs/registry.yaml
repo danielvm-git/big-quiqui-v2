@@ -424,7 +424,7 @@ bugs:
   scope: code
   summary: "Unhandled null dereference on ProgressManager.data in casinha.gd and missing owned_furniture() encapsulation"
   file: specs/bugs/BUG-047-casinha-null-dereference-save-data.md
-  status: open
+  status: fixed
   found_by: e09 post-epic review
 - bug_id: BUG-048
   date: '2026-11-07'

@@ -104,8 +104,11 @@ func _spawn_from_save() -> void:
 		var id: String = str(entry.get("id", ""))
 		var point: Vector2 = Vector2(float(entry.get("x", 0.5)), float(entry.get("y", 0.5)))
 		_spawn(id, point)
-	var save: SaveData = progress.get("data") as SaveData
-	var owned: Array[String] = save.owned_furniture
+	var owned: Array[String] = []
+	if progress.has_method("owned_furniture"):
+		var raw_owned: Variant = progress.call("owned_furniture")
+		if raw_owned is Array:
+			owned.assign(raw_owned)
 	for id: String in owned:
 		if _props.has(id) or _tray_ids.size() >= TRAY_LIMIT:
 			continue

@@ -223,6 +223,14 @@ func owned_count() -> int:
 	return 0 if data == null else data.owned_furniture.size()
 
 
+func owned_furniture() -> Array[String]:
+	var entries: Array[String] = []
+	if data == null:
+		return entries
+	entries.assign(data.owned_furniture)
+	return entries
+
+
 ## One placement per piece (e09s02): the ratio is the only thing persisted, so the room
 ## lands in the same spot on the iPad and on a desktop canvas. Owned pieces only.
 func place_furniture(id: String, nx: float, ny: float) -> bool:
