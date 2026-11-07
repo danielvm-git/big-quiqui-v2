@@ -243,7 +243,7 @@ jobs:
           godot --headless --path "$PROJECT_DIR" --export-release "iOS" "$PWD/$EXPORT_PATH"
           if [ ! -f "$EXPORT_PATH" ] && [ -d "build/ios/quiqui.xcodeproj" ]; then
             echo "Packaging iOS project into $EXPORT_PATH..."
-            xcodebuild -project build/ios/quiqui.xcodeproj -target quiqui -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" clean build
+            xcodebuild -project build/ios/quiqui.xcodeproj -target quiqui -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" OTHER_LDFLAGS="\$(inherited) -framework QuartzCore -framework Metal" clean build
             mkdir -p build/ios/Payload
             cp -r build/ios/build/Release-iphoneos/quiqui.app build/ios/Payload/
             (cd build/ios && zip -q -r quiqui.ipa Payload && rm -rf Payload)
