@@ -7,7 +7,8 @@ extends GutTest
 ## never lift. Asserts that the game cannot be put into a state the model forbids.
 
 const SEED: int = 424242
-const EVENTS: int = 500
+## FZ-02/03 together are the story's 1,000 events: 800 on the hub, 200 in a step room.
+const EVENTS: int = 800
 const STEP_EVENTS: int = 200
 
 var scene: Control = null
@@ -42,7 +43,7 @@ func test_the_stream_is_reproducible_and_device_legal() -> void:
 			down[finger] = false
 
 
-func test_a_thousand_events_on_the_hub_leave_it_playable() -> void:
+func test_eight_hundred_events_on_the_hub_leave_it_playable() -> void:
 	var before: int = int(get_node("/root/ProgressManager").call("get_coins"))
 	_mount("res://scenes/casa.tscn")
 	await wait_process_frames(2)

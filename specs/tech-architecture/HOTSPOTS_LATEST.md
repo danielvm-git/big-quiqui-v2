@@ -7,21 +7,21 @@ Churn is the number of commits touching the file; `lines` is its current size;
 
 | Rank | File | Commits | Lines | Tests |
 |---|---|---|---|---|
-| 1 | `game/tests/integration/test_casa_scene.gd` | 10 | 282 | 1 |
-| 2 | `game/scripts/autoloads/progress_manager.gd` | 9 | 292 | 21 |
-| 3 | `.github/workflows/ci-cd.yml` | 7 | 341 | 0 |
-| 4 | `scripts/preflight.sh` | 6 | 169 | 1 |
-| 5 | `game/tests/unit/test_quiqui_rig.gd` | 6 | 404 | 0 |
-| 6 | `game/scripts/components/quiqui_rig.gd` | 6 | 427 | 10 |
-| 7 | `game/scripts/autoloads/scene_manager.gd` | 6 | 279 | 19 |
-| 8 | `game/project.godot` | 6 | 49 | 1 |
-| 9 | `game/tests/unit/test_progress_manager.gd` | 5 | 217 | 0 |
-| 10 | `game/tests/integration/test_titulo_scene.gd` | 5 | 112 | 0 |
-| 11 | `game/scripts/scenes/casinha.gd` | 5 | 295 | 5 |
-| 12 | `game/scripts/scenes/casa.gd` | 5 | 213 | 24 |
-| 13 | `game/scripts/resources/save_data.gd` | 5 | 132 | 7 |
-| 14 | `game/scripts/components/wish_bubble.gd` | 5 | 202 | 2 |
-| 15 | `game/scripts/components/touch_draggable.gd` | 5 | 326 | 16 |
+| 1 | `game/scripts/autoloads/progress_manager.gd` | 12 | 341 | 32 |
+| 2 | `.github/workflows/ci-cd.yml` | 11 | 348 | 0 |
+| 3 | `game/tests/integration/test_casa_scene.gd` | 10 | 282 | 1 |
+| 4 | `game/project.godot` | 8 | 51 | 1 |
+| 5 | `game/tests/unit/test_progress_manager.gd` | 7 | 219 | 0 |
+| 6 | `scripts/preflight.sh` | 6 | 169 | 2 |
+| 7 | `game/tests/unit/test_quiqui_rig.gd` | 6 | 404 | 0 |
+| 8 | `game/scripts/resources/save_data.gd` | 6 | 177 | 15 |
+| 9 | `game/scripts/components/quiqui_rig.gd` | 6 | 427 | 10 |
+| 10 | `game/scripts/autoloads/scene_manager.gd` | 6 | 279 | 24 |
+| 11 | `game/tests/integration/test_titulo_scene.gd` | 5 | 112 | 0 |
+| 12 | `game/scripts/scenes/casa.gd` | 5 | 213 | 25 |
+| 13 | `game/scripts/components/wish_bubble.gd` | 5 | 202 | 3 |
+| 14 | `game/scripts/components/touch_draggable.gd` | 5 | 326 | 16 |
+| 15 | `game/tools/type_gate.gd` | 4 | 66 | 1 |
 
 **Read this as:** a high-churn, high-line file is where the next bug lives; a
 high-churn, low-test file is where the next regression goes unnoticed.

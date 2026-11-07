@@ -20,10 +20,15 @@ release:
     # through an explicit `feat(e11)!:` breaking change.
     v0.8.0: "feat(observability) — portfolio tooling, not an epic"
     v0.9.0: e07
-    v0.10.0: e08
-    v0.11.0: e09
-    v0.12.0: e10
-    v1.0.0: e11
+    # Reality check after e10 landed (PR 42): big-release increments one minor per
+    # publishing commit, so the ladder above is the *intent* and the tags are the record.
+    # v0.10.0 was cut by the e10 ship commit, not by e08; e11's harness then landed in the
+    # same PR without a second tag. What is left of the ladder is the breaking step:
+    # v1.0.0 through `feat(e11)!:`.
+    v0.10.0: "e10 (cut at 911e874) — the earlier v0.8.0/v0.10.0 mapping shifted"
+    v0.11.0: e09-e11 harness (not cut; absorbed by v0.10.0)
+    v0.12.0: "e10 follow-up (not cut)"
+    v1.0.0: e11 (still to come — the only remaining rung)
 title: "Coelinha QuiQui — Greenfield TutoTOONS Vertical-Slice Release Plan"
 slicing_strategy: "scene_by_scene_vertical"
 total_epics: 11
@@ -153,7 +158,7 @@ epics:
     slug: e10-friends-minigames-and-album-scenes
     title: "Playable Scenes 14–17: Duck Dance, Bear Puzzle, Penguin Catch & Sticker Album (album.tscn)"
     playable_scene: "res://scenes/pato_danca.tscn + res://scenes/urso_puzzle.tscn + res://scenes/pinguim_jogo.tscn + res://scenes/album.tscn"
-    status: planned
+    status: done
     bcps: 14
     wsjf: 5.2
     stories: [e10s01, e10s02, e10s03, e10s04]
@@ -164,13 +169,14 @@ epics:
   - id: e11
     slug: e11-mbt-monkey-and-ipad-release
     title: "Release Gate (v1.0.0): 500-Step MBT Walk, 3-Finger Monkey Fuzz, Visual Gallery & iPad Build"
-    playable_scene: "ALL (13 scenes verified)"
-    status: in_progress
+    playable_scene: "ALL (17 scenes verified)"
+    status: done
     bcps: 13
     wsjf: 6.4
     stories: [e11s01, e11s02, e11s03, e11s04]
     summary: >
-      e11s01 (invariant gate + 500-step MBT walk) and e11s02 (3-finger monkey fuzz) landed early,
-      pulled forward by the test-hardening run: 10 new gates, 5 live defects found and fixed
-      (BUG-055..BUG-059). Remaining: dual-aspect screenshot gallery (1920x1080 & 2048x1536),
-      gate-trace sign-off, and the iPad Personal Team deployment script.
+      All four stories are built: the invariant gate with the 500-step walk (s01), the three-finger
+      monkey fuzz (s02), the dual-aspect gallery over all 17 scenes (s03), and the iOS export preset
+      plus `scripts/ios-deploy.sh` (s04), with FIX-06 save backup and FIX-07 dev console folded in.
+      What remains is not code: the `feat(e11)!:` breaking release that cuts **v1.0.0**, which is a
+      human decision and has deliberately not been taken by an agent run.
