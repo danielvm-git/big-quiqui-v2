@@ -410,6 +410,11 @@ gate_decisions:
     or future stories in the review bodies
   reason: closure of the dual-blind gate before any outward git operations
 decisions:
+- id: ADR-012
+  summary: >-
+    Friends minigames and sticker album trade-offs: minigames return to Festa, album returns to
+    Vila; TouchDraggable adds SNAP_TO_SLOT and CONTINUOUS_SCRUB; PoiTable extracts Vila POI
+    constants and keeps vila.gd under 299 lines; DoorBadge adds stars rule; star reads clamp 0..5.
 - id: ADR-011
   summary: >-
     Store and casinha trade-offs: prices are EconomyData (FIX-05) with a floored zero; a purchase
