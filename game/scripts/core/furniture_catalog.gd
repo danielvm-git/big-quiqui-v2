@@ -5,6 +5,8 @@ extends RefCounted
 ## text ever reaches a `res://` path (CONVENTIONS §4).
 
 const FURNITURE_DIR: String = "res://resources/furniture/"
+## `MercadoScene.try_buy` refuses a negative price, so this is the "not for sale" sentinel.
+const NOT_SELLABLE: int = -1
 const FURNITURE_IDS: Array[String] = [
 	"abajur",
 	"armario",
@@ -42,8 +44,9 @@ static func get_item(id: String, dir: String = FURNITURE_DIR) -> FurnitureData:
 
 
 ## FIX-05: the price table is tuning data, so it lives in `EconomyData`. A missing or
-## negative entry is 0, never a gift that mints coins.
+## negative entry is **not sellable** (`-1`), never `0`: a zero price is a free gift, and
+## `MercadoScene` already treats a negative price as "do not charge" (BUG-058).
 static func price_of(id: String, economy: EconomyData) -> int:
-	if economy == null:
-		return 0
-	return maxi(int(economy.furniture_prices.get(id, 0)), 0)
+	if economy == null or not economy.furniture_prices.has(id):
+		return NOT_SELLABLE
+	return maxi(int(economy.furniture_prices[id]), NOT_SELLABLE)
