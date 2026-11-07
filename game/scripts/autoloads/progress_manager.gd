@@ -138,12 +138,21 @@ func _mirror_backup() -> void:
 	if data == null:
 		return
 	var bak: String = bak_path()
-	var file: FileAccess = FileAccess.open(bak, FileAccess.WRITE)
-	if file == null:
+	var tmp: String = bak + TMP_SUFFIX
+	if not _write_dictionary(tmp, data.to_dictionary()):
 		return
-	file.store_string(JSON.stringify(data.to_dictionary(), "\t"))
+	if DirAccess.rename_absolute(tmp, bak) != OK:
+		DirAccess.remove_absolute(tmp)
+
+
+func _write_dictionary(path: String, payload: Dictionary) -> bool:
+	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(payload, "\t"))
 	file.flush()
 	file.close()
+	return true
 
 
 # ── mutation helpers (clamped, always announced) ─────────────────────────────
