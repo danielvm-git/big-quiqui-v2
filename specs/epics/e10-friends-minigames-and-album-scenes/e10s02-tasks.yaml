@@ -17,7 +17,7 @@ tasks:
     severity: critical
     categories:
     - unit
-  status: failing
+  status: passing
 - id: e10s02-t02
   description: 'GREEN: puzzle_piece.gd (TouchDraggable SNAP_TO_SLOT wrapper, lock_in) —
     touch_draggable.gd untouched (331-line grandfather stays frozen)'
@@ -27,7 +27,7 @@ tasks:
     severity: critical
     categories:
     - unit
-  status: failing
+  status: passing
 - id: e10s02-t03
   description: 'RED+GREEN: urso_puzzle.gd (INTRO/PLAYING/REWARD Fsm, seed_shuffle seam,
     idempotent fourth-lock settle paying coins + star), build_urso_puzzle_scene.gd with hint
