@@ -234,6 +234,8 @@ func reset() -> void:
 	last_error = ""
 	if has_orphan_tmp():
 		DirAccess.remove_absolute(tmp_path())
+	if FileAccess.file_exists(bak_path()):
+		DirAccess.remove_absolute(bak_path())
 
 
 # ── furniture (e09s01) ───────────────────────────────────────────────────────

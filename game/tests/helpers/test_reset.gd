@@ -28,8 +28,9 @@ static func reset_all() -> void:
 
 
 static func delete_test_save() -> void:
-	if FileAccess.file_exists(TEST_SAVE_PATH):
-		DirAccess.remove_absolute(TEST_SAVE_PATH)
+	for path: String in [TEST_SAVE_PATH, TEST_SAVE_PATH + ".bak", TEST_SAVE_PATH + ".tmp"]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(path)
 
 
 static func manager_node(manager: String) -> Node:
