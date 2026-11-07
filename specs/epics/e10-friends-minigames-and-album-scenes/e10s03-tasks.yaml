@@ -32,7 +32,7 @@ tasks:
     categories:
     - unit
     - Security Review
-  status: failing
+  status: passing
 - id: e10s03-t03
   description: 'RED+GREEN: build_pinguim_jogo_scene.gd, pinguim_jogo.tscn, integration
   test_pinguim_scene.gd (full seeded round via advance only — zero engine-frame awaits, mouse-echo
