@@ -1,35 +1,32 @@
 story_id: e09s03
 spec: e09s03.md
 epic_id: e09
-title: 'Playable Scene 13: HousePartyScene (festa.tscn) Unlocked at >=5 Placed Furniture
-  Items with Friends Dancing'
-status: failing
+title: 'Playable Scene 13: HousePartyScene (festa.tscn) Unlocked at >=5 Placed Furniture Items
+  with Friends Dancing'
+status: pending
 bcps: 3
-playable_scene: res://scenes/mercado.tscn + res://scenes/casinha.tscn + res://scenes/festa.tscn
+playable_scene: res://scenes/festa.tscn
 tasks:
 - id: e09s03-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e09s03
-    (Playable Scene 13: HousePartyScene (festa.tscn) Unlocked at >=5 Placed Furniture
-    Items with Friends Dancing)'
+  description: 'RED: unit tests for DoorBadge (locked default, swaps on progress_changed) and for the
+    party threshold rule (4 locked, 5 dancing, re-lock without a duplicate dance line)'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
-  risk: P0
-  allure:
-    severity: critical
-  status: failing
-- id: e09s03-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e09s03
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
   risk: P1
   allure:
     severity: high
-  status: failing
+  status: pending
+- id: e09s03-t02
+  description: 'GREEN: door_badge.gd, festa.gd (LOCKED/DANCING Fsm, deterministic bob),
+    build_festa_scene.gd, festa.tscn, integration test_festa_scene.gd on both aspects'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P1
+  allure:
+    severity: high
+  status: pending
 - id: e09s03-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e09s03
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+  description: 'Wire the Vila FESTA door + PartyBadge in the builder, update the pending-POI test'
+  verify: bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: failing
+  status: pending

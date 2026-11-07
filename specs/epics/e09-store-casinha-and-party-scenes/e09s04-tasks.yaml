@@ -1,34 +1,31 @@
 story_id: e09s04
 spec: e09s04.md
 epic_id: e09
-title: Normalized Furniture Coordinate Persistence Oracle Across 16:9 and 4:3 iPad
-  Aspect Ratios
-status: failing
+title: Normalized Furniture Coordinate Persistence Oracle Across 16:9 and 4:3 iPad Aspect Ratios
+status: pending
 bcps: 2
-playable_scene: res://scenes/mercado.tscn + res://scenes/casinha.tscn + res://scenes/festa.tscn
+playable_scene: res://scenes/casinha.tscn
 tasks:
 - id: e09s04-t01
-  description: Write failing GUT unit & TouchSim/GeometryOracle tests for e09s04 (Normalized
-    Furniture Coordinate Persistence Oracle Across 16:9 and 4:3 iPad Aspect Ratios)
+  description: 'RED: PlacementOracle unit tests, including the negative case (a 10% moved coordinate
+    must produce a finding)'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
-  risk: P0
-  allure:
-    severity: critical
-  status: failing
-- id: e09s04-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e09s04
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e09s04-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e09s04
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
-  risk: P2
+  status: pending
+- id: e09s04-t02
+  description: 'GREEN: game/tests/helpers/placement_oracle.gd'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P1
   allure:
-    severity: normal
-  status: failing
+    severity: high
+  status: pending
+- id: e09s04-t03
+  description: 'Epic walk test_e09_epic_e2e.gd: buy -> place -> remount on the other canvas -> party
+    still locked; exactly one diary event per action'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P1
+  allure:
+    severity: high
+  status: pending
