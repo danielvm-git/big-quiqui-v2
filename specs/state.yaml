@@ -1,10 +1,10 @@
 project: big-quiqui-v2
 version: 0.9.0
 workflow_mode: solo-git
-active_flow: null
+active_flow: build_epic
 lifecycle_phase: build
-current_epic: null
-current_story: null
+current_epic: e10-friends-minigames-and-album-scenes
+current_story: e10s01
 review_gate:
   skill: null
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
@@ -130,7 +130,7 @@ bug_cycle:
     - BUG-011
     - BUG-012
     outcome: 11 fixed, BUG-004 wontfix (PII policy, pinned by test)
-last_updated: '2026-11-07T11:05:00-03:00'
+last_updated: '2026-11-07T06:34:44-0300'
 release:
   ci_verified: true
   last_released: v0.9.1
@@ -225,6 +225,30 @@ gate_decisions:
   reason: >-
     Standing approval to resolve all findings without weakening gates; outward-facing actions stay with
     the human.
+- gate: preflight L5/L6 red in the e10 worktree (ModuleNotFoundError: yaml)
+  decision: >-
+    Environment, not code: this harness shell's PATH omits the user's pyenv shims
+    (~/.pyenv/shims holds gdlint 4.5.0 + python 3.13.13 with PyYAML 6.0.3). Re-ran
+    preflight with PATH="$HOME/.pyenv/shims:$PATH" — GREEN, 52 scripts / 480 tests /
+    2890 asserts, all stages L0..L6 pass. No repository file changed for this.
+  reason: >-
+    Fix the cause, not the symptom: the toolchain the project documents
+    (requirements-dev.txt, setup.sh) is already installed in the user's own python;
+    the harness shell simply did not inherit the user PATH. Installing a second
+    python stack (pip --break-system-packages) would fork the environment.
+- gate: kickoff-branch anchor (concurrent session owns the primary checkout)
+  decision: >-
+    Anchored the e10 worktree on origin/main (== local main == 0bec598, verified
+    with git fetch) instead of checkout+pull in the primary root: the primary
+    checkout is on epic/e09-post-epic-review mid-review by another live session
+    (it committed BUG-046..054 fixes while e10 was kicking off). Worktree created
+    with git worktree add ../big-quiqui-v2-e10 -b epic/e10-... origin/main; the
+    shared checkout was never touched.
+  reason: >-
+    The kickoff hard gate's intent is an up-to-date clean default branch; its
+    letter (checkout main in the primary root) would have destroyed the concurrent
+    session's working state. Preflight was then run inside the new worktree and
+    passed, satisfying the clean-baseline gate before any forward work.
 - gate: ship e09 (release-branch, standing approval)
   decision: >-
     pruned nothing; opened PR 37 and squash-merged it with the title
@@ -424,20 +448,22 @@ decisions:
     missing bedtime voice line, rig dressing outside the closet and the per-scene
     helper twins are recorded decisions, not silent gaps.'
 epic_cycle:
-  step: 8
-  story: e09s04
-  story_bcps: 2
-  epic_epic_bcps: 13
+  step: 0
+  story: e10s01
+  story_bcps: 4
+  epic_epic_bcps: 14
   fast_mode: false
-  started_at: '2026-11-07T08:10:00-03:00'
-  completed_at: '2026-11-07T10:30:00-03:00'
-  audit_result: pass
-  review_result: >-
-    pass — audit-code self-review in session (Control roots, table-driven Fsm everywhere,
-    TouchDraggable for every drag, builders only for .tscn, 300/20-line bars honoured).
-    The dual-blind request-review gate (two independent reviewer agents) is NOT available
-    in this harness: no subagent tool exists here, so a second independent context could
-    not be dispatched. Recorded as a deferred gate, not as a PASS.
+  started_at: '2026-11-07T06:34:44-0300'
+  completed_at: null
+  audit_result: null
+  review_result: null
+  notes: >-
+    e10 cycle opened in the isolated worktree ../big-quiqui-v2-e10 (branch
+    epic/e10-friends-minigames-and-album-scenes from origin/main 0bec598) while a
+    separate concurrent session finished the e09 post-epic review on
+    epic/e09-post-epic-review in the primary checkout. Shared spec files
+    (state.yaml, execution-status.yaml, registry.yaml) diverge by design; new e10
+    bug ids start at BUG-060 to avoid colliding with the review session's list.
 metrics:
   story_start: null
   story_end: null
