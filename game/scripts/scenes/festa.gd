@@ -1,8 +1,10 @@
 # story: e09s03
+# story: e10s01
 class_name HousePartyScene
 extends Control
 ## The house party (e09s03): five placed pieces open it, four close it, and three friends
 ## dance while QuiQui celebrates. A locked party never scolds — it points at the casinha.
+## e10s01: while the party dances, each friend is a door to their minigame.
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
 const CASINHA_PATH: String = "res://scenes/casinha.tscn"
@@ -12,7 +14,6 @@ const CONFETTI_SFX: String = "res://assets/audio/sfx/confete.ogg"
 
 ## The one threshold: the Vila badge and this scene both read it (e09s03 AC6).
 const PARTY_MIN_PLACED: int = 5
-const FRIEND_IDS: Array[String] = ["pato", "urso", "pinguim"]
 
 const STATE_LOCKED: String = "LOCKED"
 const STATE_DANCING: String = "DANCING"
@@ -52,7 +53,7 @@ func _ready() -> void:
 
 
 func _remember_friend_bases() -> void:
-	for id: String in FRIEND_IDS:
+	for id: String in FriendCatalog.FRIEND_IDS:
 		var friend: Control = get_node_or_null("Friend_" + id) as Control
 		if friend != null:
 			_friend_base[id] = friend.position.y
@@ -67,6 +68,10 @@ func _connect_inputs() -> void:
 		casinha.tapped.connect(_on_casinha_tapped)
 	if rig != null:
 		rig.tapped.connect(_on_rig_tapped)
+	for id: String in FriendCatalog.FRIEND_IDS:
+		var friend: Control = get_node_or_null("Friend_" + id) as Control
+		if friend != null:
+			friend.connect("tapped", _on_friend_tapped.bind(id))
 	var progress: Node = get_node_or_null("/root/ProgressManager")
 	if progress != null and progress.has_signal("progress_changed"):
 		progress.progress_changed.connect(refresh_unlock)
@@ -111,7 +116,7 @@ func _apply_state() -> void:
 
 
 func _show_friends(visible_now: bool) -> void:
-	for id: String in FRIEND_IDS:
+	for id: String in FriendCatalog.FRIEND_IDS:
 		var friend: Control = get_node_or_null("Friend_" + id) as Control
 		if friend != null:
 			friend.visible = visible_now
@@ -139,15 +144,15 @@ func advance(delta: float) -> void:
 ## accumulated phase only, so `manual_step` replays the dance exactly.
 func friend_offsets() -> Dictionary:
 	var offsets: Dictionary = {}
-	for index: int in range(FRIEND_IDS.size()):
+	for index: int in range(FriendCatalog.FRIEND_IDS.size()):
 		var local: float = _phase + float(index) * PHASE_STEP_SEC
-		offsets[FRIEND_IDS[index]] = absf(sin(local * TAU / BOB_PERIOD_SEC)) * BOB_HEIGHT_PX
+		offsets[FriendCatalog.FRIEND_IDS[index]] = absf(sin(local * TAU / BOB_PERIOD_SEC)) * BOB_HEIGHT_PX
 	return offsets
 
 
 func _apply_bob() -> void:
 	var offsets: Dictionary = friend_offsets()
-	for id: String in FRIEND_IDS:
+	for id: String in FriendCatalog.FRIEND_IDS:
 		var friend: Control = get_node_or_null("Friend_" + id) as Control
 		if friend == null:
 			continue
@@ -173,6 +178,15 @@ func close_celebrate_if_needed() -> void:
 
 func _on_home_tapped() -> void:
 	_exit_party(CASA_PATH)
+
+
+## e10s01: the friends are the arcade. Only a dancing party opens games — the
+## friends are hidden while locked, and this guard holds even for a forced tap.
+func _on_friend_tapped(id: String) -> void:
+	if fsm == null or fsm.state != STATE_DANCING:
+		return
+	_log("party.friend_game", {"friend": id})
+	_request(FriendCatalog.scene_path(id))
 
 
 func _on_casinha_tapped() -> void:
