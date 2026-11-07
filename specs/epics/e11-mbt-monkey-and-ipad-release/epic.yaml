@@ -3,7 +3,7 @@ slug: e11-mbt-monkey-and-ipad-release
 title: 'Release Gate (v1.0.0): 500-Step MBT Walk, 3-Finger Monkey Fuzz, Visual Gallery
   & iPad Build'
 playable_scene: ALL (17 scenes verified)
-status: planned
+status: done
 bcps: 13
 wsjf: 6.4
 parity:
