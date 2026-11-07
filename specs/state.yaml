@@ -4,7 +4,7 @@ workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: build
 current_epic: e10-friends-minigames-and-album-scenes
-current_story: e10s01
+current_story: e10s02
 review_gate:
   skill: null
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
@@ -130,7 +130,7 @@ bug_cycle:
     - BUG-011
     - BUG-012
     outcome: 11 fixed, BUG-004 wontfix (PII policy, pinned by test)
-last_updated: '2026-11-07T06:34:44-0300'
+last_updated: '2026-11-07T07:06:17-0300'
 release:
   ci_verified: true
   last_released: v0.9.1
@@ -448,12 +448,14 @@ decisions:
     missing bedtime voice line, rig dressing outside the closet and the per-scene
     helper twins are recorded decisions, not silent gaps.'
 epic_cycle:
-  step: 0
+  step: 4
   story: e10s01
   story_bcps: 4
   epic_epic_bcps: 14
   fast_mode: false
   started_at: '2026-11-07T06:34:44-0300'
+  story_started_at: '2026-11-07T06:40:00-0300'
+  story_completed_at: '2026-11-07T07:06:17-0300'
   completed_at: null
   audit_result: null
   review_result: null

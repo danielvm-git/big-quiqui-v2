@@ -3,7 +3,7 @@ spec: e10s01.md
 epic_id: e10
 title: 'Playable Scene 14: DuckDanceScene (pato_danca.tscn) 3-Round Pose-Matching
   Mini-Game Awarding Coins & Star'
-status: failing
+status: done
 bcps: 4
 playable_scene: res://scenes/pato_danca.tscn
 tasks:
@@ -19,7 +19,7 @@ tasks:
     categories:
     - unit
     - Security Review
-  status: failing
+  status: passing
 - id: e10s01-t02
   description: 'GREEN: friend_catalog.gd, EconomyData.minigame_coins, ProgressManager
     add_star/stars_of (single atomic write, progress_changed, idempotent cap)'
@@ -31,7 +31,7 @@ tasks:
     categories:
     - unit
     - Security Review
-  status: failing
+  status: passing
 - id: e10s01-t03
   description: 'RED+GREEN: pato_danca.gd (INTRO/SHOWING/WAITING/REWARD Fsm, seed_rounds +
     apply_economy seams, idempotent reward settle), build_pato_danca_scene.gd, pato_danca.tscn,
@@ -43,7 +43,7 @@ tasks:
     severity: critical
     categories:
     - integration
-  status: failing
+  status: passing
 - id: e10s01-t04
   description: 'Wire the party entry: Friend_* nodes become TapButtons (hit_target, >=120 px)
     requesting FriendCatalog.scene_path while DANCING; festa tests updated (SC-E10-P1-06)'
@@ -53,4 +53,4 @@ tasks:
     severity: high
     categories:
     - integration
-  status: failing
+  status: passing
