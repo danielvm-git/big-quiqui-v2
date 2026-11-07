@@ -3,16 +3,26 @@ version: 0.9.0
 workflow_mode: solo-git
 active_flow: null
 lifecycle_phase: build
-current_epic: e09-store-casinha-and-party-scenes
-current_story: e09s04
+current_epic: null
+current_story: null
 review_gate:
   skill: null
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
-  epic: e09-store-casinha-and-party-scenes
+  epic: null
   round: 1
   max_rounds: 6
   verdict: PASS
   history:
+  - epic: e09
+    round: post-epic
+    verdict: PASS
+    report: specs/verifications/POSTEPIC-e09-2026-11-07.md
+    must_fix: []
+    found: 9
+    fixed: 9
+    deferred: 0
+    wontfix: 0
+    outcome: 2 high (BUG-046 party.locked on mount, BUG-047 casinha null guard & owned_furniture), 3 medium (BUG-048 SaveData placement deduplication, BUG-049 place refusal logging, BUG-050 missing ADR-011), 4 low (BUG-051 tray starvation, BUG-052 dead code pruning, BUG-053 functions over 20 lines, BUG-054 DoorBadge art texture test) fixed.
   - epic: e08
     round: post-epic
     verdict: PASS
@@ -149,11 +159,10 @@ handoff:
   epic_wsjf: 5.2
   first_story: e10s01
   context: >-
-    e09 is built, green and landed through a PR that does not cut a release (chore squash, same
-    precedent as e08): v0.10.0 (e08) and v0.11.0 (e09) are the human's call, since a feat/fix commit on
-    main makes big-release tag. Both epic capsules were expanded by plan-work before code and both
-    still carry the generic AC block: e10's stories need the same expansion (its four scenes are the
-    duck dance, the bear puzzle, the penguin catch and the sticker album) before implementation.
+    e09 is completely reviewed, verified and all 9 post-epic findings (BUG-046..BUG-054) are fixed
+    with tests, docs and conventional commits. Full Preflight is green (52 scripts, 484 tests, 2917 asserts).
+    Next up in release-plan.yaml (WSJF order) is e10-friends-minigames-and-album-scenes (duck dance, bear puzzle,
+    penguin catch, and sticker album). e10 stories need expansion via plan-work before coding.
   open_decisions:
   - No bedtime voice line exists in game/assets/audio/voice/. The bedroom answers
     with SFX (BUG-020). Add celebrate/sleep lines when the family records them — never
@@ -208,6 +217,14 @@ run_baseline:
     e10 and e11.
 
 gate_decisions:
+- gate: post-epic review e09 (standing approval, recommended path)
+  decision: >-
+    Ran full post-epic review across whole e09 diff against main. Found 9 issues (BUG-046..BUG-054),
+    fixed all 9 in severity order on review branch with individual tests and conventional commits.
+    Authored ADR-011 and POSTEPIC verification report. Preflight green (484 tests, 2917 asserts).
+  reason: >-
+    Standing approval to resolve all findings without weakening gates; outward-facing actions stay with
+    the human.
 - gate: ship e09 (release-branch, standing approval)
   decision: >-
     pruned nothing; opened PR 37 and squash-merged it with the title

@@ -9,7 +9,7 @@ production script, the tests that exercise it, and the gaps.
 |---|---|---|
 | `game/scripts/autoloads/audio_manager.gd` | `AudioManager` | 19 |
 | `game/scripts/autoloads/care_loop_manager.gd` | `CareLoopManager` | 15 |
-| `game/scripts/autoloads/log.gd` | `Log` | 11 |
+| `game/scripts/autoloads/log.gd` | `Log` | 12 |
 | `game/scripts/autoloads/progress_manager.gd` | `ProgressManager` | 21 |
 | `game/scripts/autoloads/scene_manager.gd` | `SceneManager` | 19 |
 | `game/scripts/components/accessory_slots.gd` | `AccessorySlots` | indirect via `quiqui_rig.gd` |
