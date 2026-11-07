@@ -1,11 +1,13 @@
 # story: e09s03
+# story: e10s04
 class_name DoorBadge
 extends Control
-## The Vila's party door badge (e09s03, FIX-04): a lock until five pieces stand in the
-## casinha, a star afterwards. It reads the same rule the party reads, so the hub and
-## the party can never disagree — and it lives in a component so `vila.gd` gains no code.
+## The Vila's party and album door badge (e09s03, e10s04, FIX-04): a lock until
+## required progress is met, a star afterwards. Dispatches on rule ("placed" | "stars").
 
+@export var rule: String = "placed"
 @export var required_placed: int = 5
+@export var required_stars: int = 1
 @export var locked_art: String = ""
 @export var unlocked_art: String = ""
 
@@ -23,9 +25,20 @@ func _ready() -> void:
 
 func unlocked() -> bool:
 	var progress: Node = get_node_or_null("/root/ProgressManager")
-	if progress == null or not progress.has_method("placed_count"):
+	if progress == null:
+		return false
+	if rule == "stars":
+		return _total_stars(progress) >= required_stars
+	if not progress.has_method("placed_count"):
 		return false
 	return int(progress.call("placed_count")) >= required_placed
+
+
+func _total_stars(progress: Node) -> int:
+	var total: int = 0
+	for id: String in FriendCatalog.FRIEND_IDS:
+		total += int(progress.call("stars_of", id))
+	return total
 
 
 func current_art_path() -> String:
