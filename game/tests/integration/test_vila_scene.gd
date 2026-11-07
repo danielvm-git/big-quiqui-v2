@@ -61,10 +61,10 @@ func test_pending_poi_logs_scene_pending_and_casa_navigates() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9)
 	assert_eq(scene.get_script(), VILA_SCRIPT)
 	await wait_process_frames(3)
-	var casinha: TapButton = scene.call("poi", "CASINHA") as TapButton
-	for event: InputEvent in TouchSim.tap_events(casinha, true):
-		casinha._gui_input(event)
-	assert_eq(scene.get("last_pending_slug"), "casinha")
+	var festa: TapButton = scene.call("poi", "FESTA") as TapButton
+	for event: InputEvent in TouchSim.tap_events(festa, true):
+		festa._gui_input(event)
+	assert_eq(scene.get("last_pending_slug"), "festa")
 
 	var requested: Array[String] = []
 	var manager: Node = get_node("/root/SceneManager")

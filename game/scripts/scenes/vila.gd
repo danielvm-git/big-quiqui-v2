@@ -22,7 +22,7 @@ const POI_SCENES: Dictionary = {
 	POI_SCENE_CASA: CASA_PATH,
 	POI_SCENE_RODA: RODA_PATH,
 	POI_RECYCLING: "",
-	POI_MERCADO: "",
+	POI_MERCADO: "res://scenes/mercado.tscn",
 	POI_CASINHA: "",
 	POI_FESTA: "",
 }
@@ -157,8 +157,7 @@ func advance(delta: float) -> void:
 			bubble.show_wish(WISH_ICONS[step])
 		return
 	if bubble != null and bubble.is_showing():
-		var level: int = mini(WishBubble.MAX_URGENCY, floori((_idle_sec - IDLE_WISH_SEC) / ESCALATION_SEC))
-		bubble.set_urgency(level)
+		bubble.set_urgency(mini(WishBubble.MAX_URGENCY, floori((_idle_sec - IDLE_WISH_SEC) / ESCALATION_SEC)))
 
 
 func close_celebrate_if_needed() -> void:

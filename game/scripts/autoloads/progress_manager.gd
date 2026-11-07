@@ -192,5 +192,36 @@ func reset() -> void:
 		DirAccess.remove_absolute(tmp_path())
 
 
+# ── furniture (e09s01) ───────────────────────────────────────────────────────
+
+
+## One atomic purchase: every refusal happens before the first mutation, so a refused
+## tap can never take coins without handing back the piece. A piece she already owns is
+## idempotent and free — the store's second tap is not a second charge.
+func buy_furniture(id: String, price: int) -> bool:
+	if not Ids.is_valid(id) or price < 0:
+		_emit("furniture.invalid", {"item": "invalid"})
+		return false
+	if owns_furniture(id):
+		_emit("furniture.already_owned", {"item": id})
+		return false
+	if data.coins < price:
+		_emit("furniture.denied", {"item": id, "reason": "coins"})
+		return false
+	data.coins = clampi(data.coins - price, 0, SaveData.MAX_COINS)
+	data.owned_furniture.append(id)
+	if not save():
+		progress_changed.emit()
+	return true
+
+
+func owns_furniture(id: String) -> bool:
+	return data != null and data.owned_furniture.has(id)
+
+
+func owned_count() -> int:
+	return 0 if data == null else data.owned_furniture.size()
+
+
 func _emit(ev: String, data_in: Dictionary) -> void:
 	LogSink.emit_from(self, ev, data_in)
