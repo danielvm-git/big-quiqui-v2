@@ -42,12 +42,14 @@ func test_every_item_has_a_positive_price_in_the_economy_table() -> void:
 		assert_gt(FurnitureCatalog.price_of(item.id, economy), 0, item.id)
 
 
-func test_price_of_floors_a_negative_price_at_zero() -> void:
+func test_price_of_floors_an_unpriced_or_negative_piece_at_not_sellable() -> void:
+	# BUG-058: both cases used to return 0, which the store charged — a free gift. The
+	# sentinel is -1, which `MercadoScene.try_buy` already refuses.
 	var economy: EconomyData = EconomyData.new()
 	economy.furniture_prices = {"mesa": -4}
-	assert_eq(FurnitureCatalog.price_of("mesa", economy), 0, "a negative price must not mint coins")
+	assert_eq(FurnitureCatalog.price_of("mesa", economy), FurnitureCatalog.NOT_SELLABLE)
 	economy.furniture_prices = {}
-	assert_eq(FurnitureCatalog.price_of("mesa", economy), 0, "a missing price is not free money")
+	assert_eq(FurnitureCatalog.price_of("mesa", economy), FurnitureCatalog.NOT_SELLABLE)
 
 
 func test_unknown_and_unsafe_ids_are_rejected() -> void:

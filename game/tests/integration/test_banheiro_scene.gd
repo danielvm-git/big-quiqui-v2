@@ -276,3 +276,12 @@ func test_leaving_during_rinse_abandons_the_step_and_releases_the_devices() -> v
 	assert_eq(str(care.call("state_id")), CareSteps.IDLE, "the step is abandoned, not credited")
 	assert_eq(scene.shower.state_id(), "REST", "the device let go of the finger")
 	assert_false(scene.credited)
+
+
+func test_the_bath_voice_line_is_a_file_that_exists() -> void:
+	# BUG-059: the constant was written from the event name (`banho_…`) while the family's
+	# clip ships as `bath_…`. `_play_stream` degrades silently, so the room was simply mute.
+	assert_true(
+		ResourceLoader.exists(BathScene.VOICE_PATH),
+		"VOICE_PATH must resolve: %s" % BathScene.VOICE_PATH,
+	)

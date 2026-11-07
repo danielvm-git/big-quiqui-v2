@@ -1,35 +1,78 @@
 story_id: e11s01
 spec: e11s01.md
 epic_id: e11
-title: 500-Step Model-Based Testing (MBT) Random Walk Across All 17 Scenes Verifying
-  FSM & Economy Invariants
-status: failing
+title: 'Model-Based Invariant Gate: 500-step walk + adversarial property layer'
+status: in_progress
 bcps: 4
-playable_scene: ALL (17 scenes verified)
+playable_scene: ALL (13 scenes verified)
 tasks:
 - id: e11s01-t01
-  description: Write failing GUT unit & TouchSim/GeometryOracle tests for e11s01 (500-Step
-    Model-Based Testing (MBT) Random Walk Across All 17 Scenes Verifying FSM & Economy
-    Invariants)
+  description: Adversarial save corpus helper (SaveCorpus) — wrong types, absurd magnitudes,
+    duplicate placements, unowned placements, nested junk; plus a seeded generator.
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
-  allure:
-    severity: critical
-  status: failing
+  allure: {severity: critical}
+  status: done
 - id: e11s01-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e11s01
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
-  risk: P1
-  allure:
-    severity: high
-  status: failing
+  description: INV-01/INV-02 in test_save_fuzz.gd — totality, bounds, ownership subset,
+    round-trip idempotence.
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure: {severity: critical}
+  status: pending
 - id: e11s01-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e11s01
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
-  risk: P2
-  allure:
-    severity: normal
-  status: failing
+  description: INV-03 in test_persistence_invariants.gd — refused mutation invisible,
+    write-once, orphan tmp, corrupt load, rename failure.
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure: {severity: critical}
+  status: pending
+- id: e11s01-t04
+  description: INV-04 in test_economy_tables.gd — price/weight/payout coverage of the
+    catalog; zero price is a defect.
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P1
+  allure: {severity: high}
+  status: pending
+- id: e11s01-t05
+  description: INV-05 in test_telemetry_vocabulary.gd — every emitted id is id-shaped,
+    no prose under msg, vocabulary is live.
+  verify: bash scripts/logs.sh audit --self-test
+  risk: P1
+  allure: {severity: high}
+  status: pending
+- id: e11s01-t06
+  description: INV-06 in test_fsm_tables.gd — every machine's edges reference declared
+    states, illegal edge is inert, transition_from staleness.
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P1
+  allure: {severity: high}
+  status: pending
+- id: e11s01-t07
+  description: INV-07/07b in test_scene_contracts.gd + test_asset_integrity.gd — Control
+    root, FULL_RECT, COVERED background, no text, every res:// path resolves.
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P1
+  allure: {severity: high}
+  status: pending
+- id: e11s01-t08
+  description: INV-08 in test_gate_can_fail.gd — GeometryOracle, PlacementOracle, diary
+    auditor and trace-stories each reject a broken input.
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure: {severity: critical}
+  status: pending
+- id: e11s01-t09
+  description: MBT-01 in test_mbt_walk.gd — 500 seeded steps over the scene graph asserting
+    FSM legality, economy bounds and save reload.
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  allure: {severity: critical}
+  status: pending
+- id: e11s01-t10
+  description: Close every bug the new gates find — failing test first, one conventional
+    commit each, registry entry closed with the test name and result.
+  verify: bash scripts/preflight.sh
+  risk: P0
+  allure: {severity: critical}
+  status: pending

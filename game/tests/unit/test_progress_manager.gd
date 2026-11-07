@@ -108,13 +108,13 @@ func test_negative_and_out_of_range_values_are_clamped() -> void:
 
 func test_invalid_ids_are_dropped_not_loaded() -> void:
 	var raw: Dictionary = {
-		"owned_furniture": ["tapete", "Maria Clara", 42, "MESA", "mesa"],
+		"owned_furniture": ["tapete", "Maria Clara", 42, "MESA", "mesa", "ok_item"],
 		"equipped_outfits": {"body": "vestido_florido", "bad slot!": "x", "head": "../../etc"},
 		"placed_furniture": [{"id": "ok_item", "x": 5.0, "y": -2.0}, {"id": "bad-id!", "x": 0.1}],
 	}
 	var data: SaveData = SaveData.from_dictionary(raw)
 
-	assert_eq(data.owned_furniture, ["tapete", "mesa"])
+	assert_eq(data.owned_furniture, ["tapete", "mesa", "ok_item"])
 	assert_eq(data.equipped_outfits, {"body": "vestido_florido"})
 	assert_eq(data.placed_furniture.size(), 1)
 	assert_almost_eq(float(data.placed_furniture[0]["x"]), 1.0, 0.001, "clamped into 0..1")
