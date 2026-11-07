@@ -1,4 +1,6 @@
 # story: e01s03
+# story: e10s01
+# story: e11s01
 extends Node
 ## Owns the typed save model and its atomic persistence (ADR-005).
 ##
@@ -14,6 +16,7 @@ signal progress_changed
 const PRODUCTION_PATH: String = "user://progress.json"
 const TEST_PATH: String = "user://test_progress.json"
 const TMP_SUFFIX: String = ".tmp"
+const BAK_SUFFIX: String = ".bak"
 const CYCLE_COINS_REWARD: int = 5
 const CYCLE_TICKETS_REWARD: int = 1
 
@@ -54,18 +57,19 @@ func load_or_default() -> void:
 	if not FileAccess.file_exists(save_path):
 		data = SaveData.new()
 		return
-	var file: FileAccess = FileAccess.open(save_path, FileAccess.READ)
-	if file == null:
-		_fail_load("open_failed", "open")
+	var loaded: Dictionary = _read_save_dictionary(save_path)
+	if loaded.is_empty():
+		var recovered: Dictionary = _read_save_dictionary(bak_path())
+		if recovered.is_empty():
+			_fail_load("corrupt", "corrupt")
+			return
+		data = SaveData.from_dictionary(recovered)
+		_emit("save.recovered_from_backup", {"coins": data.coins})
+		_mirror_backup()
 		return
-	var text: String = file.get_as_text()
-	file.close()
-	var json: JSON = JSON.new()
-	if json.parse(text) != OK or not json.data is Dictionary:
-		_fail_load("corrupt", "corrupt")
-		return
-	data = SaveData.from_dictionary(json.data as Dictionary)
+	data = SaveData.from_dictionary(loaded)
 	_emit("save.loaded", {"coins": data.coins, "cycles": data.completed_cycles})
+	_mirror_backup()
 
 
 func _fail_load(err: String, reason: String) -> void:
@@ -89,6 +93,7 @@ func save() -> bool:
 		return false
 	write_count += 1
 	_emit("save.written", {"coins": data.coins, "cycles": data.completed_cycles})
+	_mirror_backup()
 	progress_changed.emit()
 	return true
 
@@ -107,8 +112,47 @@ func tmp_path() -> String:
 	return save_path + TMP_SUFFIX
 
 
+func bak_path() -> String:
+	return save_path + BAK_SUFFIX
+
+
 func has_orphan_tmp() -> bool:
 	return FileAccess.file_exists(tmp_path())
+
+
+func _read_save_dictionary(path: String) -> Dictionary:
+	if not FileAccess.file_exists(path):
+		return {}
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {}
+	var text: String = file.get_as_text()
+	file.close()
+	var json: JSON = JSON.new()
+	if json.parse(text) != OK or not json.data is Dictionary:
+		return {}
+	return json.data as Dictionary
+
+
+func _mirror_backup() -> void:
+	if data == null:
+		return
+	var bak: String = bak_path()
+	var tmp: String = bak + TMP_SUFFIX
+	if not _write_dictionary(tmp, data.to_dictionary()):
+		return
+	if DirAccess.rename_absolute(tmp, bak) != OK:
+		DirAccess.remove_absolute(tmp)
+
+
+func _write_dictionary(path: String, payload: Dictionary) -> bool:
+	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(payload, "\t"))
+	file.flush()
+	file.close()
+	return true
 
 
 # ── mutation helpers (clamped, always announced) ─────────────────────────────
@@ -190,6 +234,8 @@ func reset() -> void:
 	last_error = ""
 	if has_orphan_tmp():
 		DirAccess.remove_absolute(tmp_path())
+	if FileAccess.file_exists(bak_path()):
+		DirAccess.remove_absolute(bak_path())
 
 
 # ── furniture (e09s01) ───────────────────────────────────────────────────────
@@ -240,52 +286,55 @@ func place_furniture(id: String, nx: float, ny: float) -> bool:
 	if not owns_furniture(id):
 		_emit("furniture.place_refused", {"item": id, "reason": "not_owned"})
 		return false
-	var entry: Dictionary = {"id": id, "x": clampf(nx, 0.0, 1.0), "y": clampf(ny, 0.0, 1.0)}
-
-	data.placed_furniture = _without(id)
-	data.placed_furniture.append(entry)
+	if not FurnitureLedger.upsert(data, id, nx, ny):
+		_emit("furniture.place_refused", {"item": "invalid"})
+		return false
 	if not save():
 		progress_changed.emit()
 	return true
 
 
 func remove_furniture(id: String) -> bool:
-	if data == null or not _has_placement(id):
+	if not FurnitureLedger.drop(data, id):
 		return false
-	data.placed_furniture = _without(id)
 	if not save():
 		progress_changed.emit()
 	return true
 
 
 func placed() -> Array[Dictionary]:
-	var entries: Array[Dictionary] = []
-	if data == null:
-		return entries
-	for entry: Dictionary in data.placed_furniture:
-		entries.append(entry.duplicate(true))
-	return entries
+	return FurnitureLedger.copies(data)
 
 
 func placed_count() -> int:
-	return 0 if data == null else data.placed_furniture.size()
+	return FurnitureLedger.count(data)
 
 
-func _has_placement(id: String) -> bool:
-	for entry: Dictionary in data.placed_furniture:
-		if str(entry.get("id", "")) == id:
-			return true
-	return false
+# ── friend stars (e10s01) ─────────────────────────────────────────────────────
 
 
-func _without(id: String) -> Array[Dictionary]:
-	var kept: Array[Dictionary] = []
-	if data == null:
-		return kept
-	for entry: Dictionary in data.placed_furniture:
-		if str(entry.get("id", "")) != id:
-			kept.append(entry.duplicate(true))
-	return kept
+## +1 mastery point per friend, capped at `MAX_STARS`. Every refusal (unknown id,
+## capped friend) happens before the first mutation, so a replayed win can never
+## double-pay a star and an unsafe id never reaches the save model.
+func add_star(friend_id: String) -> bool:
+	if not FriendCatalog.is_friend(friend_id):
+		_emit("star.refused", {"friend": "invalid"})
+		return false
+	var current: int = stars_of(friend_id)
+	if current >= SaveData.MAX_STARS:
+		_emit("star.refused", {"friend": friend_id, "reason": "cap"})
+		return false
+	data.friend_stars[friend_id] = current + 1
+	if not save():
+		progress_changed.emit()
+	return true
+
+
+## The clamped read side: a tampered save shows what the rules allow, never more.
+func stars_of(friend_id: String) -> int:
+	if data == null or not data.friend_stars.has(friend_id):
+		return 0
+	return clampi(int(data.friend_stars[friend_id]), 0, SaveData.MAX_STARS)
 
 
 func _emit(ev: String, data_in: Dictionary) -> void:

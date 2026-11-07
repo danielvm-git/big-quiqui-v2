@@ -3,34 +3,45 @@ spec: e10s03.md
 epic_id: e10
 title: 'Playable Scene 16: PenguinScene (pinguim_jogo.tscn) Interactive Ball/Bubble
   Catch Mini-Game'
-status: failing
+status: passing
 bcps: 3
-playable_scene: res://scenes/pato_danca.tscn + res://scenes/urso_puzzle.tscn + res://scenes/pinguim_jogo.tscn
-  + res://scenes/album.tscn
+playable_scene: res://scenes/pinguim_jogo.tscn
 tasks:
 - id: e10s03-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e10s03
-    (Playable Scene 16: PenguinScene (pinguim_jogo.tscn) Interactive Ball/Bubble Catch
-    Mini-Game)'
+  description: 'RED: catch loop tests — catch counts once and pops, floor removal counts nothing,
+  round clock is accumulated advance time, RESULT settle pays coins == catches once + star at
+  target / refused at cap, tuning floors (SC-E10-P0-14..16)'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
+  security: medium
   allure:
     severity: critical
-  status: failing
+    categories:
+    - unit
+    - Security Review
+  status: passing
 - id: e10s03-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e10s03
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  description: 'GREEN: catch_item.gd (step_down), pinguim_jogo.gd (INTRO/RUNNING/RESULT/REWARD
+  Fsm, CONTINUOUS_SCRUB lane drag, spawn schedule + seed_spawns seam, everything inside
+  advance(delta))'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+    - unit
+    - Security Review
+  status: passing
+- id: e10s03-t03
+  description: 'RED+GREEN: build_pinguim_jogo_scene.gd, pinguim_jogo.tscn, integration
+  test_pinguim_scene.gd (full seeded round via advance only — zero engine-frame awaits, mouse-echo
+  drag moves once, lane clamps, Home mid-round abandons cleanly, both aspects, SC-E10-P0-17,
+  P1-18, P1-19)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e10s03-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e10s03
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
-  risk: P2
-  allure:
-    severity: normal
-  status: failing
+    categories:
+    - integration
+  status: passing

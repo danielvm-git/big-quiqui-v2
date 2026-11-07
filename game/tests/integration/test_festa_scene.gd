@@ -1,4 +1,5 @@
 # story: e09s03
+# story: e10s01
 extends GutTest
 ## SC-E09-P0-01..04/05, SC-E09-P1-07 — the party opens at five placed pieces, closes
 ## when one leaves, and the friends dance the same dance every time.
@@ -159,3 +160,44 @@ func test_home_and_the_casinha_door_both_navigate_once() -> void:
 	assert_eq(requested.size(), 2, "one request per tap, never two")
 	assert_eq(requested[0], HousePartyScene.CASINHA_PATH)
 	assert_eq(requested[1], HousePartyScene.CASA_PATH)
+
+
+## SC-E10-P1-06 — the party is the minigame arcade: a dancing friend opens their game.
+func test_friend_taps_open_their_minigames_while_dancing() -> void:
+	_place(5)
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	await wait_process_frames(3)
+	var requested: Array[String] = []
+	var manager: Node = get_node("/root/SceneManager")
+	manager.scene_requested.connect(func(path: String, _queued: bool) -> void: requested.append(path))
+	for id: String in FRIEND_IDS:
+		var friend: Control = scene.get_node("Friend_" + id) as Control
+		assert_gte(friend.get_global_rect().size.x, 120.0, "%s is a tap target" % id)
+		for event: InputEvent in TouchSim.tap_events(friend, true):
+			friend._gui_input(event)
+	assert_eq(
+		requested,
+		(
+			[
+				"res://scenes/pato_danca.tscn",
+				"res://scenes/urso_puzzle.tscn",
+				"res://scenes/pinguim_jogo.tscn",
+			]
+			as Array[String]
+		),
+		"one friend, one game, echo-proof"
+	)
+
+
+## SC-E10-P1-06 — a locked party exposes no minigame entry, even to a forced tap.
+func test_a_locked_party_exposes_no_minigame_entry() -> void:
+	_place(4)
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	await wait_process_frames(3)
+	var requested: Array[String] = []
+	var manager: Node = get_node("/root/SceneManager")
+	manager.scene_requested.connect(func(path: String, _queued: bool) -> void: requested.append(path))
+	var friend: Control = scene.get_node("Friend_pato") as Control
+	for event: InputEvent in TouchSim.tap_events(friend, true):
+		friend._gui_input(event)
+	assert_eq(requested, [] as Array[String], "no friends, no games")

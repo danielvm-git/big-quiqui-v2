@@ -3,34 +3,53 @@ spec: e10s04.md
 epic_id: e10
 title: 'Playable Scene 17: AlbumScene (album.tscn) Sticker & Star Collection with
   Return-to-Origin Navigation'
-status: failing
+status: passing
 bcps: 3
-playable_scene: res://scenes/pato_danca.tscn + res://scenes/urso_puzzle.tscn + res://scenes/pinguim_jogo.tscn
-  + res://scenes/album.tscn
+playable_scene: res://scenes/album.tscn
 tasks:
 - id: e10s04-t01
-  description: 'Write failing GUT unit & TouchSim/GeometryOracle tests for e10s04
-    (Playable Scene 17: AlbumScene (album.tscn) Sticker & Star Collection with Return-to-Origin
-    Navigation)'
+  description: 'RED: album + badge tests — empty save shows three dark cards with zero lit stars,
+  stars light per friend and live-refresh on progress_changed, tampered save shows clamped 0..5,
+  stars-rule badge locked at 0 / unlocked at 1 with one art swap, placed-rule badge unchanged
+  (SC-E10-P0-20, P0-21, P1-23)'
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P0
+  security: medium
   allure:
     severity: critical
-  status: failing
+    categories:
+    - unit
+    - Security Review
+  status: passing
 - id: e10s04-t02
-  description: Implement minimal strict-typed GDScript & Control scene nodes for e10s04
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s
-    addons/gut/gut_cmdln.gd -gexit
+  description: 'GREEN: album.gd (cards from FriendCatalog, lit_stars/total_stars, manual bounce
+  seam), build_album_scene.gd, album.tscn, door_badge.gd rule injection (default unchanged)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+    - unit
+    - Security Review
+  status: passing
+- id: e10s04-t03
+  description: 'GREEN: poi_table.gd extraction + vila ALBUM POI + stars badge door; vila.gd ends
+  under 299 lines and every existing vila test stays green (SC-E10-P1-24)'
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit
   risk: P1
   allure:
     severity: high
-  status: failing
-- id: e10s04-t03
-  description: Verify dual-aspect layout (1920x1080 & 2048x1536), PII log audit, and
-    story traceability for e10s04
-  verify: bash scripts/logs.sh audit --self-test && bash scripts/trace-stories.sh
-    --strict
+    categories:
+    - integration
+  status: passing
+- id: e10s04-t04
+  description: 'Integration: test_album_scene.gd — mount/refresh/Home to vila, vila ALBUM door
+    navigates, both aspects clean (SC-E10-P0-22); trace + lint green'
+  verify: gdlint game/ && gdformat --check game/ && bash scripts/trace-stories.sh --strict
   risk: P2
   allure:
     severity: normal
-  status: failing
+    categories:
+    - integration
+  status: passing

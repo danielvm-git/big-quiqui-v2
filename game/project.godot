@@ -30,6 +30,7 @@ pointing/emulate_touch_from_mouse=true
 renderer/rendering_method="mobile"
 renderer/rendering_method.mobile="mobile"
 textures/canvas_textures/default_texture_filter=1
+textures/vram_compression/import_etc2_astc=true
 
 [debug]
 
@@ -47,3 +48,4 @@ ProgressManager="*res://scripts/autoloads/progress_manager.gd"
 AudioManager="*res://scripts/autoloads/audio_manager.gd"
 SceneManager="*res://scripts/autoloads/scene_manager.gd"
 CareLoopManager="*res://scripts/autoloads/care_loop_manager.gd"
+DevConsole="*res://scripts/autoloads/dev_console.gd"

@@ -1,0 +1,169 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/scenes/pato_danca.gd" id="1_1w87j"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_vila.jpg" id="2_4uwof"]
+[ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_k8p8t"]
+[ext_resource type="Texture2D" path="res://assets/art/amigos/pato.png" id="4_skj1v"]
+[ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="5_aii3g"]
+[ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="6_adago"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="7_aogtr"]
+[ext_resource type="Texture2D" path="res://assets/art/efeitos/confete.png" id="8_kxyrc"]
+
+[node name="PatoDanca" type="Control" unique_id=1557338884]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_1w87j")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1574638795 groups=["background"]]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_4uwof")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="QuiQuiRig" type="Control" parent="." unique_id=2126337918 groups=["rig"]]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.20592593
+anchor_right = 0.5
+anchor_bottom = 0.78
+offset_left = -320.0
+offset_right = 320.0
+script = ExtResource("3_k8p8t")
+
+[node name="Duck" type="TextureRect" parent="." unique_id=953730787]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.35
+anchor_right = 0.5
+anchor_bottom = 0.35
+offset_left = -120.0
+offset_top = -120.0
+offset_right = 120.0
+offset_bottom = 120.0
+mouse_filter = 2
+texture = ExtResource("4_skj1v")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PadLeft" type="Control" parent="." unique_id=1260157600 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.2
+anchor_top = 0.88
+anchor_right = 0.2
+anchor_bottom = 0.88
+offset_left = -100.0
+offset_top = -70.0
+offset_right = 100.0
+offset_bottom = 70.0
+script = ExtResource("5_aii3g")
+
+[node name="Visual" type="ColorRect" parent="PadLeft" unique_id=1015769429]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.98, 0.72, 0.32, 0.92)
+
+[node name="PadCentre" type="Control" parent="." unique_id=483394082 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.88
+anchor_right = 0.5
+anchor_bottom = 0.88
+offset_left = -100.0
+offset_top = -70.0
+offset_right = 100.0
+offset_bottom = 70.0
+script = ExtResource("5_aii3g")
+
+[node name="Visual" type="ColorRect" parent="PadCentre" unique_id=2059172956]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.98, 0.72, 0.32, 0.92)
+
+[node name="PadRight" type="Control" parent="." unique_id=742333452 groups=["hit_target"]]
+anchors_preset = 0
+anchor_left = 0.8
+anchor_top = 0.88
+anchor_right = 0.8
+anchor_bottom = 0.88
+offset_left = -100.0
+offset_top = -70.0
+offset_right = 100.0
+offset_bottom = 70.0
+script = ExtResource("5_aii3g")
+
+[node name="Visual" type="ColorRect" parent="PadRight" unique_id=2010230717]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.98, 0.72, 0.32, 0.92)
+
+[node name="CoinTicketHud" type="Control" parent="." unique_id=1064277672 groups=["ui_top_right"]]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -416.0
+offset_top = 36.0
+offset_right = -36.0
+offset_bottom = 124.0
+script = ExtResource("6_adago")
+
+[node name="HomeButton" type="Control" parent="." unique_id=1961488748 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 36.0
+offset_top = 36.0
+offset_right = 156.0
+offset_bottom = 156.0
+script = ExtResource("5_aii3g")
+
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=1248233792]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("7_aogtr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ReplayButton" type="Control" parent="." unique_id=1241010567 groups=["hit_target"]]
+visible = false
+anchors_preset = 0
+anchor_left = 0.93
+anchor_top = 0.9
+anchor_right = 0.93
+anchor_bottom = 0.9
+offset_left = -84.0
+offset_top = -84.0
+offset_right = 84.0
+offset_bottom = 84.0
+script = ExtResource("5_aii3g")
+
+[node name="Art" type="TextureRect" parent="ReplayButton" unique_id=545025902]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("8_kxyrc")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Confetti" type="CPUParticles2D" parent="." unique_id=1295971777]
+z_index = 40
+position = Vector2(960, 60)
+emitting = false
+amount = 48
+texture = ExtResource("8_kxyrc")
+lifetime = 2.4
+spread = 180.0
+gravity = Vector2(0, 320)
+initial_velocity_min = 260.0
+initial_velocity_max = 420.0

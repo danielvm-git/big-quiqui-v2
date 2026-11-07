@@ -8,10 +8,10 @@ development_status:
   e03s03: done
   e03s04: done
   e04: done
-  e05: done
   e04s02: done
   e04s03: done
   e04s04: done
+  e05: done
   e05s01: done
   e05s02: done
   e05s03: done
@@ -34,191 +34,17 @@ development_status:
   e09s02: done
   e09s03: done
   e09s04: done
-  e10: planned
-  e10s01: planned
-  e10s02: planned
-  e10s03: planned
-  e10s04: planned
-  e11: in_progress
+  e10: done
+  e10s01: done
+  e10s02: done
+  e10s03: done
+  e10s04: done
+  e11: done
   e11s01: done
   e11s02: done
-  e11s03: planned
-  e11s04: planned
-epics: null
+  e11s03: done
+  e11s04: done
+
+epics:
+
 stories:
-  e09s01:
-    status: done
-    started_at: '2026-11-07T10:00:00-03:00'
-    completed_at: '2026-11-07T10:00:00-03:00'
-  e09s02:
-    status: done
-    started_at: '2026-11-07T10:00:00-03:00'
-    completed_at: '2026-11-07T10:00:00-03:00'
-  e09s03:
-    status: done
-    started_at: '2026-11-07T10:00:00-03:00'
-    completed_at: '2026-11-07T10:00:00-03:00'
-  e09s04:
-    status: done
-    started_at: '2026-11-07T10:00:00-03:00'
-    completed_at: '2026-11-07T10:00:00-03:00'
-  e07s04:
-    status: done
-    started_at: "2026-11-06T17:10:00-03:00"
-    completed_at: "2026-11-06T17:45:00-03:00"
-  e07s02:
-    status: done
-    started_at: "2026-11-06T16:25:00-03:00"
-    completed_at: "2026-11-06T17:00:00-03:00"
-  e07s03:
-    status: done
-    started_at: "2026-11-06T16:50:00-03:00"
-    completed_at: "2026-11-06T17:10:00-03:00"
-  e07s01:
-    status: done
-    started_at: "2026-11-06T16:00:00-03:00"
-    completed_at: "2026-11-06T16:25:00-03:00"
-  e06s01:
-    status: done
-    started_at: "2026-11-06T08:00:00-03:00"
-    completed_at: "2026-11-06T08:25:00-03:00"
-  e06s02:
-    status: done
-    started_at: "2026-11-06T08:25:00-03:00"
-    completed_at: "2026-11-06T08:55:00-03:00"
-  e06s03:
-    status: done
-    started_at: "2026-11-06T08:55:00-03:00"
-    completed_at: "2026-11-06T09:20:00-03:00"
-  e01s01:
-    status: done
-    started_at: null
-    completed_at: null
-    completed_on: '2026-11-04'
-    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
-      clock times were recorded at the time, so none are invented'
-    evidence: specs/verifications/e01s01-2026-11-04.md
-  e01s02:
-    status: done
-    started_at: null
-    completed_at: null
-    completed_on: '2026-11-04'
-    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
-      clock times were recorded at the time, so none are invented'
-    evidence: specs/verifications/e01s02-2026-11-04.md
-  e01s03:
-    status: done
-    started_at: null
-    completed_at: null
-    completed_on: '2026-11-04'
-    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
-      clock times were recorded at the time, so none are invented'
-    evidence: specs/verifications/e01s03-2026-11-04.md
-  e01s04:
-    status: done
-    started_at: null
-    completed_at: null
-    completed_on: '2026-11-04'
-    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
-      clock times were recorded at the time, so none are invented'
-    evidence: specs/verifications/e01s04-2026-11-04.md
-  e01s05:
-    status: done
-    started_at: null
-    completed_at: null
-    completed_on: '2026-11-04'
-    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
-      clock times were recorded at the time, so none are invented'
-    evidence: specs/verifications/e01s05-2026-11-04.md
-  e02s01:
-    status: done
-    started_at: null
-    completed_at: null
-    completed_on: '2026-11-04'
-    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
-      clock times were recorded at the time, so none are invented'
-    evidence: specs/verifications/e02s01-2026-11-04.md
-  e02s02:
-    status: done
-    started_at: null
-    completed_at: null
-    completed_on: '2026-11-04'
-    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
-      clock times were recorded at the time, so none are invented'
-    evidence: specs/verifications/e02s02-2026-11-04.md
-  e02s03:
-    status: done
-    started_at: null
-    completed_at: null
-    completed_on: '2026-11-04'
-    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
-      clock times were recorded at the time, so none are invented'
-    evidence: specs/verifications/e02s03-2026-11-04.md
-  e02s04:
-    status: done
-    started_at: null
-    completed_at: null
-    completed_on: '2026-11-04'
-    recorded_by: 'backfill 2026-11-06: capsule status + verification doc date; no
-      clock times were recorded at the time, so none are invented'
-    evidence: specs/verifications/e02s04-2026-11-04.md
-  e05s03:
-    status: done
-    started_at: '2026-11-06T05:50:00-03:00'
-    completed_at: '2026-11-06T06:20:00-03:00'
-  e05s02:
-    status: done
-    started_at: '2026-11-06T05:05:00-03:00'
-    completed_at: '2026-11-06T05:45:00-03:00'
-  e05s01:
-    status: done
-    started_at: '2026-11-06T04:20:00-03:00'
-    completed_at: '2026-11-06T05:00:00-03:00'
-  e04s04:
-    status: done
-    started_at: '2026-11-06T03:40:00-03:00'
-    completed_at: '2026-11-06T04:10:00-03:00'
-  e04s03:
-    status: done
-    started_at: '2026-11-06T03:00:00-03:00'
-    completed_at: '2026-11-06T03:35:00-03:00'
-  e04s02:
-    status: done
-    started_at: '2026-11-06T02:10:00-03:00'
-    completed_at: '2026-11-06T02:55:00-03:00'
-  e04s01:
-    status: done
-    started_at: '2026-11-06T01:05:00-03:00'
-    completed_at: '2026-11-06T01:40:00-03:00'
-  e03s01:
-    status: done
-    started_at: '2026-11-05T13:53:00-03:00'
-    completed_at: '2026-11-05T14:05:00-03:00'
-  e03s02:
-    status: done
-    started_at: '2026-11-05T13:53:00-03:00'
-    completed_at: '2026-11-05T14:00:00-03:00'
-  e03s03:
-    status: done
-    started_at: '2026-11-05T14:06:00-03:00'
-    completed_at: '2026-11-05T14:35:00-03:00'
-  e03s04:
-    status: done
-    started_at: '2026-11-05T14:35:00-03:00'
-    completed_at: '2026-11-05T14:45:04-03:00'
-  e08s01:
-    status: done
-    started_at: '2026-11-06T19:30:00-03:00'
-    completed_at: '2026-11-06T23:10:00-03:00'
-  e08s02:
-    status: done
-    started_at: '2026-11-06T20:30:00-03:00'
-    completed_at: '2026-11-06T22:30:00-03:00'
-  e08s03:
-    status: done
-    started_at: '2026-11-06T22:00:00-03:00'
-    completed_at: '2026-11-06T22:45:00-03:00'
-  e08s04:
-    status: done
-    started_at: '2026-11-06T22:40:00-03:00'
-    completed_at: '2026-11-06T23:05:00-03:00'
