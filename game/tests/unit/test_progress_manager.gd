@@ -81,6 +81,8 @@ func test_an_orphan_tmp_never_becomes_the_save() -> void:
 
 # SC-E01-P1-06
 func test_corrupt_save_recovers_to_defaults() -> void:
+	if FileAccess.file_exists(pm.bak_path()):
+		DirAccess.remove_absolute(pm.bak_path())
 	var file: FileAccess = FileAccess.open(pm.save_path, FileAccess.WRITE)
 	file.store_string("not json at all {{{")
 	file.close()
