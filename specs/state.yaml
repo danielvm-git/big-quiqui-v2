@@ -208,6 +208,15 @@ run_baseline:
     e10 and e11.
 
 gate_decisions:
+- gate: preflight L1 blind spot found during e09s04 (a test file that fails to parse is
+    IGNORED with a warning while GUT exits 0, so its tests vanish and the suite still looks green)
+  decision: >-
+    strengthened preflight L1 instead of only fixing my typo: GUT's reported Scripts count must
+    equal the number of test_*.gd files in tests/unit and tests/integration, otherwise the stage
+    fails with the offending parse error
+  reason: >-
+    the Zero-Test Guard only caught a run that executes nothing; a single dropped file was
+    invisible. Gates are never weakened here, and this one was silently weaker than it read.
 - gate: run triage (standing approval)
   decision: >-
     No work item for Phase 2. The tree was clean, 432/432 tests passed and every registry

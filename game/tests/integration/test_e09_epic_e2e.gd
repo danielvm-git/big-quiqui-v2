@@ -58,7 +58,13 @@ func _drag_to_ratio(id: String, ratio: Vector2) -> void:
 func test_the_epic_walk_buy_place_redraw_and_the_party_stays_shut() -> void:
 	var progress: Node = get_node("/root/ProgressManager")
 	progress.call("add_coins", 50)
+	await _buy_two_pieces()
+	await _place_two_pieces()
+	var saved: Array[Dictionary] = await _assert_room_survives_the_other_canvas()
+	await _assert_party_still_locked(saved)
 
+
+func _buy_two_pieces() -> void:
 	scene = _mount(MERCADO, GeometryOracle.DESKTOP_16_9)
 	scene.set("manual_step", true)
 	await wait_process_frames(3)
@@ -66,20 +72,25 @@ func test_the_epic_walk_buy_place_redraw_and_the_party_stays_shut() -> void:
 	_settle_store()
 	assert_true(bool(scene.call("try_buy", "tapete")), "the store sells tapete")
 	_settle_store()
-	var spent: int = 50 - int(progress.call("get_coins"))
-	assert_eq(spent, 4 + 2, "exactly the two prices, no more")
+	var progress: Node = get_node("/root/ProgressManager")
+	assert_eq(50 - int(progress.call("get_coins")), 4 + 2, "exactly the two prices, no more")
 	assert_eq(_delta("store.buy"), 2, "one event per purchase")
 	_dismiss()
 
+
+func _place_two_pieces() -> void:
 	scene = _mount(CASINHA, GeometryOracle.DESKTOP_16_9)
 	await wait_process_frames(3)
 	_drag_to_ratio("mesa", Vector2(0.30, 0.55))
 	_drag_to_ratio("tapete", Vector2(0.70, 0.70))
+	var progress: Node = get_node("/root/ProgressManager")
 	assert_eq(int(progress.call("placed_count")), 2, "both pieces stand in the room")
 	assert_eq(_delta("casinha.place"), 2, "one event per placement")
-	var saved: Array[Dictionary] = progress.call("placed") as Array[Dictionary]
 	_dismiss()
 
+
+func _assert_room_survives_the_other_canvas() -> Array[Dictionary]:
+	var saved: Array[Dictionary] = get_node("/root/ProgressManager").call("placed") as Array[Dictionary]
 	scene = _mount(CASINHA, GeometryOracle.IPAD_4_3)
 	await wait_process_frames(3)
 	var oracle: PlacementOracle = PlacementOracle.new()
@@ -88,7 +99,11 @@ func test_the_epic_walk_buy_place_redraw_and_the_party_stays_shut() -> void:
 		oracle.summary(),
 	)
 	_dismiss()
+	return saved
 
+
+func _assert_party_still_locked(saved: Array[Dictionary]) -> void:
+	assert_eq(saved.size(), 2, "two pieces, no more")
 	scene = _mount(FESTA, GeometryOracle.DESKTOP_16_9)
 	await wait_process_frames(3)
 	assert_eq(str(scene.get("fsm").state), HousePartyScene.STATE_LOCKED, "two is not five")

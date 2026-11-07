@@ -16,7 +16,7 @@ bars on either.
 | Epics shipped | 9 of 11 (`e01`–`e09`) |
 | Stories | 35 of 43 |
 | Playable scenes | `titulo` · `casa` · `cozinha` · `banheiro` · `closet` · `jardim` · `quarto_sono` · `celebracao` · `vila` · `roda` · `mercado` · `casinha` · `festa` |
-| Gate | `PREFLIGHT GREEN` — 52 scripts / 479 tests / 2885 asserts |
+| Gate | `PREFLIGHT GREEN` — 52 scripts / 480 tests / 2890 asserts |
 
 Run `bash scripts/status-counts.sh` for the numbers computed from the plan itself (rather than from a
 dashboard that counts keys).
@@ -66,7 +66,7 @@ game/
     components/  QuiQuiRig · TouchDraggable · TapButton · WishBubble · FoamBlob …
     core/        Fsm · Ids · CareSteps · FoodCatalog · FurnitureCatalog · LogSink · SquashSpring
     resources/   SaveData (typed save model, ADR-005)
-  tests/         479 GUT tests, unit + integration
+  tests/         480 GUT tests, unit + integration
   tools/         scene builders (the .tscn files are generated, never hand-edited)
   assets/        art · audio (family-recorded PT-BR voice)
 specs/           state, release plan, ADRs, threat models, audits, evals, benchmarks

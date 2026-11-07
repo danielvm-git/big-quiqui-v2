@@ -96,6 +96,20 @@ else
   pass "GUT suite"
 fi
 grep -E "^(Tests|Passing|Failing)|Scripts|Asserts" "$gut_log" | head -4 | sed 's/^/        /' || true
+# A test script that fails to parse is IGNORED with a warning and its tests simply vanish
+# (observed on e09s04: a missing `await` made a whole file disappear while GUT exited 0).
+# Compare what is on disk with what GUT loaded: a shortfall is a hard failure, never a pass.
+# `tests/helpers/test_reset.gd` is a fixture whose name matches the prefix, not a suite.
+disk_scripts=$(find "$GAME/tests/unit" "$GAME/tests/integration" -type f -name 'test_*.gd' | wc -l | tr -d ' ')
+gut_scripts=$(grep -oE '^Scripts[[:space:]]+[0-9]+' "$gut_log" | grep -oE '[0-9]+$' | tail -1)
+if [ -z "$gut_scripts" ]; then
+  fail "GUT printed no script count — cannot prove every test file loaded"
+elif [ "$gut_scripts" -lt "$disk_scripts" ]; then
+  fail "GUT loaded $gut_scripts of $disk_scripts test scripts — a script that does not parse is silently ignored"
+  grep -E 'Ignoring script|Parse Error' "$gut_log" | head -6 | sed 's/^/        /'
+else
+  pass "every test script on disk loaded ($gut_scripts/$disk_scripts)"
+fi
 rm -f "$gut_log"
 fi
 

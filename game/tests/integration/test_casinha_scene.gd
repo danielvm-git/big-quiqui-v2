@@ -68,36 +68,45 @@ func test_an_empty_room_with_two_owned_pieces_passes_the_oracle() -> void:
 		mounted.queue_free()
 
 
-func test_a_drag_into_the_room_persists_the_ratio_and_a_remount_restores_it() -> void:
+func test_a_drag_into_the_room_persists_the_ratio_she_sees() -> void:
 	_own("mesa")
 	scene = _mount(GeometryOracle.DESKTOP_16_9)
 	await wait_process_frames(3)
 	assert_eq(scene.get_script(), CASINHA_SCRIPT)
 	var prop: Control = scene.get_node("Prop_mesa") as Control
 	var area: Rect2 = _area(scene)
-	var dropped_at: Vector2 = area.position + area.size * Vector2(0.25, 0.75)
-	_drag(prop, dropped_at)
+	_drag(prop, area.position + area.size * Vector2(0.25, 0.75))
 
 	var progress: Node = get_node("/root/ProgressManager")
 	assert_eq(int(progress.call("placed_count")), 1, "the drop is persisted")
 	assert_eq(str(scene.get("fsm").state), CasinhaScene.STATE_DRESSED)
-	var saved: Array[Dictionary] = progress.call("placed") as Array[Dictionary]
-	var ratio: Vector2 = Vector2(float(saved[0]["x"]), float(saved[0]["y"]))
+	var ratio: Vector2 = _saved_ratio()
 	assert_almost_eq(ratio.x, 0.25, 0.05)
 	assert_almost_eq(ratio.y, 0.75, 0.05)
-	var settled: Vector2 = prop.get_global_rect().get_center()
-	var measured: Vector2 = (settled - area.position) / area.size
+	var measured: Vector2 = (prop.get_global_rect().get_center() - area.position) / area.size
 	assert_true(measured.is_equal_approx(ratio), "the persisted ratio is where she sees it")
 	assert_eq((scene.call("tray_ids") as Array[String]).size(), 0, "it left the tray")
 
-	scene.queue_free()
+
+func test_a_saved_placement_is_restored_at_its_ratio_on_remount() -> void:
+	_own("mesa")
+	var progress: Node = get_node("/root/ProgressManager")
+	progress.call("place_furniture", "mesa", 0.25, 0.75)
+	var ratio: Vector2 = _saved_ratio()
+
 	scene = _mount(GeometryOracle.DESKTOP_16_9)
 	await wait_process_frames(3)
-	var restored: Rect2 = (scene.get_node("Prop_mesa") as Control).get_global_rect()
 	var room: Rect2 = _area(scene)
 	var want: Vector2 = room.position + room.size * ratio
-	var got: Vector2 = restored.get_center()
+	var got: Vector2 = (scene.get_node("Prop_mesa") as Control).get_global_rect().get_center()
 	assert_true(got.distance_to(want) < 8.0, "restored at %s, want %s" % [got, want])
+	assert_eq(str(scene.get("fsm").state), CasinhaScene.STATE_DRESSED, "a saved room boots dressed")
+
+
+func _saved_ratio() -> Vector2:
+	var saved: Array[Dictionary] = get_node("/root/ProgressManager").call("placed") as Array[Dictionary]
+	assert_gte(saved.size(), 1, "a placement must be saved")
+	return Vector2(float(saved[0]["x"]), float(saved[0]["y"]))
 
 
 func test_a_piece_she_does_not_own_is_in_neither_place() -> void:
