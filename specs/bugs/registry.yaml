@@ -460,7 +460,7 @@ bugs:
   scope: code
   summary: "casinha.gd restores unowned placements and starves tray when owned count exceeds TRAY_LIMIT"
   file: specs/bugs/BUG-051-casinha-unowned-and-tray-starvation.md
-  status: open
+  status: fixed
   found_by: e09 post-epic review
 - bug_id: BUG-052
   date: '2026-11-07'

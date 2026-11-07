@@ -130,3 +130,29 @@ func test_home_returns_to_the_casa() -> void:
 	for event: InputEvent in TouchSim.tap_events(home, true):
 		home._gui_input(event)
 	assert_eq(requested, [CasinhaScene.CASA_PATH], "home, once")
+
+
+func test_unowned_placed_furniture_is_not_spawned() -> void:
+	var progress: Node = get_node("/root/ProgressManager")
+	var fake_placed: Array[Dictionary] = [{"id": "cama", "x": 0.5, "y": 0.5}]
+	progress.get("data").placed_furniture = fake_placed
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	await wait_process_frames(3)
+	assert_null(scene.get_node_or_null("Prop_cama"), "unowned placed furniture must never spawn")
+
+
+func test_tray_replenishes_when_slots_open() -> void:
+	var ids: Array[String] = ["abajur", "armario", "beliche", "cadeira", "cama"]
+	for id: String in ids:
+		_own(id)
+	scene = _mount(GeometryOracle.DESKTOP_16_9)
+	await wait_process_frames(3)
+	var tray_before: Array[String] = scene.call("tray_ids")
+	assert_eq(tray_before.size(), 4, "tray capped at 4")
+	assert_false(tray_before.has("cama"), "5th piece waits")
+
+	assert_true(bool(scene.call("place", tray_before[0], 0.2, 0.2)))
+	await wait_process_frames(3)
+	var tray_after: Array[String] = scene.call("tray_ids")
+	assert_eq(tray_after.size(), 4, "tray replenished to capacity")
+	assert_true(tray_after.has("cama"), "waiting piece moved into tray")

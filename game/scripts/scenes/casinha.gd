@@ -102,6 +102,8 @@ func _spawn_from_save() -> void:
 	var placed: Array[Dictionary] = progress.call("placed") as Array[Dictionary]
 	for entry: Dictionary in placed:
 		var id: String = str(entry.get("id", ""))
+		if not bool(progress.call("owns_furniture", id)):
+			continue
 		var point: Vector2 = Vector2(float(entry.get("x", 0.5)), float(entry.get("y", 0.5)))
 		_spawn(id, point)
 	var owned: Array[String] = []
@@ -190,11 +192,26 @@ func place(id: String, nx: float, ny: float) -> bool:
 	var prop: FurnitureProp = _props.get(id) as FurnitureProp
 	if prop != null:
 		_layout(prop)
+	_replenish_tray(progress)
 	_stop_hint()
 	_refresh_state()
 	_play_stream("play_sfx", POP_SFX)
 	_log("casinha.place", {"item": id})
 	return true
+
+
+func _replenish_tray(progress: Node) -> void:
+	if progress == null or _tray_ids.size() >= TRAY_LIMIT:
+		return
+	var owned: Array[String] = []
+	if progress.has_method("owned_furniture"):
+		var raw_owned: Variant = progress.call("owned_furniture")
+		if raw_owned is Array:
+			owned.assign(raw_owned)
+	for next_id: String in owned:
+		if not _props.has(next_id) and _tray_ids.size() < TRAY_LIMIT:
+			_spawn(next_id, Vector2(-1.0, -1.0))
+			call_deferred("layout_props")
 
 
 func tray_ids() -> Array[String]:
