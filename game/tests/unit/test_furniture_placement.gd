@@ -78,3 +78,19 @@ func test_a_tampered_save_cannot_place_outside_the_room() -> void:
 	var saved: Array[Dictionary] = pm.placed()
 	assert_almost_eq(float(saved[0]["x"]), 1.0, 0.001)
 	assert_almost_eq(float(saved[0]["y"]), 0.0, 0.001)
+
+
+func test_a_tampered_save_cannot_duplicate_placed_furniture() -> void:
+	_own("sofa")
+	var tampered: Array[Dictionary] = [
+		{"id": "sofa", "x": 0.2, "y": 0.2},
+		{"id": "sofa", "x": 0.8, "y": 0.8},
+		{"id": "sofa", "x": 0.5, "y": 0.5},
+	]
+	pm.data.placed_furniture = tampered
+	pm.data.clamp_to_rules()
+
+	assert_eq(pm.placed_count(), 1, "duplicate placements for the same item must be dropped")
+	var saved: Array[Dictionary] = pm.placed()
+	assert_eq(saved.size(), 1)
+	assert_almost_eq(float(saved[0]["x"]), 0.2, 0.001)

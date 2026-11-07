@@ -8,7 +8,6 @@ extends Control
 const CASA_PATH: String = "res://scenes/casa.tscn"
 const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
 const VOICE_PATH: String = "res://assets/audio/voice/hub_bem_vindo.ogg"
-const PLACE_SFX: String = "res://assets/audio/sfx/drop.ogg"
 const POP_SFX: String = "res://assets/audio/sfx/pop_roupa.ogg"
 
 const STATE_EMPTY: String = "EMPTY"
@@ -90,9 +89,6 @@ func advance(delta: float) -> void:
 		hint_manager.call("advance", maxf(delta, 0.0))
 
 
-# ── the room ─────────────────────────────────────────────────────────────────
-
-
 ## Owned-but-unplaced pieces go to the tray; saved placements are restored at their
 ## ratio. Nothing owned means an empty room, which is a valid start, not an error.
 func _spawn_from_save() -> void:
@@ -102,11 +98,11 @@ func _spawn_from_save() -> void:
 	var placed: Array[Dictionary] = progress.call("placed") as Array[Dictionary]
 	for entry: Dictionary in placed:
 		var id: String = str(entry.get("id", ""))
+		if not bool(progress.call("owns_furniture", id)):
+			continue
 		var point: Vector2 = Vector2(float(entry.get("x", 0.5)), float(entry.get("y", 0.5)))
 		_spawn(id, point)
-	var save: SaveData = progress.get("data") as SaveData
-	var owned: Array[String] = save.owned_furniture
-	for id: String in owned:
+	for id: String in _owned_list(progress):
 		if _props.has(id) or _tray_ids.size() >= TRAY_LIMIT:
 			continue
 		_spawn(id, Vector2(-1.0, -1.0))
@@ -120,13 +116,7 @@ func _spawn(id: String, point: Vector2) -> void:
 		return
 	var prop: FurnitureProp = FurnitureProp.new()
 	var placed: bool = point.x >= 0.0 and point.y >= 0.0
-	if not placed:
-		_tray_ids.append(id)
-		var slot: int = _tray_ids.size() - 1
-		prop.position = _tray_slot_origin(slot) - Vector2(FurnitureProp.PROP_SIZE, FurnitureProp.PROP_SIZE) * 0.5
-	else:
-		_room_ids.append(id)
-		_normalized[id] = point
+	_attach_spawn(id, point, prop, placed)
 	prop.setup(item)
 	prop.placement_area = placement_area
 	prop.placed.connect(_on_prop_placed.bind(id))
@@ -135,6 +125,16 @@ func _spawn(id: String, point: Vector2) -> void:
 	if placed:
 		_layout(prop)
 		prop.visible = true
+
+
+func _attach_spawn(id: String, point: Vector2, prop: FurnitureProp, placed: bool) -> void:
+	if not placed:
+		_tray_ids.append(id)
+		var slot: int = _tray_ids.size() - 1
+		prop.position = _tray_slot_origin(slot) - Vector2(FurnitureProp.PROP_SIZE, FurnitureProp.PROP_SIZE) * 0.5
+	else:
+		_room_ids.append(id)
+		_normalized[id] = point
 
 
 func _tray_slot_origin(slot: int) -> Vector2:
@@ -167,9 +167,6 @@ func layout_props() -> void:
 			_layout(prop)
 
 
-# ── the one write path ───────────────────────────────────────────────────────
-
-
 func _on_prop_placed(normalized: Vector2, id: String) -> void:
 	place(id, normalized.x, normalized.y)
 
@@ -187,11 +184,30 @@ func place(id: String, nx: float, ny: float) -> bool:
 	var prop: FurnitureProp = _props.get(id) as FurnitureProp
 	if prop != null:
 		_layout(prop)
+	_replenish_tray(progress)
 	_stop_hint()
 	_refresh_state()
 	_play_stream("play_sfx", POP_SFX)
 	_log("casinha.place", {"item": id})
 	return true
+
+
+func _replenish_tray(progress: Node) -> void:
+	if progress == null or _tray_ids.size() >= TRAY_LIMIT:
+		return
+	for next_id: String in _owned_list(progress):
+		if not _props.has(next_id) and _tray_ids.size() < TRAY_LIMIT:
+			_spawn(next_id, Vector2(-1.0, -1.0))
+			call_deferred("layout_props")
+
+
+func _owned_list(progress: Node) -> Array[String]:
+	var owned: Array[String] = []
+	if progress != null and progress.has_method("owned_furniture"):
+		var raw_owned: Variant = progress.call("owned_furniture")
+		if raw_owned is Array:
+			owned.assign(raw_owned)
+	return owned
 
 
 func tray_ids() -> Array[String]:
@@ -228,9 +244,6 @@ func _maybe_start_hint() -> void:
 	if first == null:
 		return
 	drag_hint.call("play", first.center(), placement_area.get_global_rect().get_center(), placement_area)
-
-
-# ── scene glue ───────────────────────────────────────────────────────────────
 
 
 func close_celebrate_if_needed() -> void:

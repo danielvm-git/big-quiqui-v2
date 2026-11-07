@@ -21,19 +21,26 @@ func audit_normalized(
 	area_name: String = DEFAULT_AREA,
 ) -> Array[String]:
 	findings.clear()
-	if mounted == null:
-		findings.append("%s: nothing is mounted" % second)
-		return findings
-	var area: Control = mounted.get_node_or_null(area_name) as Control
+	var area: Control = _resolve_area(second, saved, mounted, area_name)
 	if area == null:
-		findings.append("%s: no '%s' node, the ratio cannot be measured" % [second, area_name])
-		return findings
-	if saved.is_empty():
-		findings.append("%s: the save holds no placement, so the round trip proves nothing" % second)
 		return findings
 	for entry: Dictionary in saved:
 		_audit_entry(first, second, entry, mounted, area)
 	return findings
+
+
+func _resolve_area(second: Vector2i, saved: Array[Dictionary], mounted: Control, area_name: String) -> Control:
+	if mounted == null:
+		findings.append("%s: nothing is mounted" % second)
+		return null
+	var area: Control = mounted.get_node_or_null(area_name) as Control
+	if area == null:
+		findings.append("%s: no '%s' node, the ratio cannot be measured" % [second, area_name])
+		return null
+	if saved.is_empty():
+		findings.append("%s: the save holds no placement, so the round trip proves nothing" % second)
+		return null
+	return area
 
 
 func _audit_entry(first: Vector2i, second: Vector2i, entry: Dictionary, mounted: Control, area: Control) -> void:

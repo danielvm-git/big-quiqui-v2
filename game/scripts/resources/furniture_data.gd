@@ -6,6 +6,7 @@ extends Resource
 
 @export var id: String = ""
 @export var art_path: String = ""
+## Preserved for resource schema compatibility (ADR-011); runtime prices are owned by EconomyData.
 @export var price_coins: int = 0
 
 

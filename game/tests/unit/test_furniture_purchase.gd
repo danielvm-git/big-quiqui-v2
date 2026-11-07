@@ -73,3 +73,15 @@ func test_a_free_price_is_still_a_purchase() -> void:
 	assert_true(pm.buy_furniture("tapete", 0), "a gift is owned, not auto-granted")
 	assert_eq(pm.get_coins(), 1)
 	assert_true(pm.owns_furniture("tapete"))
+
+
+func test_owned_furniture_returns_defensive_copy_and_survives_null_data() -> void:
+	pm.add_coins(10)
+	pm.buy_furniture("mesa", 4)
+	var owned: Array[String] = pm.owned_furniture()
+	assert_eq(owned, ["mesa"] as Array[String])
+	owned.append("sofa")
+	assert_false(pm.owns_furniture("sofa"), "external mutation must not corrupt manager state")
+
+	pm.data = null
+	assert_eq(pm.owned_furniture(), [] as Array[String], "null data must return empty array without crashing")

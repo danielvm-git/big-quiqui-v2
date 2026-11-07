@@ -17,6 +17,9 @@ func before_each() -> void:
 	badge.locked_art = LOCKED_ART
 	badge.unlocked_art = UNLOCKED_ART
 	badge.size = Vector2(48.0, 48.0)
+	var art: TextureRect = TextureRect.new()
+	art.name = "Art"
+	badge.add_child(art)
 	add_child_autofree(badge)
 
 
@@ -39,6 +42,9 @@ func _place_pieces(count: int) -> void:
 func test_a_fresh_village_shows_the_locked_badge() -> void:
 	assert_false(badge.unlocked())
 	assert_eq(badge.current_art_path(), LOCKED_ART)
+	var art: TextureRect = badge.get_node("Art") as TextureRect
+	assert_not_null(art.texture)
+	assert_eq(str(art.get_meta("door_badge_path")), LOCKED_ART)
 
 
 func test_the_badge_swaps_once_five_pieces_are_placed() -> void:
@@ -51,6 +57,8 @@ func test_the_badge_swaps_once_five_pieces_are_placed() -> void:
 
 	assert_true(badge.unlocked(), "the fifth piece unlocks it")
 	assert_eq(badge.current_art_path(), UNLOCKED_ART, "and the badge follows progress_changed")
+	var art: TextureRect = badge.get_node("Art") as TextureRect
+	assert_eq(str(art.get_meta("door_badge_path")), UNLOCKED_ART)
 
 
 func test_the_badge_re_locks_when_the_room_empties() -> void:
@@ -64,3 +72,5 @@ func test_the_badge_re_locks_when_the_room_empties() -> void:
 
 	assert_false(badge.unlocked())
 	assert_eq(badge.current_art_path(), LOCKED_ART)
+	var art: TextureRect = badge.get_node("Art") as TextureRect
+	assert_eq(str(art.get_meta("door_badge_path")), LOCKED_ART)

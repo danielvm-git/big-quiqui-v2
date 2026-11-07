@@ -223,13 +223,25 @@ func owned_count() -> int:
 	return 0 if data == null else data.owned_furniture.size()
 
 
+func owned_furniture() -> Array[String]:
+	var entries: Array[String] = []
+	if data == null:
+		return entries
+	entries.assign(data.owned_furniture)
+	return entries
+
+
 ## One placement per piece (e09s02): the ratio is the only thing persisted, so the room
 ## lands in the same spot on the iPad and on a desktop canvas. Owned pieces only.
 func place_furniture(id: String, nx: float, ny: float) -> bool:
-	if not Ids.is_valid(id) or not owns_furniture(id):
-		_emit("furniture.place_refused", {"item": "invalid"})
+	if not Ids.is_valid(id):
+		_emit("furniture.invalid", {"item": "invalid"})
+		return false
+	if not owns_furniture(id):
+		_emit("furniture.place_refused", {"item": id, "reason": "not_owned"})
 		return false
 	var entry: Dictionary = {"id": id, "x": clampf(nx, 0.0, 1.0), "y": clampf(ny, 0.0, 1.0)}
+
 	data.placed_furniture = _without(id)
 	data.placed_furniture.append(entry)
 	if not save():

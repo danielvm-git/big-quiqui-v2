@@ -21,14 +21,14 @@
 [ext_resource type="Texture2D" path="res://assets/art/moveis/tapete.png" id="19_tfwqx"]
 [ext_resource type="Texture2D" path="res://assets/art/moveis/vaso_planta.png" id="20_axlns"]
 
-[node name="Mercado" type="Control" unique_id=632357062]
+[node name="Mercado" type="Control" unique_id=957293932]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_bh8s0")
 
-[node name="Background" type="TextureRect" parent="." unique_id=262548801 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=1189180697 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -37,7 +37,7 @@ texture = ExtResource("2_rxtdj")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=1769942107 groups=["rig"]]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=2136311326 groups=["rig"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -47,7 +47,7 @@ offset_left = -320.0
 offset_right = 320.0
 script = ExtResource("3_foyy4")
 
-[node name="CoinTicketHud" type="Control" parent="." unique_id=1672576290 groups=["ui_top_right"]]
+[node name="CoinTicketHud" type="Control" parent="." unique_id=129995064 groups=["ui_top_right"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -57,7 +57,7 @@ offset_right = -36.0
 offset_bottom = 124.0
 script = ExtResource("4_86kwd")
 
-[node name="HomeButton" type="Control" parent="." unique_id=1977257324 groups=["hit_target"]]
+[node name="HomeButton" type="Control" parent="." unique_id=1277965690 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 36.0
@@ -65,7 +65,7 @@ offset_right = 156.0
 offset_bottom = 156.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="HomeButton" unique_id=349459554]
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=1858592258]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -74,7 +74,7 @@ texture = ExtResource("6_mnmwn")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf0" type="Control" parent="." unique_id=1599488414 groups=["hit_target"]]
+[node name="Shelf0" type="Control" parent="." unique_id=109757226 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.7
 anchor_top = 0.28
@@ -86,7 +86,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf0" unique_id=1424183783]
+[node name="Art" type="TextureRect" parent="Shelf0" unique_id=2053845562]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -95,7 +95,7 @@ texture = ExtResource("7_b0cni")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf0" unique_id=1815077668]
+[node name="PriceBadge" type="Control" parent="Shelf0" unique_id=2037416937]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -104,7 +104,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf0/PriceBadge" unique_id=2069811651]
+[node name="Coin" type="TextureRect" parent="Shelf0/PriceBadge" unique_id=2063790423]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -114,7 +114,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf0/PriceBadge" unique_id=1042488421]
+[node name="Price" type="Label" parent="Shelf0/PriceBadge" unique_id=184688320]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -122,7 +122,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "3"
 
-[node name="SoldBadge0" type="Control" parent="Shelf0" unique_id=2104109211]
+[node name="SoldBadge0" type="Control" parent="Shelf0" unique_id=1098856767]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -133,7 +133,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf0/SoldBadge0" unique_id=1509005808]
+[node name="Art" type="TextureRect" parent="Shelf0/SoldBadge0" unique_id=129460044]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -142,7 +142,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf1" type="Control" parent="." unique_id=1816581346 groups=["hit_target"]]
+[node name="Shelf1" type="Control" parent="." unique_id=1208732362 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.775
 anchor_top = 0.28
@@ -154,7 +154,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf1" unique_id=357891366]
+[node name="Art" type="TextureRect" parent="Shelf1" unique_id=1585402882]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -163,7 +163,7 @@ texture = ExtResource("10_ybhx2")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf1" unique_id=537147740]
+[node name="PriceBadge" type="Control" parent="Shelf1" unique_id=1842845187]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -172,7 +172,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf1/PriceBadge" unique_id=1062478352]
+[node name="Coin" type="TextureRect" parent="Shelf1/PriceBadge" unique_id=1657578741]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -182,7 +182,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf1/PriceBadge" unique_id=1659114538]
+[node name="Price" type="Label" parent="Shelf1/PriceBadge" unique_id=187710160]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -190,7 +190,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "8"
 
-[node name="SoldBadge1" type="Control" parent="Shelf1" unique_id=34199355]
+[node name="SoldBadge1" type="Control" parent="Shelf1" unique_id=687886654]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -201,7 +201,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf1/SoldBadge1" unique_id=464502648]
+[node name="Art" type="TextureRect" parent="Shelf1/SoldBadge1" unique_id=1543899881]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -210,7 +210,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf2" type="Control" parent="." unique_id=80974029 groups=["hit_target"]]
+[node name="Shelf2" type="Control" parent="." unique_id=170425736 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.85
 anchor_top = 0.28
@@ -222,7 +222,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf2" unique_id=328930100]
+[node name="Art" type="TextureRect" parent="Shelf2" unique_id=1296945168]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -231,7 +231,7 @@ texture = ExtResource("11_0ffld")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf2" unique_id=1576746155]
+[node name="PriceBadge" type="Control" parent="Shelf2" unique_id=1048055286]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -240,7 +240,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf2/PriceBadge" unique_id=1740795367]
+[node name="Coin" type="TextureRect" parent="Shelf2/PriceBadge" unique_id=1319145038]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -250,7 +250,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf2/PriceBadge" unique_id=1379752196]
+[node name="Price" type="Label" parent="Shelf2/PriceBadge" unique_id=1573574470]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -258,7 +258,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "9"
 
-[node name="SoldBadge2" type="Control" parent="Shelf2" unique_id=1004290441]
+[node name="SoldBadge2" type="Control" parent="Shelf2" unique_id=259294022]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -269,7 +269,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf2/SoldBadge2" unique_id=1177681576]
+[node name="Art" type="TextureRect" parent="Shelf2/SoldBadge2" unique_id=1065217566]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -278,7 +278,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf3" type="Control" parent="." unique_id=907346843 groups=["hit_target"]]
+[node name="Shelf3" type="Control" parent="." unique_id=1510109966 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.7
 anchor_top = 0.42
@@ -290,7 +290,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf3" unique_id=828542343]
+[node name="Art" type="TextureRect" parent="Shelf3" unique_id=1070372492]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -299,7 +299,7 @@ texture = ExtResource("12_sxww0")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf3" unique_id=1694593629]
+[node name="PriceBadge" type="Control" parent="Shelf3" unique_id=1601146758]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -308,7 +308,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf3/PriceBadge" unique_id=679695419]
+[node name="Coin" type="TextureRect" parent="Shelf3/PriceBadge" unique_id=672811200]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -318,7 +318,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf3/PriceBadge" unique_id=2086850139]
+[node name="Price" type="Label" parent="Shelf3/PriceBadge" unique_id=1273997545]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -326,7 +326,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "3"
 
-[node name="SoldBadge3" type="Control" parent="Shelf3" unique_id=1359599534]
+[node name="SoldBadge3" type="Control" parent="Shelf3" unique_id=1389288386]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -337,7 +337,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf3/SoldBadge3" unique_id=621026097]
+[node name="Art" type="TextureRect" parent="Shelf3/SoldBadge3" unique_id=1948446252]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -346,7 +346,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf4" type="Control" parent="." unique_id=2125826288 groups=["hit_target"]]
+[node name="Shelf4" type="Control" parent="." unique_id=654676823 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.775
 anchor_top = 0.42
@@ -358,7 +358,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf4" unique_id=2105853612]
+[node name="Art" type="TextureRect" parent="Shelf4" unique_id=1197494190]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -367,7 +367,7 @@ texture = ExtResource("13_s0go8")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf4" unique_id=468102353]
+[node name="PriceBadge" type="Control" parent="Shelf4" unique_id=496927465]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -376,7 +376,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf4/PriceBadge" unique_id=1662411061]
+[node name="Coin" type="TextureRect" parent="Shelf4/PriceBadge" unique_id=231280196]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -386,7 +386,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf4/PriceBadge" unique_id=2074190155]
+[node name="Price" type="Label" parent="Shelf4/PriceBadge" unique_id=1059533337]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -394,7 +394,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "10"
 
-[node name="SoldBadge4" type="Control" parent="Shelf4" unique_id=1563361036]
+[node name="SoldBadge4" type="Control" parent="Shelf4" unique_id=2124214073]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -405,7 +405,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf4/SoldBadge4" unique_id=227619660]
+[node name="Art" type="TextureRect" parent="Shelf4/SoldBadge4" unique_id=791543735]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -414,7 +414,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf5" type="Control" parent="." unique_id=338127718 groups=["hit_target"]]
+[node name="Shelf5" type="Control" parent="." unique_id=1754271806 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.85
 anchor_top = 0.42
@@ -426,7 +426,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf5" unique_id=1444053842]
+[node name="Art" type="TextureRect" parent="Shelf5" unique_id=1972910941]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -435,7 +435,7 @@ texture = ExtResource("14_7bs6v")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf5" unique_id=1252023463]
+[node name="PriceBadge" type="Control" parent="Shelf5" unique_id=1242771423]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -444,7 +444,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf5/PriceBadge" unique_id=558751355]
+[node name="Coin" type="TextureRect" parent="Shelf5/PriceBadge" unique_id=1455684409]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -454,7 +454,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf5/PriceBadge" unique_id=83559020]
+[node name="Price" type="Label" parent="Shelf5/PriceBadge" unique_id=1968897058]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -462,7 +462,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "7"
 
-[node name="SoldBadge5" type="Control" parent="Shelf5" unique_id=1611388964]
+[node name="SoldBadge5" type="Control" parent="Shelf5" unique_id=1576547260]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -473,7 +473,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf5/SoldBadge5" unique_id=426359466]
+[node name="Art" type="TextureRect" parent="Shelf5/SoldBadge5" unique_id=1925168515]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -482,7 +482,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf6" type="Control" parent="." unique_id=1973655832 groups=["hit_target"]]
+[node name="Shelf6" type="Control" parent="." unique_id=163540248 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.7
 anchor_top = 0.56
@@ -494,7 +494,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf6" unique_id=1090816476]
+[node name="Art" type="TextureRect" parent="Shelf6" unique_id=188871262]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -503,7 +503,7 @@ texture = ExtResource("15_oxyso")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf6" unique_id=923384158]
+[node name="PriceBadge" type="Control" parent="Shelf6" unique_id=814023061]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -512,7 +512,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf6/PriceBadge" unique_id=443929558]
+[node name="Coin" type="TextureRect" parent="Shelf6/PriceBadge" unique_id=401355071]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -522,7 +522,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf6/PriceBadge" unique_id=750102698]
+[node name="Price" type="Label" parent="Shelf6/PriceBadge" unique_id=1408946378]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -530,7 +530,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "6"
 
-[node name="SoldBadge6" type="Control" parent="Shelf6" unique_id=1023038265]
+[node name="SoldBadge6" type="Control" parent="Shelf6" unique_id=417446371]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -541,7 +541,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf6/SoldBadge6" unique_id=2146520624]
+[node name="Art" type="TextureRect" parent="Shelf6/SoldBadge6" unique_id=1004815658]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -550,7 +550,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf7" type="Control" parent="." unique_id=1244958628 groups=["hit_target"]]
+[node name="Shelf7" type="Control" parent="." unique_id=39129078 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.775
 anchor_top = 0.56
@@ -562,7 +562,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf7" unique_id=743275681]
+[node name="Art" type="TextureRect" parent="Shelf7" unique_id=463751837]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -571,7 +571,7 @@ texture = ExtResource("16_wcnt0")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf7" unique_id=1605402779]
+[node name="PriceBadge" type="Control" parent="Shelf7" unique_id=1127232629]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -580,7 +580,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf7/PriceBadge" unique_id=236507775]
+[node name="Coin" type="TextureRect" parent="Shelf7/PriceBadge" unique_id=1340933635]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -590,7 +590,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf7/PriceBadge" unique_id=712268814]
+[node name="Price" type="Label" parent="Shelf7/PriceBadge" unique_id=1555185777]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -598,7 +598,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "4"
 
-[node name="SoldBadge7" type="Control" parent="Shelf7" unique_id=581053267]
+[node name="SoldBadge7" type="Control" parent="Shelf7" unique_id=813696517]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -609,7 +609,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf7/SoldBadge7" unique_id=1040631724]
+[node name="Art" type="TextureRect" parent="Shelf7/SoldBadge7" unique_id=318956564]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -618,7 +618,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf8" type="Control" parent="." unique_id=266271867 groups=["hit_target"]]
+[node name="Shelf8" type="Control" parent="." unique_id=1480373274 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.85
 anchor_top = 0.56
@@ -630,7 +630,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf8" unique_id=1115645975]
+[node name="Art" type="TextureRect" parent="Shelf8" unique_id=602915379]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -639,7 +639,7 @@ texture = ExtResource("17_2jxdw")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf8" unique_id=615096306]
+[node name="PriceBadge" type="Control" parent="Shelf8" unique_id=246934711]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -648,7 +648,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf8/PriceBadge" unique_id=755542601]
+[node name="Coin" type="TextureRect" parent="Shelf8/PriceBadge" unique_id=631438060]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -658,7 +658,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf8/PriceBadge" unique_id=490544782]
+[node name="Price" type="Label" parent="Shelf8/PriceBadge" unique_id=952046133]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -666,7 +666,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "5"
 
-[node name="SoldBadge8" type="Control" parent="Shelf8" unique_id=39208268]
+[node name="SoldBadge8" type="Control" parent="Shelf8" unique_id=274882730]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -677,7 +677,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf8/SoldBadge8" unique_id=143006711]
+[node name="Art" type="TextureRect" parent="Shelf8/SoldBadge8" unique_id=1142752154]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -686,7 +686,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf9" type="Control" parent="." unique_id=1075417235 groups=["hit_target"]]
+[node name="Shelf9" type="Control" parent="." unique_id=1034596214 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.7
 anchor_top = 0.7
@@ -698,7 +698,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf9" unique_id=1025847277]
+[node name="Art" type="TextureRect" parent="Shelf9" unique_id=662343024]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -707,7 +707,7 @@ texture = ExtResource("18_xanx5")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf9" unique_id=2127339717]
+[node name="PriceBadge" type="Control" parent="Shelf9" unique_id=1604185494]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -716,7 +716,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf9/PriceBadge" unique_id=293063292]
+[node name="Coin" type="TextureRect" parent="Shelf9/PriceBadge" unique_id=1870840342]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -726,7 +726,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf9/PriceBadge" unique_id=251717823]
+[node name="Price" type="Label" parent="Shelf9/PriceBadge" unique_id=1508687919]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -734,7 +734,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "8"
 
-[node name="SoldBadge9" type="Control" parent="Shelf9" unique_id=429293347]
+[node name="SoldBadge9" type="Control" parent="Shelf9" unique_id=107145757]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -745,7 +745,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf9/SoldBadge9" unique_id=3935229]
+[node name="Art" type="TextureRect" parent="Shelf9/SoldBadge9" unique_id=192477767]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -754,7 +754,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf10" type="Control" parent="." unique_id=504918606 groups=["hit_target"]]
+[node name="Shelf10" type="Control" parent="." unique_id=1452599926 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.775
 anchor_top = 0.7
@@ -766,7 +766,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf10" unique_id=669982219]
+[node name="Art" type="TextureRect" parent="Shelf10" unique_id=1716303260]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -775,7 +775,7 @@ texture = ExtResource("19_tfwqx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf10" unique_id=1626257825]
+[node name="PriceBadge" type="Control" parent="Shelf10" unique_id=172894544]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -784,7 +784,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf10/PriceBadge" unique_id=470276915]
+[node name="Coin" type="TextureRect" parent="Shelf10/PriceBadge" unique_id=1732591912]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -794,7 +794,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf10/PriceBadge" unique_id=433589671]
+[node name="Price" type="Label" parent="Shelf10/PriceBadge" unique_id=2098651212]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -802,7 +802,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "2"
 
-[node name="SoldBadge10" type="Control" parent="Shelf10" unique_id=1414245355]
+[node name="SoldBadge10" type="Control" parent="Shelf10" unique_id=913351304]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -813,7 +813,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf10/SoldBadge10" unique_id=435882563]
+[node name="Art" type="TextureRect" parent="Shelf10/SoldBadge10" unique_id=286032794]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -822,7 +822,7 @@ texture = ExtResource("9_r3nr3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Shelf11" type="Control" parent="." unique_id=1460249080 groups=["hit_target"]]
+[node name="Shelf11" type="Control" parent="." unique_id=1836817254 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.85
 anchor_top = 0.7
@@ -834,7 +834,7 @@ offset_right = 60.0
 offset_bottom = 60.0
 script = ExtResource("5_qss00")
 
-[node name="Art" type="TextureRect" parent="Shelf11" unique_id=799222116]
+[node name="Art" type="TextureRect" parent="Shelf11" unique_id=2097544555]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -843,7 +843,7 @@ texture = ExtResource("20_axlns")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PriceBadge" type="Control" parent="Shelf11" unique_id=2097101804]
+[node name="PriceBadge" type="Control" parent="Shelf11" unique_id=849853436]
 anchors_preset = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -852,7 +852,7 @@ offset_right = 108.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Coin" type="TextureRect" parent="Shelf11/PriceBadge" unique_id=136745275]
+[node name="Coin" type="TextureRect" parent="Shelf11/PriceBadge" unique_id=988593493]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 0
 offset_right = 32.0
@@ -862,7 +862,7 @@ texture = ExtResource("8_gubbx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Price" type="Label" parent="Shelf11/PriceBadge" unique_id=1484825587]
+[node name="Price" type="Label" parent="Shelf11/PriceBadge" unique_id=1949294944]
 layout_mode = 0
 offset_left = 36.0
 offset_right = 96.0
@@ -870,7 +870,7 @@ offset_bottom = 32.0
 theme_override_font_sizes/font_size = 28
 text = "3"
 
-[node name="SoldBadge11" type="Control" parent="Shelf11" unique_id=1924517004]
+[node name="SoldBadge11" type="Control" parent="Shelf11" unique_id=1227536023]
 visible = false
 anchors_preset = 0
 anchor_left = 1.0
@@ -881,7 +881,7 @@ offset_right = 24.0
 offset_bottom = 24.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="Shelf11/SoldBadge11" unique_id=1941900157]
+[node name="Art" type="TextureRect" parent="Shelf11/SoldBadge11" unique_id=2002835645]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
