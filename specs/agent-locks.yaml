@@ -1,25 +1,2 @@
-# Advisory story locks (kickoff-branch e39s02 gate). Local and unpushed while the
-# e10 branch lives only in this worktree — a second session reading main will not
-# see it, so treat it as self-documentation of intent, not exclusion.
-locks:
-- story_id: e10
-  locked_by: 'agent: build-epic (zcode e10 session)'
-  locked_at: '2026-11-07T06:34:44-0300'
-  files_touched:
-  - specs/epics/e10-friends-minigames-and-album-scenes/
-  - specs/state.yaml
-  - specs/execution-status.yaml
-  - specs/bugs/registry.yaml
-  - game/scripts/scenes/
-  - game/tools/
-  - game/tests/
-- story_id: e09
-  locked_by: 'agent: e09 post-epic review session (separate concurrent session)'
-  locked_at: '2026-11-07T06:20:00-0300'
-  files_touched:
-  - specs/bugs/ (BUG-046..054)
-  - specs/verifications/POSTEPIC-e09
-  note: >-
-    Recorded here by the e10 session for visibility: the e09 review was running in
-    the primary checkout on epic/e09-post-epic-review while e10 branched from
-    origin/main. Its work is committed on that branch, not main.
+# Advisory story locks (kickoff-branch e39s02 gate).
+locks: []
