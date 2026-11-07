@@ -44,7 +44,9 @@ func _ready() -> void:
 	_remember_friend_bases()
 	_connect_inputs()
 	close_celebrate_if_needed()
-	refresh_unlock()
+	if party_unlocked():
+		fsm.transition_to(STATE_DANCING)
+	_apply_state()
 	_restore_music()
 	_log("scene.ready", {"scene": "festa"})
 
@@ -170,11 +172,17 @@ func close_celebrate_if_needed() -> void:
 
 
 func _on_home_tapped() -> void:
-	_request(CASA_PATH)
+	_exit_party(CASA_PATH)
 
 
 func _on_casinha_tapped() -> void:
-	_request(CASINHA_PATH)
+	_exit_party(CASINHA_PATH)
+
+
+func _exit_party(path: String) -> void:
+	if fsm != null and fsm.state == STATE_DANCING:
+		fsm.transition_to(STATE_LOCKED)
+	_request(path)
 
 
 func _request(path: String) -> void:

@@ -408,3 +408,85 @@ bugs:
   file: specs/bugs/BUG-045-dead-respawn-widens-consumed-edge.md
   status: fixed
   found_by: e08 post-epic review, second pass
+- bug_id: BUG-046
+  date: '2026-11-07'
+  severity: high
+  priority: P0
+  scope: telemetry
+  summary: "party.locked diary event is never emitted on mount when the party is locked"
+  file: specs/bugs/BUG-046-party-locked-not-emitted-on-mount.md
+  status: fixed
+  found_by: e09 post-epic review
+- bug_id: BUG-047
+  date: '2026-11-07'
+  severity: high
+  priority: P0
+  scope: code
+  summary: "Unhandled null dereference on ProgressManager.data in casinha.gd and missing owned_furniture() encapsulation"
+  file: specs/bugs/BUG-047-casinha-null-dereference-save-data.md
+  status: open
+  found_by: e09 post-epic review
+- bug_id: BUG-048
+  date: '2026-11-07'
+  severity: medium
+  priority: P1
+  scope: security
+  summary: "SaveData._clean_placement does not deduplicate IDs, allowing tampered saves to bypass party lock"
+  file: specs/bugs/BUG-048-placement-deduplication-save-tampering.md
+  status: open
+  found_by: e09 post-epic review
+- bug_id: BUG-049
+  date: '2026-11-07'
+  severity: medium
+  priority: P1
+  scope: telemetry
+  summary: "place_furniture logs item invalid for valid but unowned furniture IDs instead of not_owned"
+  file: specs/bugs/BUG-049-place-refused-unowned-logged-as-invalid.md
+  status: open
+  found_by: e09 post-epic review
+- bug_id: BUG-050
+  date: '2026-11-07'
+  severity: medium
+  priority: P2
+  scope: docs
+  summary: "ADR-011 registered in state.yaml is missing from specs/adr/"
+  file: specs/bugs/BUG-050-missing-adr-011.md
+  status: open
+  found_by: e09 post-epic review
+- bug_id: BUG-051
+  date: '2026-11-07'
+  severity: low
+  priority: P3
+  scope: code
+  summary: "casinha.gd restores unowned placements and starves tray when owned count exceeds TRAY_LIMIT"
+  file: specs/bugs/BUG-051-casinha-unowned-and-tray-starvation.md
+  status: open
+  found_by: e09 post-epic review
+- bug_id: BUG-052
+  date: '2026-11-07'
+  severity: low
+  priority: P3
+  scope: code
+  summary: "Dead code and unused symbols in e09: _pending_id, last_bought, PLACE_SFX, ART_ROOT and redundant price_coins"
+  file: specs/bugs/BUG-052-e09-dead-code-and-unused-symbols.md
+  status: open
+  found_by: e09 post-epic review
+- bug_id: BUG-053
+  date: '2026-11-07'
+  severity: low
+  priority: P3
+  scope: code
+  summary: "Functions in build_mercado_scene.gd, casinha.gd, and placement_oracle.gd exceed the 20-line bar"
+  file: specs/bugs/BUG-053-functions-over-20-line-bar.md
+  status: open
+  found_by: e09 post-epic review
+- bug_id: BUG-054
+  date: '2026-11-07'
+  severity: low
+  priority: P3
+  scope: tests
+  summary: "DoorBadge texture swapping untested with real Art child in test_door_badge.gd"
+  file: specs/bugs/BUG-054-door-badge-art-texture-untested.md
+  status: open
+  found_by: e09 post-epic review
+

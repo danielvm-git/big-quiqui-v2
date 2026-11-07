@@ -48,6 +48,7 @@ func _mount(size: Vector2i) -> Control:
 
 func test_four_placed_pieces_leave_the_party_locked_and_oracle_clean() -> void:
 	_place(4)
+	var events_before: int = _count_events("party.locked")
 	for size: Vector2i in [GeometryOracle.DESKTOP_16_9, GeometryOracle.IPAD_4_3]:
 		var mounted: Control = _mount(size)
 		await wait_process_frames(3)
@@ -61,6 +62,7 @@ func test_four_placed_pieces_leave_the_party_locked_and_oracle_clean() -> void:
 		for id: String in FRIEND_IDS:
 			assert_false((mounted.get_node("Friend_" + id) as Control).visible, id)
 		mounted.queue_free()
+	assert_gt(_count_events("party.locked"), events_before, "party.locked must be emitted on mount when locked")
 
 
 func test_five_placed_pieces_start_the_dance() -> void:
@@ -99,6 +101,28 @@ func _bob_series() -> Array[float]:
 		for id: String in FRIEND_IDS:
 			seen.append(float(offsets.get(id, 0.0)))
 	return seen
+
+
+func _count_events(ev_id: String) -> int:
+	var log: Node = get_node_or_null("/root/Log")
+	if log == null:
+		return -1
+	var path: String = str(log.get("log_path"))
+	if not FileAccess.file_exists(path):
+		return -1
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return -1
+	var text: String = file.get_as_text()
+	file.close()
+	var count: int = 0
+	for raw: String in text.split("\n"):
+		if raw.strip_edges().is_empty():
+			continue
+		var line: Variant = JSON.parse_string(raw)
+		if line is Dictionary and str((line as Dictionary).get("ev", "")) == ev_id:
+			count += 1
+	return count
 
 
 func test_the_party_re_locks_when_the_room_drops_below_five() -> void:
