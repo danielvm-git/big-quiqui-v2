@@ -6,10 +6,10 @@ extends Control
 ## repeatable on purpose — it is play, not a chore — and it never advances the step.
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/jardim.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/play_hora_de_brincar.ogg"
-const TICKLE_SFX_PATH: String = "res://assets/audio/sfx/cocega_risada.ogg"
-const CONFETTI_SFX_PATH: String = "res://assets/audio/sfx/confete.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/playroom.ogg"
+const VOICE_KEY: String = "vo.playroom.intro"
+const TICKLE_SFX_PATH: String = "res://assets/audio/sfx/tickle_laugh.ogg"
+const CONFETTI_SFX_PATH: String = "res://assets/audio/sfx/confetti.ogg"
 
 const INTERACTIONS_TO_FINISH: int = 3
 ## The prop catalogue: kind and interaction id are wired at `_ready`, because a
@@ -58,7 +58,7 @@ func _ready() -> void:
 		tickle.tapped.connect(_on_tickled)
 	($HomeButton as TapButton).tapped.connect(_on_home_tapped)
 	_play_stream("play_music", MUSIC_PATH)
-	_play_stream("play_voice", VOICE_PATH)
+	AudioManager.play_voice_key(VOICE_KEY)
 	_log("scene.ready", {"scene": "jardim"})
 
 
@@ -85,7 +85,7 @@ func prop(index: int) -> GardenProp:
 ## Three *distinct* toys complete the step. Replaying one is still fun and still
 ## moves the toy; it just does not count twice (T-E06-05).
 func _on_interacted(interaction: String) -> void:
-	rig.set_expression("rindo")
+	rig.set_expression("laughing")
 	_idle_sec = 0.0
 	if played.has(interaction) or fsm.state != STATE_PLAYING:
 		return
@@ -97,7 +97,7 @@ func _on_interacted(interaction: String) -> void:
 
 func _on_tickled() -> void:
 	tickles += 1
-	rig.set_expression("rindo")
+	rig.set_expression("laughing")
 	_idle_sec = 0.0
 	_play_stream("play_sfx", TICKLE_SFX_PATH)
 	_log("garden.tickle", {"tickles": tickles})
@@ -106,7 +106,7 @@ func _on_tickled() -> void:
 func _finish() -> void:
 	if not fsm.transition_from(STATE_PLAYING, STATE_FINISHED):
 		return
-	rig.set_expression("pulando")
+	rig.set_expression("jumping")
 	confetti.global_position = rig.get_visual_global_rect().get_center()
 	confetti.restart()
 	_play_stream("play_sfx", CONFETTI_SFX_PATH)
@@ -134,8 +134,8 @@ func _advance_idle(step: float) -> void:
 		return
 	_idle_sec = 0.0
 	if not bubble.is_showing():
-		rig.set_expression("carente")
-		bubble.show_wish("res://assets/art/items/bola.png")
+		rig.set_expression("needy")
+		bubble.show_wish("res://assets/art/items/ball.png")
 
 
 func _is_busy() -> bool:

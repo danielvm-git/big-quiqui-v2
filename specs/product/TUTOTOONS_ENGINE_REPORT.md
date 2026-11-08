@@ -205,7 +205,7 @@ data) should be separable from *logic*, which we already do via `build_*_scene.g
 4. **Save backup file** — `saved_data.json` + `.backup` + `.tmp` journal; we already do `.tmp` rename in
    `ProgressManager`, add the backup read-path for corruption recovery (pairs with ADR-005 migration).
 5. **Indicator/badge layer** — `IndicatorManager`/`IndicatorType` for unlock "NEW!" badges (pairs with the
-   already-shipping `moedinha.png`/`estrela.png` reward reveal).
+   already-shipping `coin.png`/`star.png` reward reveal).
 6. **Data-driven activities** — their `KitchenFoodsData` (`FoodType/Tier/ReactionType`) and
    `SetSettingsValues` level tables are the proof that care-step tuning must be data, not code. Fold into
    our table-driven FSM convention (ADR-001) explicitly for FEED/BATH tuning.

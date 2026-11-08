@@ -46,7 +46,7 @@ Para personagens, mais isto:
 **Por quê:** estas três imagens viram o "padrão oficial". Todos os outros lotes anexam elas como referência. Se a Olivia não gostar de alguma coisa aqui (cor do laço, olhos, cores), é aqui que muda, antes de gerar as outras 80.
 
 **Anexar:** `game/assets/sprites/characters/quiqui/quiqui_idle.png` (só para o Gemini saber quem é a QuiQui; o traço vai mudar)
-**Salvar em:** `specs/art/estilo/`
+**Salvar em:** `specs/art/style/`
 
 **Mensagem de abertura:**
 
@@ -54,9 +54,9 @@ Para personagens, mais isto:
 
 | # | Arquivo | Prompt |
 |---|---|---|
-| 1 | `quiqui_modelo.png` | Redraw QuiQui in this style as a baby bunny girl: fluffy snow-white fur, long ears with bubblegum-pink insides, a big pink bow with white polka dots on top of her head between the ears, chibi proportions with a big head and small body, huge sparkly lilac eyes with several white shine highlights and long lashes, tiny pink nose, rosy blush, small fluffy tail. Full body, standing, front view, happy gentle smile, paws relaxed in front of her belly. Pure white background, no ground, no shadow, no text. Square image, white space around her so nothing is cut. |
-| 2 | `cozinha_modelo.jpg` | In the same style, a cozy cartoon kitchen for a bunny: rounded pastel pink and mint cabinets, a cute fridge, a round window with sunlight, a small table in the front. Bright, cheerful and uncluttered; leave the center and bottom center mostly empty for a character to stand. No characters, no text, no letters. Landscape 4:3. |
-| 3 | `cenoura_modelo.png` | In the same style, a single glossy carrot with a leafy green top and a cute small happy face. Pure white background, centered, no text. Square image. |
+| 1 | `quiqui_model.png` | Redraw QuiQui in this style as a baby bunny girl: fluffy snow-white fur, long ears with bubblegum-pink insides, a big pink bow with white polka dots on top of her head between the ears, chibi proportions with a big head and small body, huge sparkly lilac eyes with several white shine highlights and long lashes, tiny pink nose, rosy blush, small fluffy tail. Full body, standing, front view, happy gentle smile, paws relaxed in front of her belly. Pure white background, no ground, no shadow, no text. Square image, white space around her so nothing is cut. |
+| 2 | `kitchen_model.jpg` | In the same style, a cozy cartoon kitchen for a bunny: rounded pastel pink and mint cabinets, a cute fridge, a round window with sunlight, a small table in the front. Bright, cheerful and uncluttered; leave the center and bottom center mostly empty for a character to stand. No characters, no text, no letters. Landscape 4:3. |
+| 3 | `carrot_model.png` | In the same style, a single glossy carrot with a leafy green top and a cute small happy face. Pure white background, centered, no text. Square image. |
 
 **Pare aqui.** Mostre as três para a Olivia. Ajuste até ela gostar. Só depois siga.
 
@@ -64,7 +64,7 @@ Para personagens, mais isto:
 
 ## Lote 1 — QuiQui: expressões e roupas (PRIORIDADE MÁXIMA)
 
-**Anexar:** `specs/art/estilo/quiqui_modelo.png` (a aprovada no Lote 0)
+**Anexar:** `specs/art/style/quiqui_model.png` (a aprovada no Lote 0)
 **Salvar em:** `specs/art/quiqui/`
 
 **Mensagem de abertura:**
@@ -74,29 +74,29 @@ Para personagens, mais isto:
 | # | Arquivo | Uso no jogo | Prompt |
 |---|---|---|---|
 | 1 | `quiqui_base.png` | pose neutra | Same character, calm happy face, gentle smile, eyes open, paws relaxed in front of her belly. |
-| 2 | `quiqui_pisca.png` | piscar | Exactly the same as the neutral image, only the eyes closed in a relaxed blink. Nothing else changes. |
-| 3 | `quiqui_rindo.png` | acertou, carinho | Laughing with joy: eyes closed in happy arcs, mouth wide open, extra blush, paws together near her chin. |
-| 4 | `quiqui_boca_aberta.png` | esperando comida | Mouth wide open waiting to be fed, big excited eyes looking up, paws up near her mouth. |
-| 5 | `quiqui_mastigando.png` | comendo | Chewing happily: round puffed cheeks, mouth closed in a little wavy line, eyes closed in delight. |
-| 6 | `quiqui_prazer.png` | banho, carinho | Eyes peacefully closed, soft content smile, head slightly tilted, ears relaxed. |
-| 7 | `quiqui_careta.png` | gesto errado (cômico) | Silly funny face: one eye squeezed shut, tongue out a little, ears in different directions. Playful, not sad. |
-| 8 | `quiqui_surpresa.png` | algo novo | Surprised: eyes extra wide and sparkly, small round "o" mouth, ears straight up, paws open. |
-| 9 | `quiqui_sono.png` | cansada | Sleepy: eyes half closed, small yawn with a paw over her mouth, ears drooping a little. |
-| 10 | `quiqui_carente.png` | pedindo cuidado | Asking for care in a cute way: big shiny pleading eyes, ears slightly drooped, small pout, paws clasped. Cute, never crying. |
-| 11 | `quiqui_acenando.png` | tela inicial | Waving hello with her right paw raised high, big happy smile. |
-| 12 | `quiqui_pulando.png` | celebração | Jumping with joy, both arms up, feet off the ground, big open smile, eyes closed in happy arcs. Same size so she fits the frame. |
-| 13 | `quiqui_molhada.png` | durante o banho | Wet after a bath: fur flattened and damp with a few water drops, squinting eyes, funny surprised smile. |
-| 14 | `quiqui_brilhando.png` | limpinha | Extra fluffy and clean, glossy fur, a few tiny white sparkles around her, proud happy smile. |
-| 15 | `quiqui_vestido_florido.png` | arrumar | Same neutral pose, wearing a cute peach dress with tiny pastel flowers. |
-| 16 | `quiqui_macacao_verde.png` | arrumar | Same neutral pose, wearing mint-green overalls with a front pocket. |
-| 17 | `quiqui_vestido_vermelho.png` | arrumar | Same neutral pose, wearing a cherry-red dress with a white collar. |
-| 18 | `quiqui_pijama.png` | dormir | Same neutral pose, wearing lilac pajamas with little stars. |
+| 2 | `quiqui_wink.png` | piscar | Exactly the same as the neutral image, only the eyes closed in a relaxed blink. Nothing else changes. |
+| 3 | `quiqui_laughing.png` | acertou, carinho | Laughing with joy: eyes closed in happy arcs, mouth wide open, extra blush, paws together near her chin. |
+| 4 | `quiqui_mouth_open.png` | esperando comida | Mouth wide open waiting to be fed, big excited eyes looking up, paws up near her mouth. |
+| 5 | `quiqui_chewing.png` | comendo | Chewing happily: round puffed cheeks, mouth closed in a little wavy line, eyes closed in delight. |
+| 6 | `quiqui_pleased.png` | banho, carinho | Eyes peacefully closed, soft content smile, head slightly tilted, ears relaxed. |
+| 7 | `quiqui_grimace.png` | gesto errado (cômico) | Silly funny face: one eye squeezed shut, tongue out a little, ears in different directions. Playful, not sad. |
+| 8 | `quiqui_surprised.png` | algo novo | Surprised: eyes extra wide and sparkly, small round "o" mouth, ears straight up, paws open. |
+| 9 | `quiqui_sleepy.png` | cansada | Sleepy: eyes half closed, small yawn with a paw over her mouth, ears drooping a little. |
+| 10 | `quiqui_needy.png` | pedindo cuidado | Asking for care in a cute way: big shiny pleading eyes, ears slightly drooped, small pout, paws clasped. Cute, never crying. |
+| 11 | `quiqui_waving.png` | tela inicial | Waving hello with her right paw raised high, big happy smile. |
+| 12 | `quiqui_jumping.png` | celebração | Jumping with joy, both arms up, feet off the ground, big open smile, eyes closed in happy arcs. Same size so she fits the frame. |
+| 13 | `quiqui_wet.png` | durante o banho | Wet after a bath: fur flattened and damp with a few water drops, squinting eyes, funny surprised smile. |
+| 14 | `quiqui_shining.png` | limpinha | Extra fluffy and clean, glossy fur, a few tiny white sparkles around her, proud happy smile. |
+| 15 | `quiqui_floral_dress.png` | arrumar | Same neutral pose, wearing a cute peach dress with tiny pastel flowers. |
+| 16 | `quiqui_green_overalls.png` | arrumar | Same neutral pose, wearing mint-green overalls with a front pocket. |
+| 17 | `quiqui_red_dress.png` | arrumar | Same neutral pose, wearing a cherry-red dress with a white collar. |
+| 18 | `quiqui_pajamas.png` | dormir | Same neutral pose, wearing lilac pajamas with little stars. |
 
 ---
 
 ## Lote 2 — Cenários (todos no estilo novo)
 
-**Anexar em todo prompt:** `specs/art/estilo/cozinha_modelo.jpg` (referência de estilo) **+** o cenário antigo indicado (só para o Gemini copiar o que tem no cômodo).
+**Anexar em todo prompt:** `specs/art/style/kitchen_model.jpg` (referência de estilo) **+** o cenário antigo indicado (só para o Gemini copiar o que tem no cômodo).
 **Salvar em:** `specs/art/backgrounds/`
 **Formato:** horizontal **4:3**, exceto a vila. Deixe o centro livre para a QuiQui.
 
@@ -106,16 +106,16 @@ Para personagens, mais isto:
 
 | # | Arquivo | Anexar (antigo) | Prompt |
 |---|---|---|---|
-| 1 | `bg_cozinha.jpg` | — | Use the approved kitchen exactly as it is (you can skip this one and I will reuse `cozinha_modelo.jpg`). |
-| 2 | `bg_banheiro.jpg` | `game/assets/sprites/backgrounds/bg_banheiro.jpg` | A cute cartoon bathroom: a big round pastel bathtub in the front center, turquoise and pink tiles, a round mirror, a shower head, soft bubbles floating. |
-| 3 | `bg_quarto.jpg` | `game/assets/sprites/backgrounds/bg_guarda_roupa.jpg` | A cute cartoon bedroom with a big open wardrobe full of colorful clothes on the left, a vanity mirror, a heart-shaped rug, starry wallpaper in lilac. |
-| 4 | `bg_sala.jpg` | `game/assets/sprites/backgrounds/bg_toca.jpg` | The cozy living room of a bunny house: a round front door, a soft sofa, a fireplace, a bookcase, a big window, garlands of small lights. No sign, no text. |
-| 5 | `bg_jardim.jpg` | `game/assets/sprites/backgrounds/bg_jardim.jpg` | A sunny cartoon garden play area behind the bunny house: soft green grass, flowers, a little fence, a swing, blue sky with fluffy clouds. |
-| 6 | `bg_vila.jpg` | `game/assets/sprites/backgrounds/bg_vila.jpg` | A cheerful cartoon bunny village seen from the front, very wide panoramic image (as wide as possible): a row of cute candy-colored houses with rounded roofs, a furniture shop, a carrot market, a plaza with a big colorful wheel, trees and flowers, a path along the bottom. |
-| 7 | `bg_mercado.jpg` | `game/assets/sprites/backgrounds/bg_mercado.jpg` | Inside a cute furniture shop for bunnies: shelves with empty spots, pastel walls, a counter, balloons. |
-| 8 | `bg_casinha.jpg` | `game/assets/sprites/backgrounds/bg_casinha.jpg` | An empty cute cartoon room ready to be decorated: pastel walls with a window, a wooden floor, nothing else, lots of empty space. |
-| 9 | `bg_celebracao.jpg` | — | A festive party background: pastel balloons, garlands, confetti in the air, a soft radial burst of light in the center. |
-| 10 | `bg_titulo.jpg` | — | A dreamy sunny meadow at the edge of a bunny village: soft hills, flowers, small candy-colored houses far away, rainbow in the sky. Big empty grassy area in the center. |
+| 1 | `bg_kitchen.jpg` | — | Use the approved kitchen exactly as it is (you can skip this one and I will reuse `kitchen_model.jpg`). |
+| 2 | `bg_bathroom.jpg` | `game/assets/sprites/backgrounds/bg_bathroom.jpg` | A cute cartoon bathroom: a big round pastel bathtub in the front center, turquoise and pink tiles, a round mirror, a shower head, soft bubbles floating. |
+| 3 | `bg_bedroom.jpg` | `game/assets/sprites/backgrounds/bg_guarda_roupa.jpg` | A cute cartoon bedroom with a big open wardrobe full of colorful clothes on the left, a vanity mirror, a heart-shaped rug, starry wallpaper in lilac. |
+| 4 | `bg_home.jpg` | `game/assets/sprites/backgrounds/bg_toca.jpg` | The cozy living room of a bunny house: a round front door, a soft sofa, a fireplace, a bookcase, a big window, garlands of small lights. No sign, no text. |
+| 5 | `bg_playroom.jpg` | `game/assets/sprites/backgrounds/bg_playroom.jpg` | A sunny cartoon garden play area behind the bunny house: soft green grass, flowers, a little fence, a swing, blue sky with fluffy clouds. |
+| 6 | `bg_village.jpg` | `game/assets/sprites/backgrounds/bg_village.jpg` | A cheerful cartoon bunny village seen from the front, very wide panoramic image (as wide as possible): a row of cute candy-colored houses with rounded roofs, a furniture shop, a carrot market, a plaza with a big colorful wheel, trees and flowers, a path along the bottom. |
+| 7 | `bg_market.jpg` | `game/assets/sprites/backgrounds/bg_market.jpg` | Inside a cute furniture shop for bunnies: shelves with empty spots, pastel walls, a counter, balloons. |
+| 8 | `bg_playhouse.jpg` | `game/assets/sprites/backgrounds/bg_playhouse.jpg` | An empty cute cartoon room ready to be decorated: pastel walls with a window, a wooden floor, nothing else, lots of empty space. |
+| 9 | `bg_celebration.jpg` | — | A festive party background: pastel balloons, garlands, confetti in the air, a soft radial burst of light in the center. |
+| 10 | `bg_title.jpg` | — | A dreamy sunny meadow at the edge of a bunny village: soft hills, flowers, small candy-colored houses far away, rainbow in the sky. Big empty grassy area in the center. |
 | 11 | `bg_album.jpg` | `game/assets/sprites/backgrounds/bg_album.jpg` | A cozy cartoon wall covered with an empty scrapbook board in pastel colors, ribbons and little star stickers around the edges, empty center. |
 | 12 | `bg_puzzle.jpg` | `game/assets/sprites/backgrounds/bg_puzzle.jpg` | A soft playroom background with a big empty pastel table in the center, toys on shelves around the edges. |
 
@@ -123,7 +123,7 @@ Para personagens, mais isto:
 
 ## Lote 3 — Efeitos de cuidado
 
-**Anexar:** `specs/art/estilo/cenoura_modelo.png` · **Salvar em:** `specs/art/efeitos/`
+**Anexar:** `specs/art/style/carrot_model.png` · **Salvar em:** `specs/art/effects/`
 
 **Mensagem de abertura (vale também para os lotes 4, 5 e 6):**
 
@@ -131,101 +131,101 @@ Para personagens, mais isto:
 
 | # | Arquivo | Prompt |
 |---|---|---|
-| 1 | `espuma_grande.png` | A big fluffy cloud of soap foam made of many round white bubbles with pastel rainbow shine, like a foamy hairdo. No face. |
-| 2 | `espuma_media.png` | A medium clump of soap foam, round white bubbles with rainbow shine. No face. |
-| 3 | `espuma_pequena.png` | A small blob of soap foam, three or four bubbles. No face. |
-| 4 | `bolha.png` | A single see-through soap bubble with a pink and turquoise rainbow sheen and a white shine spot. |
-| 5 | `gota.png` | A single glossy light-blue water drop with a white shine. No face. |
-| 6 | `farelos.png` | A few small cute food crumbs scattered, light brown and orange bits. |
-| 7 | `brilho.png` | A four-pointed sparkle star, white and lemon yellow, soft glow. |
-| 8 | `confete.png` | Eight separate confetti pieces spread out, not touching: ribbons, circles and stars in pink, mint, lilac, yellow and sky blue. |
-| 9 | `coracao.png` | A glossy bubblegum-pink heart with a white shine. No face. |
+| 1 | `foam_large.png` | A big fluffy cloud of soap foam made of many round white bubbles with pastel rainbow shine, like a foamy hairdo. No face. |
+| 2 | `foam_medium.png` | A medium clump of soap foam, round white bubbles with rainbow shine. No face. |
+| 3 | `foam_small.png` | A small blob of soap foam, three or four bubbles. No face. |
+| 4 | `bubble.png` | A single see-through soap bubble with a pink and turquoise rainbow sheen and a white shine spot. |
+| 5 | `droplet.png` | A single glossy light-blue water drop with a white shine. No face. |
+| 6 | `crumbs.png` | A few small cute food crumbs scattered, light brown and orange bits. |
+| 7 | `sparkle.png` | A four-pointed sparkle star, white and lemon yellow, soft glow. |
+| 8 | `confetti.png` | Eight separate confetti pieces spread out, not touching: ribbons, circles and stars in pink, mint, lilac, yellow and sky blue. |
+| 9 | `heart.png` | A glossy bubblegum-pink heart with a white shine. No face. |
 | 10 | `zzz.png` | Three puffy lilac cloud shapes shaped like the letter z, getting smaller. Shapes only, no real text. |
 
 ---
 
 ## Lote 4 — Comida, banho, brincar e acessórios
 
-**Anexar:** `specs/art/estilo/cenoura_modelo.png` · **Salvar em:** `specs/art/items/` · **Abertura:** a do Lote 3.
+**Anexar:** `specs/art/style/carrot_model.png` · **Salvar em:** `specs/art/items/` · **Abertura:** a do Lote 3.
 
 | # | Arquivo | Prompt |
 |---|---|---|
-| 1 | `cenoura.png` | (use a `cenoura_modelo.png` aprovada) |
-| 2 | `macarrao_cenoura.png` | A small bowl of orange carrot pasta with a carrot slice on top, cute face on the bowl. |
-| 3 | `molho_cenoura.png` | A small pot of orange carrot sauce with a wooden spoon, cute face on the pot. |
-| 4 | `cenoura_quiqui.png` | A carrot shaped like a cute bunny head, with ears made of carrot leaves. |
-| 5 | `maca.png` | A shiny red apple with a leaf, cute face. |
+| 1 | `carrot.png` | (use a `carrot_model.png` aprovada) |
+| 2 | `macarrao_carrot.png` | A small bowl of orange carrot pasta with a carrot slice on top, cute face on the bowl. |
+| 3 | `molho_carrot.png` | A small pot of orange carrot sauce with a wooden spoon, cute face on the pot. |
+| 4 | `quiqui_carrot.png` | A carrot shaped like a cute bunny head, with ears made of carrot leaves. |
+| 5 | `apple.png` | A shiny red apple with a leaf, cute face. |
 | 6 | `banana.png` | A yellow banana, cute face. |
-| 7 | `morango.png` | A glossy strawberry, cute face. |
-| 8 | `melancia.png` | A slice of watermelon, cute face. |
-| 9 | `uva.png` | A bunch of purple grapes, cute face. |
+| 7 | `strawberry.png` | A glossy strawberry, cute face. |
+| 8 | `watermelon.png` | A slice of watermelon, cute face. |
+| 9 | `grape.png` | A bunch of purple grapes, cute face. |
 | 10 | `cupcake.png` | A pink frosted cupcake with sprinkles and a cherry, cute face. |
-| 11 | `suco.png` | A glass of orange juice with a striped straw, cute face. |
-| 12 | `sementes_girassol.png` | A small pile of sunflower seeds in a tiny bowl, cute face on the bowl. |
-| 13 | `tigela.png` | An empty round pastel pink food bowl seen slightly from above. No face. |
-| 14 | `esponja.png` | A fluffy pastel yellow bath sponge with a few bubbles, cute face. |
-| 15 | `sabonete.png` | A bar of pink soap with bubbles, cute face. |
+| 11 | `juice.png` | A glass of orange juice with a striped straw, cute face. |
+| 12 | `sunflower_seeds.png` | A small pile of sunflower seeds in a tiny bowl, cute face on the bowl. |
+| 13 | `bowl.png` | An empty round pastel pink food bowl seen slightly from above. No face. |
+| 14 | `sponge.png` | A fluffy pastel yellow bath sponge with a few bubbles, cute face. |
+| 15 | `soap.png` | A bar of pink soap with bubbles, cute face. |
 | 16 | `shampoo.png` | A round lilac shampoo bottle with a pump, cute face, no label text. |
-| 17 | `chuveirinho.png` | A turquoise handheld shower head spraying a few blue drops. No face. |
-| 18 | `toalha.png` | A folded fluffy lemon-yellow towel with white stripes. No face. |
-| 19 | `patinho.png` | A yellow rubber duck bath toy, cute face. |
-| 20 | `bola.png` | A bouncy ball with pastel rainbow stripes. No face. |
-| 21 | `pelucia.png` | A small plush teddy bear, light brown, cute face. |
-| 22 | `cata_vento.png` | A pinwheel with pink, mint and yellow blades on a stick. No face. |
-| 23 | `escova.png` | A small hairbrush with a lilac handle. No face. |
-| 24 | `laco_roxo.png` | A big puffy lilac hair bow. No face. |
-| 25 | `chapeu_amarelo.png` | A floppy lemon-yellow sun hat with a small flower. No face. |
-| 26 | `cachecol_azul.png` | A cozy sky-blue knitted scarf. No face. |
-| 27 | `oculos_coracao.png` | Heart-shaped pink sunglasses. No face. |
-| 28 | `tiara_flores.png` | A flower crown with small pastel flowers. No face. |
-| 29 | `coroa.png` | A small golden princess crown with pink gems. No face. |
+| 17 | `shower_head.png` | A turquoise handheld shower head spraying a few blue drops. No face. |
+| 18 | `towel.png` | A folded fluffy lemon-yellow towel with white stripes. No face. |
+| 19 | `duckling.png` | A yellow rubber duck bath toy, cute face. |
+| 20 | `ball.png` | A bouncy ball with pastel rainbow stripes. No face. |
+| 21 | `plush.png` | A small plush teddy bear, light brown, cute face. |
+| 22 | `pinwheel.png` | A pinwheel with pink, mint and yellow blades on a stick. No face. |
+| 23 | `hair_brush.png` | A small hairbrush with a lilac handle. No face. |
+| 24 | `purple_bow.png` | A big puffy lilac hair bow. No face. |
+| 25 | `yellow_hat.png` | A floppy lemon-yellow sun hat with a small flower. No face. |
+| 26 | `blue_scarf.png` | A cozy sky-blue knitted scarf. No face. |
+| 27 | `oculos_heart.png` | Heart-shaped pink sunglasses. No face. |
+| 28 | `flower_tiara.png` | A flower crown with small pastel flowers. No face. |
+| 29 | `crown.png` | A small golden princess crown with pink gems. No face. |
 
 ---
 
 ## Lote 5 — Kit de interface
 
-**Anexar:** `specs/art/estilo/cenoura_modelo.png` · **Salvar em:** `specs/art/ui/` · **Abertura:** a do Lote 3, mais: *"These are buttons for a preschool game: glossy like candy, thick and easy to tap."*
+**Anexar:** `specs/art/style/carrot_model.png` · **Salvar em:** `specs/art/ui/` · **Abertura:** a do Lote 3, mais: *"These are buttons for a preschool game: glossy like candy, thick and easy to tap."*
 
 | # | Arquivo | Prompt |
 |---|---|---|
-| 1 | `botao_casa.png` | A round glossy lemon-yellow button with a simple white house icon. |
-| 2 | `botao_seguir.png` | A big round glossy lemon-yellow button with a thick white right arrow. |
-| 3 | `botao_voltar.png` | A round glossy lilac button with a thick white left arrow. |
-| 4 | `botao_play.png` | A large round glossy bubblegum-pink button with a big white play triangle. |
-| 5 | `balao_desejo.png` | An empty white thought bubble with a soft lilac outline and two small bubbles trailing to the bottom left. Empty inside. |
-| 6 | `moedinha.png` | A shiny gold coin with a small carrot embossed in the middle. |
-| 7 | `estrela.png` | A puffy glossy gold star. No face. |
-| 8 | `bandeja.png` | A long horizontal rounded tray panel in glossy mint with a white inner border, empty. Wide rectangle. |
-| 9 | `painel_vertical.png` | A tall vertical rounded panel in glossy lilac with a white inner border, empty. |
-| 10 | `bolinha_progresso.png` | A small round glossy lemon-yellow dot. |
-| 11 | `bolinha_progresso_vazia.png` | A small round light-gray dot with a soft white shine. |
+| 1 | `home_button.png` | A round glossy lemon-yellow button with a simple white house icon. |
+| 2 | `next_button.png` | A big round glossy lemon-yellow button with a thick white right arrow. |
+| 3 | `back_button.png` | A round glossy lilac button with a thick white left arrow. |
+| 4 | `play_button.png` | A large round glossy bubblegum-pink button with a big white play triangle. |
+| 5 | `wish_bubble.png` | An empty white thought bubble with a soft lilac outline and two small bubbles trailing to the bottom left. Empty inside. |
+| 6 | `coin.png` | A shiny gold coin with a small carrot embossed in the middle. |
+| 7 | `star.png` | A puffy glossy gold star. No face. |
+| 8 | `tray.png` | A long horizontal rounded tray panel in glossy mint with a white inner border, empty. Wide rectangle. |
+| 9 | `vertical_panel.png` | A tall vertical rounded panel in glossy lilac with a white inner border, empty. |
+| 10 | `progress_dot.png` | A small round glossy lemon-yellow dot. |
+| 11 | `progress_dot_empty.png` | A small round light-gray dot with a soft white shine. |
 
 ---
 
 ## Lote 6 — Móveis (mercado e casinha, pedido da Olivia)
 
-**Anexar:** `specs/art/estilo/cenoura_modelo.png` · **Salvar em:** `specs/art/moveis/` · **Abertura:** a do Lote 3, mais: *"Furniture pieces, front view, no faces."*
+**Anexar:** `specs/art/style/carrot_model.png` · **Salvar em:** `specs/art/furniture/` · **Abertura:** a do Lote 3, mais: *"Furniture pieces, front view, no faces."*
 
 | # | Arquivo | Prompt |
 |---|---|---|
-| 1 | `cama.png` | A cute single bed with a pink heart headboard and a fluffy blanket. |
-| 2 | `beliche.png` | A bunk bed in mint and pink with a little ladder. |
-| 3 | `mesa.png` | A round pastel table. |
-| 4 | `cadeira.png` | A small rounded chair in lilac. |
-| 5 | `armario.png` | A tall wardrobe with two round-top doors in turquoise. |
+| 1 | `bed.png` | A cute single bed with a pink heart headboard and a fluffy blanket. |
+| 2 | `bunk_bed.png` | A bunk bed in mint and pink with a little ladder. |
+| 3 | `table.png` | A round pastel table. |
+| 4 | `chair.png` | A small rounded chair in lilac. |
+| 5 | `wardrobe.png` | A tall wardrobe with two round-top doors in turquoise. |
 | 6 | `sofa.png` | A soft rounded sofa in bubblegum pink. |
-| 7 | `abajur.png` | A table lamp with a scalloped pastel yellow shade. |
-| 8 | `tapete.png` | A round fluffy rug in rainbow pastel rings, seen from above at an angle. |
-| 9 | `vaso_planta.png` | A potted plant in a pink pot. |
-| 10 | `estante.png` | A small bookshelf with colorful books (no letters on the books). |
-| 11 | `escada.png` | A short cute staircase with rounded steps in pastel colors. |
-| 12 | `porta.png` | A round-top cartoon door in lemon yellow with a heart window. |
+| 7 | `lamp.png` | A table lamp with a scalloped pastel yellow shade. |
+| 8 | `rug.png` | A round fluffy rug in rainbow pastel rings, seen from above at an angle. |
+| 9 | `plant_pot.png` | A potted plant in a pink pot. |
+| 10 | `bookshelf.png` | A small bookshelf with colorful books (no letters on the books). |
+| 11 | `ladder.png` | A short cute staircase with rounded steps in pastel colors. |
+| 12 | `door.png` | A round-top cartoon door in lemon yellow with a heart window. |
 
 ---
 
 ## Lote 7 — Amigos (e20s05)
 
-**Anexar:** `specs/art/estilo/quiqui_modelo.png` · **Salvar em:** `specs/art/amigos/`
+**Anexar:** `specs/art/style/quiqui_model.png` · **Salvar em:** `specs/art/friends/`
 **Script:** `scripts/run_lote_7.js` (mesma lógica dos lotes 4–6).
 
 **Mensagem de abertura:**
@@ -234,9 +234,9 @@ Para personagens, mais isto:
 
 | # | Arquivo | Prompt |
 |---|---|---|
-| 1 | `pato.png` | Same art style, a chibi baby duck friend for the bunny village: fluffy lemon-yellow duckling, rounded body, small orange beak and orange webbed feet, huge sparkly dark eyes with white highlights, rosy cheeks, tiny wings, happy gentle smile. Full body, standing, front view, centered. Pure white background, no ground, no shadow, no text. Square image with white space around. |
-| 2 | `urso.png` | Same art style, a chibi baby bear friend for the bunny village: soft light-brown teddy-bear cub, round ears, cream muzzle and belly, huge sparkly dark eyes with white highlights, rosy cheeks, happy gentle smile, small paws. Full body, standing, front view, centered. Pure white background, no ground, no shadow, no text. Square image with white space around. |
-| 3 | `pinguim.png` | Same art style, a chibi baby penguin friend for the bunny village: rounded black-and-white body, orange beak and orange feet, huge sparkly dark eyes with white highlights, rosy cheeks, happy gentle smile, small flippers. Full body, standing, front view, centered. Pure white background, no ground, no shadow, no text. Square image with white space around. |
+| 1 | `duck.png` | Same art style, a chibi baby duck friend for the bunny village: fluffy lemon-yellow duckling, rounded body, small orange beak and orange webbed feet, huge sparkly dark eyes with white highlights, rosy cheeks, tiny wings, happy gentle smile. Full body, standing, front view, centered. Pure white background, no ground, no shadow, no text. Square image with white space around. |
+| 2 | `bear.png` | Same art style, a chibi baby bear friend for the bunny village: soft light-brown teddy-bear cub, round ears, cream muzzle and belly, huge sparkly dark eyes with white highlights, rosy cheeks, happy gentle smile, small paws. Full body, standing, front view, centered. Pure white background, no ground, no shadow, no text. Square image with white space around. |
+| 3 | `penguin.png` | Same art style, a chibi baby penguin friend for the bunny village: rounded black-and-white body, orange beak and orange feet, huge sparkly dark eyes with white highlights, rosy cheeks, happy gentle smile, small flippers. Full body, standing, front view, centered. Pure white background, no ground, no shadow, no text. Square image with white space around. |
 
 ---
 

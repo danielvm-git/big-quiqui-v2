@@ -132,7 +132,7 @@ func _scrub_and_count(log_node: Node, motions: int) -> int:
 
 
 func test_the_scrub_loop_is_one_player_and_stops_on_release() -> void:
-	food.scrub_loop_stream = load("res://assets/audio/music/cozinha.ogg") as AudioStream
+	food.scrub_loop_stream = load("res://assets/audio/music/kitchen.ogg") as AudioStream
 	assert_not_null(food.scrub_loop_stream)
 
 	_send(food, _touch(INSIDE, true))
@@ -147,7 +147,7 @@ func test_the_scrub_loop_is_one_player_and_stops_on_release() -> void:
 
 
 func test_abort_stops_the_loop_and_releases_the_owner() -> void:
-	food.scrub_loop_stream = load("res://assets/audio/music/cozinha.ogg") as AudioStream
+	food.scrub_loop_stream = load("res://assets/audio/music/kitchen.ogg") as AudioStream
 	_send(food, _touch(INSIDE, true))
 
 	food.abort()

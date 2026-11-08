@@ -7,9 +7,9 @@ extends Control
 ## coins and a star.
 
 const FESTA_PATH: String = "res://scenes/festa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
 const SUCCESS_SFX: String = "res://assets/audio/sfx/success.ogg"
-const CONFETTI_SFX: String = "res://assets/audio/sfx/confete.ogg"
+const CONFETTI_SFX: String = "res://assets/audio/sfx/confetti.ogg"
 
 const FRIEND_ID: String = "urso"
 const PIECE_COUNT: int = 4
@@ -60,7 +60,7 @@ func _ready() -> void:
 	_connect_chrome()
 	close_celebrate_if_needed()
 	_enter_state(STATE_INTRO)
-	_play_stream("play_voice", FriendCatalog.voice_path(FRIEND_ID))
+	AudioManager.play_voice_key(FriendCatalog.voice_key(FRIEND_ID))
 	_restore_music()
 	_log("scene.ready", {"scene": "urso_puzzle"})
 

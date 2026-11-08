@@ -16,11 +16,11 @@ const HINT_MGR_SCRIPT: String = "res://scripts/components/hint_manager.gd"
 const DRAG_HINT_SCRIPT: String = "res://scripts/components/drag_hint.gd"
 const DOOR_BADGE_SCRIPT: String = "res://scripts/components/door_badge.gd"
 
-const BG_PATH: String = "res://assets/art/backgrounds/bg_vila.jpg"
-const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
-const CONFETTI_ART: String = "res://assets/art/efeitos/confete.png"
-const PARTY_LOCKED_ART: String = "res://assets/art/ui/bolinha_progresso_vazia.png"
-const PARTY_UNLOCKED_ART: String = "res://assets/art/ui/estrela.png"
+const BG_PATH: String = "res://assets/art/backgrounds/bg_village.jpg"
+const HOME_ART: String = "res://assets/art/ui/home_button.png"
+const CONFETTI_ART: String = "res://assets/art/effects/confetti.png"
+const PARTY_LOCKED_ART: String = "res://assets/art/ui/progress_dot_empty.png"
+const PARTY_UNLOCKED_ART: String = "res://assets/art/ui/star.png"
 
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0
@@ -35,12 +35,12 @@ const BAG_SIZE: float = 148.0
 
 ## CASA/RODA/recycling row + mercado + casinha + festa + album
 const POI_SPECS: Array[Dictionary] = [
-	{"id": "CASA", "x": 0.12, "y": 0.44, "art": "res://assets/art/moveis/porta.png"},
-	{"id": "RODA", "x": 0.86, "y": 0.40, "art": "res://assets/art/items/roda_fortuna.png"},
-	{"id": "MERCADO", "x": 0.84, "y": 0.68, "art": "res://assets/art/items/melancia.png"},
-	{"id": "CASINHA", "x": 0.36, "y": 0.36, "art": "res://assets/art/items/patinho.png"},
-	{"id": "FESTA", "x": 0.64, "y": 0.34, "art": "res://assets/art/items/coroa.png"},
-	{"id": "ALBUM", "x": 0.24, "y": 0.54, "art": "res://assets/art/moveis/estante.png"},
+	{"id": "CASA", "x": 0.12, "y": 0.44, "art": "res://assets/art/furniture/door.png"},
+	{"id": "RODA", "x": 0.86, "y": 0.40, "art": "res://assets/art/items/fortune_wheel.png"},
+	{"id": "MERCADO", "x": 0.84, "y": 0.68, "art": "res://assets/art/items/watermelon.png"},
+	{"id": "CASINHA", "x": 0.36, "y": 0.36, "art": "res://assets/art/items/duckling.png"},
+	{"id": "FESTA", "x": 0.64, "y": 0.34, "art": "res://assets/art/items/crown.png"},
+	{"id": "ALBUM", "x": 0.24, "y": 0.54, "art": "res://assets/art/furniture/bookshelf.png"},
 ]
 
 
@@ -192,7 +192,7 @@ func _add_recycle_bin(root: Control, x: float, y: float) -> void:
 	visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	visual.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bin.add_child(visual)
-	var art: TextureRect = _full_rect_art("Art", "res://assets/art/items/chuveirinho.png", "", false)
+	var art: TextureRect = _full_rect_art("Art", "res://assets/art/items/shower_head.png", "", false)
 	visual.add_child(art)
 	root.add_child(bin)
 
@@ -204,7 +204,7 @@ func _add_recycle_bag(root: Control, x: float, y: float) -> void:
 	bag.add_to_group("hit_target", true)
 	var half: float = BAG_SIZE * 0.5
 	SceneBuilder.pin(bag, Vector4(x, y, x, y), Vector4(-half, -half, half, half))
-	bag.add_child(_full_rect_art("Art", "res://assets/art/items/saquinho_lixo.png", "", false))
+	bag.add_child(_full_rect_art("Art", "res://assets/art/items/trash_bag.png", "", false))
 	root.add_child(bag)
 
 

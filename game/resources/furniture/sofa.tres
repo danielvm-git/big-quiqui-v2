@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_furn")
 id = "sofa"
-art_path = "res://assets/art/moveis/sofa.png"
+art_path = "res://assets/art/furniture/sofa.png"
 price_coins = 8

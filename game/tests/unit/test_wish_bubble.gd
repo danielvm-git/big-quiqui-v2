@@ -4,7 +4,7 @@ extends GutTest
 ## the icon of what QuiQui wants, pulses only while shown, never eats touches,
 ## and degrades gracefully when art is missing.
 
-const FRAME_PATH: String = "res://assets/art/ui/balao_desejo.png"
+const FRAME_PATH: String = "res://assets/art/ui/wish_bubble.png"
 
 
 func _mounted() -> WishBubble:
@@ -26,27 +26,27 @@ func test_starts_hidden_and_transparent_to_touch() -> void:
 func test_show_wish_reveals_the_bubble_with_the_asked_icon() -> void:
 	var bubble: WishBubble = _mounted()
 
-	assert_true(bubble.show_wish("res://assets/art/items/cenoura.png"))
+	assert_true(bubble.show_wish("res://assets/art/items/carrot.png"))
 
 	assert_true(bubble.is_showing())
 	assert_true(bubble.visible)
-	assert_eq(bubble.wish_id(), "cenoura")
-	assert_not_null(bubble.icon_texture(), "cenoura.png must load")
+	assert_eq(bubble.wish_id(), "carrot")
+	assert_not_null(bubble.icon_texture(), "carrot.png must load")
 
 
 func test_showing_a_new_wish_swaps_the_icon_without_hiding() -> void:
 	var bubble: WishBubble = _mounted()
-	bubble.show_wish("res://assets/art/items/cenoura.png")
+	bubble.show_wish("res://assets/art/items/carrot.png")
 
-	assert_true(bubble.show_wish("res://assets/art/items/bola.png"))
+	assert_true(bubble.show_wish("res://assets/art/items/ball.png"))
 
 	assert_true(bubble.is_showing(), "the bubble stays up between wishes")
-	assert_eq(bubble.wish_id(), "bola")
+	assert_eq(bubble.wish_id(), "ball")
 
 
 func test_hide_closes_the_bubble() -> void:
 	var bubble: WishBubble = _mounted()
-	bubble.show_wish("res://assets/art/items/cenoura.png")
+	bubble.show_wish("res://assets/art/items/carrot.png")
 
 	assert_true(bubble.hide_wish())
 
@@ -70,7 +70,7 @@ func test_pulse_only_moves_while_shown_and_is_deterministic() -> void:
 	bubble.advance(0.5)
 	assert_almost_eq(bubble.pulse_scale(), 1.0, 0.0001, "hidden means no pulse")
 
-	bubble.show_wish("res://assets/art/items/cenoura.png")
+	bubble.show_wish("res://assets/art/items/carrot.png")
 	bubble.advance(0.5)
 	var first_pass: float = bubble.pulse_scale()
 	assert_gt(first_pass, 0.95, "the pulse is a subtle breathing swell")
@@ -79,7 +79,7 @@ func test_pulse_only_moves_while_shown_and_is_deterministic() -> void:
 	# Determinism: replaying the same timeline must reproduce the same values.
 	var replay: WishBubble = _mounted()
 	replay.manual_step = true
-	replay.show_wish("res://assets/art/items/cenoura.png")
+	replay.show_wish("res://assets/art/items/carrot.png")
 	replay.advance(0.5)
 	assert_almost_eq(replay.pulse_scale(), first_pass, 0.0001, "same deltas, same pulse")
 
@@ -89,8 +89,8 @@ func test_the_machine_never_rejects_or_times_out() -> void:
 	var probe: FsmProbe = FsmProbe.new().attach(bubble.fsm)
 
 	for index: int in range(3):
-		bubble.show_wish("res://assets/art/items/cenoura.png")
-		bubble.show_wish("res://assets/art/items/bola.png")
+		bubble.show_wish("res://assets/art/items/carrot.png")
+		bubble.show_wish("res://assets/art/items/ball.png")
 		bubble.hide_wish()
 
 	assert_true(probe.is_clean(), "show/hide cycles are all legal edges: %s" % probe.summary())
@@ -102,7 +102,7 @@ func test_the_machine_never_rejects_or_times_out() -> void:
 func test_hiding_mid_pulse_returns_the_visual_to_rest() -> void:
 	var bubble: WishBubble = _mounted()
 	bubble.manual_step = true
-	bubble.show_wish("res://assets/art/items/cenoura.png")
+	bubble.show_wish("res://assets/art/items/carrot.png")
 	bubble.advance(0.3)
 	assert_ne(bubble.get_node("Visual").scale, Vector2.ONE, "the pulse must actually move the art")
 
@@ -126,7 +126,7 @@ func test_a_traversal_path_is_refused() -> void:
 func test_reset_mid_pulse_returns_the_visual_to_rest() -> void:
 	var bubble: WishBubble = _mounted()
 	bubble.manual_step = true
-	bubble.show_wish("res://assets/art/items/cenoura.png")
+	bubble.show_wish("res://assets/art/items/carrot.png")
 	bubble.advance(0.3)
 	assert_ne(bubble.get_node("Visual").scale, Vector2.ONE, "the pulse must actually move the art")
 
@@ -142,8 +142,8 @@ func test_a_newline_suffixed_path_is_refused() -> void:
 
 	# `ResourceLoader.exists` would also refuse it, so assert the *pattern* itself:
 	# reverting `\A…\z` to `^…$` must fail this line (round 3, review A).
-	assert_false(bubble.call("_is_valid_art_path", "res://assets/art/items/cenoura.png\n") as bool, "PCRE `$`")
-	assert_false(bubble.call("_is_valid_art_path", "res://assets/art/items/cenoura.png\r\n") as bool)
-	assert_true(bubble.call("_is_valid_art_path", "res://assets/art/items/cenoura.png") as bool)
-	assert_false(bubble.show_wish("res://assets/art/items/cenoura.png\n"))
+	assert_false(bubble.call("_is_valid_art_path", "res://assets/art/items/carrot.png\n") as bool, "PCRE `$`")
+	assert_false(bubble.call("_is_valid_art_path", "res://assets/art/items/carrot.png\r\n") as bool)
+	assert_true(bubble.call("_is_valid_art_path", "res://assets/art/items/carrot.png") as bool)
+	assert_false(bubble.show_wish("res://assets/art/items/carrot.png\n"))
 	assert_false(bubble.is_showing(), "and the bubble stays hidden")

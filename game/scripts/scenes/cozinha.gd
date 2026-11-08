@@ -9,9 +9,9 @@ extends Control
 
 const BITES_TO_FINISH: int = 3
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/cozinha.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/feed_hora_de_comer.ogg"
-const BITE_SFX_PATH: String = "res://assets/audio/sfx/nhami.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/kitchen.ogg"
+const VOICE_KEY: String = "vo.kitchen.intro"
+const BITE_SFX_PATH: String = "res://assets/audio/sfx/chomp.ogg"
 
 const DROP_MARGIN: float = 120.0
 const IDLE_WISH_SEC: float = 8.0
@@ -65,7 +65,7 @@ func _ready() -> void:
 	if _care_state() == CareSteps.IDLE:
 		_care_loop().call("begin_step", CareSteps.FEED)
 	_play_stream("play_music", MUSIC_PATH)
-	_play_stream("play_voice", VOICE_PATH)
+	AudioManager.play_voice_key(VOICE_KEY)
 	_log("scene.ready", {"scene": "cozinha"})
 
 
@@ -119,7 +119,7 @@ func _on_food_consumed(index: int) -> void:
 	_set_foods_enabled(false)
 	food(index).visible = false
 	# In this order: clearing first would flash the base face.
-	rig.set_expression("mastigando")
+	rig.set_expression("chewing")
 	rig.clear_food_proximity()
 	_burst(crumbs)
 	_play_stream("play_sfx", BITE_SFX_PATH)
@@ -128,7 +128,7 @@ func _on_food_consumed(index: int) -> void:
 
 func _start_pleasure() -> void:
 	fsm.transition_from(STATE_CHEWING, STATE_PLEASURE)
-	rig.set_expression("prazer")
+	rig.set_expression("pleased")
 	_burst(hearts)
 
 
@@ -174,7 +174,7 @@ func _advance_idle(step: float) -> void:
 		return
 	_idle_sec = 0.0
 	if not bubble.is_showing():
-		rig.set_expression("carente")
+		rig.set_expression("needy")
 		bubble.show_wish(_next_wish_art())
 
 
@@ -190,7 +190,7 @@ func _reset_idle() -> void:
 	_idle_sec = 0.0
 	if bubble.is_showing():
 		bubble.hide_wish()
-	if rig.expression_id == "carente":
+	if rig.expression_id == "needy":
 		rig.set_expression(QuiQuiRig.NEUTRAL_EXPRESSION)
 
 

@@ -22,7 +22,7 @@ func after_each() -> void:
 func _seed() -> void:
 	# Typed arrays: assigning an untyped literal to Array[String] / Array[Dictionary]
 	# is a runtime error in Godot 4.7, not an implicit conversion.
-	var outfits: Dictionary = {"body": "macacao_verde"}
+	var outfits: Dictionary = {"body": "green_overalls"}
 	var furniture: Array[String] = ["tapete", "mesa"]
 	var placed: Array[Dictionary] = [{"id": "mesa", "x": 0.25, "y": 0.75}]
 	var stars: Dictionary = {"pato": 3}
@@ -47,7 +47,7 @@ func test_round_trip_survives_a_ram_reset() -> void:
 	assert_eq(pm.data.coins, 42)
 	assert_eq(pm.data.tickets, 3)
 	assert_eq(pm.data.completed_cycles, 7)
-	assert_eq(pm.data.equipped_outfits, {"body": "macacao_verde"})
+	assert_eq(pm.data.equipped_outfits, {"body": "green_overalls"})
 	assert_eq(pm.data.owned_furniture, ["tapete", "mesa"])
 	assert_eq(pm.data.placed_furniture[0]["id"], "mesa")
 	assert_almost_eq(float(pm.data.placed_furniture[0]["x"]), 0.25, 0.001)
@@ -111,13 +111,13 @@ func test_negative_and_out_of_range_values_are_clamped() -> void:
 func test_invalid_ids_are_dropped_not_loaded() -> void:
 	var raw: Dictionary = {
 		"owned_furniture": ["tapete", "Maria Clara", 42, "MESA", "mesa", "ok_item"],
-		"equipped_outfits": {"body": "vestido_florido", "bad slot!": "x", "head": "../../etc"},
+		"equipped_outfits": {"body": "floral_dress", "bad slot!": "x", "head": "../../etc"},
 		"placed_furniture": [{"id": "ok_item", "x": 5.0, "y": -2.0}, {"id": "bad-id!", "x": 0.1}],
 	}
 	var data: SaveData = SaveData.from_dictionary(raw)
 
 	assert_eq(data.owned_furniture, ["tapete", "mesa", "ok_item"])
-	assert_eq(data.equipped_outfits, {"body": "vestido_florido"})
+	assert_eq(data.equipped_outfits, {"body": "floral_dress"})
 	assert_eq(data.placed_furniture.size(), 1)
 	assert_almost_eq(float(data.placed_furniture[0]["x"]), 1.0, 0.001, "clamped into 0..1")
 	assert_almost_eq(float(data.placed_furniture[0]["y"]), 0.0, 0.001)
@@ -182,16 +182,16 @@ func test_complete_cycle_announces_once() -> void:
 func test_equipping_persists_and_round_trips_through_disk() -> void:
 	pm.set_test_mode(true)
 	pm.load_or_default()
-	assert_true(pm.call("equip", SaveData.SLOT_BODY, "vestido_vermelho"))
-	assert_true(pm.call("equip", SaveData.SLOT_HEAD, "coroa"))
-	assert_eq(str(pm.call("equipped", SaveData.SLOT_HEAD)), "coroa")
+	assert_true(pm.call("equip", SaveData.SLOT_BODY, "red_dress"))
+	assert_true(pm.call("equip", SaveData.SLOT_HEAD, "crown"))
+	assert_eq(str(pm.call("equipped", SaveData.SLOT_HEAD)), "crown")
 
 	assert_true(pm.save())
 	pm.reset()
 	assert_eq(str(pm.call("equipped", SaveData.SLOT_BODY)), "", "reset clears memory")
 	pm.load_or_default()
-	assert_eq(str(pm.call("equipped", SaveData.SLOT_BODY)), "vestido_vermelho", "and disk brings it back")
-	assert_eq(str(pm.call("equipped", SaveData.SLOT_HEAD)), "coroa")
+	assert_eq(str(pm.call("equipped", SaveData.SLOT_BODY)), "red_dress", "and disk brings it back")
+	assert_eq(str(pm.call("equipped", SaveData.SLOT_HEAD)), "crown")
 
 
 func test_an_invalid_equip_is_refused() -> void:
@@ -199,7 +199,7 @@ func test_an_invalid_equip_is_refused() -> void:
 	pm.load_or_default()
 	for bad: String in ["../etc/passwd", "TIARA", "a".repeat(65)]:
 		assert_false(pm.call("equip", SaveData.SLOT_HEAD, bad), bad)
-		assert_false(pm.call("equip", "bad slot!", "coroa"), "slot must be an id too")
+		assert_false(pm.call("equip", "bad slot!", "crown"), "slot must be an id too")
 	assert_eq(pm.call("equipped", SaveData.SLOT_HEAD), "")
 
 

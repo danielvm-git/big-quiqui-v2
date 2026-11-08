@@ -88,7 +88,7 @@ func test_three_distinct_toys_finish_play_and_credit_once() -> void:
 
 	assert_eq(scene.played.size(), 3)
 	assert_eq(scene.fsm.state, GardenScene.STATE_FINISHED)
-	assert_eq(scene.rig.expression_id, "pulando", "she jumps")
+	assert_eq(scene.rig.expression_id, "jumping", "she jumps")
 	assert_true(scene.credited, "PLAY credited")
 	assert_eq(str(clm.call("state_id")), CareSteps.SLEEP, "SLEEP is next")
 	assert_false(clm.call("complete_step", CareSteps.PLAY), "a second credit is refused")

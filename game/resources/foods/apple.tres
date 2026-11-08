@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_0g3ff")
-id = "maca"
-art_path = "res://assets/art/items/maca.png"
+id = "apple"
+art_path = "res://assets/art/items/apple.png"

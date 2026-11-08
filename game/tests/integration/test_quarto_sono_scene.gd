@@ -98,14 +98,14 @@ func test_the_tuck_sets_the_sleepy_face_and_starts_zzz_once() -> void:
 	_tuck()
 
 	assert_true(scene.tucked)
-	assert_eq(scene.rig.expression_id, "sono")
+	assert_eq(scene.rig.expression_id, "sleepy")
 	assert_true(scene.zzz.emitting, "the zzz burst runs")
 	# e07 post-epic (review B should-fix 3): the old test only re-read the expression, so a
 	# `zzz.restart()` on the second tuck would have passed. Stop the burst first, then tuck again.
 	scene.zzz.emitting = false
 	assert_false(scene.tuck(), "the seam refuses a second tuck")
 	assert_false(scene.zzz.emitting, "so the burst is not restarted")
-	assert_eq(scene.rig.expression_id, "sono", "and the sleepy face stays")
+	assert_eq(scene.rig.expression_id, "sleepy", "and the sleepy face stays")
 
 
 # ── SC-E07-P0-03 both interactions credit SLEEP once ──────────────────────
@@ -248,7 +248,7 @@ func test_the_tuck_seam_reports_the_first_tuck_only() -> void:
 
 	assert_true(scene.tuck(), "the first tuck happens")
 	assert_false(scene.tuck(), "the second one is a no-op")
-	assert_eq(scene.rig.expression_id, "sono")
+	assert_eq(scene.rig.expression_id, "sleepy")
 
 
 ## e07 post-epic (review A consider 3, review B consider 14): `rig.modulate` alone would not

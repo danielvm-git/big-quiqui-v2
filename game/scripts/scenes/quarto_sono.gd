@@ -10,7 +10,7 @@ extends Control
 
 const CELEBRACAO_PATH: String = "res://scenes/celebracao.tscn"
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
 ## No bedtime voice line exists in the set (ADR-009), so the room answers with SFX.
 const LAMP_SFX_PATH: String = "res://assets/audio/sfx/tap.ogg"
 const TUCK_SFX_PATH: String = "res://assets/audio/sfx/drop.ogg"
@@ -89,7 +89,7 @@ func tuck() -> bool:
 	if tucked:
 		return false
 	tucked = true
-	rig.set_expression("sono")
+	rig.set_expression("sleepy")
 	zzz.global_position = rig.get_visual_global_rect().get_center()
 	zzz.restart()
 	_play_stream("play_sfx", TUCK_SFX_PATH)

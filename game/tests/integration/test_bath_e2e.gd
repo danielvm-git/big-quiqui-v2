@@ -47,7 +47,7 @@ func _assert_full_journey(size: Vector2i) -> void:
 	# DRY: the towel, then BATH is credited once.
 	_sweep(_bath().towel, BODY_SWEEP_STEPS)
 	assert_eq(_bath().fsm.state, BathScene.STATE_FINISHED, "%s: the bath is finished" % size)
-	assert_eq(_bath().rig.expression_id, "brilhando", "%s: she comes out shiny" % size)
+	assert_eq(_bath().rig.expression_id, "shining", "%s: she comes out shiny" % size)
 	assert_true(_bath().credited, "%s: the step is credited" % size)
 	assert_eq(str(clm.call("state_id")), CareSteps.DRESS, "%s: DRESS is next" % size)
 	assert_eq(clm.call("completed_steps"), 2, "%s: two dots filled" % size)

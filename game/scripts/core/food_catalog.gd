@@ -6,15 +6,15 @@ extends RefCounted
 
 const FOODS_DIR: String = "res://resources/foods/"
 const FOOD_IDS: Array[String] = [
-	"cenoura",
-	"macarrao_cenoura",
-	"molho_cenoura",
-	"cenoura_quiqui",
-	"maca",
+	"carrot",
+	"carrot_pasta",
+	"carrot_sauce",
+	"quiqui_carrot",
+	"apple",
 	"banana",
-	"morango",
-	"melancia",
-	"uva",
+	"strawberry",
+	"watermelon",
+	"grape",
 	"cupcake",
 ]
 

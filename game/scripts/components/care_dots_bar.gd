@@ -6,8 +6,8 @@ extends Control
 ## from CareLoopManager and never takes input.
 
 const DOT_COUNT: int = 5
-const FILLED_PATH: String = "res://assets/art/ui/bolinha_progresso.png"
-const EMPTY_PATH: String = "res://assets/art/ui/bolinha_progresso_vazia.png"
+const FILLED_PATH: String = "res://assets/art/ui/progress_dot.png"
+const EMPTY_PATH: String = "res://assets/art/ui/progress_dot_empty.png"
 const DOT_GAP: int = 24
 
 var _completed: int = 0

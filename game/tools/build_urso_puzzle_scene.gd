@@ -13,10 +13,10 @@ const DRAG_HINT_SCRIPT: String = "res://scripts/components/drag_hint.gd"
 const HINT_MGR_SCRIPT: String = "res://scripts/components/hint_manager.gd"
 
 const BG_PATH: String = "res://assets/art/backgrounds/bg_puzzle.jpg"
-const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
-const URSO_ART: String = "res://assets/art/amigos/urso.png"
-const REPLAY_ART: String = "res://assets/art/efeitos/confete.png"
-const CONFETTI_ART: String = "res://assets/art/efeitos/confete.png"
+const HOME_ART: String = "res://assets/art/ui/home_button.png"
+const URSO_ART: String = "res://assets/art/friends/bear.png"
+const REPLAY_ART: String = "res://assets/art/effects/confetti.png"
+const CONFETTI_ART: String = "res://assets/art/effects/confetti.png"
 
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0

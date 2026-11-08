@@ -111,5 +111,5 @@ func test_show_wish_defaults_to_urgency_zero() -> void:
 	add_child_autofree(bubble)
 	bubble.set_urgency(2)
 	assert_eq(bubble.urgency(), 0, "hidden bubble ignores urgency")
-	assert_true(bubble.show_wish("res://assets/art/items/cenoura.png"))
+	assert_true(bubble.show_wish("res://assets/art/items/carrot.png"))
 	assert_eq(bubble.urgency(), 0)

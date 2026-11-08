@@ -130,13 +130,13 @@ func _assert_journey(size: Vector2i) -> void:
 	_dress(_closet().accessory_item(0))
 
 	var rig: QuiQuiRig = _closet().rig
-	assert_eq(rig.outfit_id, "vestido_florido", "%s: dressed" % size)
-	assert_eq(rig.accessory_id("head"), "tiara_flores", "%s: and accessorised" % size)
+	assert_eq(rig.outfit_id, "floral_dress", "%s: dressed" % size)
+	assert_eq(rig.accessory_id("head"), "flower_tiara", "%s: and accessorised" % size)
 	assert_gt(rig.expression.z_index, rig.outfit.z_index, "%s: the face stays on top" % size)
 	assert_true(rig.expression.visible, "%s: and visible" % size)
 	assert_true(_closet().credited, "%s: DRESS credited" % size)
 	assert_eq(str(clm.call("state_id")), CareSteps.PLAY, "%s: PLAY is next" % size)
-	assert_eq(pm.call("equipped", SaveData.SLOT_BODY), "vestido_florido", "%s: saved" % size)
+	assert_eq(pm.call("equipped", SaveData.SLOT_BODY), "floral_dress", "%s: saved" % size)
 	assert_eq(requested, [CLOSET_PATH], "%s: one request" % size)
 	assert_true(loop_probe.is_clean(), "%s: %s" % [size, loop_probe.summary()])
 	assert_true(scene_probe.is_clean(), "%s: %s" % [size, scene_probe.summary()])
@@ -199,5 +199,5 @@ func test_leaving_without_dressing_keeps_the_previous_look() -> void:
 	var home: TapButton = _closet().get_node("HomeButton") as TapButton
 	_deliver(home, TouchSim.tap_events(home, true))
 
-	assert_eq(str(pm.call("equipped", SaveData.SLOT_BODY)), "vestido_florido", "the choice persists")
+	assert_eq(str(pm.call("equipped", SaveData.SLOT_BODY)), "floral_dress", "the choice persists")
 	assert_eq(requested, [CLOSET_PATH, CASA_PATH], "the Casa is asked for once more")

@@ -104,7 +104,7 @@ func _assert_journey(size: Vector2i) -> void:
 		_tap(_garden().prop(index))
 
 	assert_eq(_garden().fsm.state, GardenScene.STATE_FINISHED, "%s: play finished" % size)
-	assert_eq(_garden().rig.expression_id, "pulando", "%s: she jumps" % size)
+	assert_eq(_garden().rig.expression_id, "jumping", "%s: she jumps" % size)
 	assert_true(_garden().credited, "%s: PLAY credited" % size)
 	assert_eq(str(clm.call("state_id")), CareSteps.SLEEP, "%s: SLEEP is next" % size)
 	assert_eq(requested, [JARDIM_PATH, CASA_PATH], "%s: the Casa is asked for once" % size)

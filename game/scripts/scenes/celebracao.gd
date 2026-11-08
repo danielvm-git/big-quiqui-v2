@@ -11,8 +11,8 @@ extends Control
 ## (ADR-009).
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/celebrate_parabens.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
+const VOICE_KEY: String = "vo.celebration.congrats"
 
 ## The party is the payoff of the whole cycle, so it is not a single fade: it holds long
 ## enough for a four-year-old to see the confetti settle and the reward arrive, then goes
@@ -40,11 +40,11 @@ var _casa_requested: bool = false
 
 func _ready() -> void:
 	($HomeButton as TapButton).tapped.connect(_leave)
-	rig.set_expression("pulando")
+	rig.set_expression("jumping")
 	confetti.global_position = rig.get_visual_global_rect().get_center()
 	confetti.restart()
 	_play_music_once()
-	_play_stream("play_voice", VOICE_PATH)
+	AudioManager.play_voice_key(VOICE_KEY)
 	_log("scene.ready", {"scene": "celebracao"})
 	# Close if we can, then hold: every other room returns to the hub by itself, and a
 	# celebration that only escapes through the corner button is a trap.

@@ -13,7 +13,7 @@ title: Scene roots pack at 2x the canvas and the geometry oracle cannot see it
 **Actual:** `casa.tscn` and `titulo.tscn` roots measure 3840×2160 inside a 1920×1080 canvas
 (3840×2520 in the 4:3 expanded 1920×1440 canvas). `Background` is a full-rect child of that
 doubled root, so `STRETCH_KEEP_ASPECT_COVERED` renders the art at 2× and the player sees only
-the top-left quadrant of `bg_sala.jpg` / `bg_titulo.jpg`.
+the top-left quadrant of `bg_home.jpg` / `bg_title.jpg`.
 **Expected:** root rect == visible canvas; background full-bleed with the whole composition.
 **Security impact:** NONE (no data path).
 

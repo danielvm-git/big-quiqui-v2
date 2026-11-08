@@ -19,11 +19,11 @@ func after_each() -> void:
 
 func test_a_face_set_during_anticipation_is_not_overwritten_by_the_restore() -> void:
 	rig.update_food_proximity(_point_at(10.0))
-	assert_true(rig.set_expression("mastigando"))
+	assert_true(rig.set_expression("chewing"))
 
 	rig.clear_food_proximity()
 
-	assert_eq(rig.expression_id, "mastigando", "the eating face outranks the old one")
+	assert_eq(rig.expression_id, "chewing", "the eating face outranks the old one")
 
 
 # SC-E03-P1-12: the blink does not fight anticipation.
@@ -50,7 +50,7 @@ func test_food_arriving_mid_blink_restores_the_open_eyes() -> void:
 
 
 func test_reset_clears_anticipation() -> void:
-	assert_true(rig.set_expression("carente"))
+	assert_true(rig.set_expression("needy"))
 	rig.update_food_proximity(_point_at(10.0))
 
 	rig.reset()
@@ -142,7 +142,7 @@ func test_the_character_is_measured_on_its_opaque_pixels() -> void:
 # own opaque rect keeps the seen height constant even though `carente` and `sono`
 # are shorter in frame pixels than `base`.
 func test_every_base_pose_keeps_the_height_and_the_feet() -> void:
-	for expression_id: String in ["base", "pisca", "rindo", "carente", "sono", "pulando"]:
+	for expression_id: String in ["base", "wink", "laughing", "needy", "sleepy", "jumping"]:
 		if not rig.set_expression(expression_id):
 			continue
 		var painted: Rect2 = rig.get_visual_global_rect()

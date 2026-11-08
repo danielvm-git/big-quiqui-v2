@@ -3,7 +3,7 @@ extends GutTest
 ## SC-E10-P0-08, SC-E10-P0-09, SC-E10-P1-13 — PuzzlePiece unit tests: quadrant
 ## regions, SNAP_TO_SLOT to own slot, wrong-slot fly-home, and idempotent locking.
 
-const URSO_ART: String = "res://assets/art/amigos/urso.png"
+const URSO_ART: String = "res://assets/art/friends/bear.png"
 
 var root: Control = null
 var slot: Control = null

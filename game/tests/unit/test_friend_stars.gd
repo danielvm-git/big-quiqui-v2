@@ -30,14 +30,17 @@ func test_the_catalog_lists_exactly_the_three_friends() -> void:
 
 # SC-E10-P1-07
 func test_the_catalog_maps_art_scene_and_voice_for_every_friend() -> void:
-	assert_eq(FriendCatalog.art_path("pato"), "res://assets/art/amigos/pato.png")
+	assert_eq(FriendCatalog.art_path("pato"), "res://assets/art/friends/duck.png")
 	assert_eq(FriendCatalog.scene_path("pato"), "res://scenes/pato_danca.tscn")
 	assert_eq(FriendCatalog.scene_path("urso"), "res://scenes/urso_puzzle.tscn")
 	assert_eq(FriendCatalog.scene_path("pinguim"), "res://scenes/pinguim_jogo.tscn")
 	# The intro lines were recorded with english names; the catalog owns that mismatch.
-	assert_eq(FriendCatalog.voice_path("pato"), "res://assets/audio/voice/duck_intro.ogg")
-	assert_eq(FriendCatalog.voice_path("urso"), "res://assets/audio/voice/bear_intro.ogg")
-	assert_eq(FriendCatalog.voice_path("pinguim"), "res://assets/audio/voice/penguin_intro.ogg")
+	assert_eq(FriendCatalog.voice_key("pato"), "vo.duck.intro")
+	assert_eq(FriendCatalog.voice_path("pato"), "res://assets/audio/voice/pt_BR/duck_intro.ogg")
+	assert_eq(FriendCatalog.voice_key("urso"), "vo.bear.intro")
+	assert_eq(FriendCatalog.voice_path("urso"), "res://assets/audio/voice/pt_BR/bear_intro.ogg")
+	assert_eq(FriendCatalog.voice_key("pinguim"), "vo.penguin.intro")
+	assert_eq(FriendCatalog.voice_path("pinguim"), "res://assets/audio/voice/pt_BR/penguin_intro.ogg")
 	for id: String in FriendCatalog.FRIEND_IDS:
 		assert_true(ResourceLoader.exists(FriendCatalog.art_path(id)), "art for %s" % id)
 		assert_true(ResourceLoader.exists(FriendCatalog.voice_path(id)), "voice for %s" % id)

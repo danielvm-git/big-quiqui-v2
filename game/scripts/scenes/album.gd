@@ -5,7 +5,7 @@ extends Control
 ## earned across the minigames. Returns to the Vila.
 
 const VILA_PATH: String = "res://scenes/vila.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
 const TAP_SFX: String = "res://assets/audio/sfx/tap.ogg"
 
 const STAR_LIT_COLOR: Color = Color(1.0, 0.95, 0.3, 1.0)
@@ -104,7 +104,7 @@ func _refresh_card(id: String) -> void:
 
 
 func _on_card_tapped(id: String) -> void:
-	_play_stream("play_voice", FriendCatalog.voice_path(id))
+	AudioManager.play_voice_key(FriendCatalog.voice_key(id))
 	_play_stream("play_sfx", TAP_SFX)
 	var card: Control = _cards.get(id) as Control
 	if card != null:

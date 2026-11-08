@@ -6,8 +6,8 @@
 
 ## Symptom
 
-`BanheiroScene.VOICE_PATH` is `res://assets/audio/voice/banho_hora_do_banho.ogg`. The
-family's recorded clip ships as `bath_hora_do_banho.ogg`. `_play_stream` degrades silently
+`BanheiroScene.VOICE_PATH` is `res://assets/audio/voice/pt_BR/banho_hora_do_bath.ogg`. The
+family's recorded clip ships as `bathroom_intro.ogg`. `_play_stream` degrades silently
 (CONVENTIONS §4), so the bath — the one care step the family voiced in Portuguese — is the
 only silent room, and nothing reported it.
 
@@ -19,11 +19,11 @@ checked that a `res://` literal written in a script resolves.
 ## Failing test
 
 `test_every_referenced_res_path_exists`:
-`["res://assets/audio/voice/banho_hora_do_banho.ogg"] != []`.
+`["res://assets/audio/voice/pt_BR/banho_hora_do_bath.ogg"] != []`.
 
 ## Fix
 
-`VOICE_PATH` corrected to `bath_hora_do_banho.ogg`. A scene-level assertion pins the
+`VOICE_PATH` corrected to `bathroom_intro.ogg`. A scene-level assertion pins the
 contract (the constant must resolve) so the next rename is a red test, not a silent room.
 
 ## Verification

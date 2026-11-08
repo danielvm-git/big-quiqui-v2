@@ -8,9 +8,9 @@ extends Control
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
 const CASINHA_PATH: String = "res://scenes/casinha.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/festa_casinha_parabens.ogg"
-const CONFETTI_SFX: String = "res://assets/audio/sfx/confete.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
+const VOICE_KEY: String = "vo.party.congrats"
+const CONFETTI_SFX: String = "res://assets/audio/sfx/confetti.ogg"
 
 ## The one threshold: the Vila badge and this scene both read it (e09s03 AC6).
 const PARTY_MIN_PLACED: int = 5
@@ -107,7 +107,7 @@ func _apply_state() -> void:
 	_phase = 0.0
 	_apply_bob()
 	if dancing:
-		_play_stream("play_voice", VOICE_PATH)
+		AudioManager.play_voice_key(VOICE_KEY)
 		_play_stream("play_sfx", CONFETTI_SFX)
 		rig_celebrate()
 		_log("party.dance", {"placed": _placed_count()})
@@ -124,7 +124,7 @@ func _show_friends(visible_now: bool) -> void:
 
 func rig_celebrate() -> void:
 	if rig != null:
-		rig.set_expression("pulando")
+		rig.set_expression("jumping")
 
 
 func _process(delta: float) -> void:
@@ -207,7 +207,7 @@ func _request(path: String) -> void:
 
 func _on_rig_tapped() -> void:
 	if rig != null:
-		rig.set_expression("rindo")
+		rig.set_expression("laughing")
 
 
 func _restore_music() -> void:

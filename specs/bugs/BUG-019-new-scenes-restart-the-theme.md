@@ -15,13 +15,13 @@ title: Both new scenes restart the shared theme under the celebration voice, aga
 ## Problem
 
 `SleepScene._ready()` and `CelebrationScene._ready()` both called
-`AudioManager.play_music(tema_principal.ogg)` unconditionally. That is the track the hub is already
+`AudioManager.play_music(main_theme.ogg)` unconditionally. That is the track the hub is already
 playing, and `play_music` **always** starts a crossfade from a new player — the seam the manager
 documents itself (`audio_manager.gd:152`: "`play_music` always restarts, so a scene that must not
 restart a theme asks first", which is exactly what `casa.gd:_restore_music()` does).
 
 Effect: the theme restarts from 0 s twice per cycle, and the celebration's restart lands directly
-under `celebrate_parabens.ogg`. The e07 threat model promises the opposite in its kids-specific table:
+under `celebration_congrats.ogg`. The e07 threat model promises the opposite in its kids-specific table:
 "Celebration is scary-loud → one burst, one voice clip, **music continues rather than restarting**".
 
 ## Evidence

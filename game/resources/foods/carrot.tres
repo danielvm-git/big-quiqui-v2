@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_w6kwv")
-id = "cenoura"
-art_path = "res://assets/art/items/cenoura.png"
+id = "carrot"
+art_path = "res://assets/art/items/carrot.png"

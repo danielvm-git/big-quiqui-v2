@@ -18,8 +18,8 @@ const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
 const BUBBLE_SCRIPT: String = "res://scripts/components/wish_bubble.gd"
 const DOTS_SCRIPT: String = "res://scripts/components/care_dots_bar.gd"
 const HUD_SCRIPT: String = "res://scripts/components/coin_ticket_hud.gd"
-const BG_PATH: String = "res://assets/art/backgrounds/bg_sala.jpg"
-const DOOR_ART: String = "res://assets/art/moveis/porta.png"
+const BG_PATH: String = "res://assets/art/backgrounds/bg_home.jpg"
+const DOOR_ART: String = "res://assets/art/furniture/door.png"
 
 ## Initial box width only: `QuiQuiRig._refit()` rewrites it from the
 ## opaque art aspect on every layout pass, so the packed value is a placeholder.

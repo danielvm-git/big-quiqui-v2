@@ -29,15 +29,15 @@ const DOOR_SCENES: Dictionary = {
 ## What QuiQui asks for in each step (DESIGN.md: the wish bubble carries the
 ## prompt, not words).
 const WISH_ICONS: Dictionary = {
-	CareSteps.FEED: "res://assets/art/items/cenoura.png",
-	CareSteps.BATH: "res://assets/art/items/sabonete.png",
-	CareSteps.DRESS: "res://assets/art/items/tiara_flores.png",
-	CareSteps.PLAY: "res://assets/art/items/bola.png",
-	CareSteps.SLEEP: "res://assets/art/efeitos/zzz.png",
+	CareSteps.FEED: "res://assets/art/items/carrot.png",
+	CareSteps.BATH: "res://assets/art/items/soap.png",
+	CareSteps.DRESS: "res://assets/art/items/flower_tiara.png",
+	CareSteps.PLAY: "res://assets/art/items/ball.png",
+	CareSteps.SLEEP: "res://assets/art/effects/zzz.png",
 }
 
-const VOICE_PATH: String = "res://assets/audio/voice/hub_bem_vindo.ogg"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
+const VOICE_KEY: String = "vo.home.welcome"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
 const IDLE_WISH_SEC: float = 8.0
 const ESCALATION_SEC: float = 6.0
 const DOOR_DIM_ALPHA: float = 0.72
@@ -91,7 +91,7 @@ func advance(delta: float) -> void:
 	if not _wish_shown_for_idle:
 		_wish_shown_for_idle = true
 		if rig != null:
-			rig.set_expression("carente")
+			rig.set_expression("needy")
 		if bubble != null:
 			bubble.show_wish(WISH_ICONS[step])
 		return
@@ -133,7 +133,7 @@ func _on_rig_tapped() -> void:
 	# A tap on QuiQui is affection, not navigation: she laughs back.
 	_reset_idle()
 	if rig != null:
-		rig.set_expression("rindo")
+		rig.set_expression("laughing")
 
 
 func _reset_idle() -> void:
@@ -196,17 +196,9 @@ func _restore_music() -> void:
 
 
 func _play_voice() -> void:
-	if not ResourceLoader.exists(VOICE_PATH):
-		_log("audio.missing_art", {"track": "hub_bem_vindo"})
-		return
-	var manager: Node = get_node_or_null("/root/AudioManager")
-	if manager == null:
-		return
-	var stream: AudioStream = load(VOICE_PATH) as AudioStream
-	if stream == null:
-		return
-	voice_started = bool(manager.call("play_voice", stream))
-	_log("voice.start", {"track": "hub_bem_vindo"})
+	voice_started = AudioManager.play_voice_key(VOICE_KEY)
+	if voice_started:
+		_log("voice.start", {"track": "home_welcome"})
 
 
 func _log(ev: String, data: Dictionary) -> void:

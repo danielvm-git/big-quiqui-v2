@@ -14,14 +14,14 @@ const ITEM_SCRIPT: String = "res://scripts/components/touch_draggable.gd"
 const BUBBLE_SCRIPT: String = "res://scripts/components/wish_bubble.gd"
 const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
 
-const BG_PATH: String = "res://assets/art/backgrounds/bg_quarto.jpg"
-const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
-const SPARKLE_ART: String = "res://assets/art/efeitos/brilho.png"
+const BG_PATH: String = "res://assets/art/backgrounds/bg_bedroom.jpg"
+const HOME_ART: String = "res://assets/art/ui/home_button.png"
+const SPARKLE_ART: String = "res://assets/art/effects/sparkle.png"
 const OUTFIT_ART_ROOT: String = "res://assets/art/quiqui/quiqui_%s.png"
 const ACCESSORY_ART_ROOT: String = "res://assets/art/items/%s.png"
-const OUTFITS: Array[String] = ["vestido_florido", "vestido_vermelho", "macacao_verde", "pijama"]
+const OUTFITS: Array[String] = ["floral_dress", "red_dress", "green_overalls", "pajamas"]
 const ACCESSORIES: Array[String] = [
-	"tiara_flores", "coroa", "chapeu_amarelo", "cachecol_azul", "laco_roxo", "oculos_coracao"
+	"flower_tiara", "crown", "yellow_hat", "blue_scarf", "purple_bow", "heart_glasses"
 ]
 
 const RIG_WIDTH: float = 640.0

@@ -3,8 +3,8 @@ extends GutTest
 ## SC-E02-P1-07..09 — the dots bar mirrors cycle progress: five dots, exactly N
 ## filled, clamped to the cycle length, never interactive.
 
-const FILLED_PATH: String = "res://assets/art/ui/bolinha_progresso.png"
-const EMPTY_PATH: String = "res://assets/art/ui/bolinha_progresso_vazia.png"
+const FILLED_PATH: String = "res://assets/art/ui/progress_dot.png"
+const EMPTY_PATH: String = "res://assets/art/ui/progress_dot_empty.png"
 
 
 func _mounted() -> CareDotsBar:

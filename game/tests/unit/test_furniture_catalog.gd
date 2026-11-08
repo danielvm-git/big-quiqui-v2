@@ -32,7 +32,7 @@ func test_every_item_loads_a_texture_from_the_lote_six_art() -> void:
 	assert_eq(items.size(), 12, "all() must not silently drop a missing .tres")
 	for item: FurnitureData in items:
 		assert_not_null(item, "item %s" % item.id)
-		assert_eq(item.art_path, "res://assets/art/moveis/%s.png" % item.id)
+		assert_true(item.art_path.begins_with("res://assets/art/furniture/"))
 		assert_not_null(item.texture(), "art for %s must load" % item.id)
 
 

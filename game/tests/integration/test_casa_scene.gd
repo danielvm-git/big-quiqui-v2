@@ -10,8 +10,8 @@ extends GutTest
 const SCENE_PATH: String = "res://scenes/casa.tscn"
 const COZINHA_PATH: String = "res://scenes/cozinha.tscn"
 const VILA_PATH: String = "res://scenes/vila.tscn"
-const THEME_PATH: String = "res://assets/audio/music/tema_principal.ogg"
-const KITCHEN_THEME_PATH: String = "res://assets/audio/music/cozinha.ogg"
+const THEME_PATH: String = "res://assets/audio/music/main_theme.ogg"
+const KITCHEN_THEME_PATH: String = "res://assets/audio/music/kitchen.ogg"
 
 var scene: CasaScene = null
 var requested_scenes: Array[String] = []
@@ -206,15 +206,15 @@ func test_eight_seconds_of_idle_show_the_wish_and_the_longing_face() -> void:
 	assert_false(scene.bubble.is_showing(), "7.5 s of quiet is still patient")
 	scene.advance(0.6)
 	assert_true(scene.bubble.is_showing(), "8.0 s without touch shows the wish bubble")
-	assert_eq(scene.rig.expression_id, "carente", "QuiQui shows she misses the child")
-	assert_eq(scene.bubble.wish_id(), "cenoura", "the first wish of a fresh cycle is food")
+	assert_eq(scene.rig.expression_id, "needy", "QuiQui shows she misses the child")
+	assert_eq(scene.bubble.wish_id(), "carrot", "the first wish of a fresh cycle is food")
 	assert_eq(scene.bubble.urgency(), 0, "the first prompt is calm")
 	scene.advance(6.0)
 	assert_eq(scene.bubble.urgency(), 1, "FIX-01: urgency steps with ESCALATION_SEC")
 	for event: InputEvent in TouchSim.tap_events(scene.rig, true):
 		scene.rig._gui_input(event)
 	assert_false(scene.bubble.is_showing(), "touch answers the wish")
-	assert_eq(scene.rig.expression_id, "rindo", "and QuiQui laughs again")
+	assert_eq(scene.rig.expression_id, "laughing", "and QuiQui laughs again")
 
 
 # e07 post-epic (T-E07-05): the Casa is a whitelisted target of the detour guard, so a hub
@@ -264,7 +264,7 @@ func test_the_hub_voice_welcomes_the_child() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as CasaScene
 	await wait_process_frames(3)
 
-	assert_true(scene.voice_started, "hub_bem_vindo.ogg must greet on arrival")
+	assert_true(scene.voice_started, "home_welcome.ogg must greet on arrival")
 
 
 # BUG-009: the Vila door is a destination, not a waiting care step — dimming it

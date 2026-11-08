@@ -4,8 +4,8 @@ extends Control
 ## Single-spin wheel: tickets in, coins out, seeded prize table (FIX-04/05).
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const VOICE_PATH: String = "res://assets/audio/voice/roda_boa_sorte.ogg"
-const BADGE_ART: String = "res://assets/art/ui/estrela.png"
+const VOICE_KEY: String = "vo.wheel.intro"
+const BADGE_ART: String = "res://assets/art/ui/star.png"
 
 const STATE_IDLE: String = "IDLE"
 const STATE_SPINNING: String = "SPINNING"
@@ -164,16 +164,11 @@ func _on_home() -> void:
 
 func _on_rig_tapped() -> void:
 	if rig != null:
-		rig.set_expression("rindo")
+		rig.set_expression("laughing")
 
 
 func _play_voice() -> void:
-	if not ResourceLoader.exists(VOICE_PATH):
-		return
-	var audio: Node = get_node_or_null("/root/AudioManager")
-	var stream: AudioStream = load(VOICE_PATH) as AudioStream
-	if audio != null and stream != null:
-		audio.call("play_voice", stream)
+	AudioManager.play_voice_key(VOICE_KEY)
 
 
 func _log(ev: String, data: Dictionary) -> void:

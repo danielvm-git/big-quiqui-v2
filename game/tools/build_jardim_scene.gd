@@ -14,14 +14,14 @@ const PROP_SCRIPT: String = "res://scripts/components/garden_prop.gd"
 const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
 const BUBBLE_SCRIPT: String = "res://scripts/components/wish_bubble.gd"
 
-const BG_PATH: String = "res://assets/art/backgrounds/bg_jardim.jpg"
-const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
-const CONFETTI_ART: String = "res://assets/art/efeitos/confete.png"
+const BG_PATH: String = "res://assets/art/backgrounds/bg_playroom.jpg"
+const HOME_ART: String = "res://assets/art/ui/home_button.png"
+const CONFETTI_ART: String = "res://assets/art/effects/confetti.png"
 ## kind, art, interaction id, x anchor ratio, y anchor ratio
 const PROPS: Array[Dictionary] = [
-	{"kind": 0, "art": "res://assets/art/items/bola.png", "id": "ball", "x": 0.12, "y": 0.80},
-	{"kind": 1, "art": "res://assets/art/items/cata_vento.png", "id": "pinwheel", "x": 0.86, "y": 0.78},
-	{"kind": 2, "art": "res://assets/art/items/pelucia.png", "id": "plush", "x": 0.30, "y": 0.90},
+	{"kind": 0, "art": "res://assets/art/items/ball.png", "id": "ball", "x": 0.12, "y": 0.80},
+	{"kind": 1, "art": "res://assets/art/items/pinwheel.png", "id": "pinwheel", "x": 0.86, "y": 0.78},
+	{"kind": 2, "art": "res://assets/art/items/plush.png", "id": "plush", "x": 0.30, "y": 0.90},
 ]
 
 const RIG_WIDTH: float = 640.0

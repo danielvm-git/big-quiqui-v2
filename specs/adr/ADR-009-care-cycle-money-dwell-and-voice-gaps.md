@@ -26,13 +26,13 @@ were fixed in the same pass.
 
 2. **The short celebration was a defect and is fixed (BUG-031).** `CelebrationScene` closed the cycle
    and called `_leave()` in `_ready`, so the party lasted roughly one 0.4 s fade and
-   `celebrate_parabens.ogg` was cut by the transition. It now holds `HOLD_SEC = 1.8` before `_leave()`,
+   `celebration_congrats.ogg` was cut by the transition. It now holds `HOLD_SEC = 1.8` before `_leave()`,
    driven by the scene's own `advance()` clock, and reveals the reward while it holds. The e07s02
    acceptance criteria and frozen contract are updated to say so.
 
 3. **The bedroom has no voice line.** Every other care room opens with a family voice prompt
    (`feed_hora_de_comer`, `bath_hora_do_banho`, `dress_vamos_se_arrumar`, `play_hora_de_brincar`).
-   `game/assets/audio/voice/` has no bedtime clip, and inventing one is impossible offline: the
+   `game/assets/audio/voice/pt_BR/` has no bedtime clip, and inventing one is impossible offline: the
    project's standing rule is family-recorded PT-BR, never TTS. The room answers with shipped SFX —
    `tap.ogg` on the lamp, `drop.ogg` on the tuck, `success.ogg` when the step is credited (BUG-020) —
    and stays silent-but-not-mute until the family records a line.
@@ -51,9 +51,9 @@ were fixed in the same pass.
 6. **The celebration did not display the reward — fixed (BUG-031).** `IMPACT_LATEST.md` planned a
    "reward reveal" and `DESIGN_PLAN_LATEST.md` lists the coin/star art for it; e07s02's acceptance
    criteria and frozen `celebracao.tscn` contract did not include one. BUG-031 now implements it: a
-   `Coin` (`moedinha.png`) and a `Ticket` (`roda_fortuna.png`) pop in at the head line during the hold,
-   and the frozen spec is updated to match. The planned `estrela.png` became `roda_fortuna.png` because
-   the reward is +1 *wheel ticket*, not a star, and `roda_fortuna.png` is what the HUD already shows.
+   `Coin` (`coin.png`) and a `Ticket` (`fortune_wheel.png`) pop in at the head line during the hold,
+   and the frozen spec is updated to match. The planned `star.png` became `fortune_wheel.png` because
+   the reward is +1 *wheel ticket*, not a star, and `fortune_wheel.png` is what the HUD already shows.
 
 ## Consequences
 

@@ -14,7 +14,7 @@ code / duplication PASS", which this line falsifies.
 
 ## Problem
 
-`SleepScene` declared `const VOICE_PATH = "res://assets/audio/voice/celebrate_parabens.ogg"` and never
+`SleepScene` declared `const VOICE_PATH = "res://assets/audio/voice/pt_BR/celebration_congrats.ogg"` and never
 referenced it — and it pointed at the *celebration's* clip, not a bedtime line. Meanwhile the room made
 no sound at all: no voice prompt, no SFX, while all four sibling rooms open with a family voice line and
 answer touches with SFX.

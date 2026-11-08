@@ -1,32 +1,32 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/scenes/closet.gd" id="1_8i737"]
-[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_quarto.jpg" id="2_1obfd"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_bedroom.jpg" id="2_1obfd"]
 [ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_fwo5k"]
 [ext_resource type="Script" path="res://scripts/components/touch_draggable.gd" id="4_g8h4w"]
-[ext_resource type="Texture2D" path="res://assets/art/quiqui/quiqui_vestido_florido.png" id="5_7t2wy"]
-[ext_resource type="Texture2D" path="res://assets/art/quiqui/quiqui_vestido_vermelho.png" id="6_sgxkq"]
-[ext_resource type="Texture2D" path="res://assets/art/quiqui/quiqui_macacao_verde.png" id="7_c0xl4"]
-[ext_resource type="Texture2D" path="res://assets/art/quiqui/quiqui_pijama.png" id="8_nyhbj"]
-[ext_resource type="Texture2D" path="res://assets/art/items/tiara_flores.png" id="9_mxhpg"]
-[ext_resource type="Texture2D" path="res://assets/art/items/coroa.png" id="10_mx4w5"]
-[ext_resource type="Texture2D" path="res://assets/art/items/chapeu_amarelo.png" id="11_r1n2i"]
-[ext_resource type="Texture2D" path="res://assets/art/items/cachecol_azul.png" id="12_r0rhv"]
-[ext_resource type="Texture2D" path="res://assets/art/items/laco_roxo.png" id="13_o67av"]
-[ext_resource type="Texture2D" path="res://assets/art/items/oculos_coracao.png" id="14_2p2cv"]
+[ext_resource type="Texture2D" path="res://assets/art/quiqui/quiqui_floral_dress.png" id="5_7t2wy"]
+[ext_resource type="Texture2D" path="res://assets/art/quiqui/quiqui_red_dress.png" id="6_sgxkq"]
+[ext_resource type="Texture2D" path="res://assets/art/quiqui/quiqui_green_overalls.png" id="7_c0xl4"]
+[ext_resource type="Texture2D" path="res://assets/art/quiqui/quiqui_pajamas.png" id="8_nyhbj"]
+[ext_resource type="Texture2D" path="res://assets/art/items/flower_tiara.png" id="9_mxhpg"]
+[ext_resource type="Texture2D" path="res://assets/art/items/crown.png" id="10_mx4w5"]
+[ext_resource type="Texture2D" path="res://assets/art/items/yellow_hat.png" id="11_r1n2i"]
+[ext_resource type="Texture2D" path="res://assets/art/items/blue_scarf.png" id="12_r0rhv"]
+[ext_resource type="Texture2D" path="res://assets/art/items/purple_bow.png" id="13_o67av"]
+[ext_resource type="Texture2D" path="res://assets/art/items/heart_glasses.png" id="14_2p2cv"]
 [ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="15_gba45"]
-[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="16_5t7m7"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/home_button.png" id="16_5t7m7"]
 [ext_resource type="Script" path="res://scripts/components/wish_bubble.gd" id="17_mib4n"]
-[ext_resource type="Texture2D" path="res://assets/art/efeitos/brilho.png" id="18_fduqe"]
+[ext_resource type="Texture2D" path="res://assets/art/effects/sparkle.png" id="18_fduqe"]
 
-[node name="Closet" type="Control" unique_id=1442436724]
+[node name="Closet" type="Control" unique_id=1849934736]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_8i737")
 
-[node name="Background" type="TextureRect" parent="." unique_id=1563631647 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=404189549 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -35,7 +35,7 @@ texture = ExtResource("2_1obfd")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=347165820 groups=["rig"]]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=2122238271 groups=["rig"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -45,7 +45,7 @@ offset_left = -320.0
 offset_right = 320.0
 script = ExtResource("3_fwo5k")
 
-[node name="Outfit0" type="Control" parent="." unique_id=779632466 groups=["hit_target"]]
+[node name="Outfit0" type="Control" parent="." unique_id=205731024 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 36.0
@@ -53,7 +53,7 @@ offset_right = 168.0
 offset_bottom = 168.0
 script = ExtResource("4_g8h4w")
 
-[node name="Art" type="TextureRect" parent="Outfit0" unique_id=1099631772]
+[node name="Art" type="TextureRect" parent="Outfit0" unique_id=2026633434]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -62,7 +62,7 @@ texture = ExtResource("5_7t2wy")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Outfit1" type="Control" parent="." unique_id=285377262 groups=["hit_target"]]
+[node name="Outfit1" type="Control" parent="." unique_id=781773285 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 188.0
@@ -70,7 +70,7 @@ offset_right = 168.0
 offset_bottom = 320.0
 script = ExtResource("4_g8h4w")
 
-[node name="Art" type="TextureRect" parent="Outfit1" unique_id=1118348208]
+[node name="Art" type="TextureRect" parent="Outfit1" unique_id=1611689544]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -79,7 +79,7 @@ texture = ExtResource("6_sgxkq")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Outfit2" type="Control" parent="." unique_id=1903165473 groups=["hit_target"]]
+[node name="Outfit2" type="Control" parent="." unique_id=637198396 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 340.0
@@ -87,7 +87,7 @@ offset_right = 168.0
 offset_bottom = 472.0
 script = ExtResource("4_g8h4w")
 
-[node name="Art" type="TextureRect" parent="Outfit2" unique_id=395904534]
+[node name="Art" type="TextureRect" parent="Outfit2" unique_id=31599027]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -96,7 +96,7 @@ texture = ExtResource("7_c0xl4")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Outfit3" type="Control" parent="." unique_id=1095875785 groups=["hit_target"]]
+[node name="Outfit3" type="Control" parent="." unique_id=1702397523 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 492.0
@@ -104,7 +104,7 @@ offset_right = 168.0
 offset_bottom = 624.0
 script = ExtResource("4_g8h4w")
 
-[node name="Art" type="TextureRect" parent="Outfit3" unique_id=962088886]
+[node name="Art" type="TextureRect" parent="Outfit3" unique_id=2094779777]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -113,7 +113,7 @@ texture = ExtResource("8_nyhbj")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Accessory0" type="Control" parent="." unique_id=638575387 groups=["hit_target"]]
+[node name="Accessory0" type="Control" parent="." unique_id=1537691880 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -123,7 +123,7 @@ offset_right = -36.0
 offset_bottom = 168.0
 script = ExtResource("4_g8h4w")
 
-[node name="Art" type="TextureRect" parent="Accessory0" unique_id=1341582275]
+[node name="Art" type="TextureRect" parent="Accessory0" unique_id=861718188]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -132,7 +132,7 @@ texture = ExtResource("9_mxhpg")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Accessory1" type="Control" parent="." unique_id=1040145461 groups=["hit_target"]]
+[node name="Accessory1" type="Control" parent="." unique_id=1499508652 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -142,7 +142,7 @@ offset_right = -36.0
 offset_bottom = 320.0
 script = ExtResource("4_g8h4w")
 
-[node name="Art" type="TextureRect" parent="Accessory1" unique_id=1306296465]
+[node name="Art" type="TextureRect" parent="Accessory1" unique_id=672500211]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -151,7 +151,7 @@ texture = ExtResource("10_mx4w5")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Accessory2" type="Control" parent="." unique_id=463469775 groups=["hit_target"]]
+[node name="Accessory2" type="Control" parent="." unique_id=1613818490 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -161,7 +161,7 @@ offset_right = -36.0
 offset_bottom = 472.0
 script = ExtResource("4_g8h4w")
 
-[node name="Art" type="TextureRect" parent="Accessory2" unique_id=2044108242]
+[node name="Art" type="TextureRect" parent="Accessory2" unique_id=2013558678]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -170,7 +170,7 @@ texture = ExtResource("11_r1n2i")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Accessory3" type="Control" parent="." unique_id=1949485581 groups=["hit_target"]]
+[node name="Accessory3" type="Control" parent="." unique_id=1608589488 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -180,7 +180,7 @@ offset_right = -36.0
 offset_bottom = 624.0
 script = ExtResource("4_g8h4w")
 
-[node name="Art" type="TextureRect" parent="Accessory3" unique_id=31632811]
+[node name="Art" type="TextureRect" parent="Accessory3" unique_id=1337173636]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -189,7 +189,7 @@ texture = ExtResource("12_r0rhv")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Accessory4" type="Control" parent="." unique_id=1138096368 groups=["hit_target"]]
+[node name="Accessory4" type="Control" parent="." unique_id=286697913 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -199,7 +199,7 @@ offset_right = -36.0
 offset_bottom = 776.0
 script = ExtResource("4_g8h4w")
 
-[node name="Art" type="TextureRect" parent="Accessory4" unique_id=1535470507]
+[node name="Art" type="TextureRect" parent="Accessory4" unique_id=1250676293]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -208,7 +208,7 @@ texture = ExtResource("13_o67av")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Accessory5" type="Control" parent="." unique_id=1329092001 groups=["hit_target"]]
+[node name="Accessory5" type="Control" parent="." unique_id=1460257186 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -218,7 +218,7 @@ offset_right = -36.0
 offset_bottom = 928.0
 script = ExtResource("4_g8h4w")
 
-[node name="Art" type="TextureRect" parent="Accessory5" unique_id=883324105]
+[node name="Art" type="TextureRect" parent="Accessory5" unique_id=1463093409]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -227,7 +227,7 @@ texture = ExtResource("14_2p2cv")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HomeButton" type="Control" parent="." unique_id=1621106221 groups=["hit_target"]]
+[node name="HomeButton" type="Control" parent="." unique_id=2132710320 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_right = 0.5
@@ -237,7 +237,7 @@ offset_right = 60.0
 offset_bottom = 156.0
 script = ExtResource("15_gba45")
 
-[node name="Art" type="TextureRect" parent="HomeButton" unique_id=46188800]
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=1962240406]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -246,7 +246,7 @@ texture = ExtResource("16_5t7m7")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="WishBubble" type="Control" parent="." unique_id=365026057 groups=["wish_bubble"]]
+[node name="WishBubble" type="Control" parent="." unique_id=857791997 groups=["wish_bubble"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -258,7 +258,7 @@ offset_right = 110.0
 offset_bottom = -8.0
 script = ExtResource("17_mib4n")
 
-[node name="Sparkles" type="CPUParticles2D" parent="." unique_id=1425416687]
+[node name="Sparkles" type="CPUParticles2D" parent="." unique_id=833220932]
 z_index = 30
 emitting = false
 amount = 12

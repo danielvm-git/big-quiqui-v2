@@ -19,7 +19,7 @@ title: With music playing, the engine reports four leaked audio objects and two 
 WARNING: 4 ObjectDB instances were leaked at exit
 ERROR: 2 resources still in use at exit
 Leaked instance: AudioStreamPlaybackOggVorbis / OggPacketSequence / OggPacketSequencePlayback / AudioStreamOggVorbis
-Resource still in use: res://assets/audio/music/tema_principal.ogg
+Resource still in use: res://assets/audio/music/main_theme.ogg
 ```
 
 `AUDIT-e07-epic.md` recorded the cold start as "**0** errors or warnings", which this falsifies.

@@ -30,7 +30,7 @@ Across `AUDIT-e01-e02-2026-11-04.md`, `AUDIT-e03-e03s02.md`, `AUDIT-e03-e03s03.m
 - **Reproduce:**
   1. Stepping `KitchenScene` by `advance(2.1)` in `CHEWING` or `PLEASURE` emits 0 `fsm.dwell_exceeded` signals and writes no `fsm.dwell_timeout` diary entry.
   2. Sending an `InputEventMouseButton` with `button_index = MOUSE_BUTTON_RIGHT` to `QuiQuiRig._gui_input` increments `rig.taps`. Calling `QuiQuiRig.new().mouth_global_center()` before `_ready()` fails with a null-instance call on `mouth_zone`.
-  3. Calling `FoodCatalog.get_item("cenoura", "res://resources/foods/missing/")` is rejected at parse time because `get_item` accepts only `id`.
+  3. Calling `FoodCatalog.get_item("carrot", "res://resources/foods/missing/")` is rejected at parse time because `get_item` accepts only `id`.
 - **Isolate:** `cozinha.gd`, `quiqui_rig.gd`, `scene_manager.gd`, `food_catalog.gd`, `progress_manager.gd`, `coin_ticket_hud.gd`, and `specs/tech-architecture/EXPLICIT_STATE_MACHINES.md`.
 - **Hypothesize:** Story-scoped audits recorded non-blocking advisories as "accepted" or "drift left alone" rather than closing them in-place.
 - **Verify:** Each root cause is directly confirmed in the source and reproduced by unit/integration tests.
@@ -41,7 +41,7 @@ Across `AUDIT-e01-e02-2026-11-04.md`, `AUDIT-e03-e03s02.md`, `AUDIT-e03-e03s03.m
 1. **RED:** Add tests for:
    - `KitchenScene` logging `fsm.dwell_timeout` when a single step exceeds 2.0 s in `CHEWING` or `PLEASURE`.
    - `QuiQuiRig` ignoring non-left mouse buttons (`MOUSE_BUTTON_RIGHT`) and returning `global_position` safely when `mouth_global_center()` is called before `_ready()`.
-   - `FoodCatalog.get_item("cenoura", "res://resources/foods/missing/")` returning `null` and logging `item.missing_data`.
+   - `FoodCatalog.get_item("carrot", "res://resources/foods/missing/")` returning `null` and logging `item.missing_data`.
    - `ProgressManager.get_coins()` / `get_tickets()` and `CYCLE_COINS_REWARD` / `CYCLE_TICKETS_REWARD`.
    **GREEN:** Implement the minimal fixes in `cozinha.gd`, `quiqui_rig.gd`, `scene_manager.gd`, `food_catalog.gd`, `progress_manager.gd`, and `coin_ticket_hud.gd`.
    **verify:** `godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit`

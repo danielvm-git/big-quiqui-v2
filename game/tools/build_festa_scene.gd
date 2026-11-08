@@ -10,12 +10,12 @@ const RIG_SCRIPT: String = "res://scripts/components/quiqui_rig.gd"
 const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
 const HUD_SCRIPT: String = "res://scripts/components/coin_ticket_hud.gd"
 
-const BG_PATH: String = "res://assets/art/backgrounds/bg_casinha.jpg"
-const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
-const CASINHA_ART: String = "res://assets/art/ui/botao_voltar.png"
-const LOCK_ART: String = "res://assets/art/ui/bolinha_progresso_vazia.png"
-const CONFETTI_ART: String = "res://assets/art/efeitos/confete.png"
-const FRIEND_ART: String = "res://assets/art/amigos/"
+const BG_PATH: String = "res://assets/art/backgrounds/bg_playhouse.jpg"
+const HOME_ART: String = "res://assets/art/ui/home_button.png"
+const CASINHA_ART: String = "res://assets/art/ui/back_button.png"
+const LOCK_ART: String = "res://assets/art/ui/progress_dot_empty.png"
+const CONFETTI_ART: String = "res://assets/art/effects/confetti.png"
+const FRIEND_ART: String = "res://assets/art/friends/"
 
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0

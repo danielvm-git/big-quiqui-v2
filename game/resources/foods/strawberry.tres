@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_dppbm")
-id = "morango"
-art_path = "res://assets/art/items/morango.png"
+id = "strawberry"
+art_path = "res://assets/art/items/strawberry.png"

@@ -16,7 +16,7 @@ const LEGAL_EDGES: Dictionary = {
 	STATE_SHOWN: [STATE_HIDDEN],
 }
 
-const FRAME_PATH: String = "res://assets/art/ui/balao_desejo.png"
+const FRAME_PATH: String = "res://assets/art/ui/wish_bubble.png"
 const ART_ROOT: String = "res://assets/art/"
 ## Only a literal art path may be loaded: no `.`, `..` or scheme tricks. Prefix
 ## and suffix checks alone accepted `res://assets/art/../../x.png`.

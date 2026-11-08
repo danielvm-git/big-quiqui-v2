@@ -79,8 +79,8 @@ func test_dropping_an_outfit_on_her_equips_and_saves_it() -> void:
 
 	_drop_on_her(scene.outfit_item(1))
 
-	assert_eq(scene.rig.outfit_id, "vestido_vermelho", "she is wearing what was dropped")
-	assert_eq(str(pm.call("equipped", SaveData.SLOT_BODY)), "vestido_vermelho", "and it is saved")
+	assert_eq(scene.rig.outfit_id, "red_dress", "she is wearing what was dropped")
+	assert_eq(str(pm.call("equipped", SaveData.SLOT_BODY)), "red_dress", "and it is saved")
 	assert_eq(scene.equips, 1)
 	assert_eq(scene.outfit_item(1).state_id(), "REST", "the hanger flew home")
 
@@ -91,7 +91,7 @@ func test_dropping_an_accessory_equips_that_slot_only() -> void:
 
 	_drop_on_her(scene.accessory_item(0))
 
-	assert_eq(scene.rig.accessory_id("head"), "tiara_flores")
+	assert_eq(scene.rig.accessory_id("head"), "flower_tiara")
 	assert_eq(scene.rig.accessory_id("eyes"), "", "other slots stay empty")
 
 
@@ -124,8 +124,8 @@ func test_the_next_visit_opens_already_dressed() -> void:
 	_mount(Vector2i(2048, 1536))
 	await wait_process_frames(3)
 
-	assert_eq(scene.rig.outfit_id, "macacao_verde", "the dress came back from disk")
-	assert_eq(scene.rig.accessory_id("neck"), "cachecol_azul", "and so did the scarf")
+	assert_eq(scene.rig.outfit_id, "green_overalls", "the dress came back from disk")
+	assert_eq(scene.rig.accessory_id("neck"), "blue_scarf", "and so did the scarf")
 	# The face must still be above the dress on the iPad canvas (T-E05-03).
 	assert_gt(scene.rig.expression.z_index, scene.rig.outfit.z_index)
 

@@ -32,7 +32,7 @@ resolved by opinion.
 | "`expand` gives the iPad a bigger canvas, not bars." | documented Godot behaviour; **not yet proven in this project** | **UNPROVEN** → SC-E01-P1-08 (GeometryOracle at both aspects) is the proof, scheduled e01s05 |
 | "The 135 assets are the final art." | `specs/art/TODO_GERACAO_IMAGENS.md` lists outstanding generations | **FALSE for some assets** → e01s05 must not assume a complete art set |
 | "43 stories / 128 BCPs." | counted from capsules: **43 / 138** | **FALSE**; corrected in `release-plan.yaml` |
-| "Family voice acting is ready for the title theme." | 35 `.ogg` present under `assets/audio/voice` + `music` | **TRUE** (audition before e01s05 acceptance) |
+| "Family voice acting is ready for the title theme." | 35 `.ogg` present under `assets/audio/voice/pt_BR` + `music` | **TRUE** (audition before e01s05 acceptance) |
 | "Kids cannot reach the save file." | iOS sandbox; no export entitlements yet | **TRUE for iOS; unverified for desktop** → T-E01-02 covers debug-only `TestReset` |
 
 ## Round 4 — process

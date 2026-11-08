@@ -7,12 +7,12 @@ const SCENE_SCRIPT: String = "res://scripts/scenes/celebracao.gd"
 const RIG_SCRIPT: String = "res://scripts/components/quiqui_rig.gd"
 const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
 
-const BG_PATH: String = "res://assets/art/backgrounds/bg_celebracao.jpg"
-const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
-const CONFETTI_ART: String = "res://assets/art/efeitos/confete.png"
+const BG_PATH: String = "res://assets/art/backgrounds/bg_celebration.jpg"
+const HOME_ART: String = "res://assets/art/ui/home_button.png"
+const CONFETTI_ART: String = "res://assets/art/effects/confetti.png"
 ## The same two icons the hub's HUD uses, so the party and the counter tell one story.
-const COIN_ART: String = "res://assets/art/ui/moedinha.png"
-const TICKET_ART: String = "res://assets/art/items/roda_fortuna.png"
+const COIN_ART: String = "res://assets/art/ui/coin.png"
+const TICKET_ART: String = "res://assets/art/items/fortune_wheel.png"
 
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0

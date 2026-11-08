@@ -6,10 +6,10 @@ extends Control
 ## id from `FurnitureCatalog`, so no tap can ever build a `res://` path out of text.
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/mercado_escolhe.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
+const VOICE_KEY: String = "vo.market.intro"
 const BUY_SFX: String = "res://assets/audio/sfx/success.ogg"
-const DENY_SFX: String = "res://assets/audio/sfx/erro_suave.ogg"
+const DENY_SFX: String = "res://assets/audio/sfx/soft_error.ogg"
 
 ## One shelf per Lote-6 piece, in catalog order.
 const SHELF_IDS: Array[String] = FurnitureCatalog.FURNITURE_IDS
@@ -49,7 +49,7 @@ func _ready() -> void:
 	fsm = Fsm.new(STATE_IDLE, LEGAL_EDGES, MAX_DWELL, Callable(self, "_fsm_clock_ms"))
 	_connect_inputs()
 	_refresh_badges()
-	_play_stream("play_voice", VOICE_PATH)
+	AudioManager.play_voice_key(VOICE_KEY)
 	_restore_music()
 	_log("scene.ready", {"scene": "mercado"})
 
@@ -120,7 +120,7 @@ func _deny() -> void:
 	denials += 1
 	_play_stream("play_sfx", DENY_SFX)
 	if rig != null:
-		rig.set_expression("carente")
+		rig.set_expression("needy")
 	_log("store.denied", {"reason": "coins"})
 
 
@@ -149,7 +149,7 @@ func _finish_payment_if_due() -> void:
 	_state_age = 0.0
 	_play_stream("play_sfx", BUY_SFX)
 	if rig != null:
-		rig.set_expression("rindo")
+		rig.set_expression("laughing")
 
 
 func _end_sale_if_due() -> void:
@@ -199,7 +199,7 @@ func _on_home_tapped() -> void:
 
 func _on_rig_tapped() -> void:
 	if rig != null:
-		rig.set_expression("rindo")
+		rig.set_expression("laughing")
 
 
 func _fsm_clock_ms() -> int:

@@ -5,7 +5,7 @@ extends GutTest
 
 const SCENE_PATH: String = "res://scenes/cozinha.tscn"
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/cozinha.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/kitchen.ogg"
 const FIXED_SEED: int = 20261105
 const STEP_SEC: float = 1.0
 const AWAY_FROM_MOUTH: Vector2 = Vector2(150.0, 300.0)

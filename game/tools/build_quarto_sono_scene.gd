@@ -9,11 +9,11 @@ const ITEM_SCRIPT: String = "res://scripts/components/touch_draggable.gd"
 const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
 const BUBBLE_SCRIPT: String = "res://scripts/components/wish_bubble.gd"
 
-const BG_PATH: String = "res://assets/art/backgrounds/bg_quarto.jpg"
-const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
-const LAMP_ART: String = "res://assets/art/efeitos/zzz.png"
-const PLUSH_ART: String = "res://assets/art/items/pelucia.png"
-const ZZZ_ART: String = "res://assets/art/efeitos/zzz.png"
+const BG_PATH: String = "res://assets/art/backgrounds/bg_bedroom.jpg"
+const HOME_ART: String = "res://assets/art/ui/home_button.png"
+const LAMP_ART: String = "res://assets/art/effects/zzz.png"
+const PLUSH_ART: String = "res://assets/art/items/plush.png"
+const ZZZ_ART: String = "res://assets/art/effects/zzz.png"
 
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0
