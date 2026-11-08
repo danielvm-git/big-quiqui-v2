@@ -6,9 +6,13 @@ extends SceneTree
 ##
 ## Layout is expressed as ratios of the canvas (ADR-008): the 16:9 frame is
 ## pixel-identical to the approved design, and the taller 4:3 `expand` canvas
-## keeps QuiQui at 55–65 % of the height with her feet on the 92.6 % line and the
-## Play button 72 px above the bottom edge, instead of stranding both in the
-## top-left corner.
+## keeps QuiQui at 55–65 % of the height with her feet on the 92.6 % line.
+##
+## The Play button sits in the free grass at the bottom RIGHT, not centred: the rig's
+## sprites carry z_index 0–50 (ADR-003), so a scene-level Control at the default z_index 0
+## is drawn *behind* the character — a centred button at the feet line was 95 % buried at
+## 16:9 and 75 % at 4:3, leaving a magenta sliver and no visible way to start the game
+## (BUG-060, found on the Mac build, invisible to every rect-only assertion).
 
 const SCENE_PATH: String = "res://scenes/titulo.tscn"
 const SCENE_SCRIPT: String = "res://scripts/scenes/titulo.gd"
@@ -17,14 +21,17 @@ const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
 const BG_PATH: String = "res://assets/art/backgrounds/bg_titulo.jpg"
 const PLAY_ART: String = "res://assets/art/ui/botao_play.png"
 
-## Reference frame: QuiQui 700×620 with her feet at y=1000, Play 168² at y=840.
+## Reference frame: QuiQui 700×620 with her feet at y=1000, Play 168² in the right
+## margin, 72 px in from the bottom-right corner and clear of the 700 px rig box.
 ## Initial box width only: `QuiQuiRig._refit()` rewrites it from the
 ## opaque art aspect on every layout pass, so the packed value is a placeholder.
 const RIG_WIDTH: float = 700.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0
 const FEET_RATIO: float = 1000.0 / 1080.0
 const PLAY_SIZE: float = 168.0
-const PLAY_BOTTOM_INSET: float = 72.0
+const PLAY_INSET: float = 72.0
+## Above every rig layer (Z_GLASSES = 50): scene chrome must never be buried by the hero.
+const CHROME_Z: int = 100
 
 
 func _init() -> void:
@@ -68,10 +75,9 @@ func _add_play_button(root: Control) -> void:
 	play.name = "PlayButton"
 	play.set_script(load(BUTTON_SCRIPT))
 	play.add_to_group("hit_target", true)
-	var offsets: Vector4 = Vector4(
-		-PLAY_SIZE * 0.5, -PLAY_BOTTOM_INSET - PLAY_SIZE, PLAY_SIZE * 0.5, -PLAY_BOTTOM_INSET
-	)
-	SceneBuilder.pin(play, Vector4(0.5, 1.0, 0.5, 1.0), offsets)
+	var offsets: Vector4 = Vector4(-PLAY_INSET - PLAY_SIZE, -PLAY_INSET - PLAY_SIZE, -PLAY_INSET, -PLAY_INSET)
+	SceneBuilder.pin(play, Vector4(1.0, 1.0, 1.0, 1.0), offsets)
+	play.z_index = CHROME_Z
 	root.add_child(play)
 	_add_play_visual(play)
 

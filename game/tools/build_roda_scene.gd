@@ -122,7 +122,11 @@ func _add_spin(root: Control) -> void:
 	spin.name = "SpinButton"
 	spin.set_script(load(BUTTON_SCRIPT))
 	spin.add_to_group("hit_target", true)
-	SceneBuilder.pin(spin, Vector4(0.5, 0.78, 0.5, 0.78), Vector4(-84.0, -84.0, 84.0, 84.0))
+	# BUG-060: the rig's sprites sit at z_index 0-50, so a centred scene Control is drawn
+	# behind the character (50 % of this button was under her belly). Right margin, above
+	# every rig layer.
+	SceneBuilder.pin(spin, Vector4(1.0, 1.0, 1.0, 1.0), Vector4(-240.0, -240.0, -72.0, -72.0))
+	spin.z_index = 100
 	spin.add_child(_full_rect_art("Art", WHEEL_ART, "", false))
 	root.add_child(spin)
 

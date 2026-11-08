@@ -11,14 +11,14 @@
 [ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="9_g0nxy"]
 [ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="10_55pkl"]
 
-[node name="Album" type="Control" unique_id=2072537499]
+[node name="Album" type="Control" unique_id=1110839079]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_u5r7r")
 
-[node name="Background" type="TextureRect" parent="." unique_id=1284934485 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=1779383106 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -27,7 +27,7 @@ texture = ExtResource("2_0ggt4")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=43019984 groups=["rig"]]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=2133007643 groups=["rig"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -37,25 +37,25 @@ offset_left = -320.0
 offset_right = 320.0
 script = ExtResource("3_e6bw1")
 
-[node name="Cards" type="Control" parent="." unique_id=717298419]
+[node name="Cards" type="Control" parent="." unique_id=1799429656]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 1
 
-[node name="Card_pato" type="Control" parent="Cards" unique_id=253840984 groups=["hit_target"]]
+[node name="Card_pato" type="Control" parent="Cards" unique_id=1037816695 groups=["hit_target"]]
 anchors_preset = 0
-anchor_left = 0.22
-anchor_top = 0.4
-anchor_right = 0.22
-anchor_bottom = 0.4
-offset_left = -120.0
-offset_top = -150.0
-offset_right = 120.0
-offset_bottom = 150.0
+anchor_left = 0.845
+anchor_top = 0.245
+anchor_right = 0.845
+anchor_bottom = 0.245
+offset_left = -105.0
+offset_top = -130.0
+offset_right = 105.0
+offset_bottom = 130.0
 script = ExtResource("4_5h5x7")
 
-[node name="Art" type="TextureRect" parent="Cards/Card_pato" unique_id=547349606]
+[node name="Art" type="TextureRect" parent="Cards/Card_pato" unique_id=526870335]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 0.75
@@ -64,76 +64,76 @@ texture = ExtResource("5_h0l14")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Stars" type="Control" parent="Cards/Card_pato" unique_id=564730379]
+[node name="Stars" type="Control" parent="Cards/Card_pato" unique_id=253276664]
 anchors_preset = 0
 anchor_top = 0.8
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Star0" type="TextureRect" parent="Cards/Card_pato/Stars" unique_id=1962092478]
+[node name="Star0" type="TextureRect" parent="Cards/Card_pato/Stars" unique_id=951228888]
 layout_mode = 0
-offset_left = 20.0
-offset_right = 56.0
+offset_left = 5.0
+offset_right = 41.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star1" type="TextureRect" parent="Cards/Card_pato/Stars" unique_id=1972973411]
+[node name="Star1" type="TextureRect" parent="Cards/Card_pato/Stars" unique_id=1639264232]
 layout_mode = 0
-offset_left = 60.0
-offset_right = 96.0
+offset_left = 45.0
+offset_right = 81.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star2" type="TextureRect" parent="Cards/Card_pato/Stars" unique_id=424409714]
+[node name="Star2" type="TextureRect" parent="Cards/Card_pato/Stars" unique_id=1162326057]
 layout_mode = 0
-offset_left = 100.0
-offset_right = 136.0
+offset_left = 85.0
+offset_right = 121.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star3" type="TextureRect" parent="Cards/Card_pato/Stars" unique_id=893008998]
+[node name="Star3" type="TextureRect" parent="Cards/Card_pato/Stars" unique_id=1984854519]
 layout_mode = 0
-offset_left = 140.0
-offset_right = 176.0
+offset_left = 125.0
+offset_right = 161.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star4" type="TextureRect" parent="Cards/Card_pato/Stars" unique_id=2010893470]
+[node name="Star4" type="TextureRect" parent="Cards/Card_pato/Stars" unique_id=1832564998]
 layout_mode = 0
-offset_left = 180.0
-offset_right = 216.0
+offset_left = 165.0
+offset_right = 201.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Card_urso" type="Control" parent="Cards" unique_id=1727694728 groups=["hit_target"]]
+[node name="Card_urso" type="Control" parent="Cards" unique_id=2071768908 groups=["hit_target"]]
 anchors_preset = 0
-anchor_left = 0.5
-anchor_top = 0.4
-anchor_right = 0.5
-anchor_bottom = 0.4
-offset_left = -120.0
-offset_top = -150.0
-offset_right = 120.0
-offset_bottom = 150.0
+anchor_left = 0.845
+anchor_top = 0.5
+anchor_right = 0.845
+anchor_bottom = 0.5
+offset_left = -105.0
+offset_top = -130.0
+offset_right = 105.0
+offset_bottom = 130.0
 script = ExtResource("4_5h5x7")
 
-[node name="Art" type="TextureRect" parent="Cards/Card_urso" unique_id=1094704138]
+[node name="Art" type="TextureRect" parent="Cards/Card_urso" unique_id=1434125080]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 0.75
@@ -142,76 +142,76 @@ texture = ExtResource("7_5s6xd")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Stars" type="Control" parent="Cards/Card_urso" unique_id=351742476]
+[node name="Stars" type="Control" parent="Cards/Card_urso" unique_id=1463419729]
 anchors_preset = 0
 anchor_top = 0.8
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Star0" type="TextureRect" parent="Cards/Card_urso/Stars" unique_id=1644799755]
+[node name="Star0" type="TextureRect" parent="Cards/Card_urso/Stars" unique_id=928584017]
 layout_mode = 0
-offset_left = 20.0
-offset_right = 56.0
+offset_left = 5.0
+offset_right = 41.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star1" type="TextureRect" parent="Cards/Card_urso/Stars" unique_id=1728153550]
+[node name="Star1" type="TextureRect" parent="Cards/Card_urso/Stars" unique_id=309600938]
 layout_mode = 0
-offset_left = 60.0
-offset_right = 96.0
+offset_left = 45.0
+offset_right = 81.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star2" type="TextureRect" parent="Cards/Card_urso/Stars" unique_id=1318593767]
+[node name="Star2" type="TextureRect" parent="Cards/Card_urso/Stars" unique_id=1924224809]
 layout_mode = 0
-offset_left = 100.0
-offset_right = 136.0
+offset_left = 85.0
+offset_right = 121.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star3" type="TextureRect" parent="Cards/Card_urso/Stars" unique_id=923958782]
+[node name="Star3" type="TextureRect" parent="Cards/Card_urso/Stars" unique_id=988624708]
 layout_mode = 0
-offset_left = 140.0
-offset_right = 176.0
+offset_left = 125.0
+offset_right = 161.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star4" type="TextureRect" parent="Cards/Card_urso/Stars" unique_id=2003985057]
+[node name="Star4" type="TextureRect" parent="Cards/Card_urso/Stars" unique_id=2129840404]
 layout_mode = 0
-offset_left = 180.0
-offset_right = 216.0
+offset_left = 165.0
+offset_right = 201.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Card_pinguim" type="Control" parent="Cards" unique_id=1119901692 groups=["hit_target"]]
+[node name="Card_pinguim" type="Control" parent="Cards" unique_id=1510817862 groups=["hit_target"]]
 anchors_preset = 0
-anchor_left = 0.78
-anchor_top = 0.4
-anchor_right = 0.78
-anchor_bottom = 0.4
-offset_left = -120.0
-offset_top = -150.0
-offset_right = 120.0
-offset_bottom = 150.0
+anchor_left = 0.845
+anchor_top = 0.755
+anchor_right = 0.845
+anchor_bottom = 0.755
+offset_left = -105.0
+offset_top = -130.0
+offset_right = 105.0
+offset_bottom = 130.0
 script = ExtResource("4_5h5x7")
 
-[node name="Art" type="TextureRect" parent="Cards/Card_pinguim" unique_id=252719981]
+[node name="Art" type="TextureRect" parent="Cards/Card_pinguim" unique_id=698401461]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 0.75
@@ -220,64 +220,64 @@ texture = ExtResource("8_r72gs")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Stars" type="Control" parent="Cards/Card_pinguim" unique_id=712310756]
+[node name="Stars" type="Control" parent="Cards/Card_pinguim" unique_id=603414235]
 anchors_preset = 0
 anchor_top = 0.8
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Star0" type="TextureRect" parent="Cards/Card_pinguim/Stars" unique_id=1484401970]
+[node name="Star0" type="TextureRect" parent="Cards/Card_pinguim/Stars" unique_id=2037408957]
 layout_mode = 0
-offset_left = 20.0
-offset_right = 56.0
+offset_left = 5.0
+offset_right = 41.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star1" type="TextureRect" parent="Cards/Card_pinguim/Stars" unique_id=1689771010]
+[node name="Star1" type="TextureRect" parent="Cards/Card_pinguim/Stars" unique_id=20372846]
 layout_mode = 0
-offset_left = 60.0
-offset_right = 96.0
+offset_left = 45.0
+offset_right = 81.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star2" type="TextureRect" parent="Cards/Card_pinguim/Stars" unique_id=877265329]
+[node name="Star2" type="TextureRect" parent="Cards/Card_pinguim/Stars" unique_id=641518900]
 layout_mode = 0
-offset_left = 100.0
-offset_right = 136.0
+offset_left = 85.0
+offset_right = 121.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star3" type="TextureRect" parent="Cards/Card_pinguim/Stars" unique_id=34043456]
+[node name="Star3" type="TextureRect" parent="Cards/Card_pinguim/Stars" unique_id=2109926867]
 layout_mode = 0
-offset_left = 140.0
-offset_right = 176.0
+offset_left = 125.0
+offset_right = 161.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Star4" type="TextureRect" parent="Cards/Card_pinguim/Stars" unique_id=1032861292]
+[node name="Star4" type="TextureRect" parent="Cards/Card_pinguim/Stars" unique_id=840833312]
 layout_mode = 0
-offset_left = 180.0
-offset_right = 216.0
+offset_left = 165.0
+offset_right = 201.0
 offset_bottom = 36.0
 mouse_filter = 2
 texture = ExtResource("6_m6gfm")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CoinTicketHud" type="Control" parent="." unique_id=271379075]
+[node name="CoinTicketHud" type="Control" parent="." unique_id=275126422]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -287,7 +287,7 @@ offset_right = -36.0
 offset_bottom = 124.0
 script = ExtResource("9_g0nxy")
 
-[node name="HomeButton" type="Control" parent="." unique_id=63375593 groups=["hit_target"]]
+[node name="HomeButton" type="Control" parent="." unique_id=1988133938 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 36.0
@@ -295,7 +295,7 @@ offset_right = 156.0
 offset_bottom = 156.0
 script = ExtResource("4_5h5x7")
 
-[node name="Art" type="TextureRect" parent="HomeButton" unique_id=2075139240]
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=445831282]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
