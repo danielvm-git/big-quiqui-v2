@@ -15,8 +15,6 @@ signal progress_changed
 
 const PRODUCTION_PATH: String = "user://progress.json"
 const TEST_PATH: String = "user://test_progress.json"
-const TMP_SUFFIX: String = ".tmp"
-const BAK_SUFFIX: String = ".bak"
 const CYCLE_COINS_REWARD: int = 5
 const CYCLE_TICKETS_REWARD: int = 1
 
@@ -57,18 +55,24 @@ func load_or_default() -> void:
 	if not FileAccess.file_exists(save_path):
 		data = SaveData.new()
 		return
-	var loaded: Dictionary = _read_save_dictionary(save_path)
+	var loaded: Dictionary = SaveFile.read_dictionary(save_path)
 	if loaded.is_empty():
-		var recovered: Dictionary = _read_save_dictionary(bak_path())
-		if recovered.is_empty():
-			_fail_load("corrupt", "corrupt")
-			return
-		data = SaveData.from_dictionary(recovered)
-		_emit("save.recovered_from_backup", {"coins": data.coins})
-		_mirror_backup()
+		_recover_from_backup()
 		return
 	data = SaveData.from_dictionary(loaded)
 	_emit("save.loaded", {"coins": data.coins, "cycles": data.completed_cycles})
+	_mirror_backup()
+
+
+## FIX-06: a corrupt save is survivable. Without a good `.bak` it degrades to defaults,
+## which is data loss — recorded, never silent.
+func _recover_from_backup() -> void:
+	var recovered: Dictionary = SaveFile.read_dictionary(bak_path())
+	if recovered.is_empty():
+		_fail_load("corrupt", "corrupt")
+		return
+	data = SaveData.from_dictionary(recovered)
+	_emit("save.recovered_from_backup", {"coins": data.coins})
 	_mirror_backup()
 
 
@@ -81,15 +85,10 @@ func _fail_load(err: String, reason: String) -> void:
 ## Atomic write: temp file, flush, close, rename. Returns false on failure.
 func save() -> bool:
 	last_error = ""
-	var tmp: String = tmp_path()
-	if not _write_tmp(tmp):
-		last_error = "open_failed"
-		_emit("save.write_failed", {"reason": "open"})
-		return false
-	if DirAccess.rename_absolute(tmp, save_path) != OK:
-		last_error = "rename_failed"
-		DirAccess.remove_absolute(tmp)
-		_emit("save.write_failed", {"reason": "rename"})
+	var failure: String = SaveFile.write_atomic(save_path, data.to_dictionary())
+	if not failure.is_empty():
+		last_error = "open_failed" if failure == "open" else "rename_failed"
+		_emit("save.write_failed", {"reason": failure})
 		return false
 	write_count += 1
 	_emit("save.written", {"coins": data.coins, "cycles": data.completed_cycles})
@@ -98,61 +97,21 @@ func save() -> bool:
 	return true
 
 
-func _write_tmp(tmp: String) -> bool:
-	var file: FileAccess = FileAccess.open(tmp, FileAccess.WRITE)
-	if file == null:
-		return false
-	file.store_string(JSON.stringify(data.to_dictionary(), "\t"))
-	file.flush()
-	file.close()
-	return true
-
-
 func tmp_path() -> String:
-	return save_path + TMP_SUFFIX
+	return SaveFile.tmp_path(save_path)
 
 
 func bak_path() -> String:
-	return save_path + BAK_SUFFIX
+	return SaveFile.bak_path(save_path)
 
 
 func has_orphan_tmp() -> bool:
-	return FileAccess.file_exists(tmp_path())
-
-
-func _read_save_dictionary(path: String) -> Dictionary:
-	if not FileAccess.file_exists(path):
-		return {}
-	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return {}
-	var text: String = file.get_as_text()
-	file.close()
-	var json: JSON = JSON.new()
-	if json.parse(text) != OK or not json.data is Dictionary:
-		return {}
-	return json.data as Dictionary
+	return SaveFile.has_orphan_tmp(save_path)
 
 
 func _mirror_backup() -> void:
-	if data == null:
-		return
-	var bak: String = bak_path()
-	var tmp: String = bak + TMP_SUFFIX
-	if not _write_dictionary(tmp, data.to_dictionary()):
-		return
-	if DirAccess.rename_absolute(tmp, bak) != OK:
-		DirAccess.remove_absolute(tmp)
-
-
-func _write_dictionary(path: String, payload: Dictionary) -> bool:
-	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
-	if file == null:
-		return false
-	file.store_string(JSON.stringify(payload, "\t"))
-	file.flush()
-	file.close()
-	return true
+	if data != null:
+		SaveFile.mirror_backup(save_path, data.to_dictionary())
 
 
 # ── mutation helpers (clamped, always announced) ─────────────────────────────
@@ -232,8 +191,7 @@ func reset() -> void:
 	data = SaveData.new()
 	write_count = 0
 	last_error = ""
-	if has_orphan_tmp():
-		DirAccess.remove_absolute(tmp_path())
+	SaveFile.remove(tmp_path())
 	if FileAccess.file_exists(bak_path()):
 		DirAccess.remove_absolute(bak_path())
 

@@ -122,8 +122,10 @@ audit accepted a 204-line E2E while missing a 349-line one). They are now the st
 - **Scope:** the bar applies to every **new or changed** file. Grandfathered debt, re-pinned on
   2026-11-07 (after the e10/e11 landing, when `progress_manager.gd` crossed the bar and nothing
   noticed), is exactly: `game/scripts/components/quiqui_rig.gd` (427),
-  `game/tests/unit/test_quiqui_rig.gd` (404), `game/scripts/autoloads/progress_manager.gd` (341),
-  `game/scripts/components/touch_draggable.gd` (326), `game/scripts/scenes/banheiro.gd` (326).
+  `game/tests/unit/test_quiqui_rig.gd` (404), `game/scripts/components/touch_draggable.gd` (326),
+  `game/scripts/scenes/banheiro.gd` (326). `progress_manager.gd` was on this list at 341 and is
+  gone from it: the save-path bytes moved to `game/scripts/core/save_file.gd` and the manager
+  came back under 300 (the allowance was deleted in the same commit, as INV-09 requires).
   Growing one of those is a violation; shrinking one is welcome whenever a touching change allows it.
   **This is now machine-enforced** by `game/tests/integration/test_size_bars.gd` (INV-09): a new
   file over 300 lines fails, a grandfathered file fails if it grows by one line, and a
