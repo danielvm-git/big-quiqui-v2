@@ -27,7 +27,8 @@ Preflight, so **local green means CI green** (audit item CI15).
 | Project version sync | `bash scripts/sync-project-version.sh` |
 | Setup | `bash scripts/setup.sh` |
 | Logs | `bash scripts/logs.sh summary --sessions 3` |
-| Traceability | `bash scripts/trace-stories.sh --strict` |
+| Traceability (tag presence) | `bash scripts/trace-stories.sh --strict` |
+| Traceability (plan → code → test) | `python3 scripts/traceability.py --check` (preflight L4b) |
 | Release | `big-release release --dry-run --verbose` (CI releases on `main`) |
 
 
@@ -36,7 +37,7 @@ Preflight, so **local green means CI green** (audit item CI15).
   ```bash
   bash scripts/preflight.sh
   ```
-  It runs every stage and prints PASS/FAIL per stage: `L0` `gdlint` + `gdformat --check` (addons excluded), `L0b` strict-typing type gate (`game/tools/type_gate.gd`), `L1` GUT unit + integration, `L3` PII log audit, `L4` story traceability, `L5` bigpowers spec schema.
+  It runs every stage and prints PASS/FAIL per stage: `L0` `gdlint` + `gdformat --check` (addons excluded), `L0b` strict-typing type gate (`game/tools/type_gate.gd`), `L1` GUT unit + integration, `L3` PII log audit, `L4` story tag presence, `L4b` plan→code→test traceability (`scripts/traceability.py`), `L5` bigpowers spec schema.
 - **Zero-Test Guard:** A test run that executes `0` scripts or `0` assertions is a HARD FAILURE (`preflight.sh` greps GUT's `Nothing was run` and exits non-zero).
 - **CI is centralized:** `.github/workflows/ci-cd.yml` is a copy of the portfolio template `danielvm-git/.github` → `test-build-release-godot.yml` (Option B, ADR-007), with inputs inlined. Pipeline logic belongs upstream — never invent a local stage; project-specific gates belong in `scripts/preflight.sh`, which the workflow calls. Re-sync the copy when the template version bumps.
 - **Bootstrap Exception:** `bash scripts/preflight.sh --bootstrap` is the ONLY sanctioned way to pass Preflight with `0` test scripts. It may be used exactly once, before the first story lands, and is recorded as `lifecycle_phase` in `specs/state.yaml`. It never suppresses a real failure — only the zero-test verdict. CI selects it automatically **only** while `game/tests/**/test_*.gd` is empty; the first test file disables it permanently.

@@ -126,6 +126,13 @@ fi
 stage "L4 · story traceability"
 run "bash scripts/trace-stories.sh --strict" bash scripts/trace-stories.sh --strict
 
+stage "L4b · plan to code to test (traceability)"
+# e11s03 promised a "gate-trace sign-off" and the artifact did not exist: trace-stories.sh only
+# asks whether a file *has* a story tag, never whether the story the plan calls done has code
+# and a test. The script exits non-zero on a story with no artifact anywhere.
+run "scripts/traceability.py --check" bash -c 'source scripts/lib/python-env.sh && resolve_python >/dev/null && python3 scripts/traceability.py --check'
+run "scripts/traceability.py --self-test" bash -c 'source scripts/lib/python-env.sh && resolve_python >/dev/null && python3 scripts/traceability.py --self-test'
+
 stage "L5 · specs schema (bigpowers contract)"
 if [ -f scripts/validate-specs-yaml.sh ]; then
   run "scripts/validate-specs-yaml.sh (vendored)" bash scripts/validate-specs-yaml.sh
