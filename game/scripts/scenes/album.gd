@@ -81,7 +81,7 @@ func lit_stars(id: String) -> int:
 	var progress: Node = get_node_or_null("/root/ProgressManager")
 	if progress == null or not progress.has_method("stars_of"):
 		return 0
-	return clampi(int(progress.call("stars_of", id)), 0, 5)
+	return clampi(int(progress.call("stars_of", id)), 0, SaveData.MAX_STARS)
 
 
 func refresh_all() -> void:
@@ -97,7 +97,7 @@ func _refresh_card(id: String) -> void:
 	var art: TextureRect = card.get_node_or_null("Art") as TextureRect
 	if art != null:
 		art.modulate = CARD_LIT_COLOR if count > 0 else CARD_UNLIT_COLOR
-	for star_idx: int in range(5):
+	for star_idx: int in range(SaveData.MAX_STARS):
 		var star: TextureRect = card.get_node_or_null("Stars/Star%d" % star_idx) as TextureRect
 		if star != null:
 			star.modulate = STAR_LIT_COLOR if star_idx < count else STAR_UNLIT_COLOR

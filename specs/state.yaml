@@ -18,6 +18,34 @@ review_gate:
     verdict: PASS
     report: specs/verifications/REVIEW-e11-2026-11-07.md
     must_fix: []
+  - epic: e11
+    round: post-epic
+    verdict: PASS with fixes
+    report: specs/verifications/POSTEPIC-e11-2026-11-07.md
+    must_fix: []
+    found: 8
+    fixed: 6
+    deferred: 0
+    wontfix: 0
+    outcome: >-
+      2 the L5c red (project.godot 0.9.1 vs tag v0.10.0), the e11s02 claim of 1,000 events against
+      500+200 shipped, the unenforced 300-line bar (progress_manager 341, ci-cd.yml 348), and the
+      missing gate-trace artifact (now scripts/traceability.py + preflight L4b) were fixed; the
+      e11s01 "across all scenes" wording and the gallery being a fingerprint manifest were documented.
+  - epic: e10
+    round: post-epic
+    verdict: PASS
+    report: specs/verifications/POSTEPIC-e10-2026-11-07.md
+    must_fix: []
+    found: 5
+    fixed: 1
+    deferred: 0
+    wontfix: 0
+    outcome: >-
+      AlbumScene hardcoded the star cap (SaveData.MAX_STARS now owns it, pinned by two tests); the
+      minigame payout table had no gate (INV-04 now asserts coverage of FriendCatalog.FRIEND_IDS);
+      replay-pays-again and the penguin star threshold were checked against their contracts and are
+      correct.
     outcome: PASS after must-fix closure (export presets, ios-deploy check, geometry oracle gallery gate, uid sync).
   - epic: e10-friends-minigames-and-album-scenes
     round: 1

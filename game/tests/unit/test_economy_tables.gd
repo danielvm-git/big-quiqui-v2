@@ -82,3 +82,27 @@ func test_star_caps_match_the_save_model() -> void:
 	assert_gte(SaveData.MAX_STARS, 1)
 	var stars: Dictionary = SaveData.from_dictionary({"friend_stars": {"pato": 99}}).friend_stars
 	assert_eq(int(stars["pato"]), SaveData.MAX_STARS, "the save and the album share one cap")
+
+
+func test_the_minigame_payout_table_covers_the_friends_exactly() -> void:
+	## e10 added a second payout table. The same rule as the furniture prices applies: a
+	## friend missing from it wins the minigame and is paid nothing, silently.
+	var economy: EconomyData = EconomyData.new()
+	var priced: Array = economy.minigame_coins.keys()
+	priced.sort()
+	var friends: Array = FriendCatalog.FRIEND_IDS.duplicate()
+	friends.sort()
+	assert_eq(priced, friends, "every friend pays, and nothing else is in the table")
+
+
+func test_every_minigame_pays_at_least_one_coin() -> void:
+	var economy: EconomyData = EconomyData.new()
+	for friend: String in FriendCatalog.FRIEND_IDS:
+		assert_gte(FriendCatalog.coins_of(friend, economy), 1, "%s must pay something" % friend)
+
+
+func test_an_unknown_friend_pays_zero_and_never_negative() -> void:
+	var economy: EconomyData = EconomyData.new()
+	assert_eq(FriendCatalog.coins_of("dragao", economy), 0, "no mint from an unknown id")
+	economy.minigame_coins = {"pato": -5}
+	assert_eq(FriendCatalog.coins_of("pato", economy), 0, "a negative payout is not a charge")

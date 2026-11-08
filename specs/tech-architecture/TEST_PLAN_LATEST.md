@@ -176,3 +176,19 @@ a file outside the map is ≤ 300 lines, a grandfathered file does not grow by o
 grandfathered file that drops under 300 must lose its allowance (so debt that is paid off
 cannot be "grandfathered" twice). `.github/workflows/ci-cd.yml` (348 lines) stays outside the
 gate — it is YAML — and is recorded as debt in CONVENTIONS §5 instead.
+
+## 11. L4b — traceability (plan → code → test)
+
+`e11s03` promised a "gate-trace Full Traceability Sign-Off" and no artifact ever existed;
+`scripts/trace-stories.sh` only asks whether a file *has* a `# story:` tag.
+
+`scripts/traceability.py` reads `specs/release-plan.yaml`, the story tags in
+`game/scripts`, `game/tools`, `game/tests/helpers` (a story's deliverable may legitimately be a
+test harness), the tests in `game/tests/{unit,integration}`, and the audit tags in
+`specs/verifications/`. It writes `specs/TRACEABILITY_LATEST.md` and exits non-zero on a story
+with **no artifact anywhere** (`--self-test` proves the detector distinguishes
+covered / code_only / test_only / audited / missing / waived). Preflight runs it as **L4b**.
+
+Current picture: 43 planned stories — 33 covered, 5 test_only, 2 code_only, 2 audited,
+1 waived, **0 missing**, 0 orphan tags. The `test_only`/`code_only` rows are tag hygiene
+(the behaviour is covered, the tag sits on the neighbouring story), not holes.

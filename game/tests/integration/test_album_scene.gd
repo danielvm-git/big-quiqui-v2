@@ -127,3 +127,30 @@ func test_vila_album_door_navigates_and_badge_unlocks() -> void:
 	_tap(album_door)
 	assert_true(requested.has(ALBUM_PATH), "PoiALBUM navigates to album")
 	vila.queue_free()
+
+
+# SC-E10-P1-25 (post-epic review): the star cap has one owner.
+func test_every_card_renders_exactly_max_stars_slots() -> void:
+	## `SaveData.MAX_STARS` is the cap; the album draws one slot per point. The first
+	## version hardcoded 5 in two places (a clamp and a `range(5)`), so raising the cap
+	## would have shown four lit points and one unreachable slot — the BUG-008 class of
+	## divergent contracts, invisible because both numbers happened to be 5.
+	scene = _mount(ALBUM_PATH, GeometryOracle.DESKTOP_16_9)
+	await wait_process_frames(2)
+	for friend: String in FriendCatalog.FRIEND_IDS:
+		var stars: Node = scene.get_node_or_null("Cards/Card_%s/Stars" % friend)
+		assert_not_null(stars, "%s has a star rail" % friend)
+		assert_eq(stars.get_child_count(), SaveData.MAX_STARS, "%s star slots" % friend)
+
+
+func test_lighting_every_star_slot_leaves_none_dark() -> void:
+	scene = _mount(ALBUM_PATH, GeometryOracle.DESKTOP_16_9)
+	await wait_process_frames(2)
+	var progress: Node = get_node("/root/ProgressManager")
+	for _i: int in range(SaveData.MAX_STARS):
+		progress.call("add_star", "urso")
+	assert_eq(int(scene.call("lit_stars", "urso")), SaveData.MAX_STARS)
+	var stars: Node = scene.get_node("Cards/Card_urso/Stars")
+	for star: Node in stars.get_children():
+		assert_eq((star as TextureRect).modulate, AlbumScene.STAR_LIT_COLOR, "%s is lit" % star.name)
+	assert_false(bool(progress.call("add_star", "urso")), "a capped friend refuses more stars")
