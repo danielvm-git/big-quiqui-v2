@@ -16,7 +16,6 @@ const SCAN_ROOTS: Array[String] = ["res://scripts", "res://tools", "res://tests"
 const GRANDFATHERED: Dictionary = {
 	"res://scripts/components/quiqui_rig.gd": 427,
 	"res://tests/unit/test_quiqui_rig.gd": 404,
-	"res://scripts/autoloads/progress_manager.gd": 341,
 	"res://scripts/components/touch_draggable.gd": 326,
 	"res://scripts/scenes/banheiro.gd": 326,
 }
