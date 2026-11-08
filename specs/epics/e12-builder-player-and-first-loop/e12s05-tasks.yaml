@@ -1,0 +1,65 @@
+story_id: e12s05
+spec: e12s05.md
+epic_id: e12
+title: "Hint Layer: Ghost Hand After Silence"
+status: failing
+bcps: 5
+scenarios: ["SC-e12s05-P1-01", "SC-e12s05-P1-02", "SC-e12s05-P1-03", "SC-e12s05-P2-01", "SC-e12s05-P2-02"]
+playable_scene: "res://scenes/scene_player.tscn (a step that teaches itself)"
+tasks:
+- id: e12s05-t01
+  description: "Write the failing hint-layer tests: threshold, single hint, cancel-on-touch, cooldown, and a def with no hint"
+  verify: test -f game/tests/unit/test_hint_layer.gd
+  risk: P1
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e12s05-P1-04)"
+  allure:
+    severity: high
+    categories:
+      - "wave-1a"
+      - "hints"
+      - "unit"
+      - "input"
+  status: failing
+- id: e12s05-t02
+  description: "Add the idle clock to `StepRunner` and feed `HintManager` from it"
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P1
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e12s05-P1-04)"
+  allure:
+    severity: high
+    categories:
+      - "wave-1a"
+      - "hints"
+      - "unit"
+      - "input"
+  status: failing
+- id: e12s05-t03
+  description: "Take `DragHint`'s from/to from the def's node ids and keep the target pulse"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_hint_layer
+  risk: P1
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e12s05-P1-04)"
+  allure:
+    severity: high
+    categories:
+      - "wave-1a"
+      - "hints"
+      - "unit"
+      - "input"
+  status: failing
+- id: e12s05-t04
+  description: "Prove the hand tracks real layout at both aspects and never eats a tap"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_hint_layer
+  risk: P1
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e12s05-P1-04)"
+  allure:
+    severity: high
+    categories:
+      - "wave-1a"
+      - "hints"
+      - "unit"
+      - "input"
+  status: failing

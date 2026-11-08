@@ -1,0 +1,628 @@
+<title>QuiQui Builder</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: same teardown-sheet system as "Anatomia TutoTOONS", now as the QuiQui blueprint. 960px reading column, plates scroll sideways. */
+:root{
+  --bg:#F4F5FA; --paper:#FFFFFF; --fg:#1B1F3A; --muted:#5D6382; --line:#D5D8E6;
+  --accent:#D93A73; --a1:#C9871A; --a2:#16907F; --a3:#6A58C9; --decline:#9AA0B8;
+  --tint-accent:#FBE4EC; --tint-a1:#FAEFD9; --tint-a2:#DDF3EF; --tint-a3:#E9E5FA; --tint-mute:#ECEEF4;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --paper:#1A1D38; --fg:#E9EAF4; --muted:#A3A8C6; --line:#33385C;
+  --accent:#F06A98; --a1:#E8AE4C; --a2:#3CC2AE; --a3:#9C8CF0; --decline:#6B7192;
+  --tint-accent:#3A1D2E; --tint-a1:#382C17; --tint-a2:#123430; --tint-a3:#272250; --tint-mute:#23274A;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --paper:#1A1D38; --fg:#E9EAF4; --muted:#A3A8C6; --line:#33385C;
+  --accent:#F06A98; --a1:#E8AE4C; --a2:#3CC2AE; --a3:#9C8CF0; --decline:#6B7192;
+  --tint-accent:#3A1D2E; --tint-a1:#382C17; --tint-a2:#123430; --tint-a3:#272250; --tint-mute:#23274A;
+  color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:960px;margin:0 auto;padding-block:40px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.75rem;font-weight:700;letter-spacing:-.01em}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0;max-width:68ch}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-size:.86em}
+section,header{display:flex;flex-direction:column;gap:16px}
+.lede{font-size:1.12rem;color:var(--muted)}
+.lede strong{color:var(--fg)}
+.plate{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.plate svg{display:block;min-width:720px;width:100%;height:auto}
+svg text{font-family:var(--body);fill:var(--fg)}
+svg .m{font-family:var(--mono);fill:var(--muted)}
+svg .h{font-family:var(--display);font-weight:700}
+.cap{font-size:.9rem;color:var(--muted)}
+.tbl{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;min-width:880px;font-size:.86rem}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+thead th{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;position:sticky;top:0;background:var(--paper)}
+tbody tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.id{font-family:var(--mono);white-space:nowrap}
+td.ev{font-family:var(--mono);font-size:.76rem;color:var(--muted)}
+tr.grp td{background:var(--tint-mute);font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.chip{display:inline-block;font-family:var(--mono);font-size:.7rem;padding:1px 8px;border-radius:999px;white-space:nowrap;background:var(--t);color:var(--fg)}
+.w1{--t:var(--tint-accent)} .w2{--t:var(--tint-a2)} .w3{--t:var(--tint-a3)} .wq{--t:var(--tint-a1)} .wx{--t:var(--tint-mute)}
+.dim{color:var(--muted)}
+.tally{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.tally b{color:var(--fg);font-weight:500}
+pre{margin:0;padding:18px;background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow-x:auto;font-family:var(--mono);font-size:.82rem;line-height:1.6;color:var(--fg)}
+pre .k{color:var(--a3)} pre .s{color:var(--a2)} pre .c{color:var(--muted)} pre .n{color:var(--a1)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;margin:0;padding:0;list-style:none}
+@media (max-width:640px){.rules{grid-template-columns:1fr}}
+.rules li{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.rules b{font-family:var(--display);font-size:1.05rem}
+.rules span{font-size:.9rem;color:var(--muted)}
+.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:700px){.games{grid-template-columns:1fr}}
+.game{background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.game .chips{display:flex;flex-wrap:wrap;gap:6px}
+.game p{font-size:.9rem;color:var(--muted)}
+.slices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.slices{grid-template-columns:1fr}}
+.slice{background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.slice ul{margin:0;padding-left:18px;font-size:.92rem;display:flex;flex-direction:column;gap:4px}
+.slice .done{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+.c1{--c:var(--accent)} .c2{--c:var(--a2)} .c3{--c:var(--a3)} .c4{--c:var(--a1)}
+.note{font-size:.85rem;color:var(--muted);border-left:3px solid var(--line);padding-left:12px}
+.callout{background:var(--tint-accent);border-radius:6px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.correction{background:var(--tint-a1);border-radius:6px;padding:14px 18px;font-size:.92rem}
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Architecture proposal · QuiQui restart · Nov 2026</span>
+  <h1>QuiQui Builder</h1>
+  <p class="lede">One <strong>scene player</strong>, a small set of <strong>interaction primitives</strong>, and a <strong>template library</strong> that mirrors every TutoTOONS Builder template that real scenes use (30 of 44). QuiQui Care is the first game built on it. Later QuiQui titles reuse the same templates and add only art, voice and scene data.</p>
+  <p class="correction"><strong>Correction:</strong> the Builder has <strong>44 templates</strong>, not 59. They are numbered 0–4 and 20–58, and numbers 5–19 do not exist. Each template keeps its TutoTOONS number in its QuiQui id, so the mapping stays traceable.</p>
+  <p class="correction"><strong>Scene-data pass done:</strong> I opened the scene files of the 13 Builder titles. <strong>14 template numbers never appear in any scene</strong>, so they are empty slots and we do not build them. The 11 wave-1 templates cover 87% of template scenes. Three earlier guesses changed: the old "t42 rub" is really a slicing scene, the cleaning mechanic is <span class="mono">t23</span> (erase) together with <span class="mono">t40</span> (draw), and <span class="mono">t20</span>, not <span class="mono">t47</span>, is the main drag-to-target.</p>
+  <p class="cap">Everything is named in English: code, ids, data keys and file names. The game shows no text during play, so translating it means swapping voice files. See "English-first naming" below.</p>
+</header>
+
+<!-- 1. LAYERS -->
+<section>
+  <span class="eyebrow">Diagram 1 · Layers</span>
+  <h2>Five layers, one direction</h2>
+  <p>Each layer only uses the layer below it. Templates never know which game they are in. Scene data never contains code. A new QuiQui title is a new top layer plus scene data.</p>
+  <div class="plate">
+  <svg viewBox="0 0 960 470" role="img" aria-label="Layer stack: games, scene data, template library, primitives, services">
+    <text x="22" y="52" class="m" font-size="11">L4</text>
+    <text x="22" y="132" class="m" font-size="11">L3</text>
+    <text x="22" y="218" class="m" font-size="11">L2</text>
+    <text x="22" y="320" class="m" font-size="11">L1</text>
+    <text x="22" y="420" class="m" font-size="11">L0</text>
+
+    <rect x="60" y="20" width="880" height="64" rx="4" fill="var(--paper)" stroke="var(--line)"/>
+    <text x="80" y="46" class="h" font-size="16">Games</text>
+    <g font-size="12">
+      <rect x="200" y="32" width="160" height="40" rx="4" fill="var(--tint-accent)" stroke="var(--accent)"/><text x="280" y="57" text-anchor="middle" font-weight="600">QuiQui Care</text>
+      <rect x="372" y="32" width="160" height="40" rx="4" fill="var(--paper)" stroke="var(--line)" stroke-dasharray="4 4"/><text x="452" y="57" text-anchor="middle">QuiQui Salon</text>
+      <rect x="544" y="32" width="160" height="40" rx="4" fill="var(--paper)" stroke="var(--line)" stroke-dasharray="4 4"/><text x="624" y="57" text-anchor="middle">QuiQui Kitchen</text>
+      <rect x="716" y="32" width="208" height="40" rx="4" fill="var(--paper)" stroke="var(--line)" stroke-dasharray="4 4"/><text x="820" y="57" text-anchor="middle">QuiQui Adventure</text>
+    </g>
+
+    <rect x="60" y="96" width="880" height="64" rx="4" fill="var(--paper)" stroke="var(--line)" stroke-dasharray="5 4"/>
+    <text x="80" y="122" class="h" font-size="16">Scene data</text>
+    <text x="80" y="144" font-size="13"><tspan class="m" font-size="12">SceneDef</tspan> .tres per scene: background, music, voice keys, steps (template id + params), reward, next</text>
+
+    <rect x="60" y="172" width="880" height="96" rx="4" fill="var(--tint-a1)" stroke="var(--a1)" stroke-width="2"/>
+    <text x="80" y="198" class="h" font-size="16">Template library · 30 used slots</text>
+    <text x="80" y="220" font-size="13">One QuiQui template per TutoTOONS template. Id keeps the number: <tspan class="m" font-size="12">t20_drag_snap</tspan>, <tspan class="m" font-size="12">t23_erase</tspan>, <tspan class="m" font-size="12">t27_memory</tspan></text>
+    <g font-size="11.5">
+      <rect x="80" y="232" width="200" height="26" rx="13" fill="var(--paper)" stroke="var(--a1)"/><text x="180" y="249" text-anchor="middle">28 to build in 3 waves</text>
+      <rect x="292" y="232" width="200" height="26" rx="13" fill="var(--paper)" stroke="var(--a1)"/><text x="392" y="249" text-anchor="middle">14 empty slots, not built</text>
+      <rect x="504" y="232" width="240" height="26" rx="13" fill="var(--paper)" stroke="var(--decline)"/><text x="624" y="249" text-anchor="middle">2 retired (ads)</text>
+    </g>
+
+    <rect x="60" y="280" width="880" height="96" rx="4" fill="var(--tint-a2)" stroke="var(--a2)"/>
+    <text x="80" y="306" class="h" font-size="16">Primitives</text>
+    <g font-size="12">
+      <rect x="80" y="318" width="118" height="44" rx="4" fill="var(--paper)" stroke="var(--a2)"/><text x="139" y="345" text-anchor="middle" font-weight="600">Give→Receive</text>
+      <rect x="206" y="318" width="76" height="44" rx="4" fill="var(--paper)" stroke="var(--a2)"/><text x="244" y="345" text-anchor="middle" font-weight="600">Rub</text>
+      <rect x="290" y="318" width="76" height="44" rx="4" fill="var(--paper)" stroke="var(--a2)"/><text x="328" y="345" text-anchor="middle" font-weight="600">Tap</text>
+      <rect x="374" y="318" width="76" height="44" rx="4" fill="var(--paper)" stroke="var(--a2)"/><text x="412" y="345" text-anchor="middle" font-weight="600">Steer</text>
+      <rect x="458" y="318" width="76" height="44" rx="4" fill="var(--paper)" stroke="var(--a2)"/><text x="496" y="345" text-anchor="middle" font-weight="600">Pan</text>
+      <text x="556" y="336" class="m" font-size="10.5">modifiers</text>
+      <text x="556" y="354" font-size="12">Spawner · Pairs · Sequence</text>
+      <rect x="760" y="318" width="164" height="44" rx="4" fill="var(--paper)" stroke="var(--accent)"/><text x="842" y="336" text-anchor="middle" font-weight="600">Reactions</text><text x="842" y="352" text-anchor="middle" class="m" font-size="9.5">pose · sfx · fx · swap</text>
+    </g>
+
+    <rect x="60" y="388" width="880" height="64" rx="4" fill="var(--tint-mute)" stroke="var(--line)"/>
+    <text x="80" y="414" class="h" font-size="16">Services (already exist)</text>
+    <text x="80" y="436" font-size="13">Log · ProgressManager · AudioManager · SceneManager · QuiQuiRig · TouchDraggable · Fsm</text>
+  </svg>
+  </div>
+  <p class="cap">TutoTOONS equivalents: L0 is <span class="mono">TutoTOONS.Base</span>, L1 is <span class="mono">PlayObj</span> (drag, click, CorrectAction, spine, status), L2 is <span class="mono">Template0…58</span>, L3 is the imported <span class="mono">SharedObject</span> scene files, and L4 is each Builder title.</p>
+</section>
+
+<!-- 2. PRIMITIVES -->
+<section>
+  <span class="eyebrow">Diagram 2 · Primitives</span>
+  <h2>Five gestures cover the 28 templates we build</h2>
+  <p>Three primitives come first because QuiQui Care needs them. Steer and Pan are only needed by the movement templates of later titles. Modifiers add behaviour to any primitive. Reactions are shared by all of them.</p>
+  <div class="plate">
+  <svg viewBox="0 0 960 330" role="img" aria-label="Five primitives with their modes and the templates that use each">
+    <g font-size="12">
+      <rect x="16" y="20" width="176" height="290" rx="6" fill="var(--paper)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="32" y="48" class="h" font-size="16">Give→Receive</text>
+      <text x="32" y="68" class="m" font-size="10">drag an item to a receiver</text>
+      <text x="32" y="98" font-weight="600">modes</text>
+      <text x="32" y="118" class="m" font-size="10.5">single · pick_one</text>
+      <text x="32" y="134" class="m" font-size="10.5">slots · stack</text>
+      <text x="32" y="150" class="m" font-size="10.5">color · free_place</text>
+      <text x="32" y="150" class="m" font-size="10.5"></text>
+      <text x="32" y="180" font-weight="600">templates</text>
+      <text x="32" y="200" class="m" font-size="10.5">t20 t21 t43 t45</text>
+      <text x="32" y="216" class="m" font-size="10.5">t47 t48</text>
+      <text x="32" y="250" font-weight="600">care uses</text>
+      <text x="32" y="270" class="m" font-size="10.5">feed · dress · decorate</text>
+
+      <rect x="204" y="20" width="176" height="290" rx="6" fill="var(--paper)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="220" y="48" class="h" font-size="16">Rub</text>
+      <text x="220" y="68" class="m" font-size="10">move a tool over an area</text>
+      <text x="220" y="98" font-weight="600">modes</text>
+      <text x="220" y="118" class="m" font-size="10.5">clear (remove layer)</text>
+      <text x="220" y="134" class="m" font-size="10.5">leave (add layer)</text>
+      <text x="220" y="150" class="m" font-size="10.5">reveal · color · cut</text>
+      <text x="220" y="180" font-weight="600">templates</text>
+      <text x="220" y="200" class="m" font-size="10.5">t23 t34 t40 t42</text>
+      <text x="220" y="216" class="m" font-size="10.5">t44 t52</text>
+      <text x="220" y="250" font-weight="600">care uses</text>
+      <text x="220" y="270" class="m" font-size="10.5">soap · rinse · dry · teeth</text>
+
+      <rect x="392" y="20" width="176" height="290" rx="6" fill="var(--paper)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="408" y="48" class="h" font-size="16">Tap</text>
+      <text x="408" y="68" class="m" font-size="10">touch a target</text>
+      <text x="408" y="98" font-weight="600">modes</text>
+      <text x="408" y="118" class="m" font-size="10.5">any · count_n</text>
+      <text x="408" y="134" class="m" font-size="10.5">toggle · sequence</text>
+      <text x="408" y="150" class="m" font-size="10.5">pairs (memory)</text>
+      <text x="408" y="180" font-weight="600">templates</text>
+      <text x="408" y="200" class="m" font-size="10.5">t0 t3 t22 t27 t32 t37</text>
+      <text x="408" y="216" class="m" font-size="10.5">t38 t41 t46 t51 t53 t55</text>
+      <text x="408" y="250" font-weight="600">care uses</text>
+      <text x="408" y="270" class="m" font-size="10.5">bubbles · lamp · doors</text>
+
+      <rect x="580" y="20" width="176" height="290" rx="6" fill="var(--paper)" stroke="var(--a3)"/>
+      <text x="596" y="48" class="h" font-size="16">Steer</text>
+      <text x="596" y="68" class="m" font-size="10">move a character</text>
+      <text x="596" y="98" font-weight="600">modes</text>
+      <text x="596" y="118" class="m" font-size="10.5">free · lanes</text>
+      <text x="596" y="180" font-weight="600">templates</text>
+      <text x="596" y="200" class="m" font-size="10.5">t26 t50</text>
+      <text x="596" y="250" font-weight="600">later titles</text>
+      <text x="596" y="270" class="m" font-size="10.5">ride · collect on lanes</text>
+
+      <rect x="768" y="20" width="176" height="290" rx="6" fill="var(--paper)" stroke="var(--a3)"/>
+      <text x="784" y="48" class="h" font-size="16">Pan</text>
+      <text x="784" y="68" class="m" font-size="10">scroll a wide world</text>
+      <text x="784" y="98" font-weight="600">modes</text>
+      <text x="784" y="118" class="m" font-size="10.5">drag · follow</text>
+      <text x="784" y="180" font-weight="600">templates</text>
+      <text x="784" y="200" class="m" font-size="10.5">t25</text>
+      <text x="784" y="250" font-weight="600">later titles</text>
+      <text x="784" y="270" class="m" font-size="10.5">explore the village</text>
+    </g>
+  </svg>
+  </div>
+  <p class="cap">Modifiers: <span class="mono">Spawner</span> makes objects appear or move (t26 t37 t38 t41 t46 t50), <span class="mono">Pairs</span> matches two taps (t27), <span class="mono">Sequence</span> asks for targets in order (t55). Reactions are data: <span class="mono">pose</span>, <span class="mono">anim</span>, <span class="mono">sfx</span>, <span class="mono">voice</span>, <span class="mono">fx</span>, <span class="mono">swap</span>, <span class="mono">coins</span>, <span class="mono">wait</span>.</p>
+</section>
+
+<!-- 3. TEMPLATE MAP -->
+<section>
+  <span class="eyebrow">Diagram 3 · What the scenes really use</span>
+  <h2>Scene counts decide the build order</h2>
+  <p>I opened the scene files of the 13 Builder titles: 1845 scenes, of which 1801 use a Builder template. Counting which template each scene carries gives the real weight of each one. Bars are colored by build wave.</p>
+  <div class="plate">
+<svg viewBox="0 0 960 622" role="img" aria-label="Scenes per Builder template across 13 titles, sorted, colored by build wave">
+<text x="16" y="22" class="m" font-size="11">template</text><text x="270" y="22" class="m" font-size="11">scenes (of 1801)</text><text x="944" y="22" text-anchor="end" class="m" font-size="11">titles using it</text>
+<line x1="270.0" y1="30" x2="270.0" y2="608" stroke="var(--line)" stroke-width="1"/><text x="270.0" y="620" text-anchor="middle" class="m" font-size="9.5">0</text>
+<line x1="402.7" y1="30" x2="402.7" y2="608" stroke="var(--line)" stroke-width="1"/><text x="402.7" y="620" text-anchor="middle" class="m" font-size="9.5">100</text>
+<line x1="535.3" y1="30" x2="535.3" y2="608" stroke="var(--line)" stroke-width="1"/><text x="535.3" y="620" text-anchor="middle" class="m" font-size="9.5">200</text>
+<line x1="668.0" y1="30" x2="668.0" y2="608" stroke="var(--line)" stroke-width="1"/><text x="668.0" y="620" text-anchor="middle" class="m" font-size="9.5">300</text>
+<text x="16" y="49" class="m" font-size="11" style="fill:var(--fg)">T22</text><text x="56" y="49" class="m" font-size="10.5">t22_play_beat</text>
+<rect x="270" y="38" width="520.0" height="13" fill="var(--accent)"/>
+<text x="796.0" y="49" font-size="11" class="m" style="fill:var(--fg)">392</text>
+<text x="944" y="49" text-anchor="end" class="m" font-size="10.5">13/13</text>
+<text x="16" y="68" class="m" font-size="11" style="fill:var(--fg)">T21</text><text x="56" y="68" class="m" font-size="10.5">t21_touch_each</text>
+<rect x="270" y="57" width="363.5" height="13" fill="var(--accent)"/>
+<text x="639.5" y="68" font-size="11" class="m" style="fill:var(--fg)">274</text>
+<text x="944" y="68" text-anchor="end" class="m" font-size="10.5">12/13</text>
+<text x="16" y="87" class="m" font-size="11" style="fill:var(--fg)">T40</text><text x="56" y="87" class="m" font-size="10.5">t40_draw_fill</text>
+<rect x="270" y="76" width="261.3" height="13" fill="var(--accent)"/>
+<text x="537.3" y="87" font-size="11" class="m" style="fill:var(--fg)">197</text>
+<text x="944" y="87" text-anchor="end" class="m" font-size="10.5">13/13</text>
+<text x="16" y="106" class="m" font-size="11" style="fill:var(--fg)">T20</text><text x="56" y="106" class="m" font-size="10.5">t20_drag_snap</text>
+<rect x="270" y="95" width="195.0" height="13" fill="var(--accent)"/>
+<text x="471.0" y="106" font-size="11" class="m" style="fill:var(--fg)">147</text>
+<text x="944" y="106" text-anchor="end" class="m" font-size="10.5">13/13</text>
+<text x="16" y="125" class="m" font-size="11" style="fill:var(--fg)">T23</text><text x="56" y="125" class="m" font-size="10.5">t23_erase</text>
+<rect x="270" y="114" width="173.8" height="13" fill="var(--accent)"/>
+<text x="449.8" y="125" font-size="11" class="m" style="fill:var(--fg)">131</text>
+<text x="944" y="125" text-anchor="end" class="m" font-size="10.5">12/13</text>
+<text x="16" y="144" class="m" font-size="11" style="fill:var(--fg)">T3</text><text x="56" y="144" class="m" font-size="10.5">t3_skip_beat</text>
+<rect x="270" y="133" width="172.4" height="13" fill="var(--accent)"/>
+<text x="448.4" y="144" font-size="11" class="m" style="fill:var(--fg)">130</text>
+<text x="944" y="144" text-anchor="end" class="m" font-size="10.5">11/13</text>
+<text x="16" y="163" class="m" font-size="11" style="fill:var(--fg)">T34</text><text x="56" y="163" class="m" font-size="10.5">t34_rub_reveal</text>
+<rect x="270" y="152" width="160.5" height="13" fill="var(--accent)"/>
+<text x="436.5" y="163" font-size="11" class="m" style="fill:var(--fg)">121</text>
+<text x="944" y="163" text-anchor="end" class="m" font-size="10.5">12/13</text>
+<text x="16" y="182" class="m" font-size="11" style="fill:var(--fg)">T45</text><text x="56" y="182" class="m" font-size="10.5">t45_dress_decorate</text>
+<rect x="270" y="171" width="124.7" height="13" fill="var(--accent)"/>
+<text x="400.7" y="182" font-size="11" class="m" style="fill:var(--fg)">94</text>
+<text x="944" y="182" text-anchor="end" class="m" font-size="10.5">13/13</text>
+<text x="16" y="201" class="m" font-size="11" style="fill:var(--fg)">T54</text><text x="56" y="201" class="m" font-size="10.5">ads (retired)</text>
+<rect x="270" y="190" width="90.2" height="13" fill="var(--decline)"/>
+<text x="366.2" y="201" font-size="11" class="m" style="fill:var(--fg)">68</text>
+<text x="944" y="201" text-anchor="end" class="m" font-size="10.5">9/13</text>
+<text x="16" y="220" class="m" font-size="11" style="fill:var(--fg)">T25</text><text x="56" y="220" class="m" font-size="10.5">t25_map</text>
+<rect x="270" y="209" width="86.2" height="13" fill="var(--accent)"/>
+<text x="362.2" y="220" font-size="11" class="m" style="fill:var(--fg)">65</text>
+<text x="944" y="220" text-anchor="end" class="m" font-size="10.5">13/13</text>
+<text x="16" y="239" class="m" font-size="11" style="fill:var(--fg)">T44</text><text x="56" y="239" class="m" font-size="10.5">t44_paint</text>
+<rect x="270" y="228" width="50.4" height="13" fill="var(--a2)"/>
+<text x="326.4" y="239" font-size="11" class="m" style="fill:var(--fg)">38</text>
+<text x="944" y="239" text-anchor="end" class="m" font-size="10.5">8/13</text>
+<text x="16" y="258" class="m" font-size="11" style="fill:var(--fg)">T37</text><text x="56" y="258" class="m" font-size="10.5">t37_tap_moving</text>
+<rect x="270" y="247" width="27.9" height="13" fill="var(--a3)"/>
+<text x="303.9" y="258" font-size="11" class="m" style="fill:var(--fg)">21</text>
+<text x="944" y="258" text-anchor="end" class="m" font-size="10.5">4/13</text>
+<text x="16" y="277" class="m" font-size="11" style="fill:var(--fg)">T50</text><text x="56" y="277" class="m" font-size="10.5">t50_lanes</text>
+<rect x="270" y="266" width="18.6" height="13" fill="var(--a3)"/>
+<text x="294.6" y="277" font-size="11" class="m" style="fill:var(--fg)">14</text>
+<text x="944" y="277" text-anchor="end" class="m" font-size="10.5">5/13</text>
+<text x="16" y="296" class="m" font-size="11" style="fill:var(--fg)">T0</text><text x="56" y="296" class="m" font-size="10.5">t0_title</text>
+<rect x="270" y="285" width="17.2" height="13" fill="var(--accent)"/>
+<text x="293.2" y="296" font-size="11" class="m" style="fill:var(--fg)">13</text>
+<text x="944" y="296" text-anchor="end" class="m" font-size="10.5">13/13</text>
+<text x="16" y="315" class="m" font-size="11" style="fill:var(--fg)">T55</text><text x="56" y="315" class="m" font-size="10.5">t55_find</text>
+<rect x="270" y="304" width="15.9" height="13" fill="var(--a2)"/>
+<text x="291.9" y="315" font-size="11" class="m" style="fill:var(--fg)">12</text>
+<text x="944" y="315" text-anchor="end" class="m" font-size="10.5">4/13</text>
+<text x="16" y="334" class="m" font-size="11" style="fill:var(--fg)">T27</text><text x="56" y="334" class="m" font-size="10.5">t27_memory</text>
+<rect x="270" y="323" width="15.9" height="13" fill="var(--a2)"/>
+<text x="291.9" y="334" font-size="11" class="m" style="fill:var(--fg)">12</text>
+<text x="944" y="334" text-anchor="end" class="m" font-size="10.5">3/13</text>
+<text x="16" y="353" class="m" font-size="11" style="fill:var(--fg)">T43</text><text x="56" y="353" class="m" font-size="10.5">t43_color_fill</text>
+<rect x="270" y="342" width="14.6" height="13" fill="var(--a2)"/>
+<text x="290.6" y="353" font-size="11" class="m" style="fill:var(--fg)">11</text>
+<text x="944" y="353" text-anchor="end" class="m" font-size="10.5">3/13</text>
+<text x="16" y="372" class="m" font-size="11" style="fill:var(--fg)">T39</text><text x="56" y="372" class="m" font-size="10.5">ads (retired)</text>
+<rect x="270" y="361" width="14.6" height="13" fill="var(--decline)"/>
+<text x="290.6" y="372" font-size="11" class="m" style="fill:var(--fg)">11</text>
+<text x="944" y="372" text-anchor="end" class="m" font-size="10.5">11/13</text>
+<text x="16" y="391" class="m" font-size="11" style="fill:var(--fg)">T38</text><text x="56" y="391" class="m" font-size="10.5">t38_peekaboo</text>
+<rect x="270" y="380" width="13.3" height="13" fill="var(--a2)"/>
+<text x="289.3" y="391" font-size="11" class="m" style="fill:var(--fg)">10</text>
+<text x="944" y="391" text-anchor="end" class="m" font-size="10.5">3/13</text>
+<text x="16" y="410" class="m" font-size="11" style="fill:var(--fg)">T32</text><text x="56" y="410" class="m" font-size="10.5">t32_reward</text>
+<rect x="270" y="399" width="10.6" height="13" fill="var(--accent)"/>
+<text x="286.6" y="410" font-size="11" class="m" style="fill:var(--fg)">8</text>
+<text x="944" y="410" text-anchor="end" class="m" font-size="10.5">8/13</text>
+<text x="16" y="429" class="m" font-size="11" style="fill:var(--fg)">T51</text><text x="56" y="429" class="m" font-size="10.5">t51_prize_pick</text>
+<rect x="270" y="418" width="9.3" height="13" fill="var(--a2)"/>
+<text x="285.3" y="429" font-size="11" class="m" style="fill:var(--fg)">7</text>
+<text x="944" y="429" text-anchor="end" class="m" font-size="10.5">7/13</text>
+<text x="16" y="448" class="m" font-size="11" style="fill:var(--fg)">T41</text><text x="56" y="448" class="m" font-size="10.5">t41_float_pop</text>
+<rect x="270" y="437" width="6.6" height="13" fill="var(--a3)"/>
+<text x="282.6" y="448" font-size="11" class="m" style="fill:var(--fg)">5</text>
+<text x="944" y="448" text-anchor="end" class="m" font-size="10.5">3/13</text>
+<text x="16" y="467" class="m" font-size="11" style="fill:var(--fg)">T42</text><text x="56" y="467" class="m" font-size="10.5">t42_slice_cut</text>
+<rect x="270" y="456" width="6.6" height="13" fill="var(--a3)"/>
+<text x="282.6" y="467" font-size="11" class="m" style="fill:var(--fg)">5</text>
+<text x="944" y="467" text-anchor="end" class="m" font-size="10.5">3/13</text>
+<text x="16" y="486" class="m" font-size="11" style="fill:var(--fg)">T46</text><text x="56" y="486" class="m" font-size="10.5">t46_cups</text>
+<rect x="270" y="475" width="6.6" height="13" fill="var(--a3)"/>
+<text x="282.6" y="486" font-size="11" class="m" style="fill:var(--fg)">5</text>
+<text x="944" y="486" text-anchor="end" class="m" font-size="10.5">1/13</text>
+<text x="16" y="505" class="m" font-size="11" style="fill:var(--fg)">T26</text><text x="56" y="505" class="m" font-size="10.5">t26_ride</text>
+<rect x="270" y="494" width="5.3" height="13" fill="var(--a3)"/>
+<text x="281.3" y="505" font-size="11" class="m" style="fill:var(--fg)">4</text>
+<text x="944" y="505" text-anchor="end" class="m" font-size="10.5">2/13</text>
+<text x="16" y="524" class="m" font-size="11" style="fill:var(--fg)">T48</text><text x="56" y="524" class="m" font-size="10.5">t48_serve</text>
+<rect x="270" y="513" width="2.7" height="13" fill="var(--a3)"/>
+<text x="278.7" y="524" font-size="11" class="m" style="fill:var(--fg)">2</text>
+<text x="944" y="524" text-anchor="end" class="m" font-size="10.5">2/13</text>
+<text x="16" y="543" class="m" font-size="11" style="fill:var(--fg)">T52</text><text x="56" y="543" class="m" font-size="10.5">t52_groom</text>
+<rect x="270" y="532" width="2.0" height="13" fill="var(--a3)"/>
+<text x="278.0" y="543" font-size="11" class="m" style="fill:var(--fg)">1</text>
+<text x="944" y="543" text-anchor="end" class="m" font-size="10.5">1/13</text>
+<text x="16" y="562" class="m" font-size="11" style="fill:var(--fg)">T47</text><text x="56" y="562" class="m" font-size="10.5">t47_drag_release</text>
+<rect x="270" y="551" width="2.0" height="13" fill="var(--a3)"/>
+<text x="278.0" y="562" font-size="11" class="m" style="fill:var(--fg)">1</text>
+<text x="944" y="562" text-anchor="end" class="m" font-size="10.5">1/13</text>
+<text x="16" y="581" class="m" font-size="11" style="fill:var(--fg)">T53</text><text x="56" y="581" class="m" font-size="10.5">t53_outro</text>
+<rect x="270" y="570" width="2.0" height="13" fill="var(--a3)"/>
+<text x="278.0" y="581" font-size="11" class="m" style="fill:var(--fg)">1</text>
+<text x="944" y="581" text-anchor="end" class="m" font-size="10.5">1/13</text>
+<text x="16" y="600" class="m" font-size="11" style="fill:var(--fg)">T49</text><text x="56" y="600" class="m" font-size="10.5">t49_progress_holder</text>
+<rect x="270" y="589" width="2.0" height="13" fill="var(--a3)"/>
+<text x="278.0" y="600" font-size="11" class="m" style="fill:var(--fg)">1</text>
+<text x="944" y="600" text-anchor="end" class="m" font-size="10.5">1/13</text>
+</svg>
+  </div>
+  <p class="cap">Eight templates (T22, T21, T40, T20, T23, T3, T34, T45) cover 83% of the template scenes. The 11 in wave 1 cover 87%. The two ad templates alone appear in 79 scenes, which is why they are retired and not ignored.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Table · The 44 templates</span>
+  <h2>Every TutoTOONS template, mapped</h2>
+  <p>"Scenes · titles" is how many scenes use the template and in how many of the 13 titles. "Evidence" lists component names that always appear in those scenes and method names from the code. "QuiQui rule" is the change needed for ages 4–7 with no punishment, no timers and no ads.</p>
+  <div class="tally">
+    <span><span class="chip w1">wave 1</span> <b>11</b> core</span>
+    <span><span class="chip w2">wave 2</span> <b>6</b> care extensions</span>
+    <span><span class="chip w3">wave 3</span> <b>11</b> movement and niche</span>
+    <span><span class="chip wx">retired</span> <b>2</b> ads</span>
+    <span><span class="chip wq">empty</span> <b>14</b> never used</span>
+  </div>
+  <div class="tbl">
+  <table>
+    <thead><tr><th>TT</th><th>QuiQui id</th><th>What it does</th><th>Evidence</th><th>Built from</th><th>QuiQui rule</th><th>Scenes · titles</th><th>QuiQui today</th><th>Wave</th></tr></thead>
+    <tbody>
+<tr class="grp"><td colspan="9">Wave 1 · core · 11 templates · 1572 scenes (87%)</td></tr>
+<tr><td class="num">22</td><td class="id">t22_play_beat</td><td>Tableau where objects answer a touch with animation and sound; ends when the sounds finish</td><td class="ev">CheckIfSoundsEnded · PlayEndAnimationsAndSounds · no distinctive components</td><td>Tap + Reactions</td><td>Every object answers, no required order</td><td class="num">392 · 13/13</td><td class="id">story beats</td><td><span class="chip w1">1</span></td></tr>
+<tr><td class="num">21</td><td class="id">t21_touch_each</td><td>Touch each target, by tap or with a carried tool</td><td class="ev">Template21Object (823 objects) · CheckIfTapObjLeft · isCorrect</td><td>Give→Receive · many</td><td>No auto-end timer (AddAutoEndTimer)</td><td class="num">274 · 12/13</td><td class="id">garden</td><td><span class="chip w1">1</span></td></tr>
+<tr><td class="num">40</td><td class="id">t40_draw_fill</td><td>Draw with a tool on a layer until the area is covered</td><td class="ev">DrawLayer in 197 of 197 scenes · DisableTools · SceneCompleted</td><td>Rub · leave</td><td>—</td><td class="num">197 · 13/13</td><td class="id">bathroom (soap)</td><td><span class="chip w1">1</span></td></tr>
+<tr><td class="num">20</td><td class="id">t20_drag_snap</td><td>Drag each piece to its target and snap</td><td class="ev">Template20Draggable + Target in every scene · SnappToTarget · InitTimerBar</td><td>Give→Receive · slots</td><td>No timer bar; a miss returns the piece</td><td class="num">147 · 13/13</td><td class="id">kitchen · closet · bear_puzzle</td><td><span class="chip w1">1</span></td></tr>
+<tr><td class="num">23</td><td class="id">t23_erase</td><td>Erase a layer with a tool until clear</td><td class="ev">EraseLayer + Erase + ToolSoundsController in every scene · CheckProgress</td><td>Rub · clear</td><td>—</td><td class="num">131 · 12/13</td><td class="id">bathroom (rinse, dry)</td><td><span class="chip w1">1</span></td></tr>
+<tr><td class="num">3</td><td class="id">t3_skip_beat</td><td>Short beat the child can skip</td><td class="ev">CheckSkip · no distinctive components</td><td>Tap</td><td>Skip on any tap (purpose still to confirm)</td><td class="num">130 · 11/13</td><td class="id">—</td><td><span class="chip w1">1</span></td></tr>
+<tr><td class="num">34</td><td class="id">t34_rub_reveal</td><td>Tool passed over layers makes each one animate</td><td class="ev">Template34Layer + Template34Tool in every scene · AnimateLayer</td><td>Rub · reveal</td><td>—</td><td class="num">121 · 12/13</td><td class="id">—</td><td><span class="chip w1">1</span></td></tr>
+<tr><td class="num">45</td><td class="id">t45_dress_decorate</td><td>Dress up or decorate from a scrolling category list</td><td class="ev">ScrollViewItem + DecorateItem + CategoryController in every scene · ShowBin · SavePlayerDecorateData</td><td>Give→Receive · free_place</td><td>—</td><td class="num">94 · 13/13</td><td class="id">closet · playhouse</td><td><span class="chip w1">1</span></td></tr>
+<tr><td class="num">25</td><td class="id">t25_map</td><td>World map with locked scenes, scrolling, followers</td><td class="ev">ScrollTo · Template25LevelLock · LoadRandomBranch · ShowOrHidePhotoGallery</td><td>Pan + Tap</td><td>Locks open with play, never with payment</td><td class="num">65 · 13/13</td><td class="id">home · village</td><td><span class="chip w1">1</span></td></tr>
+<tr><td class="num">0</td><td class="id">t0_title</td><td>Start screen</td><td class="ev">StartSceneController in 11 scenes · OnButtonStartClick</td><td>Tap</td><td>Parent gate instead of policy and subscription links</td><td class="num">13 · 13/13</td><td class="id">title</td><td><span class="chip w1">1</span></td></tr>
+<tr><td class="num">32</td><td class="id">t32_reward</td><td>Collect the reward at the end</td><td class="ev">CollectMoney · OnCollectReward · AddIdleAnimation</td><td>Tap + coins</td><td>—</td><td class="num">8 · 8/13</td><td class="id">celebration</td><td><span class="chip w1">1</span></td></tr>
+<tr class="grp"><td colspan="9">Wave 2 · care extensions · 6 templates · 90 scenes (5%)</td></tr>
+<tr><td class="num">44</td><td class="id">t44_paint</td><td>Paint with palette tools</td><td class="ev">Template44Tool + ColorIndicator in 38 of 38 scenes · PaintWithPenBrush</td><td>Rub · deposit color</td><td>—</td><td class="num">38 · 8/13</td><td class="id">—</td><td><span class="chip w2">2</span></td></tr>
+<tr><td class="num">43</td><td class="id">t43_color_fill</td><td>Fill areas with a palette color, take a photo</td><td class="ev">Template43Pallete + ColorIndicator + PhotoGallery in every scene · FillArea</td><td>Give→Receive · color</td><td>—</td><td class="num">11 · 3/13</td><td class="id">—</td><td><span class="chip w2">2</span></td></tr>
+<tr><td class="num">55</td><td class="id">t55_find</td><td>Tap the indicated target, in order</td><td class="ev">Template55Clickable + Indicator + Timer in every scene · FindNextActive</td><td>Tap · sequence</td><td>Timer may show time, never ends the step; voice asks &quot;where is…?&quot;</td><td class="num">12 · 4/13</td><td class="id">—</td><td><span class="chip w2">2</span></td></tr>
+<tr><td class="num">27</td><td class="id">t27_memory</td><td>Memory cards</td><td class="ev">Template27Card in every scene · Flip · Shuffle · foundCorrect</td><td>Tap · pairs</td><td>4–6 cards</td><td class="num">12 · 3/13</td><td class="id">—</td><td><span class="chip w2">2</span></td></tr>
+<tr><td class="num">38</td><td class="id">t38_peekaboo</td><td>Whack-a-mole with lives</td><td class="ev">Template38Layer in every scene · DisplayMoles · DecrementLives</td><td>Tap + Spawner</td><td>Friends peek out, a tap gives a giggle, no lives</td><td class="num">10 · 3/13</td><td class="id">—</td><td><span class="chip w2">2</span></td></tr>
+<tr><td class="num">51</td><td class="id">t51_prize_pick</td><td>Pick a reward from a set</td><td class="ev">RewardsList + RewardItem in every scene · SpawnReward · AddVideoAdReward</td><td>Tap</td><td>No ad bonus</td><td class="num">7 · 7/13</td><td class="id">wheel</td><td><span class="chip w2">2</span></td></tr>
+<tr class="grp"><td colspan="9">Wave 3 · movement and niche · 11 templates · 60 scenes (3%)</td></tr>
+<tr><td class="num">37</td><td class="id">t37_tap_moving</td><td>Tap moving objects, lose lives</td><td class="ev">Template37RoadObject in every scene · DecreaseLife · ShakeScreen</td><td>Tap + Spawner</td><td>No lives, no screen shake</td><td class="num">21 · 4/13</td><td class="id">—</td><td><span class="chip w3">3</span></td></tr>
+<tr><td class="num">50</td><td class="id">t50_lanes</td><td>Lane runner that shoots</td><td class="ev">Template50Player + RoadObject in every scene · MoveToClosestLine · ShootBullet</td><td>Steer · lanes + Spawner</td><td>Collect on lanes, no shooting</td><td class="num">14 · 5/13</td><td class="id">penguin_game</td><td><span class="chip w3">3</span></td></tr>
+<tr><td class="num">26</td><td class="id">t26_ride</td><td>Road runner with obstacles</td><td class="ev">Template26Player · RoadObject · OnCollisionEnter2D</td><td>Steer · free + Spawner</td><td>Collect only, nothing to crash into</td><td class="num">4 · 2/13</td><td class="id">—</td><td><span class="chip w3">3</span></td></tr>
+<tr><td class="num">41</td><td class="id">t41_float_pop</td><td>Swipe launched objects</td><td class="ev">Slicer2DController + FruitSwipeTutorial · PerformSlicing · Launch</td><td>Tap + Spawner</td><td>Pop floating bubbles, no blade</td><td class="num">5 · 3/13</td><td class="id">—</td><td><span class="chip w3">3</span></td></tr>
+<tr><td class="num">42</td><td class="id">t42_slice_cut</td><td>Cut an object along a path</td><td class="ev">Slicer2D + Template42Tool + Template42Layer in every scene</td><td>Rub · cut</td><td>Follow a dotted line, no blade</td><td class="num">5 · 3/13</td><td class="id">—</td><td><span class="chip w3">3</span></td></tr>
+<tr><td class="num">46</td><td class="id">t46_cups</td><td>Shell game with a timer</td><td class="ev">Template46PlayCup + PlayTarget · RandomShuffle · UpdateTimer · TimeOut</td><td>Tap + Spawner</td><td>No timer, the object is always found</td><td class="num">5 · 1/13</td><td class="id">—</td><td><span class="chip w3">3</span></td></tr>
+<tr><td class="num">48</td><td class="id">t48_serve</td><td>Restaurant: guests order, stack food, get paid</td><td class="ev">Template48Client + Food + FoodTarget · NewClient · ClientExitFromScene</td><td>Give→Receive · stack</td><td>One guest who never leaves</td><td class="num">2 · 2/13</td><td class="id">market</td><td><span class="chip w3">3</span></td></tr>
+<tr><td class="num">52</td><td class="id">t52_groom</td><td>Hair salon: comb, dryer, scissors, shaper</td><td class="ev">Template52Layer + PlayObj on 50 strands · RemoveStrand</td><td>Rub + strand layer</td><td>Comb and dry first, trimming later</td><td class="num">1 · 1/13</td><td class="id">—</td><td><span class="chip w3">3</span></td></tr>
+<tr><td class="num">47</td><td class="id">t47_drag_release</td><td>Drag to a target, release correct or wrong</td><td class="ev">Template47Draggable · ReleasedCorrect · ReleasedWrong</td><td>Give→Receive · single</td><td>Merge into t20_drag_snap</td><td class="num">1 · 1/13</td><td class="id">—</td><td><span class="chip w3">3</span></td></tr>
+<tr><td class="num">53</td><td class="id">t53_outro</td><td>End screen, back home</td><td class="ev">OnHomeButtonClick</td><td>Tap</td><td>—</td><td class="num">1 · 1/13</td><td class="id">—</td><td><span class="chip w3">3</span></td></tr>
+<tr><td class="num">49</td><td class="id">t49_progress_holder</td><td>Scene with a progress-bar holder</td><td class="ev">Template49ProgressBarHolderInitializer, nothing else</td><td>Tap + progress</td><td>Build only when a title needs it</td><td class="num">1 · 1/13</td><td class="id">—</td><td><span class="chip w3">3</span></td></tr>
+<tr class="grp"><td colspan="9">Retired · ads · 2 templates · 79 scenes (4%)</td></tr>
+<tr><td class="num">39</td><td class="id">—</td><td>Watch a video for a reward</td><td class="ev">ShowAd · ShowVideo · GiveReward</td><td>—</td><td>The gift becomes free inside t32_reward</td><td class="num">11 · 11/13</td><td class="dim">—</td><td><span class="chip wx">retired</span></td></tr>
+<tr><td class="num">54</td><td class="id">—</td><td>Double the coins for an ad</td><td class="ev">OnDoubleCoinsClick · ShowAd</td><td>—</td><td>No equivalent</td><td class="num">68 · 9/13</td><td class="dim">—</td><td><span class="chip wx">retired</span></td></tr>
+<tr class="grp"><td colspan="9">Empty slots · 14 numbers · 0 scenes in any of the 13 titles</td></tr>
+<tr><td class="num">1 · 2 · 4 · 24 · 28 · 29 · 30 · 31 · 33 · 35 · 36 · 56 · 57 · 58</td><td class="id">not created</td><td colspan="6">Initializer classes exist in the code, but no scene uses them. They are reserved numbers or dead code. We do not build them.</td><td><span class="chip wq">empty</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="cap">Two QuiQui scenes have no Builder template: <span class="mono">duck_dance</span> (rhythm) and <span class="mono">album</span> (collection screen). They stay as their own code. The behavior of each template is inferred from component and method names. Field values inside the scenes are not readable, so exact parameters are still our own design.</p>
+</section>
+
+<!-- 4. LINE GAMES -->
+<section>
+  <span class="eyebrow">Diagram 4 · The QuiQui line</span>
+  <h2>Which templates each game would use</h2>
+  <p>These are examples of future titles, not commitments. They show the point of the library: each new game is mostly new scene data on top of templates that already work.</p>
+  <div class="games">
+    <article class="game c1"><h3>QuiQui Care</h3><p>The game being rebuilt now. The daily care loop plus the house.</p>
+      <div class="chips"><span class="chip w1">t22_play_beat</span><span class="chip w1">t21_touch_each</span><span class="chip w1">t20_drag_snap</span><span class="chip w1">t40_draw_fill</span><span class="chip w1">t23_erase</span><span class="chip w1">t45_dress_decorate</span><span class="chip w1">t25_map</span><span class="chip w1">t32_reward</span><span class="chip w2">t55_find</span><span class="chip w2">t51_prize_pick</span></div></article>
+    <article class="game c2"><h3>QuiQui Salon</h3><p>Grooming, makeup and photos of the result.</p>
+      <div class="chips"><span class="chip w3">t52_groom</span><span class="chip w1">t34_rub_reveal</span><span class="chip w2">t44_paint</span><span class="chip w2">t43_color_fill</span><span class="chip w1">t45_dress_decorate</span><span class="chip w1">t40_draw_fill</span></div></article>
+    <article class="game c4"><h3>QuiQui Kitchen</h3><p>Cooking for friends and serving them.</p>
+      <div class="chips"><span class="chip w3">t48_serve</span><span class="chip w1">t20_drag_snap</span><span class="chip w1">t21_touch_each</span><span class="chip w3">t42_slice_cut</span><span class="chip w2">t27_memory</span></div></article>
+    <article class="game c3"><h3>QuiQui Adventure</h3><p>Exploring outside the house with movement games.</p>
+      <div class="chips"><span class="chip w1">t25_map</span><span class="chip w3">t26_ride</span><span class="chip w3">t50_lanes</span><span class="chip w3">t41_float_pop</span><span class="chip w3">t37_tap_moving</span><span class="chip w2">t38_peekaboo</span><span class="chip w3">t46_cups</span></div></article>
+  </div>
+</section>
+
+<!-- 5. GENTLE RULES -->
+<section>
+  <span class="eyebrow">Adaptation rules</span>
+  <h2>How a TutoTOONS template becomes a QuiQui template</h2>
+  <p>These rules live in the scene player, so no template or scene can break them.</p>
+  <ul class="rules">
+    <li><b>No lives, no game over</b><span>Templates with <span class="mono">DecreaseLife</span> or <span class="mono">RestartScene</span> on failure keep the motion and drop the losing (t26 t37 t38 t50).</span></li>
+    <li><b>No timers that end a step</b><span><span class="mono">InitTimerBar</span>, <span class="mono">AddAutoEndTimer</span> and <span class="mono">TimeOut</span> are removed. A step ends on the child's effort (t20 t21 t46 t55).</span></li>
+    <li><b>No ads, no paid shortcuts</b><span>Ad rewards become free (t39 t51 t54). Locks open with coins earned in play.</span></li>
+    <li><b>Gentle verbs</b><span>Slice becomes pop, shoot becomes collect, scissors come after comb and dryer (t41 t50 t52).</span></li>
+    <li><b>Instant answer</b><span>Every valid touch plays a sound and a QuiQui reaction in the same frame.</span></li>
+    <li><b>Hint and gentle miss</b><span>The ghost hand shows the gesture after about 3 s of no input. A miss returns the item to the tray with a soft sound.</span></li>
+  </ul>
+</section>
+
+<!-- 6. RUNTIME -->
+<section>
+  <span class="eyebrow">Diagram 5 · The player at runtime</span>
+  <h2>One scene from start to end</h2>
+  <p>A scene is a list of steps, and each step is one template with parameters. The player runs them in an <span class="mono">Fsm</span> with a transition table, as the project already requires.</p>
+  <div class="plate">
+  <svg viewBox="0 0 960 300" role="img" aria-label="ScenePlayer states: LOAD, INTRO, STEP, STEP_DONE, OUTRO, EXIT, with the micro-loop inside STEP">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+    <g font-size="12">
+      <rect x="16" y="40" width="120" height="70" rx="6" fill="var(--paper)" stroke="var(--line)"/>
+      <text x="76" y="66" text-anchor="middle" class="h" font-size="14">LOAD</text>
+      <text x="76" y="86" text-anchor="middle" class="m" font-size="10">background · music</text>
+      <text x="76" y="100" text-anchor="middle" class="m" font-size="10">QuiQui · tray</text>
+      <rect x="166" y="40" width="120" height="70" rx="6" fill="var(--paper)" stroke="var(--line)"/>
+      <text x="226" y="66" text-anchor="middle" class="h" font-size="14">INTRO</text>
+      <text x="226" y="86" text-anchor="middle" class="m" font-size="10">family voice</text>
+      <text x="226" y="100" text-anchor="middle" class="m" font-size="10">wish bubble</text>
+      <rect x="316" y="24" width="330" height="164" rx="6" fill="var(--tint-accent)" stroke="var(--accent)" stroke-width="2"/>
+      <text x="336" y="50" class="h" font-size="14">STEP  n of N</text>
+      <text x="626" y="50" text-anchor="end" class="m" font-size="10">template + params</text>
+      <rect x="336" y="66" width="88" height="40" rx="4" fill="var(--paper)" stroke="var(--accent)"/><text x="380" y="91" text-anchor="middle">hint</text>
+      <rect x="440" y="66" width="88" height="40" rx="4" fill="var(--paper)" stroke="var(--accent)"/><text x="484" y="91" text-anchor="middle">gesture</text>
+      <rect x="544" y="66" width="88" height="40" rx="4" fill="var(--paper)" stroke="var(--accent)"/><text x="588" y="91" text-anchor="middle">test</text>
+      <rect x="440" y="130" width="88" height="40" rx="4" fill="var(--paper)" stroke="var(--accent)"/><text x="484" y="155" text-anchor="middle">reaction</text>
+      <line x1="424" y1="86" x2="436" y2="86" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="528" y1="86" x2="540" y2="86" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <path d="M588 106 V150 H532" fill="none" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <path d="M440 150 H380 V110" fill="none" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <text x="344" y="140" class="m" font-size="9.5">progress &lt; 1</text>
+      <rect x="676" y="40" width="120" height="70" rx="6" fill="var(--paper)" stroke="var(--line)"/>
+      <text x="736" y="66" text-anchor="middle" class="h" font-size="14">STEP_DONE</text>
+      <text x="736" y="86" text-anchor="middle" class="m" font-size="10">progress dot</text>
+      <text x="736" y="100" text-anchor="middle" class="m" font-size="10">QuiQui cheers</text>
+      <rect x="826" y="40" width="120" height="70" rx="6" fill="var(--paper)" stroke="var(--line)"/>
+      <text x="886" y="66" text-anchor="middle" class="h" font-size="14">OUTRO</text>
+      <text x="886" y="86" text-anchor="middle" class="m" font-size="10">coins fly</text>
+      <text x="886" y="100" text-anchor="middle" class="m" font-size="10">star · save</text>
+      <line x1="136" y1="75" x2="162" y2="75" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="286" y1="75" x2="312" y2="75" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="646" y1="75" x2="672" y2="75" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <text x="659" y="68" text-anchor="middle" class="m" font-size="9">done</text>
+      <path d="M736 110 V220 H481 V192" fill="none" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <text x="610" y="236" text-anchor="middle" class="m" font-size="10">more steps → next template</text>
+      <path d="M796 75 H822" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <text x="809" y="68" text-anchor="middle" class="m" font-size="9">last</text>
+      <rect x="826" y="160" width="120" height="56" rx="6" fill="var(--tint-mute)" stroke="var(--line)"/>
+      <text x="886" y="184" text-anchor="middle" class="h" font-size="14">EXIT</text>
+      <text x="886" y="202" text-anchor="middle" class="m" font-size="10">next: "home"</text>
+      <line x1="886" y1="110" x2="886" y2="156" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <text x="16" y="280" class="m" font-size="10.5">Home button exits from any state with no penalty. No step has a time limit.</text>
+    </g>
+  </svg>
+  </div>
+</section>
+
+<!-- 7. DATA -->
+<section>
+  <span class="eyebrow">Example · Scenes as data</span>
+  <h2>Kitchen and bathroom, no code</h2>
+  <p>In Godot this is a typed <span class="mono">SceneDef</span> resource with a list of <span class="mono">StepDef</span>, editable in the inspector. Voice is referenced by key, never by file, so the locale picks the file.</p>
+  <div class="grid2">
+<pre><span class="c"># kitchen.tres</span>
+<span class="k">id</span>:         <span class="s">kitchen</span>
+<span class="k">background</span>: <span class="s">bg_kitchen</span>
+<span class="k">music</span>:      <span class="s">music_kitchen</span>
+<span class="k">intro</span>:      <span class="s">vo.kitchen.intro</span>
+<span class="k">quiqui</span>:     { pose: <span class="s">needy</span>, wish: <span class="s">carrot</span> }
+<span class="k">steps</span>:
+  - <span class="k">template</span>: <span class="n">t20_drag_snap</span>
+    <span class="k">items</span>:    [<span class="s">carrot</span>, <span class="s">apple</span>, <span class="s">banana</span>, <span class="s">strawberry</span>]
+    <span class="k">target</span>:   <span class="s">quiqui.mouth</span>
+    <span class="k">repeat</span>:   <span class="n">3</span>
+    <span class="k">on_hit</span>:   [pose: <span class="s">chewing</span>, sfx: <span class="s">chomp</span>,
+               fx: <span class="s">crumbs</span>]
+    <span class="k">on_miss</span>:  [sfx: <span class="s">soft_error</span>, return_to_tray]
+<span class="k">reward</span>:     { coins: <span class="n">3</span>, star: <span class="n">1</span>, pose: <span class="s">laughing</span> }
+<span class="k">next</span>:       <span class="s">home</span></pre>
+<pre><span class="c"># bathroom.tres — 3 steps, 2 templates</span>
+<span class="k">id</span>:         <span class="s">bathroom</span>
+<span class="k">background</span>: <span class="s">bg_bathroom</span>
+<span class="k">music</span>:      <span class="s">music_bath</span>
+<span class="k">intro</span>:      <span class="s">vo.bathroom.intro</span>
+<span class="k">steps</span>:
+  - <span class="k">template</span>: <span class="n">t40_draw_fill</span>
+    <span class="k">tool</span>: <span class="s">sponge</span>   <span class="k">area</span>: <span class="s">quiqui.body</span>
+    <span class="k">layer</span>: <span class="s">foam</span>   <span class="k">on_progress</span>: [sfx: <span class="s">bubble</span>]
+  - <span class="k">template</span>: <span class="n">t23_erase</span>
+    <span class="k">tool</span>: <span class="s">shower_head</span>   <span class="k">layer</span>: <span class="s">foam</span>
+    <span class="k">on_progress</span>: [fx: <span class="s">drop</span>, sfx: <span class="s">rinse</span>,
+                  pose: <span class="s">wet</span>]
+  - <span class="k">template</span>: <span class="n">t23_erase</span>
+    <span class="k">tool</span>: <span class="s">towel</span>   <span class="k">layer</span>: <span class="s">water</span>
+    <span class="k">on_done</span>: [pose: <span class="s">shining</span>]
+<span class="k">reward</span>:     { coins: <span class="n">3</span>, star: <span class="n">1</span> }
+<span class="k">next</span>:       <span class="s">home</span></pre>
+  </div>
+</section>
+
+<!-- 8. ENGLISH FIRST -->
+<section>
+  <span class="eyebrow">English-first naming</span>
+  <h2>Name everything in English, translate only the voice</h2>
+  <p>Play has no text, so the only things that change per language are the voice lines and the few words in the parent area. Everything else is an English id that never changes.</p>
+  <ul class="rules">
+    <li><b>Ids, files, code, data keys</b><span>English, <span class="mono">snake_case</span>: <span class="mono">kitchen</span>, <span class="mono">carrot</span>, <span class="mono">quiqui_chewing</span>, <span class="mono">t20_drag_snap</span>.</span></li>
+    <li><b>Voice by key</b><span><span class="mono">vo.kitchen.intro</span> resolves to <span class="mono">audio/voice/pt_BR/kitchen_intro.ogg</span>. The family's PT-BR recordings are the first locale, <span class="mono">en</span> can follow.</span></li>
+    <li><b>Parent-area text</b><span>Godot <span class="mono">TranslationServer</span> with an English base CSV. No hard-coded strings.</span></li>
+    <li><b>One-time rename</b><span>The current Portuguese file names are renamed once during the restart, and both the builder and the data use the new names.</span></li>
+  </ul>
+  <div class="tbl">
+  <table style="min-width:560px">
+    <thead><tr><th>Today</th><th>New id</th><th>Today</th><th>New id</th></tr></thead>
+    <tbody>
+      <tr><td class="id">cozinha</td><td class="id">kitchen</td><td class="id">cenoura.png</td><td class="id">carrot.png</td></tr>
+      <tr><td class="id">banheiro</td><td class="id">bathroom</td><td class="id">esponja.png</td><td class="id">sponge.png</td></tr>
+      <tr><td class="id">quarto_sono</td><td class="id">bedroom</td><td class="id">chuveirinho.png</td><td class="id">shower_head.png</td></tr>
+      <tr><td class="id">casinha</td><td class="id">playhouse</td><td class="id">quiqui_carente.png</td><td class="id">quiqui_needy.png</td></tr>
+      <tr><td class="id">vila</td><td class="id">village</td><td class="id">quiqui_mastigando.png</td><td class="id">quiqui_chewing.png</td></tr>
+      <tr><td class="id">roda</td><td class="id">wheel</td><td class="id">nhami.ogg</td><td class="id">chomp.ogg</td></tr>
+      <tr><td class="id">festa</td><td class="id">party</td><td class="id">feed_hora_de_comer.ogg</td><td class="id">pt_BR/kitchen_intro.ogg</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- 9. BUILD ORDER -->
+<section>
+  <span class="eyebrow">Build order</span>
+  <h2>Four tracks, each one playable</h2>
+  <div class="slices" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+    <article class="slice c1">
+      <span class="eyebrow">Wave 1a · first slice</span>
+      <h3>One good loop</h3>
+      <ul>
+        <li>ScenePlayer + StepRunner (Fsm)</li>
+        <li>Give→Receive primitive + Reactions</li>
+        <li>Hint layer and gentle miss</li>
+        <li><span class="mono">t20_drag_snap</span> + <span class="mono">kitchen.tres</span></li>
+      </ul>
+      <p class="done">Done when a child feeds QuiQui three times with no adult help and asks to play again.</p>
+    </article>
+    <article class="slice c1">
+      <span class="eyebrow">Wave 1b · 87% of scenes</span>
+      <h3>QuiQui Care on the player</h3>
+      <ul>
+        <li>Rub, Tap and Pan primitives</li>
+        <li>The other 10 wave-1 templates</li>
+        <li>bathroom, closet, bedroom, playhouse, celebration, map as data</li>
+        <li>English rename of assets and ids</li>
+      </ul>
+      <p class="done">Done when the care day runs on the player and the old scene scripts and builders are deleted.</p>
+    </article>
+    <article class="slice c2">
+      <span class="eyebrow">Wave 2 · 5% of scenes</span>
+      <h3>Care extensions</h3>
+      <ul>
+        <li>6 templates: paint, color fill, find, memory, peekaboo, prize pick</li>
+        <li>Pairs and Sequence modifiers</li>
+      </ul>
+      <p class="done">Done when each template has one QuiQui Care scene that uses it.</p>
+    </article>
+    <article class="slice c3">
+      <span class="eyebrow">Wave 3 · 3% of scenes</span>
+      <h3>Ready for the next title</h3>
+      <ul>
+        <li>Steer primitive and Spawner modifier</li>
+        <li>11 movement and niche templates</li>
+        <li>The 14 empty slots stay reserved and unbuilt</li>
+      </ul>
+      <p class="done">Done when all 28 slots have a written rule and a test scene.</p>
+    </article>
+  </div>
+  <div class="callout">
+    <h3>Why the first slice stays small</h3>
+    <p>The library is only worth building if one loop feels good. Wave 1a tests that with a single template before the other 27 exist. It is also the template with the most evidence behind it: T20 appears in all 13 titles.</p>
+  </div>
+  <p class="note">Evidence: type and method names from IL2CPP metadata (<span class="mono">TutoTOONS.Builder.dll</span>), plus a pass over the scene files of the 13 Builder titles (1845 scenes) that lists which script components each scene carries. The description of each template is inferred from those names. Field values inside the scenes are not readable, and method bodies were not decompiled. The 11 titles without the Builder (Dopples, Fluvsies, Giggle Babies and others) are not in the counts. This is a design proposal. The project flow still requires <span class="mono">scope-work</span> → <span class="mono">slice-tasks</span> → <span class="mono">plan-work</span> before code.</p>
+</section>
+
+</div>
