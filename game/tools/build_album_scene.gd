@@ -19,9 +19,14 @@ const FEET_RATIO: float = 0.78
 const INSET: float = 36.0
 const HUD_SIZE: Vector2 = Vector2(380.0, 88.0)
 
-const CARD_SIZE: Vector2 = Vector2(240.0, 300.0)
-const CARD_XS: Array[float] = [0.22, 0.5, 0.78]
-const CARD_Y: float = 0.40
+const CARD_SIZE: Vector2 = Vector2(210.0, 260.0)
+## BUG-060: a symmetric row put the middle card 49 % behind the hero — her sprites sit at
+## z_index 0-50, so a scene Control at the default z is drawn *under* her, and the painted
+## character is ~293 px wide on the centre line at 16:9 (413 px at 4:3). The cards now live
+## in the right band, where nothing can bury them, stacked as a column.
+## The column starts at 0.245 so the first card clears the top-right HUD (the coin and
+## ticket chips reach ~0.12 of the canvas height).
+const CARD_POSITIONS: Array[Vector2] = [Vector2(0.845, 0.245), Vector2(0.845, 0.50), Vector2(0.845, 0.755)]
 const STAR_SIZE: Vector2 = Vector2(36.0, 36.0)
 
 
@@ -71,19 +76,19 @@ func _add_cards(root: Control) -> void:
 
 	for i: int in range(FriendCatalog.FRIEND_IDS.size()):
 		var friend_id: String = FriendCatalog.FRIEND_IDS[i]
-		var card: Control = _make_card(friend_id, CARD_XS[i])
+		var card: Control = _make_card(friend_id, CARD_POSITIONS[i])
 		cards_node.add_child(card)
 
 	root.add_child(cards_node)
 
 
-func _make_card(friend_id: String, x_ratio: float) -> Control:
+func _make_card(friend_id: String, at: Vector2) -> Control:
 	var card: Control = Control.new()
 	card.name = "Card_" + friend_id
 	card.set_script(load(BUTTON_SCRIPT))
 	card.add_to_group("hit_target", true)
 	var half: Vector2 = CARD_SIZE * 0.5
-	SceneBuilder.pin(card, Vector4(x_ratio, CARD_Y, x_ratio, CARD_Y), Vector4(-half.x, -half.y, half.x, half.y))
+	SceneBuilder.pin(card, Vector4(at.x, at.y, at.x, at.y), Vector4(-half.x, -half.y, half.x, half.y))
 	var art: TextureRect = _full_rect_art("Art", FriendCatalog.art_path(friend_id), "", false)
 	art.anchor_bottom = 0.75
 	card.add_child(art)

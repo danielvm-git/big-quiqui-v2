@@ -544,3 +544,26 @@ bugs:
   file: specs/bugs/BUG-059-banheiro-voice-path-missing.md
   status: fixed
   found_by: e11s01 INV-07b asset integrity
+- bug_id: BUG-060
+  date: '2026-11-07'
+  severity: high
+  priority: P0
+  scope: ui
+  summary: 'The layered rig (Sprite2D z_index 0-50) draws over scene-level Controls, so the
+    title screen Play button was 95 % buried at 16:9 and the child had no visible way to start
+    the game; the wheel SpinButton was 50 % buried and an album card 100 %'
+  file: specs/bugs/BUG-060-hero-draws-over-scene-chrome.md
+  status: fixed
+  found_by: 'the child''s own Mac build (reported "stuck on the first screen"), invisible to
+    every rect-only assertion'
+- bug_id: BUG-061
+  date: '2026-11-07'
+  severity: medium
+  priority: P1
+  scope: ui
+  summary: 'Two overlaps of the same class remain and are allowlisted in INV-10 with this id:
+    the penguin Basket she must drag is 50 % behind the hero, and the roda prize wheel is
+    half-hidden behind her head while a second wheel is the spin button'
+  file: specs/bugs/BUG-061-pinguim-basket-and-roda-wheel-overlap.md
+  status: open
+  found_by: e11 post-epic review (INV-10 occlusion probe)
