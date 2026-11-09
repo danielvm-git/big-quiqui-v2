@@ -214,7 +214,9 @@ handoff:
     e13s01 through e13s07 are done. t22 and t3 stay skipped.
     e13s01 through e13s08 are done. Latest preflight is 108 scripts / 706 tests / 9206 asserts.
     e13s01 through e13s09 are done. Latest preflight is 109 scripts / 709 tests / 9253 asserts.
-    Next is the e13 review (verify-work, audit-code, two reviewers). Do not push, open a PR, merge, tag, or publish.
+    e13 stories are done. verify-work terminal verdict is preflight at 709 tests.
+    Dual-blind review is in flight. Do not start e14 until both reviewers return.
+    Do not push, open a PR, merge, tag, or publish.
     D4 version rung is not taken.
   open_decisions:
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
