@@ -88,6 +88,24 @@ func test_the_hull_is_read_at_call_time() -> void:
 	assert_true(bool(rub.call("rub_at", Vector2(2050.0, 2050.0))), "SC-e13s01-P0-04 moved hull")
 
 
+func test_the_same_centre_counts_at_both_aspects() -> void:
+	for canvas: Vector2i in [GeometryOracle.DESKTOP_16_9, GeometryOracle.IPAD_4_3]:
+		var rub: RefCounted = _new_rub("leave")
+		if rub == null:
+			return
+		var stub: HullStub = HullStub.new()
+		stub.position = Vector2.ZERO
+		stub.size = Vector2(canvas)
+		add_child_autofree(stub)
+		stub.hull = _rect_hull(stub.get_global_rect())
+		rub.call("bind_target", stub)
+		rub.call("begin", _host())
+		var centre: Vector2 = stub.get_global_rect().get_center()
+		assert_true(bool(rub.call("rub_at", centre)), "SC-e13s01-P1-02 %s" % canvas)
+		var outside: Vector2 = stub.get_global_rect().position - Vector2(30.0, 30.0)
+		assert_false(bool(rub.call("rub_at", outside)), "outside %s" % canvas)
+
+
 func test_a_missing_target_is_zero_progress_and_not_an_error() -> void:
 	var rub: RefCounted = _new_rub("clear")
 	if rub == null:
@@ -123,6 +141,17 @@ func _bind_square(rub: RefCounted) -> HullStub:
 	add_child_autofree(stub)
 	rub.call("bind_target", stub)
 	return stub
+
+
+func _rect_hull(rect: Rect2) -> PackedVector2Array:
+	return PackedVector2Array(
+		[
+			rect.position,
+			rect.position + Vector2(rect.size.x, 0.0),
+			rect.position + rect.size,
+			rect.position + Vector2(0.0, rect.size.y),
+		]
+	)
 
 
 func _box(origin: float) -> PackedVector2Array:
