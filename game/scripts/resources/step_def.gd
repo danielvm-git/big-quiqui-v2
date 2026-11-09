@@ -1,8 +1,20 @@
 # story: e12s02
+# story: e12s04
 class_name StepDef
 extends Resource
 ## One step in a data-driven scene: a template id and typed parameters only — never paths or scripts.
 
 @export var template_id: String = ""
 @export var param_int: int = 0
+@export var repeat_count: int = 1
+@export var mode: String = "single"
+@export var receiver_id: String = ""
 @export var item_ids: PackedStringArray = PackedStringArray()
+@export var on_hit_pose: String = ""
+@export var on_hit_sfx_id: String = ""
+@export var on_miss_sfx_id: String = "sfx_soft_error"
+@export var care_step_id: String = ""
+@export var hint_delay_sec: float = 0.0
+@export var hint_from_id: String = ""
+@export var hint_to_id: String = ""
+@export var hint_voice_key: String = ""

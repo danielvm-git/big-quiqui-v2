@@ -4,7 +4,7 @@ extends GutTest
 
 const SCENE_C: String = "res://scenes/banheiro.tscn"
 const DEF_DEV_SMOKE: String = "dev_smoke"
-const DEF_MISSING: String = "kitchen"
+const DEF_MISSING: String = "room_missing"
 
 var sm: Node = null
 var loaded: Array[String] = []

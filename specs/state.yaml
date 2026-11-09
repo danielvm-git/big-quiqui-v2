@@ -3,8 +3,8 @@ version: 0.10.0
 workflow_mode: solo-git
 active_flow: null
 lifecycle_phase: release
-current_epic: null
-current_story: null
+current_epic: e12-builder-player-and-first-loop
+current_story: e12s06
 review_gate:
   skill: null
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
@@ -272,6 +272,12 @@ run_baseline:
     forward instead of inventing a story; e10 keeps its place in the ladder.
 
 gate_decisions:
+- gate: e12s03–e12s06 develop-tdd (wave 1a player slice)
+  decision: >-
+    Landed ScenePlayer/StepRunner, Give→Receive + reactions, hint layer, t20_drag_snap and
+    kitchen.tres with 658 GUT tests green, preflight green, trace-stories --strict pass.
+    PLAYTEST-e12s06.md records automated evidence; child observation deferred to parent.
+  reason: YOLO orchestration on worktree epic/e12-builder-player-and-first-loop @16c49b3 base.
 - gate: ship e11s01/e11s02 (release-branch, standing approval)
   decision: >-
     opened PR 40 titled `test(e11): the invariant gate — 10 new layers, 5 live defects found

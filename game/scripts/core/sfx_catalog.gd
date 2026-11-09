@@ -1,0 +1,17 @@
+# story: e12s04
+class_name SfxCatalog
+extends RefCounted
+## Map sfx ids from step data to shipped streams.
+
+const PATH_FOR_ID: Dictionary = {
+	"sfx_chomp": "res://assets/audio/sfx/chomp.ogg",
+	"sfx_soft_error": "res://assets/audio/sfx/soft_error.ogg",
+	"sfx_heart": "res://assets/audio/sfx/heart.ogg",
+}
+
+
+static func path(sfx_id: String) -> String:
+	if not Ids.is_valid(sfx_id):
+		return ""
+	var found: Variant = PATH_FOR_ID.get(sfx_id, "")
+	return str(found)

@@ -48,6 +48,7 @@ const _ID_TO_LEGACY: Dictionary = {
 
 const _ID_TO_DEF: Dictionary = {
 	"dev_smoke": "res://data/scenes/dev_smoke.tres",
+	"kitchen": "res://data/scenes/kitchen.tres",
 }
 
 

@@ -2,7 +2,7 @@ story_id: e12s04
 spec: e12s04.md
 epic_id: e12
 title: "Give→Receive Primitive and the Reaction Vocabulary"
-status: failing
+status: done
 bcps: 8
 scenarios: ["SC-e12s04-P0-01", "SC-e12s04-P0-02", "SC-e12s04-P0-03", "SC-e12s04-P0-04", "SC-e12s04-P1-01", "SC-e12s04-P1-02", "SC-e12s04-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn (an item is given and QuiQui answers)"
@@ -20,7 +20,7 @@ tasks:
       - "unit"
       - "integration"
       - "input"
-  status: failing
+  status: passing
 - id: e12s04-t02
   description: "Define the template contract (`setup`, `progress`, `signals`) with a one-paragraph Reason for Depth: one place to enforce no-lives/no-timers/instant-answer across 28 templates"
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
@@ -34,7 +34,7 @@ tasks:
       - "unit"
       - "integration"
       - "input"
-  status: failing
+  status: passing
 - id: e12s04-t03
   description: "Implement the Give primitive over `TouchDraggable` without adding a line to it"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_give_receive
@@ -48,7 +48,7 @@ tasks:
       - "unit"
       - "integration"
       - "input"
-  status: failing
+  status: passing
 - id: e12s04-t04
   description: "Wire the reaction executor: pose change, SFX, voice key, particles and the coin fly to the HUD"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_reactions
@@ -62,7 +62,7 @@ tasks:
       - "unit"
       - "integration"
       - "input"
-  status: failing
+  status: passing
 - id: e12s04-t05
   description: "Prove the echo filter and the 120 px targets under `TouchSim` and under a concurrent stream"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_give_receive_input
@@ -76,4 +76,4 @@ tasks:
       - "unit"
       - "integration"
       - "input"
-  status: failing
+  status: passing

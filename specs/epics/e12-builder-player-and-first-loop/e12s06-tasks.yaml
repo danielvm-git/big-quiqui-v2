@@ -2,7 +2,7 @@ story_id: e12s06
 spec: e12s06.md
 epic_id: e12
 title: "t20_drag_snap and the Kitchen as Data (wave 1a Done)"
-status: failing
+status: done
 bcps: 8
 scenarios: ["SC-e12s06-P0-01", "SC-e12s06-P0-02", "SC-e12s06-P0-03", "SC-e12s06-P0-04", "SC-e12s06-P0-05", "SC-e12s06-P1-01", "SC-e12s06-P1-02", "SC-e12s06-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn loading kitchen.tres"
@@ -19,7 +19,7 @@ tasks:
       - "template"
       - "integration"
       - "playtest"
-  status: failing
+  status: passing
 - id: e12s06-t02
   description: "Add the template registry with id → script and wire it into def validation"
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
@@ -32,7 +32,7 @@ tasks:
       - "template"
       - "integration"
       - "playtest"
-  status: failing
+  status: passing
 - id: e12s06-t03
   description: "Implement `t20_drag_snap` on the Give primitive (single/slots + repeat) with no Kitchen noun in the file"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t20_drag_snap
@@ -45,7 +45,7 @@ tasks:
       - "template"
       - "integration"
       - "playtest"
-  status: failing
+  status: passing
 - id: e12s06-t04
   description: "Author `kitchen.tres` and a test that every value the template reads is declared in the def"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_kitchen_def
@@ -58,7 +58,7 @@ tasks:
       - "template"
       - "integration"
       - "playtest"
-  status: failing
+  status: passing
 - id: e12s06-t05
   description: "Wire the third bite to `complete_step(FEED)` exactly once and the exit to home; prove re-entry is free play"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_kitchen_e2e
@@ -71,7 +71,7 @@ tasks:
       - "template"
       - "integration"
       - "playtest"
-  status: failing
+  status: passing
 - id: e12s06-t06
   description: "Hand the build to a child, record what happened in `specs/verifications/PLAYTEST-e12s06.md`, then run the whole gate"
   verify: bash scripts/preflight.sh
@@ -84,4 +84,4 @@ tasks:
       - "template"
       - "integration"
       - "playtest"
-  status: failing
+  status: passing

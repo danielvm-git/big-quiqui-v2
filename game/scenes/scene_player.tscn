@@ -1,18 +1,112 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/scenes/scene_player.gd" id="1_h7kg5"]
+[ext_resource type="Script" path="res://scripts/scenes/scene_player.gd" id="1_6cym7"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_kitchen.jpg" id="2_dq0kw"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/tray.png" id="3_mbrbb"]
+[ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="4_a8m0n"]
+[ext_resource type="Script" path="res://scripts/components/care_dots_bar.gd" id="5_r0tm2"]
+[ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="6_1lh6t"]
+[ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="7_oenmw"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/home_button.png" id="8_4c8fo"]
+[ext_resource type="Script" path="res://scripts/components/hint_manager.gd" id="9_5flwi"]
+[ext_resource type="Script" path="res://scripts/components/drag_hint.gd" id="10_n21wr"]
 
-[node name="ScenePlayer" type="Control" unique_id=1752795386]
+[node name="ScenePlayer" type="Control" unique_id=1127679991]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource("1_h7kg5")
+script = ExtResource("1_6cym7")
 
-[node name="Background" type="TextureRect" parent="." unique_id=658363498 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=254027415 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+texture = ExtResource("2_dq0kw")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="TrayZone" type="Control" parent="." unique_id=1432623693]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -310.0
+offset_top = -466.0
+offset_right = 310.0
+offset_bottom = 154.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="TrayZone" unique_id=1807558572]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("3_mbrbb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="QuiQuiRig" type="Control" parent="." unique_id=1328520308 groups=["rig"]]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 0.20592593
+anchor_right = 0.5
+anchor_bottom = 0.78
+offset_left = -320.0
+offset_right = 320.0
+script = ExtResource("4_a8m0n")
+
+[node name="StepDots" type="Control" parent="." unique_id=1932055983 groups=["ui_bottom"]]
+anchors_preset = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -228.0
+offset_top = -96.0
+offset_right = 228.0
+offset_bottom = -24.0
+mouse_filter = 2
+script = ExtResource("5_r0tm2")
+
+[node name="CoinHud" type="Control" parent="." unique_id=199612596 groups=["ui_top_right"]]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 120.0
+mouse_filter = 2
+script = ExtResource("6_1lh6t")
+
+[node name="HomeButton" type="Control" parent="." unique_id=1188379627 groups=["hit_target"]]
+anchors_preset = 0
+offset_left = 36.0
+offset_top = 36.0
+offset_right = 184.0
+offset_bottom = 184.0
+script = ExtResource("7_oenmw")
+
+[node name="Visual" type="Control" parent="HomeButton" unique_id=206036588]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Art" type="TextureRect" parent="HomeButton/Visual" unique_id=824326174]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("8_4c8fo")
+
+[node name="HintManager" type="Node" parent="." unique_id=604338145]
+script = ExtResource("9_5flwi")
+
+[node name="DragHint" type="Control" parent="." unique_id=743458608]
+visible = false
+anchors_preset = 0
+script = ExtResource("10_n21wr")
