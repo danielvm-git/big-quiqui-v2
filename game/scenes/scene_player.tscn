@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/scenes/scene_player.gd" id="1_h7kg5"]
+
+[node name="ScenePlayer" type="Control" unique_id=1752795386]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_h7kg5")
+
+[node name="Background" type="TextureRect" parent="." unique_id=658363498 groups=["background"]]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
