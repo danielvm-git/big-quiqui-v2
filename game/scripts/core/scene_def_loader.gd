@@ -1,12 +1,22 @@
 # story: e12s02
 # story: e14s01
+# story: e14s02
 class_name SceneDefLoader
 extends RefCounted
 ## Load and validate `SceneDef` resources; reject bad data before the player sees it.
 
 const REJECT_EV: String = "scene.def_rejected"
 const DATA_DIR: String = "res://data/scenes/"
-const CHILD_GATE_ROOMS: Array[String] = ["bathroom", "closet", "playroom", "bedroom"]
+const CHILD_GATE_ROOMS: Array[String] = [
+	"bathroom",
+	"closet",
+	"playroom",
+	"bedroom",
+	"title",
+	"home",
+	"village",
+	"celebration",
+]
 
 
 static func def_tres_path(scene_id: String) -> String:

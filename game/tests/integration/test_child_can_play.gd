@@ -1,5 +1,6 @@
 # story: e13s09
 # story: e14s01
+# story: e14s02
 extends PlayerTestCase
 ## A child can see each target, touch it through the player, finish every step, and leave through a
 ## shipped `next_scene_id`. Hub maps leave through Home when their template never reports progress.
@@ -29,7 +30,7 @@ func test_probe_ids_are_discovered_from_the_data_folder() -> void:
 func test_every_probe_def_finishes_and_names_a_shipped_exit_at_every_aspect() -> void:
 	for aspect: Vector2i in ASPECTS:
 		for scene_id: String in SceneDefLoader.child_play_gate_ids():
-			if scene_id == "reward_probe":
+			if scene_id in ["reward_probe", "celebration"]:
 				CareWalk.to_celebrate((Engine.get_main_loop() as SceneTree).root.get_node("CareLoopManager"))
 			var def: SceneDef = SceneDefLoader.load_by_id(scene_id)
 			assert_true(SceneCatalog.is_shipped(def.next_scene_id), scene_id)
@@ -73,8 +74,6 @@ func _finished(player: ScenePlayer) -> bool:
 
 func _play_def(player: ScenePlayer, scene_id: String) -> void:
 	match scene_id:
-		"title_probe":
-			_tap_verb(player)
 		"touch_each_probe":
 			_play_touch_each(player)
 		"rub_reveal_probe":
@@ -87,14 +86,18 @@ func _play_def(player: ScenePlayer, scene_id: String) -> void:
 			_play_playroom(player)
 		"bedroom":
 			_play_bedroom(player)
-		"reward_probe":
+		"reward_probe", "celebration":
 			_play_reward(player)
 		"prize_probe":
 			_play_prize(player)
 		"penguin_probe":
 			_play_penguin(player)
-		"home_map":
+		"home_map", "home":
 			_play_map(player)
+		"title", "title_probe":
+			_tap_verb(player)
+		"village":
+			await _play_village(player)
 		_:
 			assert_true(false, "no play script for %s" % scene_id)
 
@@ -189,11 +192,39 @@ func _play_map(player: ScenePlayer) -> void:
 	var sm: Node = (Engine.get_main_loop() as SceneTree).root.get_node("SceneManager")
 	sm.set("manual_step", true)
 	var pad: TouchPad = player.get_node("MapPad") as TouchPad
-	var at: Vector2 = player.get_node("MapWorld/feed_door").get_global_rect().get_center()
+	var door_name: String = "feed_door" if player.has_node("MapWorld/feed_door") else "kitchen_door"
+	var at: Vector2 = player.get_node("MapWorld/%s" % door_name).get_global_rect().get_center()
 	send(pad, touch(at, true))
 	send(pad, touch(at, false))
-	var home: TapButton = player.get_node("HomeButton") as TapButton
-	finger_tap(player, home)
+	if player.loaded_def.id in ["home", "home_map"]:
+		var home: TapButton = player.get_node("HomeButton") as TapButton
+		finger_tap(player, home)
+		return
+	await _settle(player)
+
+
+func _play_village(player: ScenePlayer) -> void:
+	var pad: TouchPad = player.get_node("MapPad") as TouchPad
+	var start: Vector2 = Vector2(120.0, 200.0)
+	send(pad, touch(start, true))
+	send(pad, drag(start + Vector2(80.0, 0.0)))
+	send(pad, touch(start + Vector2(80.0, 0.0), false))
+	for _tick: int in range(16):
+		player.advance(0.2)
+	await wait_process_frames(3)
+	if VilaScene.recycled_this_session or player.runner.step_index >= player.loaded_def.steps.size():
+		await _settle(player)
+		return
+	var bag: TouchDraggable = rub_tool(player)
+	var bin: Control = player.find_child("RecycleBin", true, false) as Control
+	if bag == null:
+		await _settle(player)
+		return
+	var to: Vector2 = bin.get_global_rect().get_center()
+	send(bag, touch(bag.get_global_rect().get_center(), true))
+	send(bag, drag(to))
+	send(bag, touch(to, false))
+	await _settle(player)
 
 
 func _tray_taps(player: ScenePlayer) -> Array[TapButton]:

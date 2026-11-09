@@ -1,4 +1,5 @@
 # story: e12s04
+# story: e14s02
 class_name GiveReceivePrimitive
 extends RefCounted
 ## Give→Receive over TouchDraggable modes — no second drag surface (ADR-004).
@@ -19,6 +20,9 @@ func setup(ctx: TemplateContext) -> void:
 	_successes = 0
 	_goal = maxi(ctx.step_def.repeat_count, 1)
 	_receiver = _resolve_receiver()
+	if _is_recycle_step() and VilaScene.recycled_this_session:
+		_successes = _goal
+		return
 	_spawn_items()
 
 
@@ -46,7 +50,13 @@ func active_draggables() -> Array[TouchDraggable]:
 func _resolve_receiver() -> Control:
 	if _ctx == null or _ctx.nodes == null:
 		return null
-	return _ctx.nodes.resolve(_ctx.step_def.receiver_id)
+	var id: String = _ctx.step_def.receiver_id
+	var found: Control = _ctx.nodes.resolve(id)
+	if found != null:
+		return found
+	if id == "recycle_bin" and _ctx.host != null:
+		return _spawn_recycle_bin()
+	return null
 
 
 func _spawn_items() -> void:
@@ -79,14 +89,18 @@ func _make_item(index: int, item_id: String) -> TouchDraggable:
 	art.name = "Art"
 	art.set_anchors_preset(Control.PRESET_FULL_RECT)
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if data != null:
-		art.texture = data.texture()
+	var tex: Texture2D = data.texture() if data != null else ItemArt.texture(item_id)
+	art.texture = tex
 	food.add_child(art)
 	return food
 
 
 func _on_consumed() -> void:
+	if _is_recycle_step() and VilaScene.recycled_this_session:
+		return
 	_successes += 1
+	if _is_recycle_step():
+		_pay_recycle_once()
 	_play_hit_reactions()
 	if _ctx != null and _ctx.runner != null:
 		_ctx.runner.report_template_progress(progress())
@@ -117,3 +131,38 @@ func _play_miss_reactions() -> void:
 	if sfx.is_empty():
 		return
 	_ctx.reactions.execute([{"kind": ReactionExecutor.KIND_SFX, "id": sfx}])
+
+
+func _is_recycle_step() -> bool:
+	return _ctx != null and _ctx.step_def != null and _ctx.step_def.receiver_id == "recycle_bin"
+
+
+func _pay_recycle_once() -> void:
+	var progress: Node = (_ctx.host as Node).get_node_or_null("/root/ProgressManager") if _ctx.host != null else null
+	if progress != null and progress.has_method("add_coins"):
+		progress.call("add_coins", 1)
+	VilaScene.recycled_this_session = true
+	LogSink.emit_to_diary("vila.recycle_earn", {"coins": 1})
+
+
+func _spawn_recycle_bin() -> Control:
+	var host: Control = _ctx.host as Control
+	if host == null or _ctx.nodes == null:
+		return null
+	var bin: Control = Control.new()
+	bin.name = "RecycleBin"
+	bin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bin.add_to_group("hit_target", true)
+	bin.custom_minimum_size = TouchDraggable.MIN_HIT_SIZE
+	bin.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	bin.anchor_left = 0.72
+	bin.anchor_right = 0.72
+	bin.anchor_top = 0.78
+	bin.anchor_bottom = 0.78
+	bin.offset_left = -TouchDraggable.MIN_HIT_SIZE.x * 0.5
+	bin.offset_right = TouchDraggable.MIN_HIT_SIZE.x * 0.5
+	bin.offset_top = -TouchDraggable.MIN_HIT_SIZE.y * 0.5
+	bin.offset_bottom = TouchDraggable.MIN_HIT_SIZE.y * 0.5
+	host.add_child(bin)
+	_ctx.nodes.register("recycle_bin", bin)
+	return bin

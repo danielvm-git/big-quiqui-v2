@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_map"]
+script = ExtResource("2_step")
+template_id = "t25_map"
+world_size = Vector2(4000, 1600)
+pan_tolerance = 24.0
+destination_ids = PackedStringArray("kitchen_door", "bath_door", "closet_door", "play_door", "bed_door", "village_door")
+destination_scenes = PackedStringArray("kitchen", "bathroom", "closet", "playroom", "bedroom", "village")
+destination_locks = PackedStringArray("", "FEED", "BATH", "DRESS", "PLAY", "SLEEP")
+destination_positions = PackedVector2Array(200, 400, 600, 400, 1000, 400, 1400, 400, 1800, 400, 3400, 400)
+destination_icons = PackedStringArray("apple", "soap", "flower_tiara", "ball", "zzz", "recycle_bag")
+on_miss_sfx_id = "sfx_soft_error"
+
+[resource]
+script = ExtResource("1_def")
+id = "home"
+background_id = "bg_home"
+music_id = "music_main_theme"
+intro_voice_key = "vo.home.welcome"
+steps = Array[Resource]([SubResource("step_map")])
+next_scene_id = "home"

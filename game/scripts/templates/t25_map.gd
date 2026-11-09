@@ -1,4 +1,5 @@
 # story: e13s03
+# story: e14s02
 extends RefCounted
 ## Destinations from the def. Locks read the care loop. No wallet and no scene path.
 ## A hub: a child leaves through a door or through Home, so progress never claims the step.
@@ -75,6 +76,7 @@ func set_open_steps(steps: PackedStringArray) -> void:
 func drag_by(delta: Vector2) -> void:
 	_pan.drag_by(delta)
 	_place_world()
+	_maybe_advance_hub_chain()
 
 
 func end_allows_tap() -> bool:
@@ -152,6 +154,7 @@ func _on_pressed(point: Vector2, index: int) -> void:
 func _on_moved(point: Vector2, index: int) -> void:
 	_pan.move_to(point, index)
 	_place_world()
+	_maybe_advance_hub_chain()
 
 
 func _on_released(_point: Vector2, index: int) -> void:
@@ -231,6 +234,16 @@ func _unwatch_resize() -> void:
 
 
 ## A rotation or a new canvas changes how much world fits, so the clamp is read again.
+func _maybe_advance_hub_chain() -> void:
+	if _ctx == null or _ctx.runner == null:
+		return
+	if _ctx.runner.template_progress() >= 1.0:
+		return
+	if _ctx.runner.step_index + 1 >= _ctx.runner.step_count:
+		return
+	_ctx.runner.report_template_progress(1.0)
+
+
 func _on_resized() -> void:
 	apply_view(_view_size())
 	_pan.drag_by(Vector2.ZERO)

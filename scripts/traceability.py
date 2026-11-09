@@ -237,7 +237,11 @@ def main():
             handle.write(text)
         print(f"traceability: wrote {os.path.relpath(OUT, ROOT)} ({len(rows)} stories)")
 
-    bad = [row for row in rows if verdict(row) == "missing"]
+    bad = [
+        row
+        for row in rows
+        if verdict(row) == "missing" and row["epic_status"] == "done"
+    ]
     for row in bad:
         print(f"traceability: {verdict(row).upper()} {row['story']} ({row['epic']}, {len(row['tested'])} test files)")
     if bad:

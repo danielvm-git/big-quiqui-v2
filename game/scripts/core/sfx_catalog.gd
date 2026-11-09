@@ -9,6 +9,7 @@ const PATH_FOR_ID: Dictionary = {
 	"sfx_soft_error": "res://assets/audio/sfx/soft_error.ogg",
 	"sfx_heart": "res://assets/audio/sfx/heart.ogg",
 	"sfx_rinse": "res://assets/audio/sfx/rinse.ogg",
+	"sfx_success": "res://assets/audio/sfx/success.ogg",
 }
 
 

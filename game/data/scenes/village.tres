@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_map"]
+script = ExtResource("2_step")
+template_id = "t25_map"
+world_size = Vector2(3200, 1200)
+pan_tolerance = 24.0
+destination_ids = PackedStringArray("home_door")
+destination_scenes = PackedStringArray("home")
+destination_locks = PackedStringArray("")
+destination_positions = PackedVector2Array(200, 400)
+destination_icons = PackedStringArray("star")
+on_miss_sfx_id = "sfx_soft_error"
+
+[sub_resource type="Resource" id="step_recycle"]
+script = ExtResource("2_step")
+template_id = "t20_drag_snap"
+mode = "single"
+receiver_id = "recycle_bin"
+item_ids = PackedStringArray("recycle_bag")
+on_hit_sfx_id = "sfx_success"
+on_miss_sfx_id = "sfx_soft_error"
+
+[resource]
+script = ExtResource("1_def")
+id = "village"
+background_id = "bg_village"
+music_id = "music_main_theme"
+intro_voice_key = "vo.village.welcome"
+steps = Array[Resource]([SubResource("step_map"), SubResource("step_recycle")])
+next_scene_id = "home"

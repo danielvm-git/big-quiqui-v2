@@ -1,6 +1,8 @@
 # story: e11s01
 # story: e12s02
 # story: e14s01
+# story: e14s02
+# story: e14s02
 class_name SceneCatalog
 extends RefCounted
 ## Shipped legacy scenes plus data-scene ids. Tests and tables read from here.
@@ -54,6 +56,10 @@ const _ID_TO_DEF: Dictionary = {
 	"closet": "res://data/scenes/closet.tres",
 	"playroom": "res://data/scenes/playroom.tres",
 	"bedroom": "res://data/scenes/bedroom.tres",
+	"title": "res://data/scenes/title.tres",
+	"home": "res://data/scenes/home.tres",
+	"village": "res://data/scenes/village.tres",
+	"celebration": "res://data/scenes/celebration.tres",
 }
 
 
