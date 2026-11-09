@@ -48,6 +48,22 @@ review_gate:
       fruit was, and a gate that did not read every column. All ten must-fix and every should-fix are
       fixed; see the round-2 section of the audit. Round 3 uses fresh reviewers. A third FAIL of the same
       gate is a plan stop condition.
+  - epic: e13-wave-1b-primitives-and-templates
+    round: 3
+    verdict: FAIL
+    scores:
+      reviewer_a: 87.5
+      reviewer_b: 92.7
+    reports:
+    - specs/verifications/REVIEW-A3-e13-2026-11-09.md
+    - specs/verifications/REVIEW-B3-e13-2026-11-09.md
+    must_fix: [A1, A2]
+    outcome: >-
+      STOP. The same dual-blind gate failed after two rounds of fixes, which is a plan stop condition.
+      No fix was attempted for round 3. Reviewer A: t21/t51 targets after the first and the t45 strip sit
+      under QuiQui's hit area (A1, A2). Reviewer B: zero must-fix and eight should-fix (lock names that
+      never open, no cap on item_ids, destination_scenes not checked at load, no reload test for the new
+      save fields, and others). e14 to e16 were not started.
   - epic: e11-mbt-monkey-and-ipad-release
     round: 1
     verdict: PASS
