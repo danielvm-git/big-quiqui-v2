@@ -4,6 +4,7 @@
 # story: e13s03
 # story: e13s04
 # story: e13s05
+# story: e13s08
 class_name StepDef
 extends Resource
 ## One step in a data-driven scene: a template id and typed parameters only — never paths or scripts.
@@ -28,6 +29,11 @@ extends Resource
 @export var completion_threshold: float = 0.9
 @export var slot_ids: PackedStringArray = PackedStringArray()
 @export var category_ids: PackedStringArray = PackedStringArray()
+@export var lane_count: int = 3
+@export var spawn_seed: int = 1
+@export var spawn_cadence: int = 2
+@export var spawn_lifetime: int = 4
+@export var goal_count: int = 3
 @export var destination_ids: PackedStringArray = PackedStringArray()
 @export var destination_scenes: PackedStringArray = PackedStringArray()
 @export var destination_locks: PackedStringArray = PackedStringArray()
