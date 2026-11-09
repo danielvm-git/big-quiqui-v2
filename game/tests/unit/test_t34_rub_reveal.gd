@@ -16,6 +16,28 @@ func test_layers_reveal_in_order_and_never_return() -> void:
 	assert_almost_eq(tpl.call("layer_alpha", 1), 0.0, 0.001, "reveal does not reverse")
 
 
+func test_probe_def_uses_the_template() -> void:
+	var def: SceneDef = SceneDefLoader.load_by_id("rub_reveal_probe")
+	assert_not_null(def, "catalogue probe until e14 assigns the room")
+	var step: StepDef = def.steps[0] as StepDef
+	assert_eq(step.template_id, "t34_rub_reveal")
+	assert_eq(step.item_ids.size(), 2)
+
+
+func test_mouse_echo_does_not_double_count() -> void:
+	var tpl: RefCounted = _mount()
+	var tool: TouchDraggable = tpl.call("tool") as TouchDraggable
+	assert_not_null(tool)
+	_send(tool, _touch(Vector2(50.0, 50.0), true))
+	_send(tool, _drag(Vector2(50.0, 50.0)))
+	var echo: InputEventMouseMotion = InputEventMouseMotion.new()
+	echo.device = -1
+	echo.position = Vector2(150.0, 150.0)
+	_send(tool, echo)
+	assert_almost_eq(float(tpl.call("progress")), 1.0 / 16.0, 0.001, "SC-e13s01-P2-01")
+	assert_gte(tool.size.x, GeometryOracle.MIN_HIT_SIZE.x)
+
+
 func test_template_source_names_no_room() -> void:
 	var body: String = SourceScanner.text("res://scripts/templates/t34_rub_reveal.gd")
 	assert_false(body.to_lower().contains("playroom"))
@@ -76,6 +98,23 @@ func _box() -> PackedVector2Array:
 			Vector2(0, 400),
 		]
 	)
+
+
+func _send(control: Control, event: InputEvent) -> void:
+	control._gui_input(TouchSim.gui_event(control, event))
+
+
+func _touch(point: Vector2, pressed: bool) -> InputEventScreenTouch:
+	var event: InputEventScreenTouch = InputEventScreenTouch.new()
+	event.position = point
+	event.pressed = pressed
+	return event
+
+
+func _drag(point: Vector2) -> InputEventScreenDrag:
+	var event: InputEventScreenDrag = InputEventScreenDrag.new()
+	event.position = point
+	return event
 
 
 func _rub_cells(tpl: RefCounted, limit: int) -> void:
