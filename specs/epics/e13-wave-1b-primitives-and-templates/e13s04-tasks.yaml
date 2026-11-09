@@ -1,0 +1,61 @@
+story_id: e13s04
+spec: e13s04.md
+epic_id: e13
+title: "t23_erase and t40_draw_fill (the cleaning pair)"
+status: failing
+bcps: 8
+scenarios: ["SC-e13s04-P0-01", "SC-e13s04-P0-02", "SC-e13s04-P0-03", "SC-e13s04-P0-04", "SC-e13s04-P1-01", "SC-e13s04-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn (a soap-then-rinse step)"
+tasks:
+- id: e13s04-t01
+  description: "Write the failing cleaning tests: draw completes at the threshold, erase completes once, a completed step cannot be un-completed"
+  verify: test -f game/tests/unit/test_t40_draw_fill.gd
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s04-t02
+  description: "Implement `t40_draw_fill` and `t23_erase` on the Rub primitive with the threshold in the def"
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s04-t03
+  description: "Author the bathroom def as three steps (soap, rinse, dry) and a test that each step names its own template"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t23_erase
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s04-t04
+  description: "Run the three-step chain end to end under `TouchSim`"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_bathroom_rub_e2e
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing

@@ -1,0 +1,61 @@
+story_id: e13s05
+spec: e13s05.md
+epic_id: e13
+title: "t45_dress_decorate, t0_title and t32_reward"
+status: failing
+bcps: 8
+scenarios: ["SC-e13s05-P1-01", "SC-e13s05-P1-02", "SC-e13s05-P1-03", "SC-e13s05-P1-04", "SC-e13s05-P2-01", "SC-e13s05-P2-02"]
+playable_scene: "res://scenes/scene_player.tscn (title → hub → reward)"
+tasks:
+- id: e13s05-t01
+  description: "Write the failing tests for the three templates (snap + save, bin + save, one title target, pay-once reward)"
+  verify: test -f game/tests/unit/test_t45_dress_decorate.gd
+  risk: P1
+  security: none
+  allure:
+    severity: high
+    categories:
+      - "wave-1b"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s05-t02
+  description: "Implement `t45_dress_decorate` with the category strip from the def and the bin path"
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P1
+  security: none
+  allure:
+    severity: high
+    categories:
+      - "wave-1b"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s05-t03
+  description: "Implement `t0_title` (single verb) and `t32_reward` (pay once, free gift)"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t32_reward
+  risk: P1
+  security: none
+  allure:
+    severity: high
+    categories:
+      - "wave-1b"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s05-t04
+  description: "Prove re-entry never pays twice and the title has one interactive target"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t32_reward
+  risk: P1
+  security: none
+  allure:
+    severity: high
+    categories:
+      - "wave-1b"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing

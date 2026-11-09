@@ -78,6 +78,23 @@ pre .k{color:var(--a3)} pre .s{color:var(--a2)} pre .c{color:var(--muted)} pre .
 .note{font-size:.85rem;color:var(--muted);border-left:3px solid var(--line);padding-left:12px}
 .callout{background:var(--tint-accent);border-radius:6px;padding:22px;display:flex;flex-direction:column;gap:10px}
 .correction{background:var(--tint-a1);border-radius:6px;padding:14px 18px;font-size:.92rem}
+.tt{display:inline-block;font-size:.74rem;padding:2px 8px;margin:2px 4px 2px 0;border-radius:999px;background:var(--tint-mute);color:var(--fg)}
+.tt.big{font-size:.8rem;background:var(--tint-a3)}
+table.mx{min-width:880px}
+table.mx th,table.mx td{vertical-align:top}
+table.mx tbody th{text-align:left;font-weight:400;white-space:normal;min-width:150px}
+table.mx tbody th b{display:block;font-family:var(--display);font-size:.98rem}
+table.mx tbody th span{display:block;font-size:.76rem;color:var(--muted);font-family:var(--mono)}
+table.mx thead th span{display:block;text-transform:none;letter-spacing:0;font-size:.7rem;margin-top:2px}
+table.mx th.fa{color:var(--a1)} table.mx th.fb{color:var(--a2)} table.mx th.fc{color:var(--a3)}
+table.mx tr.gap td{background:var(--tint-accent)}
+.gapnote{display:block;font-weight:600;margin-bottom:4px}
+.fluv{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--a3);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.fhead{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline}
+.fgrid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px}
+@media (max-width:760px){.fgrid{grid-template-columns:1fr}}
+.fluv h4{margin:0 0 6px;font-family:var(--display);font-size:.98rem}
+.fluv ul{margin:0 0 10px;padding-left:18px;font-size:.9rem;display:flex;flex-direction:column;gap:4px}
 </style>
 
 <div class="wrap">
@@ -414,9 +431,214 @@ pre .k{color:var(--a3)} pre .s{color:var(--a2)} pre .c{color:var(--muted)} pre .
   <p class="cap">Two QuiQui scenes have no Builder template: <span class="mono">duck_dance</span> (rhythm) and <span class="mono">album</span> (collection screen). They stay as their own code. The behavior of each template is inferred from component and method names. Field values inside the scenes are not readable, so exact parameters are still our own design.</p>
 </section>
 
+<!-- 3b. SIZE AND MATRIX -->
+<section>
+  <span class="eyebrow">Diagram 4 · Smallest game</span>
+  <h2>Which TutoTOONS game is the smallest</h2>
+  <p>Only 24 of the studio's titles are on the device we pulled, so this covers 24, not 57. I cannot see the other 33. The answer depends on what "smallest" means, so here are three measures. Princess Gloria Makeup Salon is the smallest on own code and on scene files, and third on download.</p>
+  <ul class="rules">
+    <li><b>Download</b><span>Sweet Baby Girl Halloween Fun, 94 MB. Next are Mermaid Life (102 MB) and Princess Gloria (116 MB). Halloween Fun carries 598 own types, so it is small to download but not small in code.</span></li>
+    <li><b>Own game code</b><span>Princess Gloria, 7 types. Then Summer Camp (8) and Mermaid Life (9). These are games where almost everything is scene data.</span></li>
+    <li><b>Scene files</b><span>Princess Gloria, 73. Then Summer Camp (75) and Halloween Fun (77). Forms B and C show 5–55 files, but they load their content another way, so the count is not comparable.</span></li>
+  </ul>
+  <div class="plate">
+<svg viewBox="0 0 960 578" role="img" aria-label="Own game code per title on a log scale, grouped by color into the four forms">
+<text x="16" y="22" class="m" font-size="11">title</text><text x="330" y="22" class="m" font-size="11">own game code, types (log scale)</text><text x="944" y="22" text-anchor="end" class="m" font-size="11">download · scene files</text>
+<line x1="375.9" y1="36" x2="375.9" y2="554" stroke="var(--line)"/><text x="375.9" y="568" text-anchor="middle" class="m" font-size="9.5">10</text>
+<line x1="528.6" y1="36" x2="528.6" y2="554" stroke="var(--line)"/><text x="528.6" y="568" text-anchor="middle" class="m" font-size="9.5">100</text>
+<line x1="681.2" y1="36" x2="681.2" y2="554" stroke="var(--line)"/><text x="681.2" y="568" text-anchor="middle" class="m" font-size="9.5">1,000</text>
+<text x="16" y="57" font-size="11.5" font-weight="700">Princess Gloria Makeup Salon</text>
+<line x1="330" y1="53" x2="352.3" y2="53" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="352.3" cy="53" r="5" fill="var(--a1)" stroke="var(--fg)" stroke-width="2"/>
+<text x="362.3" y="57" class="m" font-size="10.5" style="fill:var(--fg)">7</text>
+<text x="944" y="57" text-anchor="end" class="m" font-size="10.5">116 MB · 73</text>
+<text x="16" y="78" font-size="11.5">Sweet Baby Girl Summer Camp</text>
+<line x1="330" y1="74" x2="361.2" y2="74" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="361.2" cy="74" r="5" fill="var(--a1)"/>
+<text x="371.2" y="78" class="m" font-size="10.5" style="fill:var(--fg)">8</text>
+<text x="944" y="78" text-anchor="end" class="m" font-size="10.5">122 MB · 75</text>
+<text x="16" y="99" font-size="11.5">Sweet Baby Girl Mermaid Life</text>
+<line x1="330" y1="95" x2="369.0" y2="95" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="369.0" cy="95" r="5" fill="var(--a1)"/>
+<text x="379.0" y="99" class="m" font-size="10.5" style="fill:var(--fg)">9</text>
+<text x="944" y="99" text-anchor="end" class="m" font-size="10.5">102 MB · 105</text>
+<text x="16" y="120" font-size="11.5">Jungle Animal Hair Salon 2</text>
+<line x1="330" y1="116" x2="393.3" y2="116" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="393.3" cy="116" r="5" fill="var(--a1)"/>
+<text x="403.3" y="120" class="m" font-size="10.5" style="fill:var(--fg)">13</text>
+<text x="944" y="120" text-anchor="end" class="m" font-size="10.5">140 MB · 251</text>
+<text x="16" y="141" font-size="11.5">My Baby Unicorn</text>
+<line x1="330" y1="137" x2="398.3" y2="137" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="398.3" cy="137" r="5" fill="var(--a1)"/>
+<text x="408.3" y="141" class="m" font-size="10.5" style="fill:var(--fg)">14</text>
+<text x="944" y="141" text-anchor="end" class="m" font-size="10.5">132 MB · 189</text>
+<text x="16" y="162" font-size="11.5">Animal Hair Salon 2 Jungle</text>
+<line x1="330" y1="158" x2="428.2" y2="158" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="428.2" cy="158" r="5" fill="var(--a1)"/>
+<text x="438.2" y="162" class="m" font-size="10.5" style="fill:var(--fg)">22</text>
+<text x="944" y="162" text-anchor="end" class="m" font-size="10.5">119 MB · 133</text>
+<text x="16" y="183" font-size="11.5">Sweet Baby Girl Pop Stars</text>
+<line x1="330" y1="179" x2="455.1" y2="179" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="455.1" cy="179" r="5" fill="var(--a1)"/>
+<text x="465.1" y="183" class="m" font-size="10.5" style="fill:var(--fg)">33</text>
+<text x="944" y="183" text-anchor="end" class="m" font-size="10.5">121 MB · 110</text>
+<text x="16" y="204" font-size="11.5">Power Girls Super City</text>
+<line x1="330" y1="200" x2="459.0" y2="200" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="459.0" cy="200" r="5" fill="var(--a1)"/>
+<text x="469.0" y="204" class="m" font-size="10.5" style="fill:var(--fg)">35</text>
+<text x="944" y="204" text-anchor="end" class="m" font-size="10.5">131 MB · 153</text>
+<text x="16" y="225" font-size="11.5">Animal Hair Salon Australia</text>
+<line x1="330" y1="221" x2="481.3" y2="221" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="481.3" cy="221" r="5" fill="var(--a1)"/>
+<text x="491.3" y="225" class="m" font-size="10.5" style="fill:var(--fg)">49</text>
+<text x="944" y="225" text-anchor="end" class="m" font-size="10.5">130 MB · 190</text>
+<text x="16" y="246" font-size="11.5">Sweet Baby Girl Cleanup 5</text>
+<line x1="330" y1="242" x2="484.0" y2="242" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="484.0" cy="242" r="5" fill="var(--a1)"/>
+<text x="494.0" y="246" class="m" font-size="10.5" style="fill:var(--fg)">51</text>
+<text x="944" y="246" text-anchor="end" class="m" font-size="10.5">157 MB · 180</text>
+<text x="16" y="267" font-size="11.5">Sweet Baby Girl Cleanup 6</text>
+<line x1="330" y1="263" x2="500.0" y2="263" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="500.0" cy="263" r="5" fill="var(--a1)"/>
+<text x="510.0" y="267" class="m" font-size="10.5" style="fill:var(--fg)">65</text>
+<text x="944" y="267" text-anchor="end" class="m" font-size="10.5">154 MB · 160</text>
+<text x="16" y="288" font-size="11.5">Pandalu Friends Treehouse</text>
+<line x1="330" y1="284" x2="566.4" y2="284" stroke="var(--a2)" stroke-width="1.5" opacity=".5"/>
+<circle cx="566.4" cy="284" r="5" fill="var(--a2)"/>
+<text x="576.4" y="288" class="m" font-size="10.5" style="fill:var(--fg)">177</text>
+<text x="944" y="288" text-anchor="end" class="m" font-size="10.5">152 MB · 5</text>
+<text x="16" y="309" font-size="11.5">My Baby Unicorn 2</text>
+<line x1="330" y1="305" x2="629.5" y2="305" stroke="var(--a2)" stroke-width="1.5" opacity=".5"/>
+<circle cx="629.5" cy="305" r="5" fill="var(--a2)"/>
+<text x="639.5" y="309" class="m" font-size="10.5" style="fill:var(--fg)">458</text>
+<text x="944" y="309" text-anchor="end" class="m" font-size="10.5">164 MB · 16</text>
+<text x="16" y="330" font-size="11.5">Pandalu Baby Bear City</text>
+<line x1="330" y1="326" x2="635.8" y2="326" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="635.8" cy="326" r="5" fill="var(--a1)"/>
+<text x="645.8" y="330" class="m" font-size="10.5" style="fill:var(--fg)">504</text>
+<text x="944" y="330" text-anchor="end" class="m" font-size="10.5">118 MB · 149</text>
+<text x="16" y="351" font-size="11.5">Sweet Baby Girl Halloween Fun</text>
+<line x1="330" y1="347" x2="647.1" y2="347" stroke="var(--a1)" stroke-width="1.5" opacity=".5"/>
+<circle cx="647.1" cy="347" r="5" fill="var(--a1)"/>
+<text x="657.1" y="351" class="m" font-size="10.5" style="fill:var(--fg)">598</text>
+<text x="944" y="351" text-anchor="end" class="m" font-size="10.5">94 MB · 77</text>
+<text x="16" y="372" font-size="11.5">Smolsies Cute Pet House</text>
+<line x1="330" y1="368" x2="665.1" y2="368" stroke="var(--a2)" stroke-width="1.5" opacity=".5"/>
+<circle cx="665.1" cy="368" r="5" fill="var(--a2)"/>
+<text x="675.1" y="372" class="m" font-size="10.5" style="fill:var(--fg)">784</text>
+<text x="944" y="372" text-anchor="end" class="m" font-size="10.5">153 MB · 12</text>
+<text x="16" y="393" font-size="11.5">L.O.L. Surprise Disco House</text>
+<line x1="330" y1="389" x2="684.8" y2="389" stroke="var(--a2)" stroke-width="1.5" opacity=".5"/>
+<circle cx="684.8" cy="389" r="5" fill="var(--a2)"/>
+<text x="694.8" y="393" class="m" font-size="10.5" style="fill:var(--fg)">1,055</text>
+<text x="944" y="393" text-anchor="end" class="m" font-size="10.5">257 MB · 14</text>
+<text x="16" y="414" font-size="11.5">Smolsies 2</text>
+<line x1="330" y1="410" x2="692.0" y2="410" stroke="var(--a2)" stroke-width="1.5" opacity=".5"/>
+<circle cx="692.0" cy="410" r="5" fill="var(--a2)"/>
+<text x="702.0" y="414" class="m" font-size="10.5" style="fill:var(--fg)">1,176</text>
+<text x="944" y="414" text-anchor="end" class="m" font-size="10.5">149 MB · 8</text>
+<text x="16" y="435" font-size="11.5">Power Girls Fantastic Heroes</text>
+<line x1="330" y1="431" x2="707.7" y2="431" stroke="var(--a2)" stroke-width="1.5" opacity=".5"/>
+<circle cx="707.7" cy="431" r="5" fill="var(--a2)"/>
+<text x="717.7" y="435" class="m" font-size="10.5" style="fill:var(--fg)">1,492</text>
+<text x="944" y="435" text-anchor="end" class="m" font-size="10.5">158 MB · 12</text>
+<text x="16" y="456" font-size="11.5">Kpopsies</text>
+<line x1="330" y1="452" x2="709.0" y2="452" stroke="var(--a2)" stroke-width="1.5" opacity=".5"/>
+<circle cx="709.0" cy="452" r="5" fill="var(--a2)"/>
+<text x="719.0" y="456" class="m" font-size="10.5" style="fill:var(--fg)">1,520</text>
+<text x="944" y="456" text-anchor="end" class="m" font-size="10.5">162 MB · 14</text>
+<text x="16" y="477" font-size="11.5">Princesses</text>
+<line x1="330" y1="473" x2="713.9" y2="473" stroke="var(--a3)" stroke-width="1.5" opacity=".5"/>
+<circle cx="713.9" cy="473" r="5" fill="var(--a3)"/>
+<text x="723.9" y="477" class="m" font-size="10.5" style="fill:var(--fg)">1,636</text>
+<text x="944" y="477" text-anchor="end" class="m" font-size="10.5">430 MB · 14</text>
+<text x="16" y="498" font-size="11.5">Giggle Babies</text>
+<line x1="330" y1="494" x2="725.8" y2="494" stroke="var(--a2)" stroke-width="1.5" opacity=".5"/>
+<circle cx="725.8" cy="494" r="5" fill="var(--a2)"/>
+<text x="735.8" y="498" class="m" font-size="10.5" style="fill:var(--fg)">1,959</text>
+<text x="944" y="498" text-anchor="end" class="m" font-size="10.5">175 MB · 13</text>
+<text x="16" y="519" font-size="11.5">Dopples World</text>
+<line x1="330" y1="515" x2="773.0" y2="515" stroke="var(--a3)" stroke-width="1.5" opacity=".5"/>
+<circle cx="773.0" cy="515" r="5" fill="var(--a3)"/>
+<text x="783.0" y="519" class="m" font-size="10.5" style="fill:var(--fg)">3,993</text>
+<text x="944" y="519" text-anchor="end" class="m" font-size="10.5">569 MB · 55</text>
+<text x="16" y="540" font-size="11.5">Fluvsies</text>
+<line x1="330" y1="536" x2="778.7" y2="536" stroke="var(--a3)" stroke-width="1.5" opacity=".5"/>
+<circle cx="778.7" cy="536" r="5" fill="var(--a3)"/>
+<text x="788.7" y="540" class="m" font-size="10.5" style="fill:var(--fg)">4,351</text>
+<text x="944" y="540" text-anchor="end" class="m" font-size="10.5">288 MB · 29</text>
+</svg>
+  </div>
+  <p class="cap">Own code counts the types in the game's own assemblies. It leaves out the shared TutoTOONS base and the Builder runtime. The four forms separate cleanly: Builder games are under 70 types, everything else starts above 170. Download size includes ad and billing libraries that every title carries, so it says little about game size.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Diagram 5 · Matrix</span>
+  <h2>Game type by layer form</h2>
+  <p>Each title appears once, under the type that best describes its main premise. I chose the type from the title and checked it against the data: scene mix for Builder games, and counts of related type names for the others. For Builder games the type lives in scene data, not code, so the form tells you how the game is built, and the type tells you what is in the scenes.</p>
+<div class="tbl"><table class="mx">
+<thead><tr><th>Game type</th><th class="fa">A · Builder runtime<span>11 titles · 7–65 own types</span></th><th class="fa">A′ · Templates inside the game<span>2 titles · 504–598</span></th><th class="fb">B · Kit per activity<span>8 titles · 177–1,959</span></th><th class="fc">C · World platform<span>3 titles · 1,636–4,351</span></th></tr></thead>
+<tbody>
+<tr><th scope="row"><b>Salon & makeover</b><span>hair, makeup, dress-up</span></th><td><span class="tt">Animal Hair Salon 2 Jungle</span><span class="tt">Jungle Animal Hair Salon 2</span><span class="tt">Animal Hair Salon Australia</span><span class="tt">Princess Gloria Makeup Salon</span></td><td><span class="dim">—</span></td><td><span class="dim">—</span></td><td><span class="tt">Princesses</span></td></tr>
+<tr><th scope="row"><b>Cleanup & chores</b><span>erase, tidy, restore</span></th><td><span class="tt">Sweet Baby Girl Cleanup 5</span><span class="tt">Sweet Baby Girl Cleanup 6</span></td><td><span class="dim">—</span></td><td><span class="dim">—</span></td><td><span class="dim">—</span></td></tr>
+<tr><th scope="row"><b>Pet & baby care, collect</b><span>feed, wash, hatch, grow</span></th><td><span class="tt">My Baby Unicorn</span></td><td><span class="tt">Pandalu Baby Bear City</span></td><td><span class="tt">Giggle Babies</span><span class="tt">Smolsies Cute Pet House</span><span class="tt">Smolsies 2</span><span class="tt">My Baby Unicorn 2</span></td><td><span class="tt">Fluvsies</span></td></tr>
+<tr><th scope="row"><b>Story & daily routine</b><span>a day of small tasks</span></th><td><span class="tt">Sweet Baby Girl Mermaid Life</span><span class="tt">Sweet Baby Girl Summer Camp</span><span class="tt">Power Girls Super City</span></td><td><span class="tt">Sweet Baby Girl Halloween Fun</span></td><td><span class="tt">Pandalu Friends Treehouse</span></td><td><span class="dim">—</span></td></tr>
+<tr><th scope="row"><b>Adventure & movement</b><span>run, ride, lanes, jump</span></th><td><span class="tt">Sweet Baby Girl Pop Stars</span></td><td><span class="dim">—</span></td><td><span class="tt">Power Girls Fantastic Heroes</span></td><td><span class="dim">—</span></td></tr>
+<tr><th scope="row"><b>Music & dance</b><span>dance floors, songs</span></th><td><span class="dim">—</span></td><td><span class="dim">—</span></td><td><span class="tt">Kpopsies</span><span class="tt">L.O.L. Surprise Disco House</span></td><td><span class="dim">—</span></td></tr>
+<tr><th scope="row"><b>Town & world sandbox</b><span>avatar, rooms, map</span></th><td><span class="dim">—</span></td><td><span class="dim">—</span></td><td><span class="dim">—</span></td><td><span class="tt">Dopples World</span></td></tr>
+<tr class="gap"><th scope="row"><b>Kitchen & cooking</b><span>cook, serve, recipes</span></th><td colspan="4"><span class="gapnote">No title in the sample is primarily a kitchen game.</span> Cooking only appears as a feature inside bigger games: <span class="tt">Fluvsies</span><span class="tt">Dopples World</span><span class="tt">Giggle Babies</span><span class="tt">Smolsies Cute Pet House</span><span class="tt">Sweet Baby Girl Summer Camp</span></td></tr>
+</tbody></table></div>
+  <p class="cap">Kitchen is the empty row. That is the main thing the matrix shows: a QuiQui Kitchen has no small reference game, so it has to be composed from parts. Pop Stars sits under adventure because 11% of its scenes are movement minigames, even though its theme is performing.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Diagram 6 · Fluvsies</span>
+  <h2>Where Fluvsies fits</h2>
+  <p>Fluvsies is a Form C title like Dopples World, but a different kind of world. The panel below says why.</p>
+<div class="fluv">
+  <div class="fhead"><h3>Where Fluvsies fits</h3><span class="tt big">Form C · World platform · pet care and collect</span></div>
+  <div class="fgrid">
+    <div><h4>What the files show</h4><ul>
+      <li>No Builder scenes. 29 scene files and 25 delivery packs (atlases, cat room images, drawings, flying game, store, live events).</li>
+      <li>About 4,350 own types spread over 29 small <span class="mono">Fluvsies.*</span> assemblies: <span class="mono">Core.StateMachine</span>, <span class="mono">Core.EventBus</span>, <span class="mono">Core.Input</span>, <span class="mono">Services.SavedDataRepository</span>, <span class="mono">Services.AssetDelivery</span>.</li>
+      <li>Rooms and areas: <span class="mono">CatRoom</span>, <span class="mono">Orangery</span>, <span class="mono">Mall</span>, <span class="mono">Overworld.Picnic</span>.</li>
+      <li>Each room holds toys, and each toy is an activity: <span class="mono">ActivityStationToyBase</span>, <span class="mono">RoomActivityToyBase</span>, a bath tub, a washing machine, a kitchen, a bowl, a hammock, a seesaw.</li>
+      <li>Collect and care: eggs with spawn-time tables, <span class="mono">HungerTimer</span>, clothes and set collections, dress-up and makeup paint areas.</li>
+      <li>Minigames: a flying game with levels, merge, matching.</li>
+      <li>9 live events (Christmas, HugeEgg, Kawaii, Slime and others) tied to <span class="mono">TutoTOONS.ServerTime</span>.</li>
+    </ul></div>
+    <div><h4>How it differs from Dopples</h4><ul>
+      <li>Dopples is an avatar town: you walk a map and enter rooms that ship as 52 packs.</li>
+      <li>Fluvsies is a pet room: the pets live in a room and the child plays with toys around them.</li>
+      <li>Both ship their scenes as delivery packs and both split services into their own libraries.</li>
+    </ul>
+    <h4>What QuiQui can take</h4><ul>
+      <li>Toy-as-activity: a room is a set of stations, each with its own small loop. This is close to our "scene is a list of steps".</li>
+      <li>The service split and the small state machine and event bus.</li>
+    </ul>
+    <h4>What to skip</h4><ul>
+      <li>Live events and server time, the store, delivery packs. They need a network or a publisher.</li>
+    </ul></div>
+  </div>
+</div>
+</section>
+
+<section>
+  <span class="eyebrow">Table · Base picks</span>
+  <h2>Which game to base each QuiQui title on</h2>
+<div class="tbl"><table style="min-width:820px">
+<thead><tr><th>QuiQui title</th><th>Base on</th><th>Why this one</th><th>Borrow</th><th>Gap to design ourselves</th></tr></thead>
+<tbody>
+<tr><td><b>Salon</b></td><td><b>Princess Gloria Makeup Salon</b><br><span class="dim">Form A</span></td><td>Smallest complete game in the sample: 7 own types, 73 scenes. Scene mix: 27% story beats, 20% draw, 18% erase, 17% paint, 8% dress-up, 6% map.</td><td class="id">t40_draw_fill · t23_erase · t44_paint · t45_dress_decorate · t25_map. Hair from Animal Hair Salon Australia (<span class="mono">t52_groom</span>, one scene, 50 strand objects).</td><td>A strand layer for hair. Pet and character care, which Gloria does not have.</td></tr>
+<tr><td><b>Adventure</b></td><td><b>My Baby Unicorn</b><br><span class="dim">Form A</span> + Pop Stars lanes</td><td>14 own types, 189 scenes. Widest minigame set in the Builder family: ride, tap-moving, lanes, memory, paint. Movement is 8% of its scenes, 11% in Pop Stars.</td><td class="id">t25_map · t26_ride · t37_tap_moving · t50_lanes · t27_memory</td><td>Lives, shooting and crashing removed. Free walking around a world does not exist in Form A. It exists only in Form C (Dopples, Princesses), which is far larger.</td></tr>
+<tr><td><b>Kitchen</b></td><td><b>Sweet Baby Girl Summer Camp</b> for the shell<br><span class="dim">Form A</span> + Smolsies Cute Pet House for cooking<br><span class="dim">Form B</span></td><td>No small kitchen game exists in the sample. Summer Camp is the only Builder title with a serve scene and slicing scenes, 8 own types, 75 scenes, 17% drag and 18% touch-each. Cooking logic lives in Form B and C.</td><td class="id">t20_drag_snap · t21_touch_each · t48_serve · t42_slice_cut. Data pattern from Giggle Babies (<span class="mono">KitchenFoodsData</span>: food type, tier, reaction). Ingredient give/receive pattern from Dopples.</td><td>A stack-and-cook step and a recipe table. Only 2 scenes of the whole Builder sample use <span class="mono">t48</span>, so there is little to copy.</td></tr>
+</tbody></table></div>
+  <p class="note">The base games are picked from composition data, not from play. Nobody has played these titles side by side for this comparison. Genre labels are my reading of the title plus the data. Scene counts for Forms B and C are level files only, and those titles load most of their content from delivery packs.</p>
+</section>
+
 <!-- 4. LINE GAMES -->
 <section>
-  <span class="eyebrow">Diagram 4 · The QuiQui line</span>
+  <span class="eyebrow">Diagram 7 · The QuiQui line</span>
   <h2>Which templates each game would use</h2>
   <p>These are examples of future titles, not commitments. They show the point of the library: each new game is mostly new scene data on top of templates that already work.</p>
   <div class="games">
@@ -448,7 +670,7 @@ pre .k{color:var(--a3)} pre .s{color:var(--a2)} pre .c{color:var(--muted)} pre .
 
 <!-- 6. RUNTIME -->
 <section>
-  <span class="eyebrow">Diagram 5 · The player at runtime</span>
+  <span class="eyebrow">Diagram 8 · The player at runtime</span>
   <h2>One scene from start to end</h2>
   <p>A scene is a list of steps, and each step is one template with parameters. The player runs them in an <span class="mono">Fsm</span> with a transition table, as the project already requires.</p>
   <div class="plate">

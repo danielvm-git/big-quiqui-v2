@@ -2,7 +2,7 @@ story_id: e12s04
 spec: e12s04.md
 epic_id: e12
 title: "Give→Receive Primitive and the Reaction Vocabulary"
-status: done
+status: passing
 bcps: 8
 scenarios: ["SC-e12s04-P0-01", "SC-e12s04-P0-02", "SC-e12s04-P0-03", "SC-e12s04-P0-04", "SC-e12s04-P1-01", "SC-e12s04-P1-02", "SC-e12s04-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn (an item is given and QuiQui answers)"

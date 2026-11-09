@@ -22,7 +22,7 @@ decoration).
 | SC-e12s01-P1-01 | unit | e12s01 | every art filename matches `\A[a-z0-9_]+\.(png | jpg)\z` |
 | SC-e12s01-P1-02 | unit | e12s01 | every audio filename matches the id grammar and has a matching `.import` sidecar | a rename left the sidecar behind and the asset re-imports under a new uid |
 | SC-e12s01-P1-03 | unit | e12s01 | `vo.<scene>.<line>` resolves to a stream; an unknown key returns `false` and logs `audio.missing_key` | a missing line crashes the room or locks input |
-| SC-e12s01-P1-04 | unit | e12s01 | the locale defaults to `pt_BR` and a key path is built only from id-valid segments | a crafted key reads outside `assets/audio/voice/pt_BR` |
+| SC-e12s01-P1-04 | unit | e12s01 | the locale defaults to `pt_BR` and a key path is built only from id-valid segments | a crafted key reads outside `assets/audio/voice` |
 | SC-e12s01-P1-05 | integration | e12s01 | all 17 legacy scenes load with zero missing resources after the rename | a regenerated `.tscn` lost a texture reference |
 | SC-e12s01-P2-01 | unit | e12s01 | no Portuguese asset path string remains in `game/scripts` or `game/tools` | a stale `res://` string survives to fail at runtime |
 | SC-e12s01-P2-02 | control | e12s01 | the grammar test fails when a bad filename is injected | the new gate cannot fail (decoration) |
@@ -128,7 +128,7 @@ coexists with an unplayable game (the reason this restart exists):
 
 | Gate | Prove it can fail by |
 |---|---|
-| id grammar over `assets/` | inject a file named `carrot.png` into a temp dir and assert the scanner reports it |
+| id grammar over `assets/` | inject a file named `cenoura.png` into a temp dir and assert the scanner reports it |
 | def validator | feed a def whose template id is `t99_missing` and assert a rejection, not a no-op |
 | `consume_def` single-read | read twice and assert the second read is empty |
 | no Kitchen noun in `t20` | add the word to the template in a fixture copy and assert the scan fails |

@@ -565,5 +565,27 @@ bugs:
     the penguin Basket she must drag is 50 % behind the hero, and the roda prize wheel is
     half-hidden behind her head while a second wheel is the spin button'
   file: specs/bugs/BUG-061-pinguim-basket-and-roda-wheel-overlap.md
-  status: open
+  status: fixed
   found_by: e11 post-epic review (INV-10 occlusion probe)
+  fixed_by: 'builder z/composition fix + a recursive-z model in the probe; allowlist row deleted'
+- bug_id: BUG-062
+  date: '2026-11-08'
+  severity: low
+  priority: P2
+  scope: tooling
+  summary: 'Two pre-build compliance checks assumed every epic capsule lives at the top of
+    specs/epics/; after e01-e09 were archived the capsule check failed outright and the story
+    verify extractor silently returned 33 of 154 records'
+  file: specs/bugs/BUG-062-archived-capsules-break-two-gates.md
+  status: fixed
+  found_by: scope-work for the Builder restart (compliance-pre-build ran red)
+- bug_id: BUG-063
+  date: '2026-11-08'
+  severity: low
+  priority: P2
+  scope: release
+  summary: 'project.godot advertised 0.10.0 while the latest tag was v0.10.1; the drift was
+    committed on main because the release job only checks the sync and never writes it'
+  file: specs/bugs/BUG-063-project-version-drift-recurrence.md
+  status: fixed
+  found_by: preflight L5c at the start of the Builder restart

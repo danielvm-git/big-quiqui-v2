@@ -25,7 +25,9 @@ chk "define-language → GLOSSARY_LATEST.yaml"    test -s specs/product/GLOSSARY
 chk "research-first → PRIOR_ART.md"             test -s specs/product/PRIOR_ART.md
 chk "model-domain → Domain Model section"       grep -q '^## 6. Domain Model' specs/tech-architecture/tech-stack.md
 chk "plan-release → release-plan.yaml"          test -s specs/release-plan.yaml
-chk "slice-tasks → epic capsules"               test -d specs/epics/e01-tracer-title-and-foundation
+# e01-e09 were archived after their epics closed; the planning artifact still has to exist,
+# it just no longer lives at the top level (BUG-062).
+chk "slice-tasks → epic capsules"               bash -c 'test -d specs/epics/e01-tracer-title-and-foundation || test -d specs/epics/archive/e01-tracer-title-and-foundation'
 
 echo "▸ pre-build planning (plan-work / plan-tests / assess-impact / security / evals)"
 chk "plan-work → capsule consistency (11)"      bash scripts/compliance-capsules.sh

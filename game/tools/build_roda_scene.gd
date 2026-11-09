@@ -20,6 +20,16 @@ const FEET_RATIO: float = 0.78
 const INSET: float = 36.0
 const HUD_SIZE: Vector2 = Vector2(380.0, 88.0)
 const HUD_INSET: float = 36.0
+## BUG-061: the wheel used to be a 440 px decoration pinned at the centre — half of it
+## behind her head — plus a second, small wheel in the corner as the spin button. Two
+## wheels is not a readable screen for a four-year-old, so the big wheel *is* the spin
+## target now and the corner duplicate is gone. It sits right of her painted rect
+## (813..1106 px at 16:9), clear on both aspects, above every rig layer.
+const WHEEL_SIZE: float = 440.0
+const WHEEL_ANCHOR: Vector2 = Vector2(0.80, 0.46)
+## The badge hangs just above the wheel it points at.
+const BADGE_ANCHOR: Vector2 = Vector2(0.80, 0.205)
+const BADGE_SIZE: float = 48.0
 
 
 func _init() -> void:
@@ -28,7 +38,6 @@ func _init() -> void:
 	_add_rig(root)
 	_add_hud(root)
 	_add_home(root)
-	_add_wheel_decoration(root)
 	_add_badge(root)
 	_add_spin(root)
 
@@ -88,23 +97,15 @@ func _add_home(root: Control) -> void:
 	root.add_child(home)
 
 
-func _add_wheel_decoration(root: Control) -> void:
-	var wheel: TextureRect = TextureRect.new()
-	wheel.name = "WheelArt"
-	wheel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	wheel.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	wheel.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	if ResourceLoader.exists(WHEEL_ART):
-		wheel.texture = load(WHEEL_ART) as Texture2D
-	SceneBuilder.pin(wheel, Vector4(0.5, 0.42, 0.5, 0.42), Vector4(-220.0, -220.0, 220.0, 220.0))
-	root.add_child(wheel)
-
-
 func _add_badge(root: Control) -> void:
 	var badge: Control = Control.new()
 	badge.name = "WheelBadge"
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	SceneBuilder.pin(badge, Vector4(0.5, 0.22, 0.5, 0.22), Vector4(-48.0, -48.0, 48.0, 48.0))
+	SceneBuilder.pin(
+		badge,
+		Vector4(BADGE_ANCHOR.x, BADGE_ANCHOR.y, BADGE_ANCHOR.x, BADGE_ANCHOR.y),
+		Vector4(-BADGE_SIZE, -BADGE_SIZE, BADGE_SIZE, BADGE_SIZE)
+	)
 	var art: TextureRect = TextureRect.new()
 	art.name = "Art"
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -122,10 +123,17 @@ func _add_spin(root: Control) -> void:
 	spin.name = "SpinButton"
 	spin.set_script(load(BUTTON_SCRIPT))
 	spin.add_to_group("hit_target", true)
-	# BUG-060: the rig's sprites sit at z_index 0-50, so a centred scene Control is drawn
-	# behind the character (50 % of this button was under her belly). Right margin, above
-	# every rig layer.
-	SceneBuilder.pin(spin, Vector4(1.0, 1.0, 1.0, 1.0), Vector4(-240.0, -240.0, -72.0, -72.0))
+	# BUG-061: the spin affordance is the wheel itself — one wheel, 440 px, ≥ 90 % visible.
+	# z 100 keeps it above every rig layer (BUG-060/BUG-061 closure).
+	var half: Vector2 = Vector2(WHEEL_SIZE, WHEEL_SIZE) * 0.5
+	(
+		SceneBuilder
+		. pin(
+			spin,
+			Vector4(WHEEL_ANCHOR.x, WHEEL_ANCHOR.y, WHEEL_ANCHOR.x, WHEEL_ANCHOR.y),
+			Vector4(-half.x, -half.y, half.x, half.y),
+		)
+	)
 	spin.z_index = 100
 	spin.add_child(_full_rect_art("Art", WHEEL_ART, "", false))
 	root.add_child(spin)

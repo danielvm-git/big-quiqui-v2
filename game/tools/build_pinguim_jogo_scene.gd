@@ -26,6 +26,11 @@ const HUD_SIZE: Vector2 = Vector2(380.0, 88.0)
 const LANE_Y: float = 0.78
 const LANE_HEIGHT: float = 140.0
 const PENGUIN_SIZE: Vector2 = Vector2(160.0, 160.0)
+## BUG-061: the basket rides the lane at her feet, and the rig's top sprite layer is 50, so
+## half of it was drawn behind her. Raising the basket above every rig layer is the
+## closure option the bug allows: it is the thing she must drag, so it must never be the
+## thing she cannot see. The lane and the balls keep their own order behind her.
+const BASKET_Z: int = 60
 
 
 func _init() -> void:
@@ -106,6 +111,7 @@ func _add_penguin(root: Control) -> void:
 	var penguin: Control = Control.new()
 	penguin.name = "Penguin"
 	penguin.mouse_filter = Control.MOUSE_FILTER_PASS
+	penguin.z_index = BASKET_Z
 	var half: Vector2 = PENGUIN_SIZE * 0.5
 	(
 		SceneBuilder

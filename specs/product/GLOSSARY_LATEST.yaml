@@ -34,3 +34,41 @@ terms:
     definition: >
       Test helper (res://tests/helpers/geometry_oracle.gd) that asserts zero letterbox bars, >=120px tap
       targets, and local hull containment across both 1920x1080 (16:9) and 2048x1536 (4:3 iPad).
+  # ── Builder restart vocabulary (e12 onward). Added by plan-work for e12/e13 so the same
+  # word means the same thing in the scope, the capsules, the code and the data files. ──
+  - term: "SceneDef"
+    definition: >
+      The typed resource that describes one room as data (res://data/scenes/<id>.tres): background,
+      music, intro voice key, an ordered list of StepDef, the reward and the next scene id. It contains
+      ids and numbers, never code. Validated on load; a rejected def logs scene.def_rejected.
+  - term: "StepDef"
+    definition: >
+      One step inside a SceneDef: the template id it runs plus that template's typed parameters and its
+      on-hit / on-miss reactions. A step ends on the template's reported progress, never on a timer.
+  - term: "Template"
+    definition: >
+      One reusable interaction type in the library, named after the TutoTOONS template it mirrors and
+      keeping its number (t20_drag_snap, t23_erase). A template receives a StepDef plus a context (rig,
+      tray, reactions) and reports progress; it never builds chrome, never ends a step and never knows
+      which game it is in. The two templates with no TutoTOONS number are t_rhythm_pose and t_album.
+  - term: "Primitive"
+    definition: >
+      The five gestures every template is built from: Give→Receive, Rub, Tap, Steer and Pan. Primitives
+      live on top of the existing components (TouchDraggable, ScrubGesture, TapButton) and must not add a
+      second drag or tap surface (ADR-004). Modifiers (Spawner, Pairs, Sequence) add behaviour to any of
+      them.
+  - term: "Reaction"
+    definition: >
+      One entry in the closed reaction vocabulary the player executes: pose, anim, sfx, voice, fx, swap,
+      coins, wait. A template composes reactions; it cannot invent a new kind. Every valid touch plays its
+      reaction in the same frame.
+  - term: "ScenePlayer"
+    definition: >
+      The single generated scene (res://scenes/scene_player.tscn) that builds a room from a SceneDef and
+      runs it: background, music, one QuiQuiRig, tray, hint layer, HUD, home button and step dots. It is
+      the only .tscn under game/scenes once e14s05 removes the legacy scene layer.
+  - term: "StepRunner"
+    definition: >
+      The Fsm inside ScenePlayer that walks LOAD → INTRO → STEP → STEP_DONE → OUTRO → EXIT from a
+      transition table. It owns step progress and the idle clock that feeds the hint layer; home exits it
+      from any state with no penalty.
