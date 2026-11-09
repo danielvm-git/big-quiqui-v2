@@ -1,5 +1,6 @@
 # story: e12s02
 # story: e12s04
+# story: e13s01
 class_name StepDef
 extends Resource
 ## One step in a data-driven scene: a template id and typed parameters only — never paths or scripts.
@@ -18,3 +19,4 @@ extends Resource
 @export var hint_from_id: String = ""
 @export var hint_to_id: String = ""
 @export var hint_voice_key: String = ""
+@export var loop_sfx_id: String = ""
