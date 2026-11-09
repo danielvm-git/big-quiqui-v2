@@ -1,0 +1,81 @@
+# story: e01s01
+feature_name: "Coelinha QuiQui v1.0 — Greenfield TutoTOONS Vertical Rebuild"
+core_value: >
+  A crash-free, race-free, TutoTOONS-grade iPad & desktop kids game built scene-by-scene on explicit
+  state machines, where every epic delivers a complete playable scene on a rock-solid foundation.
+
+summary: |
+  Coelinha QuiQui v1.0 rebuilds the entire game from scratch in a clean repository (/Users/danielvm/Developer/big-quiqui-v2)
+  using the 100 curated glossy candy-colored art assets and 35 family/studio Brazilian Portuguese audio files.
+  Instead of retrofitting three conflicting legacy generations, this greenfield architecture enforces explicit
+  table-driven FSMs (Fsm), 100% Control-anchored responsive scenes under stretch/aspect="expand" (zero letterbox
+  bars on 4:3 iPad and 16:9 displays), a layered QuiQuiRig where outfits and facial expressions compose cleanly,
+  and a unified TouchDraggable component that filters synthesized mouse-echo events (device == -1).
+
+  Work is sliced vertically scene by scene across 11 epics (e01–e11). Finishing e01 delivers the complete
+  engineering harness AND the first playable scene (TitleScene). Each subsequent epic adds one playable scene
+  (Casa, Cozinha, Banheiro, Closet, Jardim, Quarto/Celebracao, Vila/Roda, Mercado/Casinha/Festa, Amigos/Album)
+  verified end-to-end by GUT, TouchSim, FsmProbe, and GeometryOracle.
+
+in_scope:
+  - id: REQ-01
+    title: "Explicit FSM & Observability Foundation + Playable TitleScene (titulo.tscn)"
+    maps_to: [e01s01, e01s02, e01s03, e01s04, e01s05]
+  - id: REQ-02
+    title: "Indoor Care Hub (CasaScene / casa.tscn) with CareLoopManager FSM, WishBubble, CareDotsBar & HUD"
+    maps_to: [e02s01, e02s02, e02s03, e02s04]
+  - id: REQ-03
+    title: "Kitchen Feeding Scene (KitchenScene / cozinha.tscn) with mouth proximity anticipation & 3-bite loop"
+    maps_to: [e03s01, e03s02, e03s03, e03s04]
+  - id: REQ-04
+    title: "Bathroom 3-Stage Scene (BathScene / banheiro.tscn: SOAP scrub -> RINSE shower -> DRY towel)"
+    maps_to: [e04s01, e04s02, e04s03, e04s04]
+  - id: REQ-05
+    title: "Closet Dress-Up Scene (ClosetScene / closet.tscn) with layered outfits + accessories + live save"
+    maps_to: [e05s01, e05s02, e05s03]
+  - id: REQ-06
+    title: "Garden Play Scene (GardenPlayScene / jardim.tscn) with ball, plushie, pinwheel & tickle laughter"
+    maps_to: [e06s01, e06s02, e06s03]
+  - id: REQ-07
+    title: "Bedroom Sleep Scene (quarto_sono.tscn) & Care Cycle Celebration Scene (celebracao.tscn) granting +5 Coins & +1 Ticket"
+    maps_to: [e07s01, e07s02, e07s03, e07s04]
+  - id: REQ-08
+    title: "Outdoor Vila QuiQui (vila.tscn), Recycling Trash Mini-Activity & Wheel of Fortune (roda.tscn)"
+    maps_to: [e08s01, e08s02, e08s03, e08s04]
+  - id: REQ-09
+    title: "Furniture Store (mercado.tscn), Decoratable Casinha (casinha.tscn) & House Party (festa.tscn)"
+    maps_to: [e09s01, e09s02, e09s03, e09s04]
+  - id: REQ-10
+    title: "Three Village Friends Mini-Games (Duck Dance, Bear Puzzle, Penguin Catch) & Sticker Album (album.tscn)"
+    maps_to: [e10s01, e10s02, e10s03, e10s04]
+  - id: REQ-11
+    title: "500-Step MBT Random Walk, 1,000-Event 3-Finger Monkey Fuzz, Dual-Aspect Visual Audit & iPad Release"
+    maps_to: [e11s01, e11s02, e11s03, e11s04]
+
+out_of_scope:
+  - item: "Android APK / Google Play packaging"
+    reason: "Deferred to v2.0 per user preference (MVP is iPad-first)."
+  - item: "16 legacy painterly secondary animals (aguia, avestruz, buffalo, etc.)"
+    reason: "Excluded to preserve 100% glossy candy visual coherence; MVP includes only the 3 glossy friends (Pato, Urso, Pinguim)."
+  - item: "Online leaderboards, cloud saves, telemetry, or in-app purchases"
+    reason: "Strictly forbidden by product charter, LGPD Art. 14, and Apple Kids Category."
+  - item: "Text-based tutorials or dialog boxes"
+    reason: "Target audience is pre-readers (ages 4–7); all guidance is visual + PT-BR voice."
+
+constraints:
+  engine: "Godot 4.7 (GDScript strict typing)"
+  viewport: "1920x1080 canvas_items with expand aspect (supports 16:9 and 4:3 iPad 2048x1536 with 0 letterbox bars)"
+  performance: "60 fps on iPad, <3.0s cold start, <200 MB package size, 0 orphan nodes"
+  privacy: "100% offline, local-only JSONL logs with PII redaction"
+
+success_criteria:
+  - "Every epic (e01..e11) ends with a runnable, playable scene verified by automated GUT + TouchSim + GeometryOracle tests."
+  - "Zero letterbox bars and zero out-of-hull foam/target drift at both 1920x1080 and 2048x1536."
+  - "Outfits and all 14 facial expressions render simultaneously on QuiQuiRig without overwriting each other."
+  - "500-step MBT random walk and 1,000-event 3-finger Monkey test complete with 0 engine errors and 0 stuck states."
+
+references:
+  - "specs/product/VISION_LATEST.yaml"
+  - "specs/tech-architecture/EXPLICIT_STATE_MACHINES.md"
+  - "specs/release-plan.yaml"
+  - "DESIGN.md"

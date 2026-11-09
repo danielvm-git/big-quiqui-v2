@@ -1,81 +1,320 @@
-# story: e01s01
-feature_name: "Coelinha QuiQui v1.0 — Greenfield TutoTOONS Vertical Rebuild"
+# story: e12s01
+feature_name: "QuiQui Builder — full refactory backlog (data-driven restart on the TutoTOONS form-A model)"
+initiative: quiqui_builder_restart
+slicing_strategy: "capability waves (build order mirrors TutoTOONS template weight), every wave ends playable"
+supersedes: "specs/product/archive/SCOPE_v1_scene_by_scene.yaml (17 hand-built scenes, e01–e11)"
+design_references:
+  - specs/product/QUIQUI_BUILDER_DESIGN.html
+  - specs/product/TUTOTOONS_ARCHITECTURE.html
+  - specs/product/TUTOTOONS_ENGINE_REPORT.md
+  - specs/product/BUILDER_REUSE_MAP.md
+
 core_value: >
-  A crash-free, race-free, TutoTOONS-grade iPad & desktop kids game built scene-by-scene on explicit
-  state machines, where every epic delivers a complete playable scene on a rock-solid foundation.
+  Make QuiQui playable again by building the one thing the current game lacks — a single generic scene
+  player that runs scenes written as data — and then moving every existing room onto it, so a new room
+  costs art plus a data file instead of a scene script, a builder and a hand-wired node tree.
 
 summary: |
-  Coelinha QuiQui v1.0 rebuilds the entire game from scratch in a clean repository (/Users/danielvm/Developer/big-quiqui-v2)
-  using the 100 curated glossy candy-colored art assets and 35 family/studio Brazilian Portuguese audio files.
-  Instead of retrofitting three conflicting legacy generations, this greenfield architecture enforces explicit
-  table-driven FSMs (Fsm), 100% Control-anchored responsive scenes under stretch/aspect="expand" (zero letterbox
-  bars on 4:3 iPad and 16:9 displays), a layered QuiQuiRig where outfits and facial expressions compose cleanly,
-  and a unified TouchDraggable component that filters synthesized mouse-echo events (device == -1).
+  The current game is green and unplayable. Verified baseline at the start of this initiative:
+  Godot 4.7, 77 GUT scripts, 606 tests, 8,810 assertions, all passing. The tests prove the components
+  work; they never proved the loop is fun, and 17 scenes each hand-wired to one script and one generated
+  `.tscn` mean every feel change costs a scene rewrite. That is the failure this scope addresses — not a
+  bug, a shape.
 
-  Work is sliced vertically scene by scene across 11 epics (e01–e11). Finishing e01 delivers the complete
-  engineering harness AND the first playable scene (TitleScene). Each subsequent epic adds one playable scene
-  (Casa, Cozinha, Banheiro, Closet, Jardim, Quarto/Celebracao, Vila/Roda, Mercado/Casinha/Festa, Amigos/Album)
-  verified end-to-end by GUT, TouchSim, FsmProbe, and GeometryOracle.
+  The restart copies the only architecture TutoTOONS actually repeats. Of 24 installed titles, 24 are
+  Unity IL2CPP, 24 ship `TutoTOONS.Base.dll`, and 11 of 24 ship `TutoTOONS.Builder.dll`: in those titles a
+  scene is *data* (an imported timeline plus interaction objects) and one generic player runs it. The
+  evidence pass over the 13 installed Builder titles opened 1,845 scenes; 1,801 carry one of the numbered
+  templates, and 30 of the 44 template numbers are ever used. The template distribution is extremely
+  skewed: 11 templates cover 1,572 scenes (87.3%), 6 more cover 90 (5.0%), 11 more cover 60 (3.3%), and
+  the 2 ad templates cover 79 (4.4%) and are dropped on principle. 14 numbers never appear at all.
+
+  So the backlog is not "port 17 scenes". It is: build the player and the interaction vocabulary once
+  (5 gesture primitives, 3 modifiers, shared reactions, a hint layer), build the 28 templates that real
+  scenes use — in three waves ordered by how much of the catalogue each wave covers — and only then move
+  the 17 existing rooms onto it as data, retiring their scripts and builders in the same initiative. Two
+  QuiQui screens (the duck rhythm game and the sticker album) have no TutoTOONS template and get their
+  own library slot rather than being special-cased in the player.
+
+  Every wave ends with something a child can play. Wave 1a is deliberately a single template and a single
+  room: the interaction with the strongest evidence in the whole catalogue (T20, present in 13 of 13
+  titles) and the care step a 4-year-old already understands — preceded by the one-time English rename, so
+  the first scene data file is written in the vocabulary the game keeps (D2a). If that one loop is not
+  delightful, no amount of additional templates will help, and we find out before the other 27 exist.
+
+evidence_baseline:
+  reverse_engineering:
+    titles_pulled: 24
+    engine: "Unity IL2CPP 24/24 (no Adobe AIR — the `air.` package prefix is a legacy applicationId)"
+    builder_titles: 11
+    scene_files_opened: 1845
+    scenes_using_a_template: 1801
+    template_numbers_total: 44
+    template_numbers_used: 30
+    template_numbers_never_used: 14
+    template_numbers_retired_ads: 2
+    wave_1_core: {templates: 11, scenes: 1572, share: "87.3%"}
+    wave_2_care_extensions: {templates: 6, scenes: 90, share: "5.0%"}
+    wave_3_movement_and_niche: {templates: 11, scenes: 60, share: "3.3%"}
+    retired_ads: {templates: 2, scenes: 79, share: "4.4%"}
+    top_8_templates_scenes: 1486
+    consistency_check: "1572 + 90 + 60 + 79 = 1801 scenes; 28 to build + 2 retired + 14 empty = 44 template numbers"
+  build_waves:
+    note: >
+      Measured weight is not build order. After D6 the waves are ours, not TutoTOONS': wave 1 now
+      carries 13 of the 30 used templates so that every existing room can migrate before the single
+      removal commit (D1a).
+    wave_1_e12_e13: {templates: 13, scenes: 1593, share: "88.4%", added_by_d6: [t51_prize_pick, t50_lanes]}
+    wave_2_e15: {templates: 5, scenes: 83, share: "4.6%"}
+    wave_3_e16: {templates: 10, scenes: 46, share: "2.6%"}
+    retired_ads: {templates: 2, scenes: 79, share: "4.4%"}
+    check: "13 + 5 + 10 + 2 = 30 used templates; 1593 + 83 + 46 + 79 = 1801 scenes"
+    raw_source: ".rea/report/builder-template-usage.json (gitignored, re-derivable)"
+  current_code:
+    godot: "4.7.stable"
+    gut_scripts: 77
+    gut_tests: 606
+    gut_assertions: 8810
+    gut_verdict: "all green at scope time"
+    scenes_to_retire: 17
+    scene_scripts_to_retire: 17
+    scene_builders_to_retire: 17
+    art_assets: 100
+    audio_assets: 35
+    asset_path_references_in_gd: 208
+    gd_files_touching_asset_paths: 56
+    unique_asset_paths_referenced: 77
 
 in_scope:
-  - id: REQ-01
-    title: "Explicit FSM & Observability Foundation + Playable TitleScene (titulo.tscn)"
-    maps_to: [e01s01, e01s02, e01s03, e01s04, e01s05]
-  - id: REQ-02
-    title: "Indoor Care Hub (CasaScene / casa.tscn) with CareLoopManager FSM, WishBubble, CareDotsBar & HUD"
-    maps_to: [e02s01, e02s02, e02s03, e02s04]
-  - id: REQ-03
-    title: "Kitchen Feeding Scene (KitchenScene / cozinha.tscn) with mouth proximity anticipation & 3-bite loop"
-    maps_to: [e03s01, e03s02, e03s03, e03s04]
-  - id: REQ-04
-    title: "Bathroom 3-Stage Scene (BathScene / banheiro.tscn: SOAP scrub -> RINSE shower -> DRY towel)"
-    maps_to: [e04s01, e04s02, e04s03, e04s04]
-  - id: REQ-05
-    title: "Closet Dress-Up Scene (ClosetScene / closet.tscn) with layered outfits + accessories + live save"
-    maps_to: [e05s01, e05s02, e05s03]
-  - id: REQ-06
-    title: "Garden Play Scene (GardenPlayScene / jardim.tscn) with ball, plushie, pinwheel & tickle laughter"
-    maps_to: [e06s01, e06s02, e06s03]
-  - id: REQ-07
-    title: "Bedroom Sleep Scene (quarto_sono.tscn) & Care Cycle Celebration Scene (celebracao.tscn) granting +5 Coins & +1 Ticket"
-    maps_to: [e07s01, e07s02, e07s03, e07s04]
-  - id: REQ-08
-    title: "Outdoor Vila QuiQui (vila.tscn), Recycling Trash Mini-Activity & Wheel of Fortune (roda.tscn)"
-    maps_to: [e08s01, e08s02, e08s03, e08s04]
-  - id: REQ-09
-    title: "Furniture Store (mercado.tscn), Decoratable Casinha (casinha.tscn) & House Party (festa.tscn)"
-    maps_to: [e09s01, e09s02, e09s03, e09s04]
-  - id: REQ-10
-    title: "Three Village Friends Mini-Games (Duck Dance, Bear Puzzle, Penguin Catch) & Sticker Album (album.tscn)"
-    maps_to: [e10s01, e10s02, e10s03, e10s04]
-  - id: REQ-11
-    title: "500-Step MBT Random Walk, 1,000-Event 3-Finger Monkey Fuzz, Dual-Aspect Visual Audit & iPad Release"
-    maps_to: [e11s01, e11s02, e11s03, e11s04]
+  - id: REQ-12
+    title: "English-first ids, player core and the first playable loop (wave 1a)"
+    what: >
+      The one-time rename to English ids first, so no id is ever written twice: 100 art files and 35
+      audio files renamed, voice addressed by key (vo.kitchen.intro) so a locale picks the file, and
+      every reference updated in place — 208 in 56 scripts, 111 inside the 17 generated `.tscn` (which
+      are regenerated from their builders, never hand-edited), plus the 135 import sidecars that move
+      with their assets. Then one scene player that loads a scene described as data and runs it step by
+      step under a declared state machine. Four things must exist for a scene to be data instead of
+      code: a scene/step description with typed parameters, navigation by scene id (the engine opens the
+      one player scene and hands it the description, instead of opening one `.tscn` per room), the
+      Give→Receive gesture, and the shared reaction vocabulary (pose, sound, voice, particles, coins,
+      wait) plus the teaching layer (ghost hand after a few seconds with no input, gentle miss that
+      returns the item). First template: t20_drag_snap. First room: kitchen.
+    maps_to: [e12s01, e12s02, e12s03, e12s04, e12s05, e12s06]
+    decision_note: >
+      The rename opens the slice (D2a) even though it is the largest mechanical diff in the wave and it
+      lands before the player exists. The cost is paid once, on purpose: the kitchen data file is born as
+      the final example of QuiQui content, not an example we have to rewrite. The 17 old scenes must stay
+      bootable through the rename, so their builders and regenerated `.tscn` move with it.
+    done_when: >
+      A child feeds QuiQui three times with no adult help, and asks to play again — and no asset or voice
+      id in the tree is Portuguese any more.
+  - id: REQ-13
+    title: "The remaining gesture primitives and the rest of wave 1 (87% of real scenes)"
+    what: >
+      The other three gesture primitives — Rub (clear / leave / reveal), Tap (any / count_n / toggle)
+      and Pan — plus the twelve remaining wave-1 templates: t21_touch_each, t23_erase, t34_rub_reveal,
+      t40_draw_fill, t45_dress_decorate, t25_map, t0_title, t32_reward, t51_prize_pick, t50_lanes, and
+      the two weak-evidence slots t3_skip_beat and t22_play_beat, which are resolved before they are
+      built (see decisions). t50_lanes brings Steer (lanes) and the Spawner modifier with it (D6), and
+      the two weak-evidence templates get their evidence pass before either is built. After this wave
+      every interaction shape the shipped QuiQui rooms need exists in the library, and every room can
+      migrate.
+    maps_to: [e13s01, e13s02, e13s03, e13s04, e13s05, e13s06, e13s07, e13s08, e13s09]
+    decision_note: >
+      t3_skip_beat (130 scenes) and t22_play_beat (392 scenes, the single most used template) get a
+      second evidence pass before they are built (D3b): re-read the template class methods, the sibling
+      initializers and the scene objects those two templates carry, and write the rule down with a
+      confidence level. A wrong guess on the most used template costs more than the pass.
+    done_when: >
+      All 13 wave-1 templates have a written rule, a unit test and one scene that exercises them, and
+      the library covers 1,593 of the 1,801 template scenes we measured (or the lower number the T22/T3
+      pass justifies, stated explicitly).
+  - id: REQ-14
+    title: "All 17 rooms as data, and one-commit retirement of the old scene layer"
+    what: >
+      Every current room rewritten as scene data on top of the wave-1 templates, plus two library slots
+      for the screens with no TutoTOONS template (duck rhythm as t_rhythm_pose, sticker album as
+      t_album). Then the single removal commit (D1a): the 17 scene scripts, the 17 scene builders and the
+      17 generated `.tscn` files go together, and the scene catalog, the POI table, the friend catalog,
+      the navigation tests, the MBT walk, the monkey fuzz and the visual gallery are re-pointed at scene
+      ids in the same change, so the tree never holds two navigation mechanisms across a release.
+    maps_to: [e14s01, e14s02, e14s03, e14s04, e14s05]
+    dependency_note: >
+      Nothing in this epic waits on a later wave any more: D6 pulled t51_prize_pick and t50_lanes into
+      wave 1b, so all 17 rooms are convertible on what e12 and e13 deliver. The removal commit is the
+      last story of the epic, and it is the first moment the tree has exactly one navigation mechanism.
+    done_when: >
+      The whole game runs on the player from scene data alone; `find game/scenes -name '*.tscn'` returns
+      exactly one file; the 17 scene scripts and 17 builders no longer exist; preflight is green.
+  - id: REQ-15
+    title: "Wave 2 — care extensions (5% of real scenes)"
+    what: >
+      The Pairs and Sequence modifiers, and five templates: t44_paint, t43_color_fill, t55_find,
+      t27_memory, t38_peekaboo. Each one lands with a QuiQui Care scene that uses it, because a
+      template with no scene in the game is unverified weight.
+    maps_to: [e15s01, e15s02, e15s03, e15s04]
+    done_when: >
+      Each new template has a written adaptation rule, a unit test, and one playable scene in Care.
+  - id: REQ-16
+    title: "Wave 3 — movement and niche templates (3% of real scenes) and next-title readiness"
+    what: >
+      The ten wave-3 templates: t37_tap_moving, t26_ride, t41_float_pop, t42_slice_cut, t46_cups,
+      t48_serve, t52_groom, t47_drag_release (folded into t20), t53_outro, t49_progress_holder. Steer
+      and the Spawner already exist from wave 1b (D6), so this wave only adds shapes on top of them.
+      It is what makes the library reusable by a future QuiQui title; it adds no care step.
+    maps_to: [e16s01, e16s02, e16s03, e16s04]
+    done_when: >
+      All 28 buildable template slots have a written adaptation rule and a test scene, the 14 empty
+      numbers stay reserved and unbuilt, and a second title could be scoped as data only.
 
 out_of_scope:
-  - item: "Android APK / Google Play packaging"
-    reason: "Deferred to v2.0 per user preference (MVP is iPad-first)."
-  - item: "16 legacy painterly secondary animals (aguia, avestruz, buffalo, etc.)"
-    reason: "Excluded to preserve 100% glossy candy visual coherence; MVP includes only the 3 glossy friends (Pato, Urso, Pinguim)."
-  - item: "Online leaderboards, cloud saves, telemetry, or in-app purchases"
-    reason: "Strictly forbidden by product charter, LGPD Art. 14, and Apple Kids Category."
-  - item: "Text-based tutorials or dialog boxes"
-    reason: "Target audience is pre-readers (ages 4–7); all guidance is visual + PT-BR voice."
+  - item: "The 14 template numbers no scene ever uses (1, 2, 4, 24, 28, 29, 30, 31, 33, 35, 36, 56, 57, 58)"
+    reason: >
+      Dead or reserved slots in TutoTOONS' own code: initializer classes exist, no shipped scene carries
+      them. Deferred indefinitely — building them would be inventing behaviour with zero evidence.
+  - item: "The two ad templates (T39 watch-a-video reward, T54 double-coins for an ad) and any ad path"
+    reason: >
+      Violates the offline, ad-free charter. The gift T39 gated becomes free inside t32_reward; T54 has
+      no equivalent. Recorded as retired so the mapping table stays complete and nobody re-adds them.
+  - item: "TutoTOONS forms B and C (per-activity code kit, world platform with rooms and avatars)"
+    reason: >
+      Deferred, not rejected. Both are what TutoTOONS adds only when a title is large; form A is the
+      proven model for a small care game. Revisit if a QuiQui title needs a per-character need-state
+      machine richer than the current care loop, or a downloadable room map.
+  - item: "The 11 installed titles that do not ship the Builder (Dopples, Fluvsies, Giggle Babies, …)"
+    reason: >
+      Outside the evidence base for this initiative: the scene pass covers the 13 Builder titles only.
+      Anything learned from their code already lives in the engine report and is not a backing for a
+      template decision here.
+  - item: "Monetization, telemetry, remote config, cloud save, subscription, Spine animation"
+    reason: >
+      Banned by the product charter (network, ads, PII) or not transferable to Godot. Their local-only
+      parts (structured log, atomic save) already exist in QuiQui and are validated, not rebuilt.
+  - item: "New art and new voice recordings"
+    reason: >
+      The restart reuses the existing 100 art files and 35 audio files. One visible gap is flagged, not
+      filled here: the ghost hand is currently a placeholder rectangle, so a hand sprite is the one art
+      request the teaching layer may raise. New rooms, new props and new lines are a separate scope.
+  - item: "TutoTOONS catalogue parity in scene count (hundreds of scenes per title)"
+    reason: >
+      Out of proportion. QuiQui ships 17 scene ids whose interactions are measured in the minutes a
+      4-year-old actually plays, not in a content catalogue's volume.
+  - item: "Redesign of the care loop, the economy tables or the save format"
+    reason: >
+      Constrained, not re-scoped: CareLoopManager's five steps, EconomyData's curves, SaveData's fields
+      and the atomic write path stay as they are. The restart replaces how a room is built, not what the
+      game rewards or persists.
+  - item: "Android packaging, release-ladder redesign, CI pipeline changes"
+    reason: >
+      iPad-first stays; the version ladder is a plan-release decision, recorded in decisions D4 because the
+      reserved v1.0.0 rung was never cut by e11.
 
 constraints:
-  engine: "Godot 4.7 (GDScript strict typing)"
-  viewport: "1920x1080 canvas_items with expand aspect (supports 16:9 and 4:3 iPad 2048x1536 with 0 letterbox bars)"
-  performance: "60 fps on iPad, <3.0s cold start, <200 MB package size, 0 orphan nodes"
-  privacy: "100% offline, local-only JSONL logs with PII redaction"
+  engine: "Godot 4.7 / GDScript with strict static typing on every variable, parameter and return value"
+  viewport: "1920x1080 canvas_items + expand aspect; 4:3 iPad 2048x1536 must stay bar-free"
+  platform: "iPad first, desktop for development; the player scene must be the only generated .tscn"
+  offline: "no network call, no ads, no telemetry, no third-party SDK"
+  no_text: "nothing a child must read; prompts are visual plus PT-BR family voice"
+  hit_target: "120x120 px minimum interactive area"
+  state_machines: "every multi-stage behaviour is a declared Fsm with legal_edges and max_dwell_sec; no boolean flag clusters"
+  data_isolation: "templates never know which game they are in; scene data never contains code"
+  naming: "English snake_case ids matching \\A[a-z0-9_]{1,64}\\z; voice addressed by key, never by file path"
+  size_bars: "300 lines per file, 20 non-comment lines per function, on every new or changed file"
+  asset_rename: "a renamed asset moves its .import sidecar with it and is re-imported, never hand-edited; .gd.uid files are engine-owned, never edited (a rename regenerates them)"
+  green_gate: "bash scripts/preflight.sh green before every story and every commit; the 606-test baseline may be replaced by an equivalent-or-better suite, never reduced to make a wave pass"
+  traceability: "every new script and test carries # story: eNNsYY for trace-stories.sh --strict"
+  commit_hygiene: "Conventional Commits, story id in scope or body, never any AI attribution"
 
 success_criteria:
-  - "Every epic (e01..e11) ends with a runnable, playable scene verified by automated GUT + TouchSim + GeometryOracle tests."
-  - "Zero letterbox bars and zero out-of-hull foam/target drift at both 1920x1080 and 2048x1536."
-  - "Outfits and all 14 facial expressions render simultaneously on QuiQuiRig without overwriting each other."
-  - "500-step MBT random walk and 1,000-event 3-finger Monkey test complete with 0 engine errors and 0 stuck states."
+  - "Wave 1a: a pre-reading child feeds QuiQui three times with no adult help, in one sitting, and asks to play again — observed, not asserted in a test."
+  - "Wave 1a: the kitchen room is one data file plus the player scene; no kitchen-specific script exists."
+  - "Wave 1a: zero Portuguese asset or voice ids remain under game/ (135 files renamed, 208 script references and 111 regenerated .tscn references updated, preflight green)."
+  - "After wave 1b: all 13 wave-1 templates have a unit test and a scene, representing 1,593 of the 1,801 measured template scenes (88.4%)."
+  - "After the migration: `find game/scenes -name '*.tscn'` returns exactly one scene (the player), and the 17 scene scripts and 17 builders are deleted in a single commit."
+  - "After wave 3: 28 library slots have a written adaptation rule and a test scene; 14 numbers remain reserved with no implementation."
+  - "Continuously: preflight green, no scene root that is not a Control at PRESET_FULL_RECT, no input handler that ignores the device == -1 mouse echo, and no step that can time out or punish."
+  - "Continuously: the interaction loop answers every valid touch with a sound and a QuiQui reaction within the same frame."
+
+decisions:
+  # Resolved by the product owner at scope review, 2026-11-08. Rejected options are kept on
+  # purpose: they are the record of what this scope is NOT, and they stop the same debate
+  # from reopening in slice-tasks.
+  - id: D1
+    question: "Are the 17 old scenes removed all at once, or room by room as each becomes data?"
+    decision: a
+    answer: >
+      One removal commit at the end of the migration: 17 scene scripts, 17 builders and 17 generated
+      `.tscn` go together, with the catalogs, navigation tables and scene tests re-pointed in the same
+      change. The game stays shippable while the player matures; the cost accepted is a window in which
+      two mechanisms and two navigation styles coexist, closed inside a single epic.
+    rejected:
+      b: "Room by room — rejected: the tree would hold mixed navigation (some ids, some paths) across many commits, and every catalog would have to tolerate both."
+      c: "Freeze the old tree now — rejected: no playable room for the duration of waves 1a–1b."
+  - id: D2
+    question: "Does the English asset/voice rename land in wave 1a or in wave 1b?"
+    decision: a
+    answer: >
+      In wave 1a, first (e12s01), before the player exists. No id is ever written twice and the kitchen
+      data file becomes the reference example of QuiQui content. Accepted cost: the largest mechanical
+      diff in the wave (135 files + 135 import sidecars, 208 script references, 111 regenerated `.tscn`
+      references) lands before any new behaviour, so it is reviewed as a pure rename with preflight green
+      on both sides.
+    rejected:
+      b: "In 1b behind a temporary alias — rejected: two id vocabularies coexist and the alias has to be deleted, which is the same diff plus a throwaway."
+  - id: D3
+    question: "What do we do with the two wave-1 templates whose behaviour is a guess (t3_skip_beat, 130 scenes; t22_play_beat, 392 scenes)?"
+    decision: b
+    answer: >
+      A second evidence pass before either is built (e13s06), scoped to the two templates: the template
+      class methods, the sibling initializers, and the objects those scenes actually carry. Output is a
+      written rule with an explicit confidence level plus a build-or-skip call per template. T22 is the
+      most used template in the catalogue (392 scenes), so a wrong guess is the most expensive one
+      available.
+    rejected:
+      a: "Build from the guess and fix later — rejected: the most used template is the worst place to iterate in game."
+      c: "Leave both out of the library — rejected as a default: it drops the coverage claim from 87% to roughly 79% without first checking whether the evidence is actually good enough."
+    fallback: "If the pass cannot raise confidence, option c becomes the answer for that template and the coverage claim is restated with the number it really is."
+  - id: D4
+    question: "Epic numbering and version ladder for the restart."
+    decision: e12_to_e16
+    answer: >
+      The series continues at e12 (English rename + player core + wave 1a), e13 (rest of wave 1),
+      e14 (rooms as data + removal), e15 (wave 2), e16 (wave 3). The architectural break is documented in an ADR, not in the
+      numbering. The version ladder stays a plan-release decision: the v1.0.0 rung reserved for e11 was
+      never cut, so plan-release must place it before the restart's first release.
+  - id: D5
+    question: "Ids for the two library slots with no TutoTOONS number."
+    decision: accepted
+    answer: >
+      t_rhythm_pose (the duck pose-matching game) and t_album (the sticker album). They keep the `t`
+      prefix so the library has one shape and carry no number so nobody mistakes them for a TutoTOONS
+      template.
+  - id: D6
+    question: "D1a needs every room converted before the removal commit, but two rooms need a later template. Which gives?"
+    decision: a
+    answer: >
+      t51_prize_pick and t50_lanes pull forward into wave 1b (e13). Together they are 21 scenes
+      (1.2%) and they keep the removal commit inside e14, as D1a decided, instead of dragging the old
+      scene layer through three more epics.
+    consequence: >
+      t50_lanes cannot exist without Steer (lanes) and Spawner, which the design page had scheduled
+      for wave 3. Both move into wave 1b with it. Pulling Spawner forward also repairs a latent
+      contradiction in the original order: wave-2 t38_peekaboo is defined as "Tap + Spawner" while the
+      Spawner itself was scheduled one wave later.
+    rejected:
+      b: "Leave the wave order and move the removal commit to the end of e16 — rejected: the old scene layer, the door dimming and the path-based navigation would survive three more epics, which is the cost D1a existed to avoid."
+      c: "Convert both rooms on existing primitives and rewrite them later — rejected: two rewrites of the same two rooms, and the first version would be throwaway work shipped to a child."
+    blocked_before: e14s05
 
 references:
-  - "specs/product/VISION_LATEST.yaml"
+  - "specs/product/QUIQUI_BUILDER_DESIGN.html (layers, primitives, 44-template table, scene data example, build order)"
+  - "specs/product/TUTOTOONS_ARCHITECTURE.html (what is common across 24 titles, the three game-layer forms)"
+  - "specs/product/TUTOTOONS_ENGINE_REPORT.md (REA pass: engine, base assembly, care-loop archetype, hint taxonomy)"
+  - "specs/product/BUILDER_REUSE_MAP.md (which existing code survives, what the 17 scripts and builders are replaced by, how navigation changes)"
+  - "specs/product/VISION_LATEST.yaml (north star and design pillars the restart must not lose)"
+  - "CONVENTIONS.md (§1 green gate, §3 Fsm/typing/viewport/touch, §5 size bars)"
   - "specs/tech-architecture/EXPLICIT_STATE_MACHINES.md"
-  - "specs/release-plan.yaml"
-  - "DESIGN.md"
+  - "specs/adr/ADR-001-explicit-table-driven-fsm.md"
+  - "specs/adr/ADR-006-scene-by-scene-vertical-slicing.md (the per-scene .tscn strategy this initiative supersedes; ADR-013 to be written in e12s01)"
+  - "specs/product/archive/SCOPE_v1_scene_by_scene.yaml (superseded scope, kept for traceability)"
