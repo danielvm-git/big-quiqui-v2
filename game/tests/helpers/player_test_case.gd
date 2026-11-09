@@ -1,4 +1,5 @@
 # story: e13s04
+# story: e14s01
 class_name PlayerTestCase
 extends GutTest
 ## Mounts the real `ScenePlayer` on a def and sends finger events to the controls a template
@@ -79,3 +80,22 @@ func rub_tool(player: ScenePlayer) -> TouchDraggable:
 		if child is TouchDraggable and not child.is_queued_for_deletion():
 			return child as TouchDraggable
 	return null
+
+
+func tray_taps(player: ScenePlayer) -> Array[TapButton]:
+	var found: Array[TapButton] = []
+	_collect_taps(player.get_node("TrayZone"), found)
+	return found
+
+
+func _settle(player: ScenePlayer) -> void:
+	for _tick: int in range(12):
+		player.advance(0.2)
+	await wait_process_frames(2)
+
+
+func _collect_taps(node: Node, into: Array[TapButton]) -> void:
+	for child: Node in node.get_children():
+		if child is TapButton and child.is_in_group("hit_target"):
+			into.append(child as TapButton)
+		_collect_taps(child, into)

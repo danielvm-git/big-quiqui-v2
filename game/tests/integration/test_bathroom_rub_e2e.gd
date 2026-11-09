@@ -11,8 +11,8 @@ func before_each() -> void:
 
 func test_the_bathroom_def_names_three_templates() -> void:
 	var def: SceneDef = SceneDefLoader.load_by_id(PROBE)
-	assert_not_null(def)
-	assert_eq(def.steps.size(), 3)
+	assert_not_null(def, "SC-e13s04-P0-04 the bathroom probe loads")
+	assert_eq(def.steps.size(), 3, "SC-e13s04-P0-04 soap rinse and dry are three steps")
 	assert_eq((def.steps[0] as StepDef).template_id, "t40_draw_fill")
 	assert_eq((def.steps[1] as StepDef).template_id, "t23_erase")
 	assert_eq((def.steps[2] as StepDef).template_id, "t23_erase")

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_dress"]
+script = ExtResource("2_step")
+template_id = "t45_dress_decorate"
+repeat_count = 1
+item_ids = PackedStringArray("floral_dress", "red_dress", "green_overalls", "pajamas", "flower_tiara", "crown", "yellow_hat", "blue_scarf", "purple_bow", "heart_glasses")
+slot_ids = PackedStringArray("body", "body", "body", "body", "head", "head", "head", "neck", "neck", "eyes")
+category_ids = PackedStringArray("outfit", "outfit", "outfit", "outfit", "accessory", "accessory", "accessory", "accessory", "accessory", "accessory")
+care_step_id = "DRESS"
+
+[resource]
+script = ExtResource("1_def")
+id = "closet"
+background_id = "bg_bedroom"
+music_id = "music_main_theme"
+intro_voice_key = "vo.closet.intro"
+steps = Array[Resource]([SubResource("step_dress")])
+next_scene_id = "home"

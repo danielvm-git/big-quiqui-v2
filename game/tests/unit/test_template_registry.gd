@@ -92,6 +92,24 @@ func test_a_duplicate_row_and_a_short_row_fail_the_gate() -> void:
 	assert_true(" ".join(bad).contains("t99_short has 3 cells"), "B4 malformed rows")
 
 
+func test_a_row_that_names_a_missing_test_file_fails_the_gate() -> void:
+	var ids: Array = TemplateCatalog.SCRIPT_FOR_ID.keys()
+	var table: String = _read("specs/product/TEMPLATE_TABLE.md").replace("test_t51_prize_pick", "test_does_not_exist")
+	var bad: PackedStringArray = _gate(table, _read("specs/product/SCOPE_LATEST.yaml"), ids)
+	assert_true(" ".join(bad).contains("has no test test_does_not_exist"), "B5 a missing test file fails")
+
+
+func test_a_manifest_without_sha256_fails_the_gate() -> void:
+	var ids: Array = TemplateCatalog.SCRIPT_FOR_ID.keys()
+	var manifest: String = _read(MANIFEST).replace(
+		"7dd00bab5651f01eb868b853c90b67dd331d058b550aa5f95b840e7cebe8b7e0", "not-a-valid-sha256"
+	)
+	var bad: PackedStringArray = TemplateTableGate.problems(
+		_read("specs/product/TEMPLATE_TABLE.md"), _read("specs/product/SCOPE_LATEST.yaml"), ids, manifest
+	)
+	assert_true(" ".join(bad).contains("no sha256"), "B5 provenance must name a hash")
+
+
 func test_the_table_counts_come_from_the_manifest() -> void:
 	var ids: Array = TemplateCatalog.SCRIPT_FOR_ID.keys()
 	var scope: String = _read("specs/product/SCOPE_LATEST.yaml")

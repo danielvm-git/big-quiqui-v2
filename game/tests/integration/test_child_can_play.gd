@@ -1,4 +1,5 @@
 # story: e13s09
+# story: e14s01
 extends PlayerTestCase
 ## A child can see each target, touch it through the player, finish every step, and leave through a
 ## shipped `next_scene_id`. Hub maps leave through Home when their template never reports progress.
@@ -20,7 +21,7 @@ func after_each() -> void:
 
 func test_probe_ids_are_discovered_from_the_data_folder() -> void:
 	var ids: Array[String] = SceneDefLoader.child_play_gate_ids()
-	assert_gte(ids.size(), 9)
+	assert_gte(ids.size(), 12)
 	for scene_id: String in ids:
 		assert_not_null(SceneDefLoader.load_by_id(scene_id), scene_id)
 
@@ -78,10 +79,14 @@ func _play_def(player: ScenePlayer, scene_id: String) -> void:
 			_play_touch_each(player)
 		"rub_reveal_probe":
 			_play_rub_reveal(player)
-		"bathroom_probe":
+		"bathroom", "bathroom_probe":
 			await _play_bathroom(player)
-		"dress_probe":
+		"closet", "dress_probe":
 			_play_dress(player)
+		"playroom":
+			_play_playroom(player)
+		"bedroom":
+			_play_bedroom(player)
 		"reward_probe":
 			_play_reward(player)
 		"prize_probe":
@@ -124,8 +129,37 @@ func _play_bathroom(player: ScenePlayer) -> void:
 
 func _play_dress(player: ScenePlayer) -> void:
 	var strip: Control = player.get_node("TrayZone/DressStrip")
-	var scarf: TapButton = strip.find_child("blue_scarf", true, false) as TapButton
-	finger_tap(player, scarf)
+	var piece: TapButton = _first_dress_tap(strip)
+	assert_not_null(piece)
+	finger_tap(player, piece)
+	await _settle(player)
+
+
+func _first_dress_tap(strip: Control) -> TapButton:
+	var found: Array[TapButton] = []
+	_collect_taps(strip, found)
+	for button: TapButton in found:
+		if not button.visible or button.name.begins_with("tab_"):
+			continue
+		return button
+	return null
+
+
+func _play_playroom(player: ScenePlayer) -> void:
+	var buttons: Array[TapButton] = _tray_taps(player)
+	assert_gte(buttons.size(), 3)
+	finger_tap(player, buttons[0])
+	finger_tap(player, buttons[1])
+	finger_tap(player, buttons[2])
+	await _settle(player)
+
+
+func _play_bedroom(player: ScenePlayer) -> void:
+	var buttons: Array[TapButton] = _tray_taps(player)
+	assert_eq(buttons.size(), 2)
+	finger_tap(player, buttons[0])
+	finger_tap(player, buttons[1])
+	await _settle(player)
 
 
 func _play_reward(player: ScenePlayer) -> void:

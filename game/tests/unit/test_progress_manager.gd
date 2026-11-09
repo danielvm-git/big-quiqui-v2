@@ -93,27 +93,39 @@ func test_corrupt_save_recovers_to_defaults() -> void:
 	assert_eq(pm.last_error, "corrupt")
 
 
-# SC-e13s05-P2-02
+func test_every_serialised_key_is_on_the_pinned_known_list() -> void:
+	var keys: Array = SaveData.new().to_dictionary().keys()
+	keys.sort()
+	var pinned: Array = SaveData.KNOWN_KEYS.duplicate()
+	pinned.sort()
+	assert_eq(keys, pinned, "SC-e13s05-P2-02 a new field must join KNOWN_KEYS")
+
+
+func test_atomic_write_still_uses_a_temp_file() -> void:
+	pm.data.coins = 42
+	pm.save()
+	var body: String = SourceScanner.text("res://scripts/core/save_file.gd")
+	assert_true(body.contains(".tmp"), "SC-e13s05-P2-02 the atomic path is unchanged")
+
+
 func test_a_prize_pick_survives_a_ram_reset() -> void:
 	pm.data.completed_cycles = 3
 	assert_true(pm.pick_prize("plush"), "the first pick of the cycle is taken")
 	pm.data = SaveData.new()  # RAM lost
 	pm.load_or_default()
-	assert_eq(pm.data.picked_prize, "plush", "B4 the pick is on disk")
-	assert_eq(pm.data.prize_cycle, 3, "B4 and so is the cycle it belongs to")
-	assert_eq(pm.picked_prize(), "plush", "B4 the same cycle still holds the pick")
+	assert_eq(pm.data.picked_prize, "plush", "SC-e13s05-P2-02 B4 the pick is on disk")
+	assert_eq(pm.data.prize_cycle, 3, "SC-e13s05-P2-02 B4 and so is the cycle it belongs to")
+	assert_eq(pm.picked_prize(), "plush", "SC-e13s05-P2-02 B4 the same cycle still holds the pick")
 
 
-# SC-e13s05-P2-02
 func test_an_old_save_without_the_prize_fields_loads_unchanged() -> void:
 	var data: SaveData = SaveData.from_dictionary({"coins": 9, "completed_cycles": 2})
-	assert_eq(data.picked_prize, "", "B4 ADR-005: a new field defaults, with no version bump")
-	assert_eq(data.prize_cycle, 0)
-	assert_eq(data.coins, 9, "and the old fields are read as they were")
-	assert_eq(SaveData.new().version, 1, "ADR-005 amendment: additive fields keep version 1")
+	assert_eq(data.picked_prize, "", "SC-e13s05-P2-02 B4 ADR-005: a new field defaults, with no version bump")
+	assert_eq(data.prize_cycle, 0, "SC-e13s05-P2-02 defaults hold")
+	assert_eq(data.coins, 9, "SC-e13s05-P2-02 and the old fields are read as they were")
+	assert_eq(SaveData.new().version, 1, "SC-e13s05-P2-02 additive fields keep version 1")
 
 
-# SC-e13s05-P2-02
 func test_a_tampered_prize_pick_is_normalised_on_read() -> void:
 	for raw: Dictionary in [
 		{"picked_prize": "../x", "prize_cycle": -5},
@@ -272,3 +284,11 @@ func test_an_unknown_field_never_overrides_a_known_one_and_stays_bounded() -> vo
 	forged.coins = 3
 	assert_eq(int(forged.to_dictionary()["coins"]), 3, "B5 a known field always wins")
 	assert_eq(int(forged.to_dictionary()["extra"]), 1)
+
+
+func test_too_many_unknown_fields_are_dropped_together() -> void:
+	var raw: Dictionary = {"coins": 1}
+	for index: int in range(100):
+		raw["f%02d" % index] = "x".repeat(1000)
+	var data: SaveData = SaveData.from_dictionary(raw)
+	assert_true(data.unknown_fields.is_empty(), "B4 the total bound drops the lot when exceeded")

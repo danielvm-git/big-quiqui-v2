@@ -1,4 +1,5 @@
 # story: e13s05
+# story: e14s01
 extends RefCounted
 ## A strip of the def's items with category tabs that a finger slides (a drag), where a tap snaps an item
 ## onto its slot (or places a furniture piece). The bin takes the worn piece off and QuiQui changes at
@@ -132,11 +133,20 @@ func place(item_id: String, nx: float, ny: float) -> bool:
 	return true
 
 
-## The bin takes off the last piece she wore, or the first worn slot of the def, softly.
+## The bin takes off the named piece, the last piece she wore, or the first worn slot on the def.
 func bin(item_id: String = "") -> bool:
-	var slot: String = _slot_for(item_id if not item_id.is_empty() else _last)
 	var sink: Node = TemplateKit.autoload("ProgressManager")
-	if sink == null or slot.is_empty() or str(sink.call("equipped", slot)).is_empty():
+	if sink == null:
+		return false
+	var slot: String = _slot_for(item_id if not item_id.is_empty() else _last)
+	if slot.is_empty() or str(sink.call("equipped", slot)).is_empty():
+		if _ctx != null and _ctx.step_def != null:
+			for worn: String in _ctx.step_def.slot_ids:
+				if not worn.is_empty() and not str(sink.call("equipped", worn)).is_empty():
+					slot = worn
+					break
+	if slot.is_empty() or str(sink.call("equipped", slot)).is_empty():
+		TemplateKit.play_miss(_ctx)
 		return false
 	_plays += 1
 	_last = ""

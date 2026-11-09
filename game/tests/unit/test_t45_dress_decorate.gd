@@ -27,10 +27,16 @@ func test_binning_announces_the_change_once() -> void:
 
 
 func test_an_invalid_id_does_not_save() -> void:
-	var tpl: RefCounted = _mount()
+	var step: StepDef = StepDef.new()
+	step.item_ids = PackedStringArray(["Nope"])
+	step.slot_ids = PackedStringArray(["neck"])
+	var tpl: RefCounted = TemplateCatalog.instantiate("t45_dress_decorate")
+	var ctx: TemplateContext = TemplateContext.new()
+	ctx.step_def = step
+	tpl.call("setup", ctx)
 	var writes: int = int(_progress().get("write_count"))
-	assert_false(bool(tpl.call("snap", "Nope")))
-	assert_eq(int(_progress().get("write_count")), writes, "SC-e13s05-P1-02")
+	assert_false(bool(tpl.call("snap", "Nope")), "SC-e13s05-P1-02 the def lists the bad id")
+	assert_eq(int(_progress().get("write_count")), writes, "SC-e13s05-P1-02 and nothing reaches save")
 
 
 func test_a_refused_snap_or_place_answers_with_the_miss_sound() -> void:
@@ -95,12 +101,21 @@ func test_the_bin_acts_on_the_worn_slot_after_re_entry() -> void:
 	var tpl: RefCounted = _mount_with_tray()
 	tpl.call("snap", "blue_scarf")
 	var again: RefCounted = _mount_with_tray()
-	assert_true(bool(again.call("bin", "blue_scarf")), "A8 after re-entry the bin still takes the worn piece off")
+	assert_true(bool(again.call("bin", "blue_scarf")), "A1 after re-entry the bin still takes the worn piece off")
+	assert_eq(_progress().call("equipped", "neck"), "")
+
+
+func test_the_bin_button_clears_a_saved_look_without_a_last_wear() -> void:
+	_progress().call("wear", "neck", "blue_scarf")
+	var tpl: RefCounted = _mount_with_tray()
+	assert_eq(_progress().call("equipped", "neck"), "blue_scarf", "A1 setup dresses the saved look")
+	assert_true(bool(tpl.call("bin")), "A1 the wired tap needs no item id")
 	assert_eq(_progress().call("equipped", "neck"), "")
 
 
 func test_a_category_tab_filters_the_strip_by_touch() -> void:
 	var tpl: RefCounted = _mount_with_tray()
+	assert_true(bool(_progress().call("buy_furniture", "chair", 0)), "the home item must be owned to show")
 	assert_eq(tpl.call("visible_items").size(), 3)
 	var tab: TapButton = (tpl.call("strip") as Control).find_child("tab_warm", true, false) as TapButton
 	assert_not_null(tab, "A8 the categories are tabs")

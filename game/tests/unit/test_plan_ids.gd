@@ -19,6 +19,9 @@ func test_a_plan_id_with_no_test_body_is_found() -> void:
 	assert_eq(_missing(rows, "SC-e13s99-P0-01 is here"), PackedStringArray())
 	var withdrawn: Array[PackedStringArray] = [PackedStringArray(["SC-e13s99-P0-02", " withdrawn | x"])]
 	assert_eq(_missing(withdrawn, ""), PackedStringArray(), "a withdrawn row needs no test")
+	var comment_only: Array[PackedStringArray] = [PackedStringArray(["SC-e13s99-P0-03", " live row"])]
+	var body: String = "## SC-e13s99-P0-03 is named only here\nfunc test_noise() -> void:\n\tpass"
+	assert_eq(_missing(comment_only, body), PackedStringArray(["SC-e13s99-P0-03"]), "B1 a comment is not proof")
 
 
 func test_the_plan_has_rows() -> void:
@@ -27,10 +30,21 @@ func test_the_plan_has_rows() -> void:
 
 func _missing(rows: Array[PackedStringArray], text: String) -> PackedStringArray:
 	var missing: PackedStringArray = PackedStringArray()
+	var body: String = _code_only(text)
 	for row: PackedStringArray in rows:
-		if not row[1].strip_edges().begins_with("withdrawn") and not text.contains(row[0]):
+		if not row[1].strip_edges().begins_with("withdrawn") and not body.contains(row[0]):
 			missing.append(row[0])
 	return missing
+
+
+func _code_only(text: String) -> String:
+	var body: String = ""
+	for line: String in text.split("\n"):
+		var trimmed: String = line.strip_edges()
+		if trimmed.is_empty() or trimmed.begins_with("#"):
+			continue
+		body += line + "\n"
+	return body
 
 
 func _plan_rows() -> Array[PackedStringArray]:
@@ -47,8 +61,9 @@ func _plan_rows() -> Array[PackedStringArray]:
 func _test_text() -> String:
 	var text: String = ""
 	for path: String in _gd_files(TESTS):
-		if not path.ends_with("test_plan_ids.gd"):
-			text += FileAccess.get_file_as_string(path)
+		if path.ends_with("test_plan_ids.gd"):
+			continue
+		text += _code_only(FileAccess.get_file_as_string(path))
 	return text
 
 

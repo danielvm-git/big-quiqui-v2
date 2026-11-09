@@ -17,6 +17,10 @@ const VERBS: PackedStringArray = [
 	"bullet",
 	"projectile",
 	"game_over",
+	"photo_gallery",
+	"gallery",
+	"screenshot",
+	"savetofile",
 ]
 
 

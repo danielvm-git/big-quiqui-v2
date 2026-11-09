@@ -1,8 +1,10 @@
 # story: e13s02
+# story: e14s01
 extends RefCounted
 ## Every object answers. No auto-end timer. The template knows no room.
 
 const SPENT: Color = Color(0.7, 0.7, 0.7, 1.0)
+const NIGHT_TINT: Color = Color(0.42, 0.45, 0.72)
 
 var _tap: TapPrimitive = TapPrimitive.new()
 var _ctx: TemplateContext = null
@@ -87,10 +89,12 @@ func _make_button(target_id: String, index: int) -> TapButton:
 
 
 func _on_tapped(target_id: String) -> void:
-	_tap.note_tap(target_id)
+	var fresh: bool = _tap.note_tap(target_id)
 	_plays += 1
 	_play_reaction(target_id)
 	_mark(target_id)
+	if target_id == "lamp" and fresh:
+		_dim_room()
 
 
 func _play_reaction(target_id: String) -> void:
@@ -105,3 +109,11 @@ func _mark(target_id: String) -> void:
 		return
 	var spent: bool = _tap.is_on(target_id) if _tap.mode == "toggle" else true
 	button.visual.modulate = SPENT if spent else Color.WHITE
+
+
+func _dim_room() -> void:
+	if _ctx == null or _ctx.host == null:
+		return
+	var bg: TextureRect = _ctx.host.get_node_or_null("Background") as TextureRect
+	if bg != null:
+		bg.modulate = NIGHT_TINT
