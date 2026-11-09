@@ -3,14 +3,7 @@
 # story: e11s01
 # story: e13s05
 extends Node
-## Owns the typed save model and its atomic persistence (ADR-005).
-##
-## Write path: serialize → `progress.json.tmp` → flush → close → rename over
-## `progress.json`. A crash mid-write can therefore never leave a half-written
-## save: either the old file is intact or the new one is complete.
-##
-## Tests never touch the production file: `TestReset` calls `set_test_mode(true)`,
-## which moves every read and write to `user://test_progress.json`.
+## Atomic save (ADR-005): write `.tmp`, then rename. Tests use `user://test_progress.json`.
 
 signal progress_changed
 
@@ -153,8 +146,6 @@ func equipped(slot: String) -> String:
 	return str(data.equipped_outfits.get(slot, ""))
 
 
-## The bin path. `equip` rejects an empty id, so clearing is its own call.
-## An unknown slot changes nothing.
 func clear_slot(slot: String) -> bool:
 	if not Ids.is_valid(slot):
 		_emit("progress.invalid_equip", {"slot": "invalid"})
@@ -184,12 +175,7 @@ func complete_cycle(coins: int = CYCLE_COINS_REWARD, tickets: int = CYCLE_TICKET
 	_apply(coins, tickets, 1)
 
 
-## Mutates and **writes**: every caller is a money path, and a reward that lives only in
-## RAM is gone the moment iOS kills the app from the switcher. The write is atomic
-## (`.tmp` + rename), so a crash mid-write keeps the previous file.
-##
-## One logical change, one `progress_changed`: the `add_coins`/`add_tickets` mutators are for
-## the HUD's incremental updates, a full cycle is a single event.
+## One save for a money change. `add_coins` is the HUD path; a cycle is one event.
 func _apply(coins_delta: int, tickets_delta: int, cycles_delta: int = 0) -> void:
 	data.coins = clampi(data.coins + coins_delta, 0, SaveData.MAX_COINS)
 	data.tickets = clampi(data.tickets + tickets_delta, 0, SaveData.MAX_TICKETS)
