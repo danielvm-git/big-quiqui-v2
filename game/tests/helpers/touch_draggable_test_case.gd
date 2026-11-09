@@ -23,7 +23,7 @@ var moved_points: Array[Vector2] = []
 
 func before_each() -> void:
 	target = _make_target(self, TARGET_POS)
-	food = _make_food(self, HOME, "Cenoura")
+	food = _make_food(self, HOME, "Carrot")
 	probe = FsmProbe.new().attach(food.fsm)
 	started = 0
 	ended = 0

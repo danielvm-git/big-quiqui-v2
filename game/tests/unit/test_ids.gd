@@ -22,7 +22,7 @@ func test_a_trailing_newline_is_refused() -> void:
 
 
 func test_valid_ids_pass() -> void:
-	for value: String in ["mesa", "macacao_verde", "tapete_2", "a"]:
+	for value: String in ["mesa", "green_overalls", "tapete_2", "a"]:
 		assert_true(Ids.is_valid(value), value)
 
 

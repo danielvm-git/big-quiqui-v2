@@ -211,7 +211,7 @@ func test_a_press_writes_an_id_shaped_start() -> void:
 	_send(food, _touch(_center(food), true))
 
 	assert_eq(_last_line().get("ev"), "drag.start")
-	assert_eq(_last_line().get("item"), "cenoura")
+	assert_eq(_last_line().get("item"), "carrot")
 
 
 func test_a_consume_writes_the_drop_and_the_consume() -> void:
@@ -224,9 +224,9 @@ func test_a_consume_writes_the_drop_and_the_consume() -> void:
 	var consume: Dictionary = JSON.parse_string(lines[lines.size() - 1]) as Dictionary
 	assert_eq(drop.get("ev"), "drag.drop")
 	assert_eq(drop.get("outcome"), "consumed")
-	assert_eq(drop.get("item"), "cenoura")
+	assert_eq(drop.get("item"), "carrot")
 	assert_eq(consume.get("ev"), "drag.consume")
-	assert_eq(consume.get("item"), "cenoura")
+	assert_eq(consume.get("item"), "carrot")
 
 
 func test_a_miss_writes_only_a_returned_drop() -> void:

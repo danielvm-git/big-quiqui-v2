@@ -45,6 +45,10 @@ func begin_cooldown(sec: float) -> void:
 	_cool_remaining = maxf(sec, 0.0)
 
 
+func cooling_down() -> bool:
+	return _cool_remaining > 0.0
+
+
 func advance(delta: float) -> void:
 	var step: float = maxf(delta, 0.0)
 	if manual_step:

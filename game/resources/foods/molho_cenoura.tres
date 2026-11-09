@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="ItemData" format=3]
-
-[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="1_mqipl"]
-
-[resource]
-script = ExtResource("1_mqipl")
-id = "molho_cenoura"
-art_path = "res://assets/art/items/molho_cenoura.png"

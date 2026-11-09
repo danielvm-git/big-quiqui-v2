@@ -9,22 +9,22 @@ extends Control
 ## the scene's (`ProgressManager.dress`).
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/dress_vamos_se_arrumar.ogg"
-const POP_SFX_PATH: String = "res://assets/audio/sfx/pop_roupa.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
+const VOICE_KEY: String = "vo.closet.intro"
+const POP_SFX_PATH: String = "res://assets/audio/sfx/outfit_pop.ogg"
 
 const SNAP_MARGIN: float = 40.0
 const IDLE_WISH_SEC: float = 8.0
 
 ## The catalogue: four outfits and six accessories, all shipped art.
-const OUTFITS: Array[String] = ["vestido_florido", "vestido_vermelho", "macacao_verde", "pijama"]
+const OUTFITS: Array[String] = ["floral_dress", "red_dress", "green_overalls", "pajamas"]
 const ACCESSORIES: Array[Dictionary] = [
-	{"slot": "head", "id": "tiara_flores"},
-	{"slot": "head", "id": "coroa"},
-	{"slot": "head", "id": "chapeu_amarelo"},
-	{"slot": "neck", "id": "cachecol_azul"},
-	{"slot": "neck", "id": "laco_roxo"},
-	{"slot": "eyes", "id": "oculos_coracao"},
+	{"slot": "head", "id": "flower_tiara"},
+	{"slot": "head", "id": "crown"},
+	{"slot": "head", "id": "yellow_hat"},
+	{"slot": "neck", "id": "blue_scarf"},
+	{"slot": "neck", "id": "purple_bow"},
+	{"slot": "eyes", "id": "heart_glasses"},
 ]
 
 const STATE_DRESSING: String = "DRESSING"
@@ -51,7 +51,7 @@ func _ready() -> void:
 	_apply_saved_look()
 	($HomeButton as TapButton).tapped.connect(_on_home_tapped)
 	_play_stream("play_music", MUSIC_PATH)
-	_play_stream("play_voice", VOICE_PATH)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_log("scene.ready", {"scene": "closet"})
 
 
@@ -71,8 +71,8 @@ func advance(delta: float) -> void:
 	if _idle_sec >= IDLE_WISH_SEC:
 		_idle_sec = 0.0
 		if not bubble.is_showing():
-			rig.set_expression("carente")
-			bubble.show_wish("res://assets/art/items/tiara_flores.png")
+			rig.set_expression("needy")
+			bubble.show_wish("res://assets/art/items/flower_tiara.png")
 
 
 func item(name: String) -> TouchDraggable:
@@ -98,10 +98,10 @@ func _on_snapped(slot: String, id: String) -> void:
 	else:
 		applied = rig.set_accessory(slot, id)
 	if not applied:
-		_play_stream("play_sfx", "res://assets/audio/sfx/erro_suave.ogg")
+		_play_stream("play_sfx", "res://assets/audio/sfx/soft_error.ogg")
 		return
 	equips += 1
-	rig.set_expression("rindo")
+	rig.set_expression("laughing")
 	_manager().call("equip", slot, id)
 	_burst()
 	_play_stream("play_sfx", POP_SFX_PATH)
@@ -166,7 +166,7 @@ func _refresh_idle() -> void:
 	_idle_sec = 0.0
 	if bubble.is_showing():
 		bubble.hide_wish()
-	if rig.expression_id == "carente":
+	if rig.expression_id == "needy":
 		rig.set_expression(QuiQuiRig.NEUTRAL_EXPRESSION)
 
 

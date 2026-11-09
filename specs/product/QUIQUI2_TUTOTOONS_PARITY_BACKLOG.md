@@ -74,7 +74,7 @@ the whole difference between "a clean engine" and "a game she asks to open again
 ### FIX-04 · Badge/indicator layer ("NEW!", unlock dots)
 - **Evidence:** `TutoTOONS.Indicators.IndicatorManager / IndicatorController / IndicatorType` — a badge
   system for unlocks, present in the shared engine.
-- **Today:** none; `moedinha.png` / `estrela.png` ship but there is no "you unlocked X" badge.
+- **Today:** none; `coin.png` / `star.png` ship but there is no "you unlocked X" badge.
 - **Change:** new `indicator_manager.gd` + `indicator_badge.gd`; a badge appears above the wheel, the
   sticker album and the party door when their unlock condition first becomes true, then clears.
 - **Files:** `game/scripts/components/indicator_manager.gd` (new), HUD/POI wiring.

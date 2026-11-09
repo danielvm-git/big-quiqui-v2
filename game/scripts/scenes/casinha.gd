@@ -6,9 +6,9 @@ extends Control
 ## 16:9 desktop canvas and on the iPad's 4:3 canvas — no pixel is ever persisted.
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/hub_bem_vindo.ogg"
-const POP_SFX: String = "res://assets/audio/sfx/pop_roupa.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
+const VOICE_KEY: String = "vo.home.welcome"
+const POP_SFX: String = "res://assets/audio/sfx/outfit_pop.ogg"
 
 const STATE_EMPTY: String = "EMPTY"
 const STATE_DRESSED: String = "DRESSED"
@@ -43,7 +43,7 @@ func _ready() -> void:
 	_connect_inputs()
 	_spawn_from_save()
 	_refresh_state()
-	_play_stream("play_voice", VOICE_PATH)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_restore_music()
 	_log("scene.ready", {"scene": "casinha"})
 	call_deferred("layout_props")
@@ -260,7 +260,7 @@ func _on_home_tapped() -> void:
 
 func _on_rig_tapped() -> void:
 	if rig != null:
-		rig.set_expression("rindo")
+		rig.set_expression("laughing")
 
 
 func _notification(what: int) -> void:

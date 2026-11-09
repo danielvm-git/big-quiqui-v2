@@ -2,7 +2,7 @@ story_id: e12s02
 spec: e12s02.md
 epic_id: e12
 title: "Scene Data Model and Navigation by Scene Id"
-status: failing
+status: passing
 bcps: 8
 scenarios: ["SC-e12s02-P0-01", "SC-e12s02-P0-02", "SC-e12s02-P0-03", "SC-e12s02-P0-04", "SC-e12s02-P0-05", "SC-e12s02-P0-06", "SC-e12s02-P0-07", "SC-e12s02-P1-01", "SC-e12s02-P1-02", "SC-e12s02-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn (a data scene boots in a test)"
@@ -20,7 +20,7 @@ tasks:
       - "player-core"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e12s02-t02
   description: "Implement `SceneDef`/`StepDef` with typed exports and the validating loader that emits `scene.def_rejected`"
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
@@ -34,7 +34,7 @@ tasks:
       - "player-core"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e12s02-t03
   description: "Extend `SceneManager` with `request_def`/`consume_def` on the existing FSM — no new state, no new rejection code"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_scene_manager
@@ -48,7 +48,7 @@ tasks:
       - "player-core"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e12s02-t04
   description: "Add the id table to `SceneCatalog` and route `PoiTable`/`FriendCatalog` through it, keeping the legacy paths resolvable"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_scene_manager
@@ -62,7 +62,7 @@ tasks:
       - "player-core"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e12s02-t05
   description: "Generate a minimal `scene_player.tscn` from a builder and prove it boots from a def in a headless test"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_scene_player
@@ -76,7 +76,7 @@ tasks:
       - "player-core"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e12s02-t06
   description: "Prove nothing regressed: the whole suite, including every legacy navigation test"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_scene_def
@@ -90,4 +90,4 @@ tasks:
       - "player-core"
       - "unit"
       - "integration"
-  status: failing
+  status: passing

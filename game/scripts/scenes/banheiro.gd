@@ -14,8 +14,8 @@ extends Control
 ## (T-E04-01, T-E04-07).
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/banho.ogg"
-const VOICE_PATH: String = "res://assets/audio/voice/bath_hora_do_banho.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/bath.ogg"
+const VOICE_KEY: String = "vo.bathroom.intro"
 
 const BLOB_COUNT: int = 8
 ## A stage ends on effort, not on a timer: the child scrubs/rinses/dries her body.
@@ -85,7 +85,7 @@ func _ready() -> void:
 	_rebuild_blobs()
 	_apply_tint()
 	_play_stream("play_music", MUSIC_PATH)
-	_play_stream("play_voice", VOICE_PATH)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_log("scene.ready", {"scene": "banheiro"})
 
 
@@ -147,7 +147,7 @@ func _start_rinse() -> void:
 	_gap_sec = 0.0
 	_set_device(sponge, false)
 	_set_device(shower, true)
-	rig.set_expression("molhada")
+	rig.set_expression("wet")
 	_log("bath.stage", {"stage": STATE_RINSE})
 
 
@@ -190,7 +190,7 @@ func _finish_stage_dry() -> void:
 		return
 	_gap_sec = 0.0
 	_set_device(towel, false)
-	rig.set_expression("brilhando")
+	rig.set_expression("shining")
 	_credit_bath()
 	_log("bath.stage", {"stage": STATE_FINISHED})
 	_request_casa()

@@ -53,16 +53,16 @@ func test_every_food_has_real_art_under_the_items_folder() -> void:
 
 
 func test_get_item_returns_the_named_food() -> void:
-	var item: ItemData = FoodCatalog.get_item("melancia")
+	var item: ItemData = FoodCatalog.get_item("watermelon")
 
 	assert_not_null(item)
 	if item != null:
-		assert_eq(item.id, "melancia")
+		assert_eq(item.id, "watermelon")
 
 
 func test_get_item_refuses_anything_outside_the_catalog() -> void:
 	assert_null(FoodCatalog.get_item("nao_existe"), "unknown id")
-	assert_null(FoodCatalog.get_item("bola"), "real art, but not a food")
+	assert_null(FoodCatalog.get_item("ball"), "real art, but not a food")
 	assert_null(FoodCatalog.get_item(""), "empty id")
 	assert_null(FoodCatalog.get_item("../../project"), "path traversal")
 
@@ -76,11 +76,11 @@ func test_an_unknown_id_is_logged_without_echoing_it() -> void:
 
 
 func test_missing_data_file_returns_null_and_logs() -> void:
-	assert_null(FoodCatalog.get_item("cenoura", "res://resources/foods/missing/"))
+	assert_null(FoodCatalog.get_item("carrot", "res://resources/foods/missing/"))
 	var line: Dictionary = _last_diary_line()
 
 	assert_eq(line.get("ev", ""), "item.missing_data")
-	assert_eq(line.get("item", ""), "cenoura")
+	assert_eq(line.get("item", ""), "carrot")
 
 
 func test_a_tray_holds_the_requested_number_of_distinct_foods() -> void:
@@ -124,7 +124,7 @@ func test_missing_art_returns_null_and_logs() -> void:
 
 
 func test_an_invalid_id_returns_null_even_with_real_art() -> void:
-	var item: ItemData = _item("../Maria Clara", "%scenoura.png" % ART_ROOT)
+	var item: ItemData = _item("../Maria Clara", "%scarrot.png" % ART_ROOT)
 
 	assert_null(item.texture())
 	var line: Dictionary = _last_diary_line()
@@ -137,7 +137,7 @@ func test_an_empty_item_degrades() -> void:
 
 
 func test_a_path_that_is_not_a_texture_degrades() -> void:
-	var item: ItemData = _item("cenoura", "%scenoura.tres" % FOODS_DIR)
+	var item: ItemData = _item("carrot", "%scarrot.tres" % FOODS_DIR)
 
 	assert_null(item.texture())
 	assert_eq(_last_diary_line().get("ev", ""), "item.missing_art")

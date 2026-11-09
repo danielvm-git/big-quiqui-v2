@@ -2,7 +2,7 @@ story_id: e12s03
 spec: e12s03.md
 epic_id: e12
 title: "ScenePlayer and StepRunner (Fsm) with Player Chrome"
-status: failing
+status: passing
 bcps: 8
 scenarios: ["SC-e12s03-P0-01", "SC-e12s03-P0-02", "SC-e12s03-P0-03", "SC-e12s03-P0-04", "SC-e12s03-P1-01", "SC-e12s03-P1-02", "SC-e12s03-P1-03", "SC-e12s03-P2-01", "SC-e12s03-P2-02"]
 playable_scene: "res://scenes/scene_player.tscn (LOAD→INTRO→STEP→OUTRO→EXIT)"
@@ -20,7 +20,7 @@ tasks:
       - "unit"
       - "integration"
       - "geometry"
-  status: failing
+  status: passing
 - id: e12s03-t02
   description: "Implement `StepRunner` on `Fsm` with `legal_edges`, `max_dwell_sec`, a `manual_step` seam and no step deadline"
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
@@ -34,7 +34,7 @@ tasks:
       - "unit"
       - "integration"
       - "geometry"
-  status: failing
+  status: passing
 - id: e12s03-t03
   description: "Implement `ScenePlayer._ready()` — consume the def, validate it, compose the chrome — and the reaction executor"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_scene_player
@@ -48,7 +48,7 @@ tasks:
       - "unit"
       - "integration"
       - "geometry"
-  status: failing
+  status: passing
 - id: e12s03-t04
   description: "Re-source `CareDotsBar` to the runner and keep the hub's five-dot use intact"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_care_dots_bar
@@ -62,7 +62,7 @@ tasks:
       - "unit"
       - "integration"
       - "geometry"
-  status: failing
+  status: passing
 - id: e12s03-t05
   description: "Verify both aspects with `GeometryOracle`: zero letterbox bars, the 120 px targets, the rig inside the canvas"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_scene_player
@@ -76,7 +76,7 @@ tasks:
       - "unit"
       - "integration"
       - "geometry"
-  status: failing
+  status: passing
 - id: e12s03-t06
   description: "Emit `scene.loaded`/`step.started`/`step.done`/`scene.exited` and audit the diary"
   verify: bash scripts/logs.sh audit --self-test
@@ -90,4 +90,4 @@ tasks:
       - "unit"
       - "integration"
       - "geometry"
-  status: failing
+  status: passing

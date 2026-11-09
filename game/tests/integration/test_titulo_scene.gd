@@ -85,7 +85,7 @@ func test_the_main_theme_starts_with_the_scene() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9) as TituloScene
 	await wait_process_frames(3)
 
-	assert_true(scene.music_started, "tema_principal.ogg must start on the title screen")
+	assert_true(scene.music_started, "main_theme.ogg must start on the title screen")
 
 
 func test_tapping_quiqui_makes_her_laugh() -> void:
@@ -95,7 +95,7 @@ func test_tapping_quiqui_makes_her_laugh() -> void:
 	for event: InputEvent in TouchSim.tap_events(scene.rig, true):
 		scene.rig._gui_input(event)
 
-	assert_eq(scene.rig.expression_id, "rindo", "affection gets a reaction")
+	assert_eq(scene.rig.expression_id, "laughing", "affection gets a reaction")
 	assert_eq(scene.rig.taps, 1, "and the echo does not double count")
 
 

@@ -109,7 +109,7 @@ func test_full_seeded_round_via_advance_is_zero_real_time() -> void:
 	assert_eq(scene.get_script(), PENGUIN_SCRIPT)
 	var probe: FsmProbe = FsmProbe.new().attach(scene.get("fsm") as Fsm)
 	var progress: Node = get_node("/root/ProgressManager")
-	scene.call("seed_spawns", ["bola", "bolha", "bola", "bolha", "bola", "bolha"] as Array[String])
+	scene.call("seed_spawns", ["ball", "bolha", "ball", "bolha", "ball", "bolha"] as Array[String])
 	_ready_to_play()
 	assert_eq(int(scene.call("catch_count")), 0)
 
@@ -118,7 +118,7 @@ func test_full_seeded_round_via_advance_is_zero_real_time() -> void:
 
 	# Spawn and catch 6 items
 	for _i: int in range(6):
-		scene.call("spawn_item", "bola", p_center_x)
+		scene.call("spawn_item", "ball", p_center_x)
 		# Step items down until intercepted (fall_speed is 260px/s, lane is at y=0.78*1080 = 842)
 		while int(scene.call("catch_count")) == _i:
 			scene.call("advance", 0.1)
@@ -160,7 +160,7 @@ func test_replay_restarts_running_round() -> void:
 	scene = _mount(GeometryOracle.DESKTOP_16_9)
 	_ready_to_play()
 	var penguin: Control = scene.get_node("Penguin") as Control
-	scene.call("spawn_item", "bola", penguin.get_global_rect().get_center().x)
+	scene.call("spawn_item", "ball", penguin.get_global_rect().get_center().x)
 	while int(scene.call("catch_count")) == 0:
 		scene.call("advance", 0.1)
 	assert_eq(int(scene.call("catch_count")), 1)

@@ -1,22 +1,22 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/scenes/casa.gd" id="1_uum25"]
-[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_sala.jpg" id="2_lgdna"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_home.jpg" id="2_lgdna"]
 [ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_wui1u"]
 [ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="4_g3anh"]
-[ext_resource type="Texture2D" path="res://assets/art/moveis/porta.png" id="5_3kn8t"]
+[ext_resource type="Texture2D" path="res://assets/art/furniture/door.png" id="5_3kn8t"]
 [ext_resource type="Script" path="res://scripts/components/wish_bubble.gd" id="6_2ix5r"]
 [ext_resource type="Script" path="res://scripts/components/care_dots_bar.gd" id="7_qil8m"]
 [ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="8_dgbb3"]
 
-[node name="Casa" type="Control" unique_id=1551823560]
+[node name="Casa" type="Control" unique_id=367167677]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_uum25")
 
-[node name="Background" type="TextureRect" parent="." unique_id=1013268396 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=93898901 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -25,7 +25,7 @@ texture = ExtResource("2_lgdna")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=896053166 groups=["rig"]]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=1639770790 groups=["rig"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -35,7 +35,7 @@ offset_left = -320.0
 offset_right = 320.0
 script = ExtResource("3_wui1u")
 
-[node name="DoorFEED" type="Control" parent="." unique_id=953235425 groups=["hit_target"]]
+[node name="DoorFEED" type="Control" parent="." unique_id=1077495078 groups=["hit_target"]]
 anchors_preset = 0
 anchor_top = 0.28148147
 anchor_bottom = 0.28148147
@@ -45,13 +45,13 @@ offset_right = 232.0
 offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorFEED" unique_id=1923694500]
+[node name="Visual" type="Control" parent="DoorFEED" unique_id=1844707197]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorFEED/Visual" unique_id=430016008]
+[node name="Art" type="TextureRect" parent="DoorFEED/Visual" unique_id=1033047454]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -60,7 +60,7 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DoorPLAY" type="Control" parent="." unique_id=1844640512 groups=["hit_target"]]
+[node name="DoorPLAY" type="Control" parent="." unique_id=2074268305 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_top = 0.28148147
@@ -72,13 +72,13 @@ offset_right = -64.0
 offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorPLAY" unique_id=297754780]
+[node name="Visual" type="Control" parent="DoorPLAY" unique_id=1934268929]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorPLAY/Visual" unique_id=1131853968]
+[node name="Art" type="TextureRect" parent="DoorPLAY/Visual" unique_id=668940830]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -87,7 +87,7 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DoorBATH" type="Control" parent="." unique_id=2004691476 groups=["hit_target"]]
+[node name="DoorBATH" type="Control" parent="." unique_id=1710483249 groups=["hit_target"]]
 anchors_preset = 0
 anchor_top = 0.5037037
 anchor_bottom = 0.5037037
@@ -97,13 +97,13 @@ offset_right = 232.0
 offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorBATH" unique_id=1845425742]
+[node name="Visual" type="Control" parent="DoorBATH" unique_id=1315574037]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorBATH/Visual" unique_id=985037182]
+[node name="Art" type="TextureRect" parent="DoorBATH/Visual" unique_id=732338659]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -112,7 +112,7 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DoorSLEEP" type="Control" parent="." unique_id=1631982701 groups=["hit_target"]]
+[node name="DoorSLEEP" type="Control" parent="." unique_id=459487157 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_top = 0.5037037
@@ -124,13 +124,13 @@ offset_right = -64.0
 offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorSLEEP" unique_id=1422310246]
+[node name="Visual" type="Control" parent="DoorSLEEP" unique_id=627461734]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorSLEEP/Visual" unique_id=1924055271]
+[node name="Art" type="TextureRect" parent="DoorSLEEP/Visual" unique_id=1489256584]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -139,7 +139,7 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DoorDRESS" type="Control" parent="." unique_id=978425429 groups=["hit_target"]]
+[node name="DoorDRESS" type="Control" parent="." unique_id=1211237020 groups=["hit_target"]]
 anchors_preset = 0
 anchor_top = 0.7259259
 anchor_bottom = 0.7259259
@@ -149,13 +149,13 @@ offset_right = 232.0
 offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorDRESS" unique_id=1810764993]
+[node name="Visual" type="Control" parent="DoorDRESS" unique_id=1647639594]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorDRESS/Visual" unique_id=819413018]
+[node name="Art" type="TextureRect" parent="DoorDRESS/Visual" unique_id=2036508973]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -164,7 +164,7 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DoorVILA" type="Control" parent="." unique_id=390653611 groups=["hit_target"]]
+[node name="DoorVILA" type="Control" parent="." unique_id=637314784 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_top = 0.7259259
@@ -176,13 +176,13 @@ offset_right = -64.0
 offset_bottom = 84.0
 script = ExtResource("4_g3anh")
 
-[node name="Visual" type="Control" parent="DoorVILA" unique_id=729395626]
+[node name="Visual" type="Control" parent="DoorVILA" unique_id=878131432]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Art" type="TextureRect" parent="DoorVILA/Visual" unique_id=1980054722]
+[node name="Art" type="TextureRect" parent="DoorVILA/Visual" unique_id=2118965036]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -191,7 +191,7 @@ texture = ExtResource("5_3kn8t")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="WishBubble" type="Control" parent="." unique_id=1619368644 groups=["wish_bubble"]]
+[node name="WishBubble" type="Control" parent="." unique_id=425411160 groups=["wish_bubble"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -203,7 +203,7 @@ offset_right = 110.0
 offset_bottom = -8.0
 script = ExtResource("6_2ix5r")
 
-[node name="CareDotsBar" type="Control" parent="." unique_id=709970598 groups=["ui_bottom"]]
+[node name="CareDotsBar" type="Control" parent="." unique_id=2146437840 groups=["ui_bottom"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 1.0
@@ -215,7 +215,7 @@ offset_right = 228.0
 offset_bottom = -36.0
 script = ExtResource("7_qil8m")
 
-[node name="CoinTicketHud" type="Control" parent="." unique_id=342774599 groups=["ui_top_right"]]
+[node name="CoinTicketHud" type="Control" parent="." unique_id=1184531886 groups=["ui_top_right"]]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0

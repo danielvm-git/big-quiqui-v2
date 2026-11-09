@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="ItemData" format=3]
-
-[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="1_0g3ff"]
-
-[resource]
-script = ExtResource("1_0g3ff")
-id = "maca"
-art_path = "res://assets/art/items/maca.png"

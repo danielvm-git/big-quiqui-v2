@@ -16,11 +16,11 @@ func test_dragging_near_the_mouth_opens_it_and_a_miss_restores_her_face() -> voi
 	_press(0)
 	assert_eq(scene.rig.expression_id, "base", "on the tray she does not anticipate")
 	_move(0, mouth + Vector2(200.0, 0.0))
-	assert_eq(scene.rig.expression_id, "boca_aberta")
+	assert_eq(scene.rig.expression_id, "mouth_open")
 	_move(0, AWAY_FROM_MOUTH)
 	assert_eq(scene.rig.expression_id, "base", "moving away closes it")
 	_move(0, mouth + Vector2(200.0, 0.0))
-	assert_eq(scene.rig.expression_id, "boca_aberta")
+	assert_eq(scene.rig.expression_id, "mouth_open")
 	_release(0, mouth + Vector2(215.0, 0.0))
 	assert_eq(scene.rig.expression_id, "base", "a release off target closes it")
 	assert_eq(scene.food(0).state_id(), "RETURNING")
@@ -33,13 +33,13 @@ func test_a_consumed_food_leaves_her_chewing_and_the_next_food_still_opens_her_m
 	var faces: Array[String] = []
 	scene.rig.expression_changed.connect(func(id: String) -> void: faces.append(id))
 	_feed(0)
-	assert_eq(scene.rig.expression_id, "mastigando", "chewing, not the base face")
-	assert_eq(faces.back(), "mastigando")
+	assert_eq(scene.rig.expression_id, "chewing", "chewing, not the base face")
+	assert_eq(faces.back(), "chewing")
 	assert_false(faces.has("base"), "the base face never flashes between the open mouth and chewing")
 	_finish_reactions()
 	_press(1)
 	_move(1, mouth + Vector2(100.0, 0.0))
-	assert_eq(scene.rig.expression_id, "boca_aberta", "no stale anticipation face")
+	assert_eq(scene.rig.expression_id, "mouth_open", "no stale anticipation face")
 
 
 func test_a_missed_food_flies_back_and_can_be_used_again() -> void:
@@ -159,7 +159,7 @@ func test_entry_plays_the_kitchen_theme_and_the_voice_prompt() -> void:
 
 func test_a_missing_stream_degrades() -> void:
 	await _enter()
-	assert_false(scene._play_stream("play_voice", "res://assets/audio/voice/nao_existe.ogg"))
+	assert_false(scene._play_stream("play_voice", "res://assets/audio/voice/pt_BR/nao_existe.ogg"))
 	_feed(0)
 	assert_eq(scene.bites, 1, "the scene stays playable")
 
@@ -171,7 +171,7 @@ func test_eight_seconds_of_quiet_show_the_wish_and_any_drag_clears_it() -> void:
 	scene.advance(0.6)
 	assert_true(scene.bubble.is_showing())
 	assert_eq(scene.bubble.wish_id(), _art_name(0), "she asks for a food that is on the tray")
-	assert_eq(scene.rig.expression_id, "carente")
+	assert_eq(scene.rig.expression_id, "needy")
 	scene.bubble.manual_step = true
 	scene.bubble.advance(0.5)
 	assert_ne(scene.bubble.pulse_scale(), 1.0, "the bubble pulses")

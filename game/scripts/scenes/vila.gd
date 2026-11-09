@@ -10,7 +10,7 @@ signal poi_requested(poi: String)
 
 const CASA_PATH: String = PoiTable.CASA_PATH
 const RODA_PATH: String = PoiTable.RODA_PATH
-const SPARKLE_SFX: String = "res://assets/audio/sfx/confete.ogg"
+const SPARKLE_SFX: String = "res://assets/audio/sfx/confetti.ogg"
 
 const POI_SCENE_CASA: String = PoiTable.POI_CASA
 const POI_SCENE_RODA: String = PoiTable.POI_RODA
@@ -23,15 +23,15 @@ const POI_ALBUM: String = PoiTable.POI_ALBUM
 const POI_SCENES: Dictionary = PoiTable.SCENES
 
 const WISH_ICONS: Dictionary = {
-	CareSteps.FEED: "res://assets/art/items/cenoura.png",
-	CareSteps.BATH: "res://assets/art/items/sabonete.png",
-	CareSteps.DRESS: "res://assets/art/items/tiara_flores.png",
-	CareSteps.PLAY: "res://assets/art/items/bola.png",
-	CareSteps.SLEEP: "res://assets/art/efeitos/zzz.png",
+	CareSteps.FEED: "res://assets/art/items/carrot.png",
+	CareSteps.BATH: "res://assets/art/items/soap.png",
+	CareSteps.DRESS: "res://assets/art/items/flower_tiara.png",
+	CareSteps.PLAY: "res://assets/art/items/ball.png",
+	CareSteps.SLEEP: "res://assets/art/effects/zzz.png",
 }
 
-const VOICE_PATH: String = "res://assets/audio/voice/vila_bem_vindo.ogg"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
+const VOICE_KEY: String = "vo.village.welcome"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
 
 const IDLE_WISH_SEC: float = 8.0
 const ESCALATION_SEC: float = 6.0
@@ -74,7 +74,7 @@ func _ready() -> void:
 	_setup_recycle()
 	_setup_hints()
 	_connect_inputs()
-	_play_stream("play_voice", VOICE_PATH)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_restore_music()
 	_log("scene.ready", {"scene": "vila"})
 
@@ -147,7 +147,7 @@ func advance(delta: float) -> void:
 	if not _wish_shown_for_idle:
 		_wish_shown_for_idle = true
 		if rig != null:
-			rig.set_expression("carente")
+			rig.set_expression("needy")
 		if bubble != null:
 			bubble.show_wish(WISH_ICONS[step])
 		return
@@ -238,7 +238,7 @@ func _on_poi_tapped(poi_id: String) -> void:
 func _on_rig_tapped() -> void:
 	_reset_idle()
 	if rig != null:
-		rig.set_expression("rindo")
+		rig.set_expression("laughing")
 
 
 func _on_home_tapped() -> void:

@@ -2,8 +2,8 @@
 extends GutTest
 ## SC-E09-P1-06 — the Vila's party badge reads the same threshold the party does.
 
-const LOCKED_ART: String = "res://assets/art/ui/bolinha_progresso_vazia.png"
-const UNLOCKED_ART: String = "res://assets/art/ui/estrela.png"
+const LOCKED_ART: String = "res://assets/art/ui/progress_dot_empty.png"
+const UNLOCKED_ART: String = "res://assets/art/ui/star.png"
 
 var badge: DoorBadge = null
 var pm: Node = null

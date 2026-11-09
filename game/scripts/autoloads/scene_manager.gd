@@ -1,4 +1,5 @@
 # story: e01s02
+# story: e12s02
 extends Node
 ## Scene transitions as an explicit machine (ADR-001): IDLE → FADING_OUT →
 ## SWAPPING → FADING_IN → IDLE, with a 2.0 s watchdog and a 1-slot pending queue
@@ -22,6 +23,10 @@ const CASA_PATH: String = "res://scenes/casa.tscn"
 const CELEBRACAO_PATH: String = "res://scenes/celebracao.tscn"
 const REASON_SAME_SCENE: String = "same_scene"
 const REASON_EMPTY_PATH: String = "empty_path"
+const REASON_DEF_REJECTED: String = "def_rejected"
+const SCENE_PLAYER_PATH: String = "res://scenes/scene_player.tscn"
+const ID_HOME: String = "home"
+const ID_CELEBRATION: String = "celebration"
 
 const LEGAL_EDGES: Dictionary = {
 	STATE_IDLE: [STATE_FADING_OUT],
@@ -36,8 +41,6 @@ const MAX_DWELL_SEC: Dictionary = {
 	STATE_FADING_IN: 2.0,
 }
 
-const CURTAIN_LAYER: int = 128
-
 var fsm: Fsm = null
 ## Test seam: when true, `_process` does nothing and only `advance()` steps the
 ## machine, so a test's timeline is the only timeline.
@@ -45,6 +48,7 @@ var manual_step: bool = false
 var fade_duration_sec: float = 0.4
 var pending_scene: String = ""
 var current_scene: String = ""
+var _def_nav: SceneManagerDefNav = SceneManagerDefNav.new()
 ## Injected so tests never swap the scene under GUT; the game sets `change_scene`.
 var loader: Callable = Callable()
 ## Test seam for the production swap itself: when set, it is called instead of
@@ -60,30 +64,18 @@ var _progress: float = 0.0
 ## Test-stepped clock: the FSM's dwell watchdog reads this instead of wall time,
 ## so `advance(2.1)` in a test means the same thing as 2.1 s in the game.
 var _clock_ms: int = 0
-var _curtain_layer: CanvasLayer = null
-var _curtain: ColorRect = null
+var _curtain: SceneCurtain = SceneCurtain.new()
 
 
 func _ready() -> void:
 	fsm = Fsm.new(STATE_IDLE, LEGAL_EDGES, MAX_DWELL_SEC, Callable(self, "_clock"))
-	_build_curtain()
+	_curtain.build(self)
 
 
 func _process(delta: float) -> void:
 	if manual_step:
 		return
 	advance(delta)
-
-
-## A detour out of the celebration must not leave the care cycle stuck in CELEBRATE
-## (T-E07-05). Closing it here means every door, from every scene, is covered — except
-## the two legitimate CELEBRATE targets: the hub and the celebration itself.
-func _close_celebrate_for_detour(path: String) -> void:
-	if path == CASA_PATH or path == CELEBRACAO_PATH:
-		return
-	var care: Node = get_node_or_null("/root/CareLoopManager")
-	if care != null and care.has_method("close_celebrate_if_needed"):
-		care.call("close_celebrate_if_needed")
 
 
 ## Parks a request that cannot start now: an identical pending path, or a machine that
@@ -94,6 +86,7 @@ func _park(path: String) -> bool:
 		return true
 	if fsm.state != STATE_IDLE:
 		pending_scene = path
+		_def_nav.clear_pending_def()
 		scene_requested.emit(path, true)
 		return true
 	return false
@@ -101,6 +94,38 @@ func _park(path: String) -> bool:
 
 ## Requests a scene. Returns true when the transition started immediately,
 ## false when it was parked in the single pending slot.
+func request_def(scene_id: String) -> bool:
+	if not Ids.is_valid(scene_id):
+		reject(scene_id, REASON_DEF_REJECTED)
+		return false
+	var def: SceneDef = SceneManagerDefNav.load_def(scene_id)
+	if def == null:
+		reject(scene_id, REASON_DEF_REJECTED)
+		return false
+	if scene_id == _def_nav.current_def_id and current_scene == SCENE_PLAYER_PATH:
+		reject(scene_id, REASON_SAME_SCENE)
+		return false
+	CareLoopDetour.close_unless(self, SceneManagerDefNav.celebrate_may_continue(scene_id, ID_HOME, ID_CELEBRATION))
+	var parked_path: String = _def_nav.park_def(scene_id, def, fsm.state == STATE_IDLE, SCENE_PLAYER_PATH)
+	if not parked_path.is_empty():
+		pending_scene = parked_path
+		var queued: bool = fsm.state != STATE_IDLE
+		scene_requested.emit(SCENE_PLAYER_PATH, queued)
+		return not queued
+	_def_nav.stage(scene_id, def)
+	_start(SCENE_PLAYER_PATH)
+	scene_requested.emit(SCENE_PLAYER_PATH, false)
+	return true
+
+
+func consume_def() -> SceneDef:
+	return _def_nav.consume_def()
+
+
+func scene_slug_for_id(scene_id: String) -> String:
+	return SceneManagerDefNav.scene_slug_for_id(scene_id)
+
+
 func request_scene(path: String) -> bool:
 	if path.strip_edges().is_empty():
 		reject(path, REASON_EMPTY_PATH)
@@ -111,7 +136,7 @@ func request_scene(path: String) -> bool:
 		return false
 	# After validation: a request that is refused is not a detour, so it must not close
 	# the cycle (e07 post-epic, review B consider 10).
-	_close_celebrate_for_detour(path)
+	CareLoopDetour.close_unless(self, path == CASA_PATH or path == CELEBRACAO_PATH)
 	if _park(path):
 		return false
 	_start(path)
@@ -180,6 +205,7 @@ func reset() -> void:
 	fsm = Fsm.new(STATE_IDLE, LEGAL_EDGES, MAX_DWELL_SEC, Callable(self, "_clock"))
 	pending_scene = ""
 	current_scene = ""
+	_def_nav.reset()
 	_progress = 0.0
 	production_swap_path = ""
 	_set_curtain_alpha(0.0)
@@ -187,9 +213,11 @@ func reset() -> void:
 
 func _start(path: String) -> void:
 	current_scene = path
+	if path != SCENE_PLAYER_PATH:
+		_def_nav.clear_current_def()
 	_progress = 0.0
 	fsm.transition_to(STATE_FADING_OUT)
-	_emit("scene.fade_out", {"path": _slug(path)})
+	_emit("scene.fade_out", {"path": _diary_slug(path)})
 
 
 func _enter_swapping() -> void:
@@ -209,7 +237,7 @@ func _swap_to_current() -> void:
 	elif not test_mode:
 		_swap_production(current_scene)
 	scene_changed.emit(current_scene)
-	_emit("scene.changed", {"path": _slug(current_scene)})
+	_emit("scene.changed", {"path": _diary_slug(current_scene)})
 
 
 ## The real navigation: swaps the running scene. Reached only outside test mode
@@ -228,7 +256,7 @@ func _finish() -> void:
 	fsm.transition_to(STATE_IDLE)
 	_progress = 0.0
 	_set_curtain_alpha(0.0)
-	_emit("scene.idle", {"path": _slug(current_scene)})
+	_emit("scene.idle", {"path": _diary_slug(current_scene)})
 	_start_pending()
 
 
@@ -237,21 +265,8 @@ func _start_pending() -> void:
 		return
 	var next_scene: String = pending_scene
 	pending_scene = ""
+	_def_nav.apply_pending()
 	_start(next_scene)
-
-
-func _build_curtain() -> void:
-	_curtain_layer = CanvasLayer.new()
-	_curtain_layer.name = "SceneCurtainLayer"
-	_curtain_layer.layer = CURTAIN_LAYER
-	add_child(_curtain_layer)
-
-	_curtain = ColorRect.new()
-	_curtain.name = "SceneCurtain"
-	_curtain.color = Color(0.0, 0.0, 0.0, 0.0)
-	_curtain.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_curtain.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_curtain_layer.add_child(_curtain)
 
 
 func _clock() -> int:
@@ -259,20 +274,15 @@ func _clock() -> int:
 
 
 func _set_curtain_alpha(alpha: float) -> void:
-	if _curtain == null:
-		return
-	var colour: Color = _curtain.color
-	colour.a = clampf(alpha, 0.0, 1.0)
-	_curtain.color = colour
+	_curtain.set_alpha(alpha)
 
 
-## Log values must be id-shaped: a scene path becomes `scene.titulo`.
+func _diary_slug(path: String) -> String:
+	return SceneDiarySlug.for_player_def(SCENE_PLAYER_PATH, path, _def_nav.current_def_id)
+
+
 func _slug(path: String) -> String:
-	var base: String = path.get_file().get_basename().to_lower()
-	var out: String = ""
-	for character: String in base:
-		out += character if character.is_valid_identifier() or character.is_valid_int() else "_"
-	return "scene." + (out if not out.is_empty() else "unknown")
+	return SceneDiarySlug.from_path(path)
 
 
 func _emit(ev: String, data: Dictionary) -> void:

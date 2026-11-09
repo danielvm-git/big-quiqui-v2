@@ -7,10 +7,10 @@ extends Control
 ## are decoration next to icons — no interaction requires reading (Zero Text
 ## Rule).
 
-const COIN_ICON_PATH: String = "res://assets/art/ui/moedinha.png"
+const COIN_ICON_PATH: String = "res://assets/art/ui/coin.png"
 ## No dedicated ticket art exists yet; the wheel is what the ticket is for
 ## (user decision 2026-11-04). Swap when `bilhete.png` art lands.
-const TICKET_ICON_PATH: String = "res://assets/art/items/roda_fortuna.png"
+const TICKET_ICON_PATH: String = "res://assets/art/items/fortune_wheel.png"
 const ICON_SIZE: Vector2 = Vector2(64.0, 64.0)
 const LABEL_MIN_WIDTH: float = 88.0
 const GROUP_GAP: int = 40

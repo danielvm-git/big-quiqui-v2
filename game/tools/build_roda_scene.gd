@@ -9,10 +9,10 @@ const RIG_SCRIPT: String = "res://scripts/components/quiqui_rig.gd"
 const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
 const HUD_SCRIPT: String = "res://scripts/components/coin_ticket_hud.gd"
 
-const BG_PATH: String = "res://assets/art/backgrounds/bg_vila.jpg"
-const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
-const WHEEL_ART: String = "res://assets/art/items/roda_fortuna.png"
-const BADGE_ART: String = "res://assets/art/ui/estrela.png"
+const BG_PATH: String = "res://assets/art/backgrounds/bg_village.jpg"
+const HOME_ART: String = "res://assets/art/ui/home_button.png"
+const WHEEL_ART: String = "res://assets/art/items/fortune_wheel.png"
+const BADGE_ART: String = "res://assets/art/ui/star.png"
 
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0

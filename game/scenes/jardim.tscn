@@ -1,25 +1,25 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/scenes/jardim.gd" id="1_x518q"]
-[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_jardim.jpg" id="2_kna8f"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_playroom.jpg" id="2_kna8f"]
 [ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_0aw1h"]
 [ext_resource type="Script" path="res://scripts/components/garden_prop.gd" id="4_adwpb"]
-[ext_resource type="Texture2D" path="res://assets/art/items/bola.png" id="5_2xhw3"]
-[ext_resource type="Texture2D" path="res://assets/art/items/cata_vento.png" id="6_6ofqw"]
-[ext_resource type="Texture2D" path="res://assets/art/items/pelucia.png" id="7_bwajp"]
+[ext_resource type="Texture2D" path="res://assets/art/items/ball.png" id="5_2xhw3"]
+[ext_resource type="Texture2D" path="res://assets/art/items/pinwheel.png" id="6_6ofqw"]
+[ext_resource type="Texture2D" path="res://assets/art/items/plush.png" id="7_bwajp"]
 [ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="8_3ymhe"]
-[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="9_jdnym"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/home_button.png" id="9_jdnym"]
 [ext_resource type="Script" path="res://scripts/components/wish_bubble.gd" id="10_51hdg"]
-[ext_resource type="Texture2D" path="res://assets/art/efeitos/confete.png" id="11_6dbej"]
+[ext_resource type="Texture2D" path="res://assets/art/effects/confetti.png" id="11_6dbej"]
 
-[node name="Jardim" type="Control" unique_id=1638182626]
+[node name="Jardim" type="Control" unique_id=1264967550]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_x518q")
 
-[node name="Background" type="TextureRect" parent="." unique_id=702871735 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=224688180 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,7 +28,7 @@ texture = ExtResource("2_kna8f")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=1827471368 groups=["rig"]]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=1099976310 groups=["rig"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -38,7 +38,7 @@ offset_left = -320.0
 offset_right = 320.0
 script = ExtResource("3_0aw1h")
 
-[node name="Prop0" type="Control" parent="." unique_id=1305731834 groups=["hit_target"]]
+[node name="Prop0" type="Control" parent="." unique_id=515354655 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.12
 anchor_top = 0.8
@@ -50,7 +50,7 @@ offset_right = 74.0
 offset_bottom = 74.0
 script = ExtResource("4_adwpb")
 
-[node name="Art" type="TextureRect" parent="Prop0" unique_id=236762333]
+[node name="Art" type="TextureRect" parent="Prop0" unique_id=1539835365]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -59,7 +59,7 @@ texture = ExtResource("5_2xhw3")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Prop1" type="Control" parent="." unique_id=1874120183 groups=["hit_target"]]
+[node name="Prop1" type="Control" parent="." unique_id=983256925 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.86
 anchor_top = 0.78
@@ -71,7 +71,7 @@ offset_right = 74.0
 offset_bottom = 74.0
 script = ExtResource("4_adwpb")
 
-[node name="Art" type="TextureRect" parent="Prop1" unique_id=1790892762]
+[node name="Art" type="TextureRect" parent="Prop1" unique_id=1136799026]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -80,7 +80,7 @@ texture = ExtResource("6_6ofqw")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Prop2" type="Control" parent="." unique_id=789804660 groups=["hit_target"]]
+[node name="Prop2" type="Control" parent="." unique_id=529794437 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.3
 anchor_top = 0.9
@@ -92,7 +92,7 @@ offset_right = 74.0
 offset_bottom = 74.0
 script = ExtResource("4_adwpb")
 
-[node name="Art" type="TextureRect" parent="Prop2" unique_id=1645224319]
+[node name="Art" type="TextureRect" parent="Prop2" unique_id=757091488]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -101,7 +101,7 @@ texture = ExtResource("7_bwajp")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="TickleZone" type="Control" parent="." unique_id=469449688 groups=["hit_target"]]
+[node name="TickleZone" type="Control" parent="." unique_id=1237884017 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -113,7 +113,7 @@ offset_right = 100.0
 offset_bottom = 100.0
 script = ExtResource("8_3ymhe")
 
-[node name="HomeButton" type="Control" parent="." unique_id=332086411 groups=["hit_target"]]
+[node name="HomeButton" type="Control" parent="." unique_id=1766779920 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 36.0
@@ -121,7 +121,7 @@ offset_right = 156.0
 offset_bottom = 156.0
 script = ExtResource("8_3ymhe")
 
-[node name="Art" type="TextureRect" parent="HomeButton" unique_id=1877545542]
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=344896933]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -130,7 +130,7 @@ texture = ExtResource("9_jdnym")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="WishBubble" type="Control" parent="." unique_id=1152837521 groups=["wish_bubble"]]
+[node name="WishBubble" type="Control" parent="." unique_id=929400765 groups=["wish_bubble"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -142,7 +142,7 @@ offset_right = 110.0
 offset_bottom = -8.0
 script = ExtResource("10_51hdg")
 
-[node name="Confetti" type="CPUParticles2D" parent="." unique_id=1370703721]
+[node name="Confetti" type="CPUParticles2D" parent="." unique_id=2088388948]
 z_index = 30
 emitting = false
 amount = 16

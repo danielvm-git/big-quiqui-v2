@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_feed"]
+script = ExtResource("2_step")
+template_id = "t20_drag_snap"
+repeat_count = 3
+mode = "single"
+receiver_id = "quiqui_mouth"
+item_ids = PackedStringArray("carrot", "apple", "strawberry")
+on_hit_pose = "chewing"
+on_hit_sfx_id = "sfx_chomp"
+on_miss_sfx_id = "sfx_soft_error"
+care_step_id = "FEED"
+hint_delay_sec = 3.0
+hint_from_id = "tray"
+hint_to_id = "quiqui_mouth"
+hint_voice_key = "vo.kitchen.intro"
+
+[resource]
+script = ExtResource("1_def")
+id = "kitchen"
+background_id = "bg_kitchen"
+music_id = "music_kitchen"
+intro_voice_key = "vo.kitchen.intro"
+steps = Array[Resource]([SubResource("step_feed")])
+next_scene_id = "home"
+reward_coins = 0

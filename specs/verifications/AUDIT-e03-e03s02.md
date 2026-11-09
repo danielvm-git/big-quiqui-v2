@@ -38,7 +38,7 @@ VERDICT: PASS
 | Severity | Item | Reason |
 |---|---|---|
 | LOW | `mouth_global_center()` errors if called before `_ready` | same as `set_outfit` on the rig; drag input cannot arrive before the scene is ready. Forward note written for e03s03 |
-| LOW | if `quiqui_boca_aberta.png` were missing, each close `update_food_proximity` call logs `rig.missing_art` again, which could flood the diary (T-E03-06) | the art ships in the package; a guard needs extra state for a case that needs a tampered package |
+| LOW | if `quiqui_mouth_open.png` were missing, each close `update_food_proximity` call logs `rig.missing_art` again, which could flood the diary (T-E03-06) | the art ships in the package; a guard needs extra state for a case that needs a tampered package |
 | LOW | `item.missing_data` branch in `FoodCatalog.get_item` has no test | reaching it needs a shipped file removed; catalog integrity tests fail first in that case |
 | NOTE | `quiqui_rig.gd` is 333 lines and `test_quiqui_rig.gd` 316, over the skill's 300-line guide | the rig was already 309 lines; `CONVENTIONS.md` sets no limit and the brief asks for a minimal change, so no split here |
 | NOTE | older `test_the_mouth_zone_lives_inside_the_visible_art` only checks that the rects have area | superseded by the new enclosure test; left in place to keep the change minimal |

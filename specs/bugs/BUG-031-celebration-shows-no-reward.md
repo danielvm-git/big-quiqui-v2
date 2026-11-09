@@ -15,7 +15,7 @@ title: The celebration paid +5/+1 but never showed it, and it lasted a single fa
 ## Problem
 
 `IMPACT_LATEST.md` described `celebracao.gd` as "CELEBRATE scene: confetti, **reward reveal**,
-`complete_cycle`", and `DESIGN_PLAN_LATEST.md`'s e07 row lists `moedinha.png` / `estrela.png` for the
+`complete_cycle`", and `DESIGN_PLAN_LATEST.md`'s e07 row lists `coin.png` / `star.png` for the
 celebration. What shipped was confetti + voice + an immediate return to the hub: the reward was paid
 (+5 coins, +1 ticket) but **shown nowhere in the party**, and the party lasted roughly one 0.4 s fade
 (closed and `_leave()`d in `_ready`). For a pre-reading child the reward was therefore disconnected from
@@ -31,7 +31,7 @@ immediate return satisfied. The plan wanted more than the spec froze; nothing co
 
 - `CelebrationScene` now holds `HOLD_SEC = 1.8` before `_leave()`, driven by the scene's own
   `advance(delta)` clock (no timers, so tests step it exactly).
-- `_reveal_progress()` pops in one `Coin` (`moedinha.png`) and one `Ticket` (`roda_fortuna.png`) at the
+- `_reveal_progress()` pops in one `Coin` (`coin.png`) and one `Ticket` (`fortune_wheel.png`) at the
   head line after `REVEAL_LEAD_SEC`, cubic-eased, fading and scaling in over `REVEAL_POP_SEC`.
 - `build_celebracao_scene.gd` adds the two `TextureRect`s: anchored to the rig's head line, one each
   side, `MOUSE_FILTER_IGNORE`, **not** in `hit_target` — they are art, not buttons. The `.tscn` is

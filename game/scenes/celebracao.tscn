@@ -1,22 +1,22 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/scenes/celebracao.gd" id="1_nnxic"]
-[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_celebracao.jpg" id="2_bs8e6"]
+[ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_celebration.jpg" id="2_bs8e6"]
 [ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_br0m1"]
-[ext_resource type="Texture2D" path="res://assets/art/ui/moedinha.png" id="4_rqg1j"]
-[ext_resource type="Texture2D" path="res://assets/art/items/roda_fortuna.png" id="5_j75r2"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/coin.png" id="4_rqg1j"]
+[ext_resource type="Texture2D" path="res://assets/art/items/fortune_wheel.png" id="5_j75r2"]
 [ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="6_uxsji"]
-[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="7_4avtf"]
-[ext_resource type="Texture2D" path="res://assets/art/efeitos/confete.png" id="8_23st1"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/home_button.png" id="7_4avtf"]
+[ext_resource type="Texture2D" path="res://assets/art/effects/confetti.png" id="8_23st1"]
 
-[node name="Celebracao" type="Control" unique_id=1614666947]
+[node name="Celebracao" type="Control" unique_id=1409429554]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_nnxic")
 
-[node name="Background" type="TextureRect" parent="." unique_id=520047789 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=2070101168 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -25,7 +25,7 @@ texture = ExtResource("2_bs8e6")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=745531806 groups=["rig"]]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=2075992563 groups=["rig"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -35,7 +35,7 @@ offset_left = -320.0
 offset_right = 320.0
 script = ExtResource("3_br0m1")
 
-[node name="Coin" type="TextureRect" parent="." unique_id=132322065]
+[node name="Coin" type="TextureRect" parent="." unique_id=993237887]
 visible = false
 layout_mode = 0
 anchor_left = 0.5
@@ -51,7 +51,7 @@ texture = ExtResource("4_rqg1j")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Ticket" type="TextureRect" parent="." unique_id=1242324922]
+[node name="Ticket" type="TextureRect" parent="." unique_id=2024687812]
 visible = false
 layout_mode = 0
 anchor_left = 0.5
@@ -67,7 +67,7 @@ texture = ExtResource("5_j75r2")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HomeButton" type="Control" parent="." unique_id=730888777 groups=["hit_target"]]
+[node name="HomeButton" type="Control" parent="." unique_id=35804856 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 36.0
@@ -75,7 +75,7 @@ offset_right = 156.0
 offset_bottom = 156.0
 script = ExtResource("6_uxsji")
 
-[node name="Art" type="TextureRect" parent="HomeButton" unique_id=734979857]
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=440994878]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -84,7 +84,7 @@ texture = ExtResource("7_4avtf")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Confetti" type="CPUParticles2D" parent="." unique_id=1082110800]
+[node name="Confetti" type="CPUParticles2D" parent="." unique_id=46373417]
 z_index = 30
 emitting = false
 amount = 24

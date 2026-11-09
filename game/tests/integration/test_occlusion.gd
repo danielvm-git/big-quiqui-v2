@@ -14,8 +14,9 @@ extends GutTest
 ## Allowlisted overlaps are deliberate, not forgotten:
 ##   - `TickleZone` (jardim) is *on* her by design — tapping her is the verb.
 ##   - `IceLane` (pinguim) is a full-width track; it is 11–15 % under her feet and readable.
-##   - `Draggable` (pinguim) is the basket she drags; its 50 % burial is **BUG-061**, open,
-##     because moving it changes how the minigame plays and that is a design call.
+##   - nothing else. `Draggable` (pinguim) left this list when BUG-061 raised the basket above
+##     every rig layer; the probe composes `z_index` down the chain, so a raised *parent*
+##     counts, which is how the fix was made instead of a magic number on the leaf.
 
 const BURIAL_THRESHOLD: float = 0.10
 const ASPECTS: Array[Vector2i] = [

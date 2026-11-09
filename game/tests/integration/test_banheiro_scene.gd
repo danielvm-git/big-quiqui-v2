@@ -196,7 +196,7 @@ func test_the_stage_machine_walks_soap_rinse_dry_finished() -> void:
 
 	_scrub_body(scene.towel, BathScene.DRY_POINTS)
 	assert_eq(scene.fsm.state, BathScene.STATE_FINISHED, "drying finishes the bath")
-	assert_eq(scene.rig.expression_id, "brilhando", "she comes out shiny")
+	assert_eq(scene.rig.expression_id, "shining", "she comes out shiny")
 
 
 func test_scrubbing_off_the_body_does_not_advance_a_stage() -> void:
@@ -281,7 +281,5 @@ func test_leaving_during_rinse_abandons_the_step_and_releases_the_devices() -> v
 func test_the_bath_voice_line_is_a_file_that_exists() -> void:
 	# BUG-059: the constant was written from the event name (`banho_…`) while the family's
 	# clip ships as `bath_…`. `_play_stream` degrades silently, so the room was simply mute.
-	assert_true(
-		ResourceLoader.exists(BathScene.VOICE_PATH),
-		"VOICE_PATH must resolve: %s" % BathScene.VOICE_PATH,
-	)
+	var path: String = VoiceKeyResolver.path_for_key(BathScene.VOICE_KEY)
+	assert_true(ResourceLoader.exists(path), "voice key must resolve: %s" % path)

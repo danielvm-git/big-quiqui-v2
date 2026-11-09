@@ -184,3 +184,31 @@ func test_exit_tree_is_safe_twice_and_without_players() -> void:
 	am.call("_exit_tree")
 
 	assert_false(am.is_music_playing(stream))
+
+
+func test_voice_key_resolves_to_pt_br_stream() -> void:
+	var path: String = VoiceKeyResolver.path_for_key("vo.kitchen.intro")
+	assert_eq(path, "res://assets/audio/voice/pt_BR/kitchen_intro.ogg")
+	assert_true(ResourceLoader.exists(path))
+	assert_true(am.play_voice_key("vo.kitchen.intro"))
+
+
+func test_an_unknown_voice_key_returns_false_and_logs_missing_key() -> void:
+	assert_false(am.play_voice_key("vo.kitchen.does_not_exist"))
+	assert_eq(_last_ev(), "audio.missing_key")
+
+
+func test_an_invalid_voice_key_segment_is_rejected() -> void:
+	assert_eq(VoiceKeyResolver.path_for_key("vo.Kitchen.intro"), "")
+	assert_false(am.play_voice_key("vo.../../../etc.intro"))
+
+
+func _last_ev() -> String:
+	var diary: Node = get_node_or_null("/root/Log")
+	if diary == null:
+		return ""
+	var lines: PackedStringArray = FileAccess.get_file_as_string(str(diary.log_path)).strip_edges().split("\n")
+	if lines.is_empty():
+		return ""
+	var row: Dictionary = JSON.parse_string(lines[lines.size() - 1]) as Dictionary
+	return str(row.get("ev", ""))

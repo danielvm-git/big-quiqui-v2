@@ -12,7 +12,7 @@ extends Control
 signal play_requested
 
 const CASA_PATH: String = "res://scenes/casa.tscn"
-const MUSIC_PATH: String = "res://assets/audio/music/tema_principal.ogg"
+const MUSIC_PATH: String = "res://assets/audio/music/main_theme.ogg"
 
 @onready var rig: QuiQuiRig = get_node_or_null("QuiQuiRig") as QuiQuiRig
 @onready var play_button: TapButton = get_node_or_null("PlayButton") as TapButton
@@ -48,7 +48,7 @@ func _on_play_tapped() -> void:
 func _on_rig_tapped() -> void:
 	# A tap on QuiQui is affection, not navigation: she waves back.
 	if rig != null:
-		rig.set_expression("rindo")
+		rig.set_expression("laughing")
 
 
 func _start_music() -> void:

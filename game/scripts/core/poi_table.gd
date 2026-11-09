@@ -11,6 +11,15 @@ const CASINHA_PATH: String = "res://scenes/casinha.tscn"
 const FESTA_PATH: String = "res://scenes/festa.tscn"
 const ALBUM_PATH: String = "res://scenes/album.tscn"
 
+const _POI_SCENE_IDS: Dictionary = {
+	POI_CASA: "home",
+	POI_RODA: "wheel",
+	POI_MERCADO: "market",
+	POI_CASINHA: "playhouse",
+	POI_FESTA: "party",
+	POI_ALBUM: "album",
+}
+
 const POI_CASA: String = "CASA"
 const POI_RODA: String = "RODA"
 const POI_RECYCLING: String = "RECYCLING"
@@ -28,3 +37,11 @@ const SCENES: Dictionary = {
 	POI_FESTA: FESTA_PATH,
 	POI_ALBUM: ALBUM_PATH,
 }
+
+
+static func scene_id_for_poi(poi: String) -> String:
+	return str(_POI_SCENE_IDS.get(poi, ""))
+
+
+static func path_for_poi(poi: String) -> String:
+	return SceneCatalog.path_for_id(scene_id_for_poi(poi))

@@ -18,8 +18,8 @@ const SCENE_PATH: String = "res://scenes/titulo.tscn"
 const SCENE_SCRIPT: String = "res://scripts/scenes/titulo.gd"
 const RIG_SCRIPT: String = "res://scripts/components/quiqui_rig.gd"
 const BUTTON_SCRIPT: String = "res://scripts/components/tap_button.gd"
-const BG_PATH: String = "res://assets/art/backgrounds/bg_titulo.jpg"
-const PLAY_ART: String = "res://assets/art/ui/botao_play.png"
+const BG_PATH: String = "res://assets/art/backgrounds/bg_title.jpg"
+const PLAY_ART: String = "res://assets/art/ui/play_button.png"
 
 ## Reference frame: QuiQui 700×620 with her feet at y=1000, Play 168² in the right
 ## margin, 72 px in from the bottom-right corner and clear of the 700 px rig box.

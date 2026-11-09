@@ -4,7 +4,7 @@ extends GutTest
 ## stars rule vs placed rule, clamping, empty save, and live refresh.
 
 const LOCK_ART: String = "res://assets/art/ui/cadeado.png"
-const STAR_ART: String = "res://assets/art/ui/estrela.png"
+const STAR_ART: String = "res://assets/art/ui/star.png"
 
 
 func before_each() -> void:

@@ -5,9 +5,9 @@ extends Control
 
 const ART_ROOT: String = "res://assets/art/quiqui/"
 const NEUTRAL_EXPRESSION: String = "base"
-const BLINK_EXPRESSION: String = "pisca"
+const BLINK_EXPRESSION: String = "wink"
 const MOUTH_ANTICIPATION_PX: float = 220.0
-const ANTICIPATION_EXPRESSION: String = "boca_aberta"
+const ANTICIPATION_EXPRESSION: String = "mouth_open"
 const BREATH_PERIOD_SEC: float = 2.2
 const BREATH_X: float = 0.018
 const BREATH_Y: float = 0.022

@@ -17,8 +17,8 @@ const DEFAULT_BUSES: Array[String] = [BUS_MUSIC, BUS_SFX, BUS_VOICE]
 const SFX_POOL_SIZE: int = 8
 const CROSSFADE_SEC: float = 0.4
 const DUCK_DB: float = -9.0
-
 var music_db: float = -6.0
+var voice_locale: String = "pt_BR"
 var sfx_db: float = -3.0
 var voice_db: float = 0.0
 
@@ -193,6 +193,19 @@ func play_voice(stream: AudioStream) -> bool:
 	apply_duck(true)
 	_emit("audio.voice_start", {"bus": "voice"})
 	return true
+
+
+## `vo.<scene>.<line>` → `assets/audio/voice/<locale>/<scene>_<line>.ogg`
+static func voice_path_for_key(key: String, locale: String = "pt_BR") -> String:
+	return VoiceKeyResolver.path_for_key(key, locale)
+
+
+func play_voice_key(key: String) -> bool:
+	var path: String = voice_path_for_key(key, voice_locale)
+	if path.is_empty() or not ResourceLoader.exists(path):
+		_emit("audio.missing_key", {"key": key})
+		return false
+	return play_voice(load(path) as AudioStream)
 
 
 func apply_duck(active: bool) -> void:

@@ -57,19 +57,19 @@ func test_a_neutral_face_blinks_and_returns() -> void:
 
 
 func test_an_active_expression_is_never_overwritten_by_a_blink() -> void:
-	assert_true(rig.set_expression("careta"))
+	assert_true(rig.set_expression("grimace"))
 	rig._next_blink_at = 0.01
 	rig.advance(0.02)
 
-	assert_eq(rig.expression_id, "careta", "a held expression outranks a blink")
+	assert_eq(rig.expression_id, "grimace", "a held expression outranks a blink")
 
 
 func test_expression_and_outfit_switch_art() -> void:
-	assert_true(rig.set_expression("rindo"))
-	assert_eq(rig.expression_id, "rindo")
+	assert_true(rig.set_expression("laughing"))
+	assert_eq(rig.expression_id, "laughing")
 
-	assert_true(rig.set_outfit("macacao_verde"))
-	assert_eq(rig.outfit_id, "macacao_verde")
+	assert_true(rig.set_outfit("green_overalls"))
+	assert_eq(rig.outfit_id, "green_overalls")
 	assert_true(rig.outfit.visible)
 
 	assert_true(rig.set_outfit(""))
@@ -139,7 +139,7 @@ func _mouse_echo_event() -> InputEventMouseButton:
 
 # BUG-006: reset is the neutral pose, outfit included.
 func test_reset_takes_the_outfit_off() -> void:
-	assert_true(rig.set_outfit("macacao_verde"))
+	assert_true(rig.set_outfit("green_overalls"))
 	assert_true(rig.outfit.visible)
 
 	rig.reset()
@@ -231,22 +231,22 @@ func test_the_mouth_centre_follows_the_rig_on_screen() -> void:
 
 # SC-E03-P0-09: restore to the previous face.
 func test_moving_away_restores_the_face_shown_before() -> void:
-	assert_true(rig.set_expression("carente"))
+	assert_true(rig.set_expression("needy"))
 
 	rig.update_food_proximity(_point_at(10.0))
 	assert_eq(rig.expression_id, QuiQuiRig.ANTICIPATION_EXPRESSION)
 
 	rig.update_food_proximity(_point_at(400.0))
-	assert_eq(rig.expression_id, "carente", "not always base")
+	assert_eq(rig.expression_id, "needy", "not always base")
 
 
 func test_clearing_restores_the_face_shown_before() -> void:
-	assert_true(rig.set_expression("carente"))
+	assert_true(rig.set_expression("needy"))
 	rig.update_food_proximity(_point_at(10.0))
 
 	rig.clear_food_proximity()
 
-	assert_eq(rig.expression_id, "carente")
+	assert_eq(rig.expression_id, "needy")
 
 
 func test_repeated_calls_while_close_do_not_re_emit() -> void:
@@ -260,32 +260,32 @@ func test_repeated_calls_while_close_do_not_re_emit() -> void:
 
 
 func test_repeated_calls_while_close_keep_the_face_to_restore() -> void:
-	assert_true(rig.set_expression("carente"))
+	assert_true(rig.set_expression("needy"))
 
 	rig.update_food_proximity(_point_at(100.0))
 	rig.update_food_proximity(_point_at(90.0))
 	rig.update_food_proximity(_point_at(400.0))
 
-	assert_eq(rig.expression_id, "carente", "the mouth never stays stuck open")
+	assert_eq(rig.expression_id, "needy", "the mouth never stays stuck open")
 
 
 func test_a_second_approach_still_restores_the_original_face() -> void:
-	assert_true(rig.set_expression("carente"))
+	assert_true(rig.set_expression("needy"))
 
 	rig.update_food_proximity(_point_at(10.0))
 	rig.update_food_proximity(_point_at(400.0))
 	rig.update_food_proximity(_point_at(10.0))
 	rig.clear_food_proximity()
 
-	assert_eq(rig.expression_id, "carente")
+	assert_eq(rig.expression_id, "needy")
 
 
 func test_clearing_without_anticipation_changes_nothing() -> void:
-	assert_true(rig.set_expression("carente"))
+	assert_true(rig.set_expression("needy"))
 	var faces: Array[String] = _record_faces()
 	rig.clear_food_proximity()
 	rig.update_food_proximity(_point_at(400.0))
-	assert_eq(rig.expression_id, "carente")
+	assert_eq(rig.expression_id, "needy")
 	assert_eq(faces.size(), 0, "no signal without a change")
 
 
@@ -361,9 +361,9 @@ func test_the_hull_contains_the_body_and_not_the_transparent_margin() -> void:
 # e05s01 / T-E05-03: the face is the only feedback a pre-reader has, so the outfit
 # and every accessory that could hide it must stay behind the expression layer.
 func test_the_expression_layer_sits_above_outfit_and_accessories() -> void:
-	assert_true(rig.set_outfit("vestido_florido"), "the outfit loads")
-	assert_true(rig.set_accessory("head", "tiara_flores"))
-	assert_true(rig.set_accessory("eyes", "oculos_coracao"))
+	assert_true(rig.set_outfit("floral_dress"), "the outfit loads")
+	assert_true(rig.set_accessory("head", "flower_tiara"))
+	assert_true(rig.set_accessory("eyes", "heart_glasses"))
 	rig.set_expression("base")
 
 	assert_gt(rig.expression.z_index, rig.outfit.z_index, "the face is above the dress")
@@ -387,9 +387,9 @@ func _art_rect(sprite: Sprite2D) -> Rect2:
 
 # T-E05-05: one accessory per slot. A second hat replaces the first, it does not stack.
 func test_a_second_accessory_replaces_the_first_in_its_slot() -> void:
-	assert_true(rig.set_accessory("head", "tiara_flores"))
-	assert_true(rig.set_accessory("head", "coroa"))
-	assert_eq(rig.accessory_id("head"), "coroa", "the newest hat wins")
+	assert_true(rig.set_accessory("head", "flower_tiara"))
+	assert_true(rig.set_accessory("head", "crown"))
+	assert_eq(rig.accessory_id("head"), "crown", "the newest hat wins")
 	assert_eq(rig.accessory_id("eyes"), "", "and other slots are untouched")
 
 
@@ -400,5 +400,5 @@ func test_an_invalid_accessory_is_refused_and_changes_nothing() -> void:
 
 
 func test_an_unknown_slot_is_refused_loudly_enough_to_debug() -> void:
-	assert_false(rig.set_accessory("tail", "tiara_flores"))
+	assert_false(rig.set_accessory("tail", "flower_tiara"))
 	assert_true(rig.get_visual_global_rect().has_area(), "and the rig still renders")

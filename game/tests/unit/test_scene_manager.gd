@@ -7,7 +7,6 @@ const SCENE_A: String = "res://scenes/casa.tscn"
 const SCENE_B: String = "res://scenes/cozinha.tscn"
 const SCENE_C: String = "res://scenes/banheiro.tscn"
 const SCENE_MISSING: String = "res://scenes/nao_existe_nunca.tscn"
-
 var sm: Node = null
 var loaded: Array[String] = []
 var queued_signals: Array[bool] = []
@@ -233,7 +232,7 @@ func test_a_missing_scene_during_a_watchdog_recovery_cannot_brick_the_app() -> v
 	assert_engine_error("Failed loading resource")
 	assert_eq(sm.fsm.state, "IDLE")
 	assert_false(sm.is_busy())
-	assert_eq(sm._curtain.color.a, 0.0, "the curtain is not left over the screen")
+	assert_eq(sm._curtain.alpha(), 0.0, "the curtain is not left over the screen")
 
 	sm.production_swap = func(path: String) -> void: production_swaps.append(path)
 	assert_true(sm.request_scene(SCENE_A), "navigation still works")
@@ -294,3 +293,7 @@ func test_test_mode_never_swaps_the_real_scene() -> void:
 	assert_true(production_swaps.is_empty(), "no production swap under TestReset")
 	assert_eq(sm.production_swap_path, "")
 	assert_eq(queued_signals, [false], "the request still flows — only the swap is suppressed")
+
+
+func test_legacy_slug_for_cozinha_path_is_unchanged() -> void:
+	assert_eq(sm._slug("res://scenes/cozinha.tscn"), "scene.cozinha")

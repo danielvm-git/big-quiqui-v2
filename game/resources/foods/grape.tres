@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ItemData" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/item_data.gd" id="1_qix0t"]
+
+[resource]
+script = ExtResource("1_qix0t")
+id = "grape"
+art_path = "res://assets/art/items/grape.png"

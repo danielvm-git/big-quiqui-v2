@@ -11,11 +11,11 @@ const HUD_SCRIPT: String = "res://scripts/components/coin_ticket_hud.gd"
 const DRAGGABLE_SCRIPT: String = "res://scripts/components/touch_draggable.gd"
 const LANE_SCRIPT: String = "res://scripts/components/ice_lane.gd"
 
-const BG_PATH: String = "res://assets/art/backgrounds/bg_vila.jpg"
-const HOME_ART: String = "res://assets/art/ui/botao_casa.png"
-const PENGUIN_ART: String = "res://assets/art/amigos/pinguim.png"
-const REPLAY_ART: String = "res://assets/art/efeitos/confete.png"
-const CONFETTI_ART: String = "res://assets/art/efeitos/confete.png"
+const BG_PATH: String = "res://assets/art/backgrounds/bg_village.jpg"
+const HOME_ART: String = "res://assets/art/ui/home_button.png"
+const PENGUIN_ART: String = "res://assets/art/friends/penguin.png"
+const REPLAY_ART: String = "res://assets/art/effects/confetti.png"
+const CONFETTI_ART: String = "res://assets/art/effects/confetti.png"
 
 const RIG_WIDTH: float = 640.0
 const RIG_HEIGHT_RATIO: float = 620.0 / 1080.0

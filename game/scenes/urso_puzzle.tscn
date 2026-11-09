@@ -3,12 +3,12 @@
 [ext_resource type="Script" path="res://scripts/scenes/urso_puzzle.gd" id="1_flvab"]
 [ext_resource type="Texture2D" path="res://assets/art/backgrounds/bg_puzzle.jpg" id="2_8secs"]
 [ext_resource type="Script" path="res://scripts/components/quiqui_rig.gd" id="3_jxr3u"]
-[ext_resource type="Texture2D" path="res://assets/art/amigos/urso.png" id="4_0t3s7"]
+[ext_resource type="Texture2D" path="res://assets/art/friends/bear.png" id="4_0t3s7"]
 [ext_resource type="Script" path="res://scripts/components/puzzle_piece.gd" id="5_7yf4p"]
 [ext_resource type="Script" path="res://scripts/components/coin_ticket_hud.gd" id="6_1uddd"]
 [ext_resource type="Script" path="res://scripts/components/tap_button.gd" id="7_fitup"]
-[ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="8_5wn3c"]
-[ext_resource type="Texture2D" path="res://assets/art/efeitos/confete.png" id="9_8wah4"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/home_button.png" id="8_5wn3c"]
+[ext_resource type="Texture2D" path="res://assets/art/effects/confetti.png" id="9_8wah4"]
 [ext_resource type="Script" path="res://scripts/components/drag_hint.gd" id="10_fq0wg"]
 [ext_resource type="Script" path="res://scripts/components/hint_manager.gd" id="11_2q423"]
 
@@ -28,14 +28,14 @@ region = Rect2(0, 512, 512, 512)
 atlas = ExtResource("4_0t3s7")
 region = Rect2(512, 512, 512, 512)
 
-[node name="UrsoPuzzle" type="Control" unique_id=455282322]
+[node name="UrsoPuzzle" type="Control" unique_id=897452048]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_flvab")
 
-[node name="Background" type="TextureRect" parent="." unique_id=839468936 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=277169246 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -44,7 +44,7 @@ texture = ExtResource("2_8secs")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=1050251638 groups=["rig"]]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=562383920 groups=["rig"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -54,7 +54,7 @@ offset_left = -320.0
 offset_right = 320.0
 script = ExtResource("3_jxr3u")
 
-[node name="Board" type="Control" parent="." unique_id=388649667]
+[node name="Board" type="Control" parent="." unique_id=1462749074]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.35
@@ -65,12 +65,12 @@ offset_top = -180.0
 offset_right = 180.0
 offset_bottom = 180.0
 
-[node name="Slot0" type="Control" parent="Board" unique_id=637420108]
+[node name="Slot0" type="Control" parent="Board" unique_id=187482016]
 anchors_preset = 0
 offset_right = 180.0
 offset_bottom = 180.0
 
-[node name="Ghost" type="TextureRect" parent="Board/Slot0" unique_id=1109991921]
+[node name="Ghost" type="TextureRect" parent="Board/Slot0" unique_id=888115181]
 modulate = Color(0.4, 0.4, 0.4, 0.7)
 layout_mode = 0
 anchor_right = 1.0
@@ -80,13 +80,13 @@ texture = SubResource("AtlasTexture_wyjup")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Slot1" type="Control" parent="Board" unique_id=823301209]
+[node name="Slot1" type="Control" parent="Board" unique_id=1879332521]
 anchors_preset = 0
 offset_left = 180.0
 offset_right = 360.0
 offset_bottom = 180.0
 
-[node name="Ghost" type="TextureRect" parent="Board/Slot1" unique_id=528891122]
+[node name="Ghost" type="TextureRect" parent="Board/Slot1" unique_id=1108022121]
 modulate = Color(0.4, 0.4, 0.4, 0.7)
 layout_mode = 0
 anchor_right = 1.0
@@ -96,13 +96,13 @@ texture = SubResource("AtlasTexture_r5unt")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Slot2" type="Control" parent="Board" unique_id=326502988]
+[node name="Slot2" type="Control" parent="Board" unique_id=419960128]
 anchors_preset = 0
 offset_top = 180.0
 offset_right = 180.0
 offset_bottom = 360.0
 
-[node name="Ghost" type="TextureRect" parent="Board/Slot2" unique_id=1831015327]
+[node name="Ghost" type="TextureRect" parent="Board/Slot2" unique_id=1997267804]
 modulate = Color(0.4, 0.4, 0.4, 0.7)
 layout_mode = 0
 anchor_right = 1.0
@@ -112,14 +112,14 @@ texture = SubResource("AtlasTexture_sxdr4")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Slot3" type="Control" parent="Board" unique_id=832940451]
+[node name="Slot3" type="Control" parent="Board" unique_id=1458489502]
 anchors_preset = 0
 offset_left = 180.0
 offset_top = 180.0
 offset_right = 360.0
 offset_bottom = 360.0
 
-[node name="Ghost" type="TextureRect" parent="Board/Slot3" unique_id=1495883474]
+[node name="Ghost" type="TextureRect" parent="Board/Slot3" unique_id=856878035]
 modulate = Color(0.4, 0.4, 0.4, 0.7)
 layout_mode = 0
 anchor_right = 1.0
@@ -129,7 +129,7 @@ texture = SubResource("AtlasTexture_1mc7v")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Tray" type="Control" parent="." unique_id=1395201111]
+[node name="Tray" type="Control" parent="." unique_id=1501251155]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.86
@@ -140,7 +140,7 @@ offset_top = -90.0
 offset_right = 405.0
 offset_bottom = 90.0
 
-[node name="Piece0" type="Control" parent="Tray" unique_id=347744776]
+[node name="Piece0" type="Control" parent="Tray" unique_id=454187580]
 custom_minimum_size = Vector2(180, 180)
 anchors_preset = 0
 offset_right = 180.0
@@ -148,7 +148,7 @@ offset_bottom = 180.0
 mouse_filter = 1
 script = ExtResource("5_7yf4p")
 
-[node name="Piece1" type="Control" parent="Tray" unique_id=66069819]
+[node name="Piece1" type="Control" parent="Tray" unique_id=1269925865]
 custom_minimum_size = Vector2(180, 180)
 anchors_preset = 0
 offset_left = 210.0
@@ -157,7 +157,7 @@ offset_bottom = 180.0
 mouse_filter = 1
 script = ExtResource("5_7yf4p")
 
-[node name="Piece2" type="Control" parent="Tray" unique_id=2110957413]
+[node name="Piece2" type="Control" parent="Tray" unique_id=1676981844]
 custom_minimum_size = Vector2(180, 180)
 anchors_preset = 0
 offset_left = 420.0
@@ -166,7 +166,7 @@ offset_bottom = 180.0
 mouse_filter = 1
 script = ExtResource("5_7yf4p")
 
-[node name="Piece3" type="Control" parent="Tray" unique_id=355944301]
+[node name="Piece3" type="Control" parent="Tray" unique_id=1841851445]
 custom_minimum_size = Vector2(180, 180)
 anchors_preset = 0
 offset_left = 630.0
@@ -175,7 +175,7 @@ offset_bottom = 180.0
 mouse_filter = 1
 script = ExtResource("5_7yf4p")
 
-[node name="CoinTicketHud" type="Control" parent="." unique_id=173893734]
+[node name="CoinTicketHud" type="Control" parent="." unique_id=159233860]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -185,7 +185,7 @@ offset_right = -36.0
 offset_bottom = 124.0
 script = ExtResource("6_1uddd")
 
-[node name="HomeButton" type="Control" parent="." unique_id=782629162 groups=["hit_target"]]
+[node name="HomeButton" type="Control" parent="." unique_id=1299425440 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 36.0
@@ -193,7 +193,7 @@ offset_right = 156.0
 offset_bottom = 156.0
 script = ExtResource("7_fitup")
 
-[node name="Art" type="TextureRect" parent="HomeButton" unique_id=691830966]
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=1661769135]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -202,7 +202,7 @@ texture = ExtResource("8_5wn3c")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ReplayButton" type="Control" parent="." unique_id=1580696558 groups=["hit_target"]]
+[node name="ReplayButton" type="Control" parent="." unique_id=747139938 groups=["hit_target"]]
 visible = false
 anchors_preset = 0
 anchor_left = 0.93
@@ -215,7 +215,7 @@ offset_right = 84.0
 offset_bottom = 84.0
 script = ExtResource("7_fitup")
 
-[node name="Art" type="TextureRect" parent="ReplayButton" unique_id=1762267538]
+[node name="Art" type="TextureRect" parent="ReplayButton" unique_id=152170794]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -224,7 +224,7 @@ texture = ExtResource("9_8wah4")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Confetti" type="CPUParticles2D" parent="." unique_id=586916407]
+[node name="Confetti" type="CPUParticles2D" parent="." unique_id=1776441030]
 z_index = 40
 position = Vector2(960, 60)
 emitting = false
@@ -236,16 +236,16 @@ gravity = Vector2(0, 320)
 initial_velocity_min = 260.0
 initial_velocity_max = 420.0
 
-[node name="HintLayer" type="Control" parent="." unique_id=1155371345]
+[node name="HintLayer" type="Control" parent="." unique_id=1182396024]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="DragHint" type="Control" parent="HintLayer" unique_id=139019622]
+[node name="DragHint" type="Control" parent="HintLayer" unique_id=2099248673]
 visible = false
 anchors_preset = 0
 script = ExtResource("10_fq0wg")
 
-[node name="HintManager" type="Node" parent="." unique_id=787406571]
+[node name="HintManager" type="Node" parent="." unique_id=997797842]
 script = ExtResource("11_2q423")

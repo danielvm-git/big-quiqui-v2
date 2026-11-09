@@ -49,7 +49,7 @@ Estilo `animais/` (NÃO usar o prefixo kawaii): soft colored-pencil storybook il
 
 Depois de gerar: o agente troca `duck.tres`/`penguin.tres` para os novos retratos (mesmo drop-in do urso em e10s04).
 
-## 5. Mobília ×5 (casinha/mercado/puzzle) → `specs/art/moveis/`
+## 5. Mobília ×5 (casinha/mercado/puzzle) → `specs/art/furniture/`
 
 Descoberto no BUG-2026-07-01T200000: os PNGs de mobília do jogo são quadrados de cor chapada
 (fallback de quota do e02s04). Estilo `items/` (prefixo kawaii comum). As silhuetas NÃO precisam

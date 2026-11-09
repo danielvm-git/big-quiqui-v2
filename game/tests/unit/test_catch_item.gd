@@ -3,8 +3,8 @@ extends GutTest
 ## SC-E10-P0-14..16 — CatchItem and catch loop unit tests: step_down, single-pop
 ## per item, floor removal, advance time accumulation, and settle economy.
 
-const BOLA_ART: String = "res://assets/art/items/bola.png"
-const BOLHA_ART: String = "res://assets/art/efeitos/bolha.png"
+const BOLA_ART: String = "res://assets/art/items/ball.png"
+const BOLHA_ART: String = "res://assets/art/effects/bubble.png"
 
 
 func before_each() -> void:
@@ -18,7 +18,7 @@ func after_each() -> void:
 # SC-E10-P0-14
 func test_catch_item_step_down_moves_y() -> void:
 	var item: CatchItem = CatchItem.new()
-	item.kind = "bola"
+	item.kind = "ball"
 	item.position = Vector2(100.0, 50.0)
 	item.step_down(20.0)
 	assert_eq(item.position.y, 70.0, "position.y increased by 20")
@@ -61,7 +61,7 @@ func test_penguin_scene_advance_drives_fsm_and_accumulates_clock() -> void:
 	assert_gt(scene.round_sec, 0.0, "round_sec accumulates in running")
 
 	# Seed spawns
-	scene.seed_spawns(["bola", "bolha"] as Array[String])
+	scene.seed_spawns(["ball", "bolha"] as Array[String])
 
 	# Advance through remaining round duration (19.5s)
 	scene.advance(20.0)
