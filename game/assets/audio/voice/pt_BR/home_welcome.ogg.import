@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://bfk47whvmh702"
-path="res://.godot/imported/hub_bem_vindo.ogg-7d76b11f0a9fd11ce85302c44d7294dd.oggvorbisstr"
+path="res://.godot/imported/home_welcome.ogg-02c63e1697abbecb64ec31cd429e8b77.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/voice/hub_bem_vindo.ogg"
-dest_files=["res://.godot/imported/hub_bem_vindo.ogg-7d76b11f0a9fd11ce85302c44d7294dd.oggvorbisstr"]
+source_file="res://assets/audio/voice/pt_BR/home_welcome.ogg"
+dest_files=["res://.godot/imported/home_welcome.ogg-02c63e1697abbecb64ec31cd429e8b77.oggvorbisstr"]
 
 [params]
 

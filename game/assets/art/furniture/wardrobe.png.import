@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://fnpnsxb08osv"
-path="res://.godot/imported/armario.png-d0d58def2bddeae25407c537f076e56e.ctex"
+path="res://.godot/imported/wardrobe.png-966fabd93162b7149771554a7b801476.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/moveis/armario.png"
-dest_files=["res://.godot/imported/armario.png-d0d58def2bddeae25407c537f076e56e.ctex"]
+source_file="res://assets/art/furniture/wardrobe.png"
+dest_files=["res://.godot/imported/wardrobe.png-966fabd93162b7149771554a7b801476.ctex"]
 
 [params]
 

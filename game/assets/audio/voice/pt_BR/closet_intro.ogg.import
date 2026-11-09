@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://c2jtmubpwtlod"
-path="res://.godot/imported/dress_vamos_se_arrumar.ogg-190e4c06412842ffc7c6c190ac10c5de.oggvorbisstr"
+path="res://.godot/imported/closet_intro.ogg-ca8cdf49a2f547154edb1e6a8608917a.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/voice/dress_vamos_se_arrumar.ogg"
-dest_files=["res://.godot/imported/dress_vamos_se_arrumar.ogg-190e4c06412842ffc7c6c190ac10c5de.oggvorbisstr"]
+source_file="res://assets/audio/voice/pt_BR/closet_intro.ogg"
+dest_files=["res://.godot/imported/closet_intro.ogg-ca8cdf49a2f547154edb1e6a8608917a.oggvorbisstr"]
 
 [params]
 

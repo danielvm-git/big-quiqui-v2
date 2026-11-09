@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3u5hvpfirj1d"
-path="res://.godot/imported/quiqui_surpresa.png-01a976c17de396c8b4437ba99e59b6a8.ctex"
+path="res://.godot/imported/quiqui_surprised.png-312b23c497371d3e295082611d41e50a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/quiqui/quiqui_surpresa.png"
-dest_files=["res://.godot/imported/quiqui_surpresa.png-01a976c17de396c8b4437ba99e59b6a8.ctex"]
+source_file="res://assets/art/quiqui/quiqui_surprised.png"
+dest_files=["res://.godot/imported/quiqui_surprised.png-312b23c497371d3e295082611d41e50a.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dq4u0rg0iyu05"
-path="res://.godot/imported/pelucia.png-ddbffec48e29d54bcb4af565cb1705bd.ctex"
+path="res://.godot/imported/plush.png-b9f6c4f9acae6c5050570f65600e6bd7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/items/pelucia.png"
-dest_files=["res://.godot/imported/pelucia.png-ddbffec48e29d54bcb4af565cb1705bd.ctex"]
+source_file="res://assets/art/items/plush.png"
+dest_files=["res://.godot/imported/plush.png-b9f6c4f9acae6c5050570f65600e6bd7.ctex"]
 
 [params]
 

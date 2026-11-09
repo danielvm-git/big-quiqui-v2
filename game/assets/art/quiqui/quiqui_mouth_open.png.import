@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bdp6rxjg6ilkj"
-path="res://.godot/imported/quiqui_boca_aberta.png-6d737e76144863ac2d9382857a373c55.ctex"
+path="res://.godot/imported/quiqui_mouth_open.png-a52d1324f4923ead72a77ad4844aa186.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/quiqui/quiqui_boca_aberta.png"
-dest_files=["res://.godot/imported/quiqui_boca_aberta.png-6d737e76144863ac2d9382857a373c55.ctex"]
+source_file="res://assets/art/quiqui/quiqui_mouth_open.png"
+dest_files=["res://.godot/imported/quiqui_mouth_open.png-a52d1324f4923ead72a77ad4844aa186.ctex"]
 
 [params]
 

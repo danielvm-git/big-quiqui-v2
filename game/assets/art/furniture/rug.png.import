@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dwdhs46fwtf27"
-path="res://.godot/imported/tapete.png-d1fb6b1dc6131c8cb95cb3c78b6f9ac2.ctex"
+path="res://.godot/imported/rug.png-d3e9222f8f7cea77b1de028280ce1372.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/moveis/tapete.png"
-dest_files=["res://.godot/imported/tapete.png-d1fb6b1dc6131c8cb95cb3c78b6f9ac2.ctex"]
+source_file="res://assets/art/furniture/rug.png"
+dest_files=["res://.godot/imported/rug.png-d3e9222f8f7cea77b1de028280ce1372.ctex"]
 
 [params]
 

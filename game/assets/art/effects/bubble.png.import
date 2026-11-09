@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ext1orkacomm"
-path="res://.godot/imported/bolha.png-eaac065ebcf8ef7ff6fe5fd9fdfb98b6.ctex"
+path="res://.godot/imported/bubble.png-68f07ffa7143600fe9518c297bfbe3d3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/efeitos/bolha.png"
-dest_files=["res://.godot/imported/bolha.png-eaac065ebcf8ef7ff6fe5fd9fdfb98b6.ctex"]
+source_file="res://assets/art/effects/bubble.png"
+dest_files=["res://.godot/imported/bubble.png-68f07ffa7143600fe9518c297bfbe3d3.ctex"]
 
 [params]
 

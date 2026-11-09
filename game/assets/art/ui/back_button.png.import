@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://61ag245fsog3"
-path="res://.godot/imported/botao_voltar.png-1bb38dd5f469c0863e806bfb8d4b5efe.ctex"
+path="res://.godot/imported/back_button.png-42178a62f9de7af1731cf310478b41b8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/ui/botao_voltar.png"
-dest_files=["res://.godot/imported/botao_voltar.png-1bb38dd5f469c0863e806bfb8d4b5efe.ctex"]
+source_file="res://assets/art/ui/back_button.png"
+dest_files=["res://.godot/imported/back_button.png-42178a62f9de7af1731cf310478b41b8.ctex"]
 
 [params]
 

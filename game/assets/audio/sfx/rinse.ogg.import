@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://bu28sjo32fwht"
-path="res://.godot/imported/enxague.ogg-1805ae2edabfcf8836bfa9c72d77fec3.oggvorbisstr"
+path="res://.godot/imported/rinse.ogg-e9e7048c4d5f6c2f4c27ac4c16b3b48b.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/sfx/enxague.ogg"
-dest_files=["res://.godot/imported/enxague.ogg-1805ae2edabfcf8836bfa9c72d77fec3.oggvorbisstr"]
+source_file="res://assets/audio/sfx/rinse.ogg"
+dest_files=["res://.godot/imported/rinse.ogg-e9e7048c4d5f6c2f4c27ac4c16b3b48b.oggvorbisstr"]
 
 [params]
 

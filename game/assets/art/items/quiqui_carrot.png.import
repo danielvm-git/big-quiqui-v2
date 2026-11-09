@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dudufhq41dle2"
-path="res://.godot/imported/cenoura_quiqui.png-1c37c7ba43540fdc8c2b38a7d24fa8f2.ctex"
+path="res://.godot/imported/quiqui_carrot.png-1c1e479a169cde9b6feff03ca7a125bd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/items/cenoura_quiqui.png"
-dest_files=["res://.godot/imported/cenoura_quiqui.png-1c37c7ba43540fdc8c2b38a7d24fa8f2.ctex"]
+source_file="res://assets/art/items/quiqui_carrot.png"
+dest_files=["res://.godot/imported/quiqui_carrot.png-1c1e479a169cde9b6feff03ca7a125bd.ctex"]
 
 [params]
 

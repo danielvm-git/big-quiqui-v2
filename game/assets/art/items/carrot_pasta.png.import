@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ddktaxetpmtru"
-path="res://.godot/imported/macarrao_cenoura.png-2444c1221d74d47c7d3b1ae8ca2987e6.ctex"
+path="res://.godot/imported/carrot_pasta.png-6e45f955252492e18b287be21a9a8e23.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/items/macarrao_cenoura.png"
-dest_files=["res://.godot/imported/macarrao_cenoura.png-2444c1221d74d47c7d3b1ae8ca2987e6.ctex"]
+source_file="res://assets/art/items/carrot_pasta.png"
+dest_files=["res://.godot/imported/carrot_pasta.png-6e45f955252492e18b287be21a9a8e23.ctex"]
 
 [params]
 

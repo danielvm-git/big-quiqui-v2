@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://fmmyu2i1yyq4"
-path="res://.godot/imported/escada.png-f435e6147c2910d66c22dc3384cb6501.ctex"
+path="res://.godot/imported/ladder.png-7f72af00a45a0fec25271fe8083d7311.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/moveis/escada.png"
-dest_files=["res://.godot/imported/escada.png-f435e6147c2910d66c22dc3384cb6501.ctex"]
+source_file="res://assets/art/furniture/ladder.png"
+dest_files=["res://.godot/imported/ladder.png-7f72af00a45a0fec25271fe8083d7311.ctex"]
 
 [params]
 

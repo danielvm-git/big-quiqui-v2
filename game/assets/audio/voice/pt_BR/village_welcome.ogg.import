@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://c0ta3bdpi1osg"
-path="res://.godot/imported/vila_bem_vindo.ogg-03e994eea06defb05f19ae4e72f165f4.oggvorbisstr"
+path="res://.godot/imported/village_welcome.ogg-020806008b7de071e06ec3e36f59654d.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/voice/vila_bem_vindo.ogg"
-dest_files=["res://.godot/imported/vila_bem_vindo.ogg-03e994eea06defb05f19ae4e72f165f4.oggvorbisstr"]
+source_file="res://assets/audio/voice/pt_BR/village_welcome.ogg"
+dest_files=["res://.godot/imported/village_welcome.ogg-020806008b7de071e06ec3e36f59654d.oggvorbisstr"]
 
 [params]
 

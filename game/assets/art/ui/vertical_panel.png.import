@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dmahuhvpcafgh"
-path="res://.godot/imported/painel_vertical.png-2f6958f99b6228502f19920033f34089.ctex"
+path="res://.godot/imported/vertical_panel.png-c74fd742e275befa2f0cdf17a1c3b9cb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/ui/painel_vertical.png"
-dest_files=["res://.godot/imported/painel_vertical.png-2f6958f99b6228502f19920033f34089.ctex"]
+source_file="res://assets/art/ui/vertical_panel.png"
+dest_files=["res://.godot/imported/vertical_panel.png-c74fd742e275befa2f0cdf17a1c3b9cb.ctex"]
 
 [params]
 

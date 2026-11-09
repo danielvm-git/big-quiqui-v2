@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drknx430g7nk8"
-path="res://.godot/imported/bg_banheiro.jpg-72e2593b967e3f0f5c4def7ceddcfc53.ctex"
+path="res://.godot/imported/bg_bathroom.jpg-df2cd21d53cfd2948cef40bebe48e66c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/backgrounds/bg_banheiro.jpg"
-dest_files=["res://.godot/imported/bg_banheiro.jpg-72e2593b967e3f0f5c4def7ceddcfc53.ctex"]
+source_file="res://assets/art/backgrounds/bg_bathroom.jpg"
+dest_files=["res://.godot/imported/bg_bathroom.jpg-df2cd21d53cfd2948cef40bebe48e66c.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dstehceggiubp"
-path="res://.godot/imported/balao_desejo.png-c1bdb8d2f35f9dda91d4f2965f7e34de.ctex"
+path="res://.godot/imported/wish_bubble.png-fa14430b9d175a3734d7d2b508a4116a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/ui/balao_desejo.png"
-dest_files=["res://.godot/imported/balao_desejo.png-c1bdb8d2f35f9dda91d4f2965f7e34de.ctex"]
+source_file="res://assets/art/ui/wish_bubble.png"
+dest_files=["res://.godot/imported/wish_bubble.png-fa14430b9d175a3734d7d2b508a4116a.ctex"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://d15ir23hufyq"
-path="res://.godot/imported/cozinha.ogg-08e03134d21d6bb5dee848fe85a44876.oggvorbisstr"
+path="res://.godot/imported/kitchen.ogg-300e0249987276863cb6d61872db726a.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/music/cozinha.ogg"
-dest_files=["res://.godot/imported/cozinha.ogg-08e03134d21d6bb5dee848fe85a44876.oggvorbisstr"]
+source_file="res://assets/audio/music/kitchen.ogg"
+dest_files=["res://.godot/imported/kitchen.ogg-300e0249987276863cb6d61872db726a.oggvorbisstr"]
 
 [params]
 

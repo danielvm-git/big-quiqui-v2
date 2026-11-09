@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://1rtld58r1utk"
-path="res://.godot/imported/escova.png-df2659979eae33ce814a871c7326e956.ctex"
+path="res://.godot/imported/hair_brush.png-8c59b02f4707c9bcbc6e13ecf105c6e0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/items/escova.png"
-dest_files=["res://.godot/imported/escova.png-df2659979eae33ce814a871c7326e956.ctex"]
+source_file="res://assets/art/items/hair_brush.png"
+dest_files=["res://.godot/imported/hair_brush.png-8c59b02f4707c9bcbc6e13ecf105c6e0.ctex"]
 
 [params]
 

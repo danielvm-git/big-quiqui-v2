@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bxjh1b1upnvdb"
-path="res://.godot/imported/sabonete.png-4c9bc5353bfce27b77af1c94033118dd.ctex"
+path="res://.godot/imported/soap.png-ca40d08a4ec7d70abb901b196e268dd4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/items/sabonete.png"
-dest_files=["res://.godot/imported/sabonete.png-4c9bc5353bfce27b77af1c94033118dd.ctex"]
+source_file="res://assets/art/items/soap.png"
+dest_files=["res://.godot/imported/soap.png-ca40d08a4ec7d70abb901b196e268dd4.ctex"]
 
 [params]
 

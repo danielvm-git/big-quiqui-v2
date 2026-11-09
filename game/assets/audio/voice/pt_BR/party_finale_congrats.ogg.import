@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://iovhmy4nlyja"
-path="res://.godot/imported/party_finale_parabens.ogg-9840265c1146a10f7d4bd62d28266de8.oggvorbisstr"
+path="res://.godot/imported/party_finale_congrats.ogg-6b6190d4c45c2f99ea6d5f03c03852e3.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/voice/party_finale_parabens.ogg"
-dest_files=["res://.godot/imported/party_finale_parabens.ogg-9840265c1146a10f7d4bd62d28266de8.oggvorbisstr"]
+source_file="res://assets/audio/voice/pt_BR/party_finale_congrats.ogg"
+dest_files=["res://.godot/imported/party_finale_congrats.ogg-6b6190d4c45c2f99ea6d5f03c03852e3.oggvorbisstr"]
 
 [params]
 

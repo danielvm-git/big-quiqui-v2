@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://cp261wealo7nt"
-path="res://.godot/imported/mercado_escolhe.ogg-d04f64267069af21a51d1b6ac2cb74e9.oggvorbisstr"
+path="res://.godot/imported/market_choose.ogg-ea3c6dd6f1e66c0cc705e8f134763ca2.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/voice/mercado_escolhe.ogg"
-dest_files=["res://.godot/imported/mercado_escolhe.ogg-d04f64267069af21a51d1b6ac2cb74e9.oggvorbisstr"]
+source_file="res://assets/audio/voice/pt_BR/market_choose.ogg"
+dest_files=["res://.godot/imported/market_choose.ogg-ea3c6dd6f1e66c0cc705e8f134763ca2.oggvorbisstr"]
 
 [params]
 

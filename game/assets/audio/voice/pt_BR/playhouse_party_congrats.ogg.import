@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://41flvlw726l6"
-path="res://.godot/imported/festa_casinha_parabens.ogg-4370f025d7c0fcc0d890fb457096bb34.oggvorbisstr"
+path="res://.godot/imported/playhouse_party_congrats.ogg-a618dbd41e0474409917d4a5dae44dee.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/voice/festa_casinha_parabens.ogg"
-dest_files=["res://.godot/imported/festa_casinha_parabens.ogg-4370f025d7c0fcc0d890fb457096bb34.oggvorbisstr"]
+source_file="res://assets/audio/voice/pt_BR/playhouse_party_congrats.ogg"
+dest_files=["res://.godot/imported/playhouse_party_congrats.ogg-a618dbd41e0474409917d4a5dae44dee.oggvorbisstr"]
 
 [params]
 

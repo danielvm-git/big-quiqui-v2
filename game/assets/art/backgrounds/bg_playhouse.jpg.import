@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cdkfkvvw406ni"
-path="res://.godot/imported/bg_casinha.jpg-ee0aa9f6bc227c548a3c265e66ff447e.ctex"
+path="res://.godot/imported/bg_playhouse.jpg-358e80f4bec249138488d1bb53883e31.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/backgrounds/bg_casinha.jpg"
-dest_files=["res://.godot/imported/bg_casinha.jpg-ee0aa9f6bc227c548a3c265e66ff447e.ctex"]
+source_file="res://assets/art/backgrounds/bg_playhouse.jpg"
+dest_files=["res://.godot/imported/bg_playhouse.jpg-358e80f4bec249138488d1bb53883e31.ctex"]
 
 [params]
 

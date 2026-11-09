@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://5jl5fo8qc4w1"
-path="res://.godot/imported/cocega_risada.ogg-d7ff2d5607543ada3f7301b81b60e137.oggvorbisstr"
+path="res://.godot/imported/tickle_laugh.ogg-85cb313c7e7cbc882659bef421c3653e.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/sfx/cocega_risada.ogg"
-dest_files=["res://.godot/imported/cocega_risada.ogg-d7ff2d5607543ada3f7301b81b60e137.oggvorbisstr"]
+source_file="res://assets/audio/sfx/tickle_laugh.ogg"
+dest_files=["res://.godot/imported/tickle_laugh.ogg-85cb313c7e7cbc882659bef421c3653e.oggvorbisstr"]
 
 [params]
 
