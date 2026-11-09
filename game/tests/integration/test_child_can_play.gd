@@ -119,10 +119,7 @@ func _play_bathroom(player: ScenePlayer) -> void:
 		for _tick: int in range(6):
 			player.advance(0.2)
 		await wait_process_frames(1)
-	assert_true(
-		player.runner.fsm.state in [StepRunner.STATE_OUTRO, StepRunner.STATE_EXIT],
-		"the bathroom chain ends"
-	)
+	assert_true(player.runner.fsm.state in [StepRunner.STATE_OUTRO, StepRunner.STATE_EXIT], "the bathroom chain ends")
 
 
 func _play_dress(player: ScenePlayer) -> void:
