@@ -180,3 +180,22 @@ epics:
       plus `scripts/ios-deploy.sh` (s04), with FIX-06 save backup and FIX-07 dev console folded in.
       What remains is not code: the `feat(e11)!:` breaking release that cuts **v1.0.0**, which is a
       human decision and has deliberately not been taken by an agent run.
+
+  - id: e12
+    slug: e12-builder-player-and-first-loop
+    title: "Restart 1/5: Builder Player and the First Loop (wave 1a) — English ids, one player, kitchen as data"
+    playable_scene: "res://scenes/scene_player.tscn + res://data/scenes/kitchen.tres"
+    status: shipped
+    released: "(not tagged — the restart is docs/feat, see D4 in SCOPE_LATEST)"
+    bcps: 42
+    wsjf: 9.4
+    stories: [e12s01, e12s02, e12s03, e12s04, e12s05, e12s06]
+    summary: >
+      Replaces the scene-per-epic shape with the one TutoTOONS repeats: a single ScenePlayer that runs a room
+      written as data. Ships the one-time English rename with voice addressed by key, the SceneDef/StepDef
+      model and navigation by scene id on SceneManager's existing machine, the player chrome and StepRunner
+      Fsm, the Give->Receive primitive with the closed reaction vocabulary, the hint layer, and t20_drag_snap
+      with kitchen.tres. The 17 legacy scenes stay playable throughout (D1a); they are removed in one commit
+      at e14s05.
+    deferred:
+      - "P1-02 child playtest for e12s06 (specs/verifications/PLAYTEST-e12s06.md) — needs a pre-reading child on the iPad"
