@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://b3ems0ccc83dg"
-path="res://.godot/imported/roda_boa_sorte.ogg-349aad4a3804318a1aa00b1f0a5cfa89.oggvorbisstr"
+path="res://.godot/imported/wheel_good_luck.ogg-dd483e1a18e5dd31ec0bcbaf435fce35.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/voice/roda_boa_sorte.ogg"
-dest_files=["res://.godot/imported/roda_boa_sorte.ogg-349aad4a3804318a1aa00b1f0a5cfa89.oggvorbisstr"]
+source_file="res://assets/audio/voice/pt_BR/wheel_good_luck.ogg"
+dest_files=["res://.godot/imported/wheel_good_luck.ogg-dd483e1a18e5dd31ec0bcbaf435fce35.oggvorbisstr"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c5qisqmgtb6wd"
-path="res://.godot/imported/farelos.png-c1030492146e4cadb10804e7cd8e1ee4.ctex"
+path="res://.godot/imported/crumbs.png-2cd74d4291d605caf88948221cf58dc8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/efeitos/farelos.png"
-dest_files=["res://.godot/imported/farelos.png-c1030492146e4cadb10804e7cd8e1ee4.ctex"]
+source_file="res://assets/art/effects/crumbs.png"
+dest_files=["res://.godot/imported/crumbs.png-2cd74d4291d605caf88948221cf58dc8.ctex"]
 
 [params]
 

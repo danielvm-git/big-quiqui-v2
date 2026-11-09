@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://dc72vtm4w3c7f"
-path="res://.godot/imported/penguin_intro.ogg-19c0d9b8d745fc3fb89c8b8575cbbd62.oggvorbisstr"
+path="res://.godot/imported/penguin_intro.ogg-3e96fe6086056406c1e4b537f56bd067.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/voice/penguin_intro.ogg"
-dest_files=["res://.godot/imported/penguin_intro.ogg-19c0d9b8d745fc3fb89c8b8575cbbd62.oggvorbisstr"]
+source_file="res://assets/audio/voice/pt_BR/penguin_intro.ogg"
+dest_files=["res://.godot/imported/penguin_intro.ogg-3e96fe6086056406c1e4b537f56bd067.oggvorbisstr"]
 
 [params]
 

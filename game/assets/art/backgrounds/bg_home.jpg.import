@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dk05tehpu03yt"
-path="res://.godot/imported/bg_sala.jpg-f665d0d35ce92d976b658c9238fe879d.ctex"
+path="res://.godot/imported/bg_home.jpg-422d0a2a4c9ec1100554724c94310b4e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/backgrounds/bg_sala.jpg"
-dest_files=["res://.godot/imported/bg_sala.jpg-f665d0d35ce92d976b658c9238fe879d.ctex"]
+source_file="res://assets/art/backgrounds/bg_home.jpg"
+dest_files=["res://.godot/imported/bg_home.jpg-422d0a2a4c9ec1100554724c94310b4e.ctex"]
 
 [params]
 

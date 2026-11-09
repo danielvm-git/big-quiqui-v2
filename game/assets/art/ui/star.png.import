@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bqtjscc4mx6cc"
-path="res://.godot/imported/estrela.png-958d288859929212a6798e7af7dbaf8f.ctex"
+path="res://.godot/imported/star.png-45c0a9833aba5847fb00dc21fc3ff129.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/ui/estrela.png"
-dest_files=["res://.godot/imported/estrela.png-958d288859929212a6798e7af7dbaf8f.ctex"]
+source_file="res://assets/art/ui/star.png"
+dest_files=["res://.godot/imported/star.png-45c0a9833aba5847fb00dc21fc3ff129.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bfi4aunb5bif3"
-path="res://.godot/imported/oculos_coracao.png-5792d25b01a9f9b99d5147d5385d6889.ctex"
+path="res://.godot/imported/heart_glasses.png-2edef5e2647871f40c49ce3755705077.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/items/oculos_coracao.png"
-dest_files=["res://.godot/imported/oculos_coracao.png-5792d25b01a9f9b99d5147d5385d6889.ctex"]
+source_file="res://assets/art/items/heart_glasses.png"
+dest_files=["res://.godot/imported/heart_glasses.png-2edef5e2647871f40c49ce3755705077.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://crgetq5i34op4"
-path="res://.godot/imported/beliche.png-8a7a9dad0d168dc740890259214b2e2c.ctex"
+path="res://.godot/imported/bunk_bed.png-822445de66f59c304e131ebab50d5016.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/moveis/beliche.png"
-dest_files=["res://.godot/imported/beliche.png-8a7a9dad0d168dc740890259214b2e2c.ctex"]
+source_file="res://assets/art/furniture/bunk_bed.png"
+dest_files=["res://.godot/imported/bunk_bed.png-822445de66f59c304e131ebab50d5016.ctex"]
 
 [params]
 

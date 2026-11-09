@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://baswahmkdjux8"
-path="res://.godot/imported/bolinha_progresso_vazia.png-644245fe9b1bd52b6da1dba6bc6bed85.ctex"
+path="res://.godot/imported/progress_dot_empty.png-82ac6de85f4f0f204c15170ef1e6930b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/ui/bolinha_progresso_vazia.png"
-dest_files=["res://.godot/imported/bolinha_progresso_vazia.png-644245fe9b1bd52b6da1dba6bc6bed85.ctex"]
+source_file="res://assets/art/ui/progress_dot_empty.png"
+dest_files=["res://.godot/imported/progress_dot_empty.png-82ac6de85f4f0f204c15170ef1e6930b.ctex"]
 
 [params]
 

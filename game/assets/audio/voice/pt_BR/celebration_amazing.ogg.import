@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://c6biyh0q4flq0"
-path="res://.godot/imported/celebrate_voce_e_incrivel.ogg-6a07915a8d486fdf44b4f9a9237d5e4a.oggvorbisstr"
+path="res://.godot/imported/celebration_amazing.ogg-5fc52e68e0ddac3bf002e3535d94a131.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/voice/celebrate_voce_e_incrivel.ogg"
-dest_files=["res://.godot/imported/celebrate_voce_e_incrivel.ogg-6a07915a8d486fdf44b4f9a9237d5e4a.oggvorbisstr"]
+source_file="res://assets/audio/voice/pt_BR/celebration_amazing.ogg"
+dest_files=["res://.godot/imported/celebration_amazing.ogg-5fc52e68e0ddac3bf002e3535d94a131.oggvorbisstr"]
 
 [params]
 

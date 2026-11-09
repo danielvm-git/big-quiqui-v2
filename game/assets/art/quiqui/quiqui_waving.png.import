@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1lcymq1qjk0p"
-path="res://.godot/imported/quiqui_acenando.png-cad8fdca10321d963fb669eaf63340e4.ctex"
+path="res://.godot/imported/quiqui_waving.png-7d49ea5641a98261a446cc716a0a5af6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/quiqui/quiqui_acenando.png"
-dest_files=["res://.godot/imported/quiqui_acenando.png-cad8fdca10321d963fb669eaf63340e4.ctex"]
+source_file="res://assets/art/quiqui/quiqui_waving.png"
+dest_files=["res://.godot/imported/quiqui_waving.png-7d49ea5641a98261a446cc716a0a5af6.ctex"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://csnmwa68x6s65"
-path="res://.godot/imported/feed_hora_de_comer.ogg-52de39838d43afb095fabe51fda48a34.oggvorbisstr"
+path="res://.godot/imported/kitchen_intro.ogg-c7e8ea2d2759408d16dee7f8cf72124d.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/voice/feed_hora_de_comer.ogg"
-dest_files=["res://.godot/imported/feed_hora_de_comer.ogg-52de39838d43afb095fabe51fda48a34.oggvorbisstr"]
+source_file="res://assets/audio/voice/pt_BR/kitchen_intro.ogg"
+dest_files=["res://.godot/imported/kitchen_intro.ogg-c7e8ea2d2759408d16dee7f8cf72124d.oggvorbisstr"]
 
 [params]
 

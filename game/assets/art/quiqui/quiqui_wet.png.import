@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dry4be8o827hy"
-path="res://.godot/imported/quiqui_molhada.png-0c16e7e9fa1cda7f125a1b2f07293720.ctex"
+path="res://.godot/imported/quiqui_wet.png-060de208931b9b65ef2eebdcecdfc0ad.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/quiqui/quiqui_molhada.png"
-dest_files=["res://.godot/imported/quiqui_molhada.png-0c16e7e9fa1cda7f125a1b2f07293720.ctex"]
+source_file="res://assets/art/quiqui/quiqui_wet.png"
+dest_files=["res://.godot/imported/quiqui_wet.png-060de208931b9b65ef2eebdcecdfc0ad.ctex"]
 
 [params]
 

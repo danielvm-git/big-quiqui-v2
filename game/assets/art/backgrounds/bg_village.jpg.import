@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bh4382gibtn84"
-path="res://.godot/imported/bg_vila.jpg-380ae5b5af0a4cc9fd0f0ade342eff33.ctex"
+path="res://.godot/imported/bg_village.jpg-584ae05ec58c333ef48b5e07aa4c33ba.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/backgrounds/bg_vila.jpg"
-dest_files=["res://.godot/imported/bg_vila.jpg-380ae5b5af0a4cc9fd0f0ade342eff33.ctex"]
+source_file="res://assets/art/backgrounds/bg_village.jpg"
+dest_files=["res://.godot/imported/bg_village.jpg-584ae05ec58c333ef48b5e07aa4c33ba.ctex"]
 
 [params]
 

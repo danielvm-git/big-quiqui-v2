@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://j10qg4bjdak6"
-path="res://.godot/imported/pinguim.png-fc60cd164ff7c58e6525f43884f70a5c.ctex"
+path="res://.godot/imported/penguin.png-8ab6573bbabd093188b7a78de8b38f7f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/amigos/pinguim.png"
-dest_files=["res://.godot/imported/pinguim.png-fc60cd164ff7c58e6525f43884f70a5c.ctex"]
+source_file="res://assets/art/friends/penguin.png"
+dest_files=["res://.godot/imported/penguin.png-8ab6573bbabd093188b7a78de8b38f7f.ctex"]
 
 [params]
 

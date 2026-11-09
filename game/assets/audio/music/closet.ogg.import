@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://djcb6fffnv6eh"
-path="res://.godot/imported/guarda_roupa.ogg-97bc8c36f397154bb4f4ae77455f905b.oggvorbisstr"
+path="res://.godot/imported/closet.ogg-4b263dcae5958db6dd396309a7b2b94c.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/music/guarda_roupa.ogg"
-dest_files=["res://.godot/imported/guarda_roupa.ogg-97bc8c36f397154bb4f4ae77455f905b.oggvorbisstr"]
+source_file="res://assets/audio/music/closet.ogg"
+dest_files=["res://.godot/imported/closet.ogg-4b263dcae5958db6dd396309a7b2b94c.oggvorbisstr"]
 
 [params]
 

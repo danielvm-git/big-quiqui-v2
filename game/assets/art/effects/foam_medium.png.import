@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b0swac2r2f16f"
-path="res://.godot/imported/espuma_media.png-059fee48fd074da0c103a3e04e2ef08c.ctex"
+path="res://.godot/imported/foam_medium.png-d934a95fe349637f3053e6f291fe385d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/efeitos/espuma_media.png"
-dest_files=["res://.godot/imported/espuma_media.png-059fee48fd074da0c103a3e04e2ef08c.ctex"]
+source_file="res://assets/art/effects/foam_medium.png"
+dest_files=["res://.godot/imported/foam_medium.png-d934a95fe349637f3053e6f291fe385d.ctex"]
 
 [params]
 

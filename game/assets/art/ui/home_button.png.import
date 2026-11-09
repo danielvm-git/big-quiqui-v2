@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cpo5bak5uw2mt"
-path="res://.godot/imported/botao_casa.png-4ab26531b6018b9768066482a7074365.ctex"
+path="res://.godot/imported/home_button.png-eb71e2763edcbace4f0b6197172c530e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/ui/botao_casa.png"
-dest_files=["res://.godot/imported/botao_casa.png-4ab26531b6018b9768066482a7074365.ctex"]
+source_file="res://assets/art/ui/home_button.png"
+dest_files=["res://.godot/imported/home_button.png-eb71e2763edcbace4f0b6197172c530e.ctex"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://bq2i36f02pdiu"
-path="res://.godot/imported/jardim.ogg-23d8c8e722bf4e998b829619270b1d81.oggvorbisstr"
+path="res://.godot/imported/playroom.ogg-6741f2a5bf6159ee15261fb5f8a5ee1b.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/music/jardim.ogg"
-dest_files=["res://.godot/imported/jardim.ogg-23d8c8e722bf4e998b829619270b1d81.oggvorbisstr"]
+source_file="res://assets/audio/music/playroom.ogg"
+dest_files=["res://.godot/imported/playroom.ogg-6741f2a5bf6159ee15261fb5f8a5ee1b.oggvorbisstr"]
 
 [params]
 

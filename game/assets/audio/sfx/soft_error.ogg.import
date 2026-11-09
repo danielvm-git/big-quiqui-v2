@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://btulaq7r55vgs"
-path="res://.godot/imported/erro_suave.ogg-2ee2e2f333ccf9a23d879b6b45d4de21.oggvorbisstr"
+path="res://.godot/imported/soft_error.ogg-4ee822e12d549a57f37b65096992689f.oggvorbisstr"
 
 [deps]
 
-source_file="res://assets/audio/sfx/erro_suave.ogg"
-dest_files=["res://.godot/imported/erro_suave.ogg-2ee2e2f333ccf9a23d879b6b45d4de21.oggvorbisstr"]
+source_file="res://assets/audio/sfx/soft_error.ogg"
+dest_files=["res://.godot/imported/soft_error.ogg-4ee822e12d549a57f37b65096992689f.oggvorbisstr"]
 
 [params]
 

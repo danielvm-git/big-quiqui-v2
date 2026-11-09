@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dpttfmernuyr"
-path="res://.godot/imported/roda_fortuna.png-10723c82006c5db396ecf36a8c84aca0.ctex"
+path="res://.godot/imported/fortune_wheel.png-3cc160e15413663221d9c56e70c738eb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/items/roda_fortuna.png"
-dest_files=["res://.godot/imported/roda_fortuna.png-10723c82006c5db396ecf36a8c84aca0.ctex"]
+source_file="res://assets/art/items/fortune_wheel.png"
+dest_files=["res://.godot/imported/fortune_wheel.png-3cc160e15413663221d9c56e70c738eb.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cpaov2jyvstfe"
-path="res://.godot/imported/cenoura_modelo.png-9fb36d64691e927be0ea902fc6cd5d5a.ctex"
+path="res://.godot/imported/carrot_model.png-dc198c99b08e2c40cdf7783a98705494.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/estilo/cenoura_modelo.png"
-dest_files=["res://.godot/imported/cenoura_modelo.png-9fb36d64691e927be0ea902fc6cd5d5a.ctex"]
+source_file="res://assets/art/style/carrot_model.png"
+dest_files=["res://.godot/imported/carrot_model.png-dc198c99b08e2c40cdf7783a98705494.ctex"]
 
 [params]
 

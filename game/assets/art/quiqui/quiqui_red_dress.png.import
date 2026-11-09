@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dm4njqbrnk5hw"
-path="res://.godot/imported/quiqui_vestido_vermelho.png-6576eaa297746c5b2dcb715b9fcf8ee1.ctex"
+path="res://.godot/imported/quiqui_red_dress.png-1932ade88a6b5a6e3607f6ec3160a949.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/quiqui/quiqui_vestido_vermelho.png"
-dest_files=["res://.godot/imported/quiqui_vestido_vermelho.png-6576eaa297746c5b2dcb715b9fcf8ee1.ctex"]
+source_file="res://assets/art/quiqui/quiqui_red_dress.png"
+dest_files=["res://.godot/imported/quiqui_red_dress.png-1932ade88a6b5a6e3607f6ec3160a949.ctex"]
 
 [params]
 

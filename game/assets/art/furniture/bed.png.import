@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bylmyweeecy8a"
-path="res://.godot/imported/cama.png-0070943c33bedb1bced40a7b7ff7ed40.ctex"
+path="res://.godot/imported/bed.png-9e8e5875a7368c144557672ca5a9f884.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/moveis/cama.png"
-dest_files=["res://.godot/imported/cama.png-0070943c33bedb1bced40a7b7ff7ed40.ctex"]
+source_file="res://assets/art/furniture/bed.png"
+dest_files=["res://.godot/imported/bed.png-9e8e5875a7368c144557672ca5a9f884.ctex"]
 
 [params]
 

@@ -14,6 +14,7 @@ const DIM_ALPHA: float = 0.45
 
 var _pan: PanPrimitive = PanPrimitive.new()
 var _ctx: TemplateContext = null
+var _def: MapDef = MapDef.new()
 var _open_steps: PackedStringArray = PackedStringArray()
 var _refused: bool = false
 var _pointed: String = ""
@@ -27,10 +28,11 @@ var _held_pin: String = ""
 
 func setup(ctx: TemplateContext) -> void:
 	_ctx = ctx
-	_pan.world_size = _world_size()
-	_pan.tolerance = _tolerance()
+	_def = MapDef.new(ctx.step_def if ctx != null else null)
+	_pan.world_size = _def.world_size()
+	_pan.tolerance = _def.tolerance()
 	_pan.view_size = _view_size()
-	_open_steps = _care_open_steps()
+	_open_steps = MapDef.open_steps_now()
 	_build_surface()
 
 
@@ -82,14 +84,14 @@ func follow(target: Vector2) -> void:
 
 ## Resolves a destination to a catalogue scene id, or "" with a soft refusal. Never a path.
 func activate(dest_id: String) -> String:
-	var index: int = _index_of(dest_id)
+	var index: int = _def.index_of(dest_id)
 	if index < 0:
 		return ""
-	if _is_locked(index):
+	if _def.is_locked(index, _open_steps):
 		_refuse()
 		return ""
 	_refused = false
-	return _resolve(_scene_at(index))
+	return _resolve(_def.scene_at(index))
 
 
 ## The tap path: resolve, then ask the scene manager to open the room.
@@ -101,8 +103,8 @@ func open_destination(dest_id: String) -> bool:
 
 
 func is_dimmed(dest_id: String) -> bool:
-	var index: int = _index_of(dest_id)
-	return index >= 0 and _is_locked(index)
+	var index: int = _def.index_of(dest_id)
+	return index >= 0 and _def.is_locked(index, _open_steps)
 
 
 func pointed_step() -> String:
@@ -122,17 +124,17 @@ func pin_node(dest_id: String) -> Control:
 
 
 func reachable(dest_id: String) -> bool:
-	var index: int = _index_of(dest_id)
+	var index: int = _def.index_of(dest_id)
 	if index < 0:
 		return false
-	var at: Vector2 = _position_at(index)
+	var at: Vector2 = _def.position_at(index)
 	var box: Rect2 = Rect2(_pan.offset, _pan.view_size)
 	return box.has_point(at) or box.has_point(at + Vector2(1.0, 1.0))
 
 
 func _on_pressed(point: Vector2, index: int) -> void:
 	_hide_wish()
-	_open_steps = _care_open_steps()
+	_open_steps = MapDef.open_steps_now()
 	_dim_locked()
 	var pin: String = _pin_at(point)
 	if _pan.begin(point, index, not pin.is_empty()):
@@ -154,14 +156,14 @@ func _on_released(_point: Vector2, index: int) -> void:
 func _pin_at(point: Vector2) -> String:
 	var world_point: Vector2 = point + _pan.offset
 	for dest_id: String in _pins.keys():
-		var index: int = _index_of(dest_id)
-		if Rect2(_position_at(index), TapButton.MIN_HIT_SIZE).has_point(world_point):
+		var index: int = _def.index_of(dest_id)
+		if Rect2(_def.position_at(index), TapButton.MIN_HIT_SIZE).has_point(world_point):
 			return dest_id
 	return ""
 
 
 func _build_surface() -> void:
-	if _ctx == null or _ctx.step_def == null or not (_ctx.host is Control) or not _rows_match():
+	if _ctx == null or _ctx.step_def == null or not (_ctx.host is Control) or not _def.rows_match():
 		return
 	var host: Control = _ctx.host as Control
 	_pad = TouchPad.new()
@@ -190,12 +192,12 @@ func _under_chrome(host: Control) -> int:
 func _build_pins() -> void:
 	var step: StepDef = _ctx.step_def
 	for index: int in range(step.destination_ids.size()):
-		var icon_id: String = step.destination_icons[index] if index < step.destination_icons.size() else ""
+		var icon_id: String = _def.icon_at(index)
 		var pin: TextureRect = ItemArt.icon(icon_id, TapButton.MIN_HIT_SIZE.x)
 		pin.name = step.destination_ids[index]
 		pin.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		pin.size = TapButton.MIN_HIT_SIZE
-		pin.position = _position_at(index)
+		pin.position = _def.position_at(index)
 		pin.add_to_group("hit_target", true)
 		_world.add_child(pin)
 		_pins[step.destination_ids[index]] = pin
@@ -212,84 +214,18 @@ func _place_world() -> void:
 		_world.position = -_pan.offset
 
 
-func _care_open_steps() -> PackedStringArray:
-	var open: PackedStringArray = PackedStringArray()
-	var loop: Node = TemplateKit.autoload("CareLoopManager")
-	if loop == null or not loop.has_method("completed_steps"):
-		return open
-	for index: int in range(mini(int(loop.call("completed_steps")), CareSteps.ORDER.size())):
-		open.append(CareSteps.ORDER[index])
-	return open
-
-
-func _world_size() -> Vector2:
-	if _ctx == null or _ctx.step_def == null:
-		return Vector2(1920.0, 1080.0)
-	return _ctx.step_def.world_size
-
-
 func _view_size() -> Vector2:
 	if _ctx != null and _ctx.host is Control and (_ctx.host as Control).size.x > 0.0:
 		return (_ctx.host as Control).size
 	return Vector2(1920.0, 1080.0)
 
 
-func _tolerance() -> float:
-	if _ctx == null or _ctx.step_def == null:
-		return 24.0
-	return _ctx.step_def.pan_tolerance
-
-
-func _index_of(dest_id: String) -> int:
-	if _ctx == null or _ctx.step_def == null:
-		return -1
-	return _ctx.step_def.destination_ids.find(dest_id)
-
-
-func _scene_at(index: int) -> String:
-	var scenes: PackedStringArray = _ctx.step_def.destination_scenes
-	if index < 0 or index >= scenes.size():
-		return ""
-	return scenes[index]
-
-
-func _position_at(index: int) -> Vector2:
-	var points: PackedVector2Array = _ctx.step_def.destination_positions
-	if index < 0 or index >= points.size():
-		return Vector2.ZERO
-	return points[index]
-
-
-func _is_locked(index: int) -> bool:
-	if not _rows_match():
-		return true
-	var rule: String = _ctx.step_def.destination_locks[index]
-	if rule.is_empty():
-		return false
-	return not _open_steps.has(rule)
-
-
-func _rows_match() -> bool:
-	var step: StepDef = _ctx.step_def
-	var count: int = step.destination_ids.size()
-	if step.destination_scenes.size() != count or step.destination_locks.size() != count:
-		return false
-	return step.destination_positions.size() == count
-
-
 func _refuse() -> void:
 	_refused = true
-	_pointed = _next_care()
+	_pointed = MapDef.next_care(_open_steps)
 	_plays += 1
 	_show_wish(_pointed)
 	TemplateKit.play_miss(_ctx)
-
-
-func _next_care() -> String:
-	for step_id: String in CareSteps.ORDER:
-		if not _open_steps.has(step_id):
-			return step_id
-	return ""
 
 
 func _resolve(scene_id: String) -> String:

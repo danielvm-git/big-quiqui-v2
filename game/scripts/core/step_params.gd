@@ -86,7 +86,7 @@ static func _map(step: StepDef) -> String:
 	var count: int = step.destination_ids.size()
 	if step.destination_scenes.size() != count or step.destination_positions.size() != count:
 		return "mismatched_arrays"
-	if not step.destination_locks.is_empty() and step.destination_locks.size() != count:
+	if step.destination_locks.size() != count:
 		return "mismatched_arrays"
 	if not step.destination_icons.is_empty() and step.destination_icons.size() != count:
 		return "mismatched_arrays"
