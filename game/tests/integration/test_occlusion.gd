@@ -25,7 +25,6 @@ const ASPECTS: Array[Vector2i] = [
 const ALLOWED: Dictionary = {
 	"jardim.tscn/TickleZone": "tapping the hero is the verb",
 	"pinguim_jogo.tscn/IceLane": "full-width track, readable through her feet",
-	"pinguim_jogo.tscn/Draggable": "BUG-061 — moving it changes how the minigame plays",
 }
 
 
@@ -66,6 +65,41 @@ func test_the_gate_can_fail() -> void:
 	assert_true(findings[0].contains("PlayButton"), findings[0])
 
 
+## BUG-061 follow-up: the basket was raised by its *container*, not by the leaf, so the gate
+## must compose `z_index` the way the renderer does. Reading the leaf alone reported a
+## control that is visually on top — a false positive that would push the next fix into a
+## magic number on the leaf instead of the honest parent.
+func test_a_control_raised_by_its_container_is_not_reported() -> void:
+	var scene: Control = Control.new()
+	scene.name = "RaisedByParent"
+	scene.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child_autofree(scene)
+	var rig: Control = Control.new()
+	rig.name = "QuiQuiRig"
+	rig.add_to_group(GeometryOracle.RIG_GROUP, false)
+	rig.mouse_filter = Control.MOUSE_FILTER_STOP
+	rig.size = Vector2(400.0, 600.0)
+	rig.position = Vector2(700.0, 200.0)
+	scene.add_child(rig)
+	var sprite: Sprite2D = Sprite2D.new()
+	sprite.z_index = 50
+	rig.add_child(sprite)
+	var holder: Control = Control.new()
+	holder.name = "BasketHolder"
+	holder.z_index = 60
+	holder.size = Vector2(160.0, 160.0)
+	holder.position = Vector2(716.0, 600.0)
+	scene.add_child(holder)
+	var basket: Control = Control.new()
+	basket.name = "Basket"
+	basket.add_to_group(GeometryOracle.HIT_GROUP, false)
+	basket.size = holder.size
+	holder.add_child(basket)
+
+	var findings: Array[String] = _buried(scene, Rect2(700.0, 200.0, 400.0, 600.0))
+	assert_eq(findings, [] as Array[String], "z 60 on the parent is z 60 on screen")
+
+
 # ── machinery ────────────────────────────────────────────────────────────────
 
 
@@ -95,7 +129,7 @@ func _buried(root: Node, painted: Rect2, file: String = "", size: Vector2i = Vec
 			continue
 		var rect: Rect2 = control.get_global_rect()
 		var burial: float = rect.intersection(painted).get_area() / maxf(rect.get_area(), 1.0)
-		if burial < BURIAL_THRESHOLD or control.z_index > top_z:
+		if burial < BURIAL_THRESHOLD or _effective_z(control) > top_z:
 			continue
 		var key: String = "%s/%s" % [file, control.name] if not file.is_empty() else "PlayButton"
 		if ALLOWED.has(key):
@@ -103,7 +137,7 @@ func _buried(root: Node, painted: Rect2, file: String = "", size: Vector2i = Vec
 		findings.append(
 			(
 				"%s @%s: %s is %.0f%% under the hero (z %d <= %d)"
-				% [file, size, control.name, burial * 100.0, control.z_index, top_z]
+				% [file, size, control.name, burial * 100.0, _effective_z(control), top_z]
 			)
 		)
 	return findings
@@ -128,5 +162,19 @@ func _max_rig_z(root: Node) -> int:
 	if rig == null:
 		return 0
 	for node: Node in rig.find_children("*", "Node2D", true, false):
-		top = maxi(top, (node as Node2D).z_index)
+		top = maxi(top, _effective_z(node as CanvasItem))
 	return top
+
+
+## Godot composes `z_index` down the chain (`z_as_relative` is true by default), so a control
+## inside a z-raised container is above the rig even when its own `z_index` is 0 — which is
+## how BUG-061's basket was fixed (raised parent, not a magic number on the leaf). Reading
+## the leaf alone reported a buried control that was not buried (BUG-061 follow-up).
+func _effective_z(node: CanvasItem) -> int:
+	var total: int = node.z_index
+	var parent: Node = node.get_parent()
+	while parent != null:
+		if parent is CanvasItem and (parent as CanvasItem).z_as_relative:
+			total += (parent as CanvasItem).z_index
+		parent = parent.get_parent()
+	return total

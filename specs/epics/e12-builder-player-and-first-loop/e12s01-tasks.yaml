@@ -1,0 +1,93 @@
+story_id: e12s01
+spec: e12s01.md
+epic_id: e12
+title: "English-First Ids and Voice-by-Key (the one-time rename)"
+status: failing
+bcps: 5
+scenarios: ["SC-e12s01-P1-01", "SC-e12s01-P1-02", "SC-e12s01-P1-03", "SC-e12s01-P1-04", "SC-e12s01-P1-05", "SC-e12s01-P2-01", "SC-e12s01-P2-02"]
+playable_scene: "ALL 17 legacy scenes stay playable under English ids"
+tasks:
+- id: e12s01-t01
+  description: "Write the rename map (Today → New id) as a durable table covering all 135 assets, using the design page's table as the authority and flagging every file the page does not name"
+  verify: test -s specs/product/ASSET_RENAME_MAP.md
+  risk: P0
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e12s01-P0-01)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-1a"
+      - "rename"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e12s01-t02
+  description: "Write the failing gates: an id-grammar test over `assets/art` and `assets/audio`, and a voice-key resolution test"
+  verify: test -f game/tests/unit/test_asset_ids.gd
+  risk: P0
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e12s01-P0-01)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-1a"
+      - "rename"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e12s01-t03
+  description: "Rename the art files with their `.import` sidecars, one art directory per commit-sized step, re-importing as you go"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_asset_ids
+  risk: P0
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e12s01-P0-01)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-1a"
+      - "rename"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e12s01-t04
+  description: "Update the 208 references in 56 scripts and 17 builders; regenerate the 17 scenes from their builders"
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P0
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e12s01-P0-01)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-1a"
+      - "rename"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e12s01-t05
+  description: "Add `play_voice_key`/music-key resolution to `AudioManager`, move the voice files under `voice/pt_BR/` and convert every call site"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_audio_manager
+  risk: P0
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e12s01-P0-01)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-1a"
+      - "rename"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e12s01-t06
+  description: "Run the whole gate: every legacy scene still loads, the diary still audits, traceability still holds"
+  verify: bash scripts/preflight.sh && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_voice_keys
+  risk: P0
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e12s01-P0-01)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-1a"
+      - "rename"
+      - "unit"
+      - "integration"
+  status: failing

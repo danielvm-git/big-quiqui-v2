@@ -1,0 +1,45 @@
+story_id: e13s06
+spec: e13s06.md
+epic_id: e13
+title: "Evidence Pass on t22_play_beat and t3_skip_beat (D3b)"
+status: failing
+bcps: 3
+scenarios: ["SC-e13s06-P2-01", "SC-e13s06-P2-02"]
+playable_scene: "no scene — the evidence that decides two templates"
+tasks:
+- id: e13s06-t01
+  description: "Re-extract the two templates' scene objects and template class methods, and record what they actually carry"
+  verify: test -s specs/product/TEMPLATE_EVIDENCE_T22_T3.md
+  risk: P2
+  security: none
+  allure:
+    severity: normal
+    categories:
+      - "wave-1b"
+      - "evidence"
+      - "documentation"
+  status: failing
+- id: e13s06-t02
+  description: "Write the rule, the confidence level and the build-or-skip call per template"
+  verify: bash scripts/validate-specs-yaml.sh
+  risk: P2
+  security: none
+  allure:
+    severity: normal
+    categories:
+      - "wave-1b"
+      - "evidence"
+      - "documentation"
+  status: failing
+- id: e13s06-t03
+  description: "Reconcile the coverage claim in `SCOPE_LATEST.yaml` with the decision and keep the gates green"
+  verify: bash scripts/preflight.sh --fast
+  risk: P2
+  security: none
+  allure:
+    severity: normal
+    categories:
+      - "wave-1b"
+      - "evidence"
+      - "documentation"
+  status: failing

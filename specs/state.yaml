@@ -3,8 +3,8 @@ version: 0.10.0
 workflow_mode: solo-git
 active_flow: null
 lifecycle_phase: release
-current_epic: null
-current_story: null
+current_epic: e12-builder-player-and-first-loop
+current_story: e12s01
 review_gate:
   skill: null
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
@@ -196,19 +196,40 @@ project_cycle:
     elaborate: specs/adr/
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
+# plan-work handoff: e12/e13 are planned at step level (15 stories, 69 tasks, 0 CRITICAL/HIGH/MED).
+# kickoff-branch opens the runner branch; build-epic then executes one step per invocation.
 handoff:
-  next_skill: release-branch
-  epic: null
-  epic_wsjf: null
-  first_story: null
+  next_skill: kickoff-branch
+  epic: e12-builder-player-and-first-loop
+  epic_wsjf: 9.4
+  first_story: e12s01
+  planned_epics: [e12-builder-player-and-first-loop, e13-wave-1b-primitives-and-templates]
   context: >-
-    All 11 epics (e01..e11) are built, tested and reviewed green: 17 scenes, 75 test scripts,
-    595 tests, 8782 asserts. Preflight is green *after* the close-out pass fixed a red L5c
-    (project.godot still said 0.9.1 while the tag was v0.10.0) and caught the generated docs up
-    two epics. There is **no code work left for v1.0.0**: the only remaining action is the
-    breaking release (`feat(e11)!:` on main), which is deliberately a human decision — agent
-    runs in this repo are approved to commit, push, PR and merge, never to tag or publish.
+    The v1.0.0 scene-by-scene game is green and unplayable (606 tests, 77 scripts, all passing), so the
+    project restarts on the architecture TutoTOONS actually repeats: a Builder-style generic scene player
+    running rooms written as data. specs/product/SCOPE_LATEST.yaml is the full backlog (REQ-12..REQ-16,
+    epics e12-e16, 28 stories); e12 and e13 are planned to step level with runnable verify commands.
+    The rest of the tree is untouched: the 17 legacy scenes still ship while the player matures and are
+    removed in one commit at e14s05 (decision D1a). Decisions D1-D6 are recorded in SCOPE_LATEST with
+    their rejected options. Next: kickoff-branch, then build-epic on e12s01 (the English rename).
   open_decisions:
+  - 'Builder restart (2026-11-08): D1a one removal commit at e14s05; D2a English rename first, in e12s01;
+    D3b evidence pass on t22/t3 before building them; D4 epic series continues at e12-e16 with the v1.0.0
+    rung still unplaced; D5 t_rhythm_pose and t_album; D6a t51_prize_pick + t50_lanes (with Steer and
+    Spawner) pulled into wave 1b. All are recorded with rejected options in specs/product/SCOPE_LATEST.yaml.'
+  - 'Builder restart: e12/e13 are deliberately NOT in specs/release-plan.yaml yet. traceability.py fails any
+    planned story with no code and no test, so the plan entry lands with e12s01''s code; plan-release must
+    also decide where the v1.0.0 rung goes.'
+  - 'Security review 2026-11-08 (full tree + backlog): no finding >=8 against shipped code. Three medium
+    findings against the PLAN, all now planned: F-1 voice keys need their own grammar (a dotted key is not
+    an id, and naive resolution is a traversal), F-2 StepDef must carry no path/script and the template
+    registry must be a closed const map, F-3 node references and map destinations resolve through tables,
+    never through a path built from data. e12s01 is now P0. Details: specs/security/CODEBASE_REVIEW_2026-11-08.md.'
+  - 'Builder restart: plan-tests for e12/e13 published (93 scenarios, 36 P0, 15 control rows). Scenario
+    IDs SC-eNNsYY-Px-NN are the authority for risk tiers: P0 must exist before a story is done, and the
+    control rows must stay able to fail. specs/tech-architecture/e01-TEST_PLAN_LATEST.md is historical.'
+  - 'Builder restart: the ghost hand is still a placeholder rectangle (DragHint draws a ColorRect). Real
+    hand art is the one art request the teaching layer raises; it is out of scope in SCOPE_LATEST.'
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
     parses a digit, and the coin icon plus the sold badge carry the meaning. TEST_PLAN section 3
     row 6 ("no text node carries play meaning") is the stricter reading; the gate implements the

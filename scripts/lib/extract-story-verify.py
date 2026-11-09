@@ -76,18 +76,33 @@ def _tasks_records(tasks_path):
     return records
 
 
+def _capsule_dirs(repo_root):
+    """Every capsule directory, including the archived ones.
+
+    Archived capsules still hold the verify directives that gate `done` stories, and the
+    pre-build compliance check counts these records as a tripwire against the extractor
+    silently returning nothing. Globbing only `specs/epics/*/` lost nine capsules when
+    e01-e09 were archived (BUG-062), so the walk is recursive and one level deeper.
+    """
+    root = os.path.join(repo_root, "specs", "epics")
+    return sorted(
+        path
+        for path in glob.glob(os.path.join(root, "**"), recursive=True)
+        if os.path.isdir(path)
+    )
+
+
 def collect_records(repo_root):
     """Gather every story/task verify directive across all epic capsules."""
     records = []
-    epic_glob = os.path.join(repo_root, "specs", "epics", "*", "epic.yaml")
-    for epic_path in sorted(glob.glob(epic_glob)):
-        doc = _load_yaml(epic_path)
-        if isinstance(doc, dict):
-            records.extend(_story_records(doc.get("stories"), epic_path))
-
-    tasks_glob = os.path.join(repo_root, "specs", "epics", "*", "*-tasks.yaml")
-    for tasks_path in sorted(glob.glob(tasks_glob)):
-        records.extend(_tasks_records(tasks_path))
+    for capsule in _capsule_dirs(repo_root):
+        epic_path = os.path.join(capsule, "epic.yaml")
+        if os.path.isfile(epic_path):
+            doc = _load_yaml(epic_path)
+            if isinstance(doc, dict):
+                records.extend(_story_records(doc.get("stories"), epic_path))
+        for tasks_path in sorted(glob.glob(os.path.join(capsule, "*-tasks.yaml"))):
+            records.extend(_tasks_records(tasks_path))
     return records
 
 

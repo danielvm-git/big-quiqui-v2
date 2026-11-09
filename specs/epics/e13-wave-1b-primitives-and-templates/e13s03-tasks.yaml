@@ -1,0 +1,69 @@
+story_id: e13s03
+spec: e13s03.md
+epic_id: e13
+title: "Pan Primitive and t25_map (the hub as data)"
+status: failing
+bcps: 8
+scenarios: ["SC-e13s03-P0-01", "SC-e13s03-P0-02", "SC-e13s03-P0-03", "SC-e13s03-P0-04", "SC-e13s03-P1-01", "SC-e13s03-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn (a pannable map with locked destinations)"
+tasks:
+- id: e13s03-t01
+  description: "Write the failing pan and map tests: clamping, drag/tap tolerance, locked refusal, every destination resolving"
+  verify: test -f game/tests/unit/test_pan_primitive.gd
+  risk: P0
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e13s03-P0-05)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s03-t02
+  description: "Implement the Pan primitive with clamping, follow and the tap tolerance"
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P0
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e13s03-P0-05)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s03-t03
+  description: "Implement `t25_map` reading destinations and lock rules from the def"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t25_map
+  risk: P0
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e13s03-P0-05)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s03-t04
+  description: "Author a map def (the house hub) and verify it at both aspects with no letterbox bars"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t25_map
+  risk: P0
+  security: medium
+  security_check: \"no new security findings in affected paths (SC-e13s03-P0-05)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
