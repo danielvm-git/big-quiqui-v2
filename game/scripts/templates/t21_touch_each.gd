@@ -1,5 +1,6 @@
 # story: e13s02
 # story: e14s01
+# story: e14s03
 extends RefCounted
 ## Every object answers. No auto-end timer. The template knows no room.
 
@@ -11,13 +12,25 @@ var _ctx: TemplateContext = null
 var _buttons: Dictionary = {}
 var _plays: int = 0
 var _rig_filter: int = -1
+var _buy_shelf: bool = false
+var _arcade: bool = false
+var _last_open: String = ""
+
+const PARTY_MIN_PLACED: int = 5
 
 
 func setup(ctx: TemplateContext) -> void:
 	_ctx = ctx
 	_rig_filter = TemplateKit.quiet_rig(ctx)
-	_tap.mode = _mode()
-	_tap.goal = _goal()
+	var mode: String = TemplateKit.mode_or(_ctx, "")
+	_buy_shelf = mode == "buy"
+	_arcade = mode == "arcade"
+	if _buy_shelf:
+		_tap.mode = "count_n"
+		_tap.goal = _ctx.step_def.item_ids.size() if _ctx.step_def != null else 1
+	else:
+		_tap.mode = _mode()
+		_tap.goal = _goal()
 	_build_buttons()
 	_tap.targets = _buttons.size()
 
@@ -89,6 +102,12 @@ func _make_button(target_id: String, index: int) -> TapButton:
 
 
 func _on_tapped(target_id: String) -> void:
+	if _arcade:
+		_try_arcade(target_id)
+		return
+	if _buy_shelf:
+		_try_buy(target_id)
+		return
 	var fresh: bool = _tap.note_tap(target_id)
 	_plays += 1
 	_play_reaction(target_id)
@@ -109,6 +128,54 @@ func _mark(target_id: String) -> void:
 		return
 	var spent: bool = _tap.is_on(target_id) if _tap.mode == "toggle" else true
 	button.visual.modulate = SPENT if spent else Color.WHITE
+
+
+func last_open_id() -> String:
+	return _last_open
+
+
+func party_unlocked() -> bool:
+	var sink: Node = TemplateKit.autoload("ProgressManager")
+	if sink == null or not sink.has_method("placed_count"):
+		return false
+	return int(sink.call("placed_count")) >= PARTY_MIN_PLACED
+
+
+func _try_arcade(friend_id: String) -> void:
+	var step: StepDef = _ctx.step_def if _ctx != null else null
+	if step == null:
+		return
+	var scene_id: String = "playhouse"
+	if party_unlocked():
+		var index: int = step.item_ids.find(friend_id)
+		if index < 0 or index >= step.destination_scenes.size():
+			return
+		scene_id = step.destination_scenes[index]
+	_last_open = scene_id
+	TemplateKit.play_hit(_ctx, "party.friend_game", {"friend": friend_id})
+	SceneNav.open(TemplateKit.autoload("SceneManager"), scene_id)
+
+
+func _try_buy(item_id: String) -> void:
+	var sink: Node = TemplateKit.autoload("ProgressManager")
+	if sink == null:
+		TemplateKit.play_miss(_ctx)
+		return
+	var economy: EconomyData = EconomyData.new()
+	var price: int = FurnitureCatalog.price_of(item_id, economy)
+	if price < 0 or bool(sink.call("owns_furniture", item_id)):
+		TemplateKit.play_miss(_ctx)
+		return
+	if int(sink.call("get_coins")) < price:
+		TemplateKit.play_miss(_ctx)
+		return
+	if not bool(sink.call("buy_furniture", item_id, price)):
+		TemplateKit.play_miss(_ctx)
+		return
+	_tap.note_tap(item_id)
+	_plays += 1
+	_play_reaction(item_id)
+	_mark(item_id)
 
 
 func _dim_room() -> void:

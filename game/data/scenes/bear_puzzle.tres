@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_slots"]
+script = ExtResource("2_step")
+template_id = "t20_drag_snap"
+mode = "slots"
+repeat_count = 4
+receiver_id = "slot_0"
+item_ids = PackedStringArray("piece_a", "piece_b", "piece_c", "piece_d")
+on_hit_sfx_id = "sfx_success"
+
+[resource]
+script = ExtResource("1_def")
+id = "bear_puzzle"
+background_id = "bg_puzzle"
+music_id = "music_main_theme"
+intro_voice_key = "vo.bear.intro"
+steps = Array[Resource]([SubResource("step_slots")])
+next_scene_id = "village"

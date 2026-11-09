@@ -98,6 +98,18 @@ func _play_def(player: ScenePlayer, scene_id: String) -> void:
 			_tap_verb(player)
 		"village":
 			await _play_village(player)
+		"market":
+			_play_market(player)
+		"playhouse":
+			_play_playhouse(player)
+		"bear_puzzle":
+			await _play_bear(player)
+		"duck_dance":
+			await _play_duck(player)
+		"album":
+			_play_album(player)
+		"party":
+			_play_party(player)
 		_:
 			assert_true(false, "no play script for %s" % scene_id)
 
@@ -200,6 +212,77 @@ func _play_map(player: ScenePlayer) -> void:
 		var home: TapButton = player.get_node("HomeButton") as TapButton
 		finger_tap(player, home)
 		return
+	await _settle(player)
+
+
+func _play_market(player: ScenePlayer) -> void:
+	var progress: Node = get_node("/root/ProgressManager")
+	progress.call("add_coins", 100)
+	for tap: TapButton in _tray_taps(player):
+		finger_tap(player, tap)
+		player.advance(0.1)
+	await _settle(player)
+
+
+func _play_playhouse(player: ScenePlayer) -> void:
+	var progress: Node = get_node("/root/ProgressManager")
+	progress.call("add_coins", 100)
+	for fid: String in ["cadeira", "mesa", "tapete", "abajur", "vaso_planta"]:
+		progress.call("buy_furniture", fid, 1)
+	for _place: int in range(5):
+		var piece: TapButton = _first_dress_tap(player.get_node("TrayZone/DressStrip"))
+		if piece != null:
+			finger_tap(player, piece)
+		player.advance(0.2)
+	await _settle(player)
+
+
+func _play_bear(player: ScenePlayer) -> void:
+	for slot_index: int in range(4):
+		var recv: Control = player.get_node_or_null("slot_%d" % slot_index) as Control
+		if recv == null:
+			recv = player.find_child("slot_%d" % slot_index, true, false) as Control
+		var items: Array[TouchDraggable] = player.template_draggables()
+		if recv == null or items.is_empty():
+			continue
+		var item: TouchDraggable = items[0]
+		var to: Vector2 = recv.get_global_rect().get_center()
+		send(item, touch(item.get_global_rect().get_center(), true))
+		send(item, drag(to))
+		send(item, touch(to, false))
+		for _tick: int in range(6):
+			player.advance(0.2)
+	await _settle(player)
+
+
+func _play_duck(player: ScenePlayer) -> void:
+	for _round: int in range(6):
+		var tpl: RefCounted = player.get("_template") as RefCounted
+		if tpl == null:
+			break
+		var pose: String = str(tpl.call("pose_id"))
+		for pad_name: String in ["left", "centre", "right"]:
+			var pad: TapButton = player.find_child(pad_name, true, false) as TapButton
+			if pad != null and pad_name == pose:
+				finger_tap(player, pad)
+				break
+		for _tick: int in range(4):
+			player.advance(0.2)
+		if player.runner.template_progress() >= 1.0:
+			break
+	await _settle(player)
+
+
+func _play_album(player: ScenePlayer) -> void:
+	for tap: TapButton in _tray_taps(player):
+		finger_tap(player, tap)
+	await _settle(player)
+
+
+func _play_party(player: ScenePlayer) -> void:
+	for tap: TapButton in _tray_taps(player):
+		finger_tap(player, tap)
+		player.advance(0.1)
 	await _settle(player)
 
 

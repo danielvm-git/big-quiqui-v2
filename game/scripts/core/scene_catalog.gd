@@ -60,6 +60,12 @@ const _ID_TO_DEF: Dictionary = {
 	"home": "res://data/scenes/home.tres",
 	"village": "res://data/scenes/village.tres",
 	"celebration": "res://data/scenes/celebration.tres",
+	"market": "res://data/scenes/market.tres",
+	"duck_dance": "res://data/scenes/duck_dance.tres",
+	"album": "res://data/scenes/album.tres",
+	"playhouse": "res://data/scenes/playhouse.tres",
+	"bear_puzzle": "res://data/scenes/bear_puzzle.tres",
+	"party": "res://data/scenes/party.tres",
 }
 
 

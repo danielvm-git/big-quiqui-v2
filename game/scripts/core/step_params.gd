@@ -16,7 +16,7 @@ const STRIP_ITEMS_MAX: int = 40
 const WORLD_MAX: float = 20000.0
 const T20_MODES: PackedStringArray = ["single", "pick_one", "slots"]
 ## `single` is the `StepDef` default, so a def that names no mode still loads and plays as `any`.
-const T21_MODES: PackedStringArray = ["any", "count_n", "toggle", "single"]
+const T21_MODES: PackedStringArray = ["any", "count_n", "toggle", "single", "buy", "arcade"]
 ## Erase and draw take clear or leave, the reveal chain takes reveal. `single` is the unset default.
 const RUB_MODES: Dictionary = {
 	"t23_erase": ["clear", "leave", "single"],
@@ -39,6 +39,8 @@ static func _by_template(step: StepDef) -> String:
 		"t20_drag_snap":
 			return "bad_mode" if not T20_MODES.has(step.mode) else ""
 		"t21_touch_each":
+			if step.mode == "arcade":
+				return _arcade(step)
 			return _row(step) if T21_MODES.has(step.mode) else "bad_mode"
 		"t23_erase", "t40_draw_fill", "t34_rub_reveal":
 			return _rub(step)
@@ -50,6 +52,8 @@ static func _by_template(step: StepDef) -> String:
 			return _lanes(step)
 		"t51_prize_pick":
 			return _row(step)
+		"t_rhythm_pose", "t_album":
+			return _needs_items(step)
 	return ""
 
 
@@ -188,6 +192,18 @@ static func _pin_fits(point: Vector2, world: Vector2) -> bool:
 
 static func _bad_icons(step: StepDef) -> bool:
 	return not step.destination_icons.is_empty() and step.destination_icons.size() != step.destination_ids.size()
+
+
+static func _arcade(step: StepDef) -> String:
+	if step.destination_scenes.is_empty() or step.destination_scenes.size() != step.item_ids.size():
+		return "mismatched_arrays"
+	for scene: String in step.destination_scenes:
+		if not SceneCatalog.is_shipped(scene):
+			return "unknown_scene"
+	for friend: String in step.item_ids:
+		if not FriendCatalog.is_friend(friend):
+			return "bad_id"
+	return ""
 
 
 static func _dress(step: StepDef) -> String:
