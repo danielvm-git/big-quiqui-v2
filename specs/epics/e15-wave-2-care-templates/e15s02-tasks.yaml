@@ -1,0 +1,73 @@
+story_id: e15s02
+spec: e15s02.md
+epic_id: e15
+title: "Sequence and t55_find"
+status: failing
+bcps: 6
+scenarios: ["SC-e15s02-P0-01", "SC-e15s02-P0-02", "SC-e15s02-P0-03", "SC-e15s02-P1-01", "SC-e15s02-P1-02", "SC-e15s02-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn (find the toys in order)"
+tasks:
+- id: e15s02-t01
+  description: "Write the failing sequence and find tests: active-only advance, a wrong tap that still answers, a timer that does not end the step"
+  verify: test -f game/tests/unit/test_sequence.gd && test -f game/tests/unit/test_t55_find.gd
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "modifiers"
+      - "template"
+      - "unit"
+  status: failing
+- id: e15s02-t02
+  description: "Implement the Sequence modifier and t55_find on Tap, with the voice prompt as a key"
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "modifiers"
+      - "template"
+      - "unit"
+  status: failing
+- id: e15s02-t03
+  description: "Prove the order, the gentle miss and the non-ending timer"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t55_find
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "modifiers"
+      - "template"
+      - "unit"
+  status: failing
+- id: e15s02-t04
+  description: "Author find_toy.tres, register the id, and play the order on the player at both aspects"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_find_toy_scene
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "integration"
+      - "geometry"
+  status: failing
+- id: e15s02-t05
+  description: "Tag the new scripts and tests, then run the story trace and the full gate"
+  verify: bash scripts/trace-stories.sh --strict && bash scripts/preflight.sh
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "integration"
+  status: failing

@@ -1,0 +1,73 @@
+story_id: e15s03
+spec: e15s03.md
+epic_id: e15
+title: "Pairs and t27_memory"
+status: failing
+bcps: 5
+scenarios: ["SC-e15s03-P0-01", "SC-e15s03-P0-02", "SC-e15s03-P0-03", "SC-e15s03-P1-01", "SC-e15s03-P1-02", "SC-e15s03-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn (a four-card memory match)"
+tasks:
+- id: e15s03-t01
+  description: "Write the failing pairs and memory tests: match sticks, mismatch flips back, seed replay, odd counts rejected"
+  verify: test -f game/tests/unit/test_pairs.gd && test -f game/tests/unit/test_t27_memory.gd
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "modifiers"
+      - "template"
+      - "unit"
+  status: failing
+- id: e15s03-t02
+  description: "Implement the Pairs modifier and t27_memory on Tap, with the board as an Fsm"
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "modifiers"
+      - "template"
+      - "unit"
+  status: failing
+- id: e15s03-t03
+  description: "Prove match, mismatch, the seed and the 4-or-6 rule"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t27_memory
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "modifiers"
+      - "template"
+      - "unit"
+  status: failing
+- id: e15s03-t04
+  description: "Author memory_match.tres, register the id, and play the four-card board on the player at both aspects"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_memory_match_scene
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "integration"
+      - "geometry"
+  status: failing
+- id: e15s03-t05
+  description: "Tag the new scripts and tests, then run the story trace and the full gate"
+  verify: bash scripts/trace-stories.sh --strict && bash scripts/preflight.sh
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "integration"
+  status: failing

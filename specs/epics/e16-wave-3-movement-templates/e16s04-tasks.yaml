@@ -1,0 +1,58 @@
+story_id: e16s04
+spec: e16s04.md
+epic_id: e16
+title: "t49_progress_holder and the 28-slot completeness gate"
+status: failing
+bcps: 5
+scenarios: ["SC-e16s04-P1-01", "SC-e16s04-P1-02", "SC-e16s04-P1-03", "SC-e16s04-P1-04", "SC-e16s04-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn"
+tasks:
+- id: e16s04-t01
+  description: "Write the failing holder tests and the 28-slot gate"
+  verify: test -f game/tests/unit/test_t49_progress_holder.gd && test -f game/tests/unit/test_template_library_gate.gd
+  risk: P1
+  security: low
+  allure:
+    severity: high
+    categories:
+      - "wave-3"
+      - "template"
+      - "gate"
+      - "unit"
+  status: failing
+- id: e16s04-t02
+  description: "Implement t49_progress_holder as a view of runner progress, with a probe def and no save write. no new security findings in affected paths"
+  verify: "gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd # no new security findings in affected paths"
+  risk: P1
+  security: medium
+  allure:
+    severity: high
+    categories:
+      - "wave-3"
+      - "template"
+      - "Security Review"
+  status: failing
+- id: e16s04-t03
+  description: "Extend TEMPLATE_TABLE.md with the wave-3 rows, the t47 fold row, and the reserved and retired lists"
+  verify: grep -q t49_progress_holder specs/product/TEMPLATE_TABLE.md && grep -q t47_drag_release specs/product/TEMPLATE_TABLE.md && grep -q t37_tap_moving specs/product/TEMPLATE_TABLE.md
+  risk: P1
+  security: low
+  allure:
+    severity: high
+    categories:
+      - "wave-3"
+      - "template"
+      - "gate"
+  status: failing
+- id: e16s04-t04
+  description: "Run the library gate: 28 rules and test scenes, 14 numbers absent, T39 and T54 absent. no new security findings in affected paths"
+  verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_template_library_gate # no new security findings in affected paths"
+  risk: P1
+  security: medium
+  allure:
+    severity: high
+    categories:
+      - "wave-3"
+      - "gate"
+      - "Security Review"
+  status: failing

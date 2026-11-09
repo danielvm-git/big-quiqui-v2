@@ -1,0 +1,74 @@
+# story: e14s05
+story_id: e14s05
+spec: e14s05.md
+epic_id: e14
+title: "One removal commit: 17 scripts, 17 builders, 17 scenes"
+status: failing
+bcps: 8
+scenarios: ["SC-e14s05-P0-01", "SC-e14s05-P0-02", "SC-e14s05-P0-03", "SC-e14s05-P0-04", "SC-e14s05-P1-01", "SC-e14s05-P1-02"]
+playable_scene: "res://scenes/scene_player.tscn is the only scene file"
+tasks:
+  - id: e14s05-t01
+    description: "Add the failing single-scene assertions on top of the existing contract test"
+    verify: test -f game/tests/unit/test_one_player_scene.gd
+    risk: P0
+    security: none
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "removal"
+        - "catalog"
+        - "unit"
+    status: failing
+  - id: e14s05-t02
+    description: "Re-point catalogs and navigation tests, then prove contracts and scene-manager ids. no new security findings in affected paths"
+    verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_scene_contracts && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_scene_manager && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_one_player_scene # no new security findings in affected paths"
+    risk: P0
+    security: medium
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "removal"
+        - "catalog"
+        - "Security Review"
+    status: failing
+  - id: e14s05-t03
+    description: "Re-point the MBT walk, the monkey fuzz and the visual gallery at ids"
+    verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_mbt_walk && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_monkey_fuzz && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_visual_gallery
+    risk: P0
+    security: low
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "removal"
+        - "catalog"
+        - "integration"
+    status: failing
+  - id: e14s05-t04
+    description: "In the same commit, delete the 17 scripts, 17 builders and 17 scenes and prove the find gate. no new security findings in affected paths"
+    verify: "test \"$(find game/scenes -name '*.tscn')\" = \"game/scenes/scene_player.tscn\" # no new security findings in affected paths"
+    risk: P0
+    security: medium
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "removal"
+        - "catalog"
+        - "Security Review"
+    status: failing
+  - id: e14s05-t05
+    description: "Run the full gate and the story-tag check"
+    verify: bash scripts/preflight.sh && bash scripts/trace-stories.sh --strict
+    risk: P0
+    security: low
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "removal"
+        - "gate"
+    status: failing

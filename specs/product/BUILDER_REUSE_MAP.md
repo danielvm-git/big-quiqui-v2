@@ -56,7 +56,7 @@ Sources of the design: `QUIQUI_BUILDER_DESIGN.html` (layers, primitives, 44-temp
 | `accessory_slots.gd` | 37 | quiqui_rig | **Keep.** Rig internal, unchanged. |
 | `bath_room_view.gd`, `foam_blob.gd` | 86 + 44 | banheiro only | **Die.** Foam patches become a Rub target with a data-defined patch list (`t40_draw_fill` / `t23_erase`). |
 | `garden_prop.gd` | 100 | jardim only | **Die.** Toys become `t21_touch_each` objects with ids and reactions. |
-| `ice_lane.gd`, `catch_item.gd` | 23 / 30 | pinguim only | **Die** (or become the internals of `t50_lanes` in wave 3). |
+| `ice_lane.gd`, `catch_item.gd` | 23 / 30 | pinguim only | **Die** (or become the internals of `t50_lanes` in wave 1b). |
 | `puzzle_piece.gd` | 100 | urso only | **Die.** The 4 pieces become `t20_drag_snap` slots + pieces. |
 | `furniture_prop.gd` | 39 | casinha only | **Die.** Placement is `t45_dress_decorate` free_place; `ProgressManager.place_furniture` already stores ratios. |
 | `door_badge.gd` | 57 | **nothing** | **Already dead.** Zero references outside its own test. Delete on the first touching story. |
@@ -82,16 +82,16 @@ Every row is "what the room *is*" expressed as data. `template` comes from the w
 | `vila.gd` | `village` | t25_map + t20_drag_snap (recycling) | 1 | POI table becomes an id table |
 | `casinha.gd` | `playhouse` | t45_dress_decorate (free_place) | 1 | |
 | `festa.gd` | `party` | t22_play_beat + t21_touch_each | 1 (needs the T22 decision) | party opens when pieces are placed |
-| `roda.gd` | `wheel` | t51_prize_pick | **2** | depends on a wave-2 template |
+| `roda.gd` | `wheel` | t51_prize_pick | **1b** | pulled into wave 1b by D6 |
 | `mercado.gd` | `market` | t21_touch_each + coin gate | 1 | price table untouched (`EconomyData`) |
-| `pinguim_jogo.gd` | `penguin_lanes` | t50_lanes | **3** | depends on wave 3 (Steer) |
+| `pinguim_jogo.gd` | `penguin_lanes` | t50_lanes | **1b** | pulled into wave 1b by D6 (Steer and Spawner with it) |
 | `pato_danca.gd` | `duck_dance` | `t_rhythm_pose` (custom slot) | 1b | no TutoTOONS template; id settled in D5 |
 | `album.gd` | `album` | `t_album` (custom slot) | 1b | collection screen; no template in TutoTOONS; id settled in D5 |
 
-**Ordering constraint (open as D6):** with the old layer removed in a single commit at the end of the
-migration (D1a), every room must be converted first — but `wheel` needs t51_prize_pick (wave 2) and
-`penguin_lanes` needs t50_lanes (wave 3). Either those two templates pull forward into wave 1b, or the
-removal commit moves to the end of wave 3. The care day itself (title → home → feed/bath/dress/play/sleep
+**Ordering constraint (closed by D6):** with the old layer removed in a single commit at the end of the
+migration (D1a), every room must be converted first. `wheel` uses t51_prize_pick and `penguin_lanes`
+uses t50_lanes. D6 pulled both templates into wave 1b, so the removal commit stays inside e14 and does
+not wait for wave 2 or wave 3. The care day itself (title → home → feed/bath/dress/play/sleep
 → celebration) plus `playhouse`, `party`, `market` and the two custom slots is entirely wave-1+ and
 migratable inside e14.
 
