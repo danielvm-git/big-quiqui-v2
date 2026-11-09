@@ -47,7 +47,7 @@ stories:
 - id: e13s05
   title: "t45_dress_decorate, t0_title and t32_reward"
   bcps: 8
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s06
   title: "Evidence Pass on t22_play_beat and t3_skip_beat (D3b)"
