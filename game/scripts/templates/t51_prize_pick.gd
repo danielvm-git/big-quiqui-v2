@@ -1,9 +1,12 @@
 # story: e13s09
 extends RefCounted
-## One tap picks one prize from the def. A second tap does nothing.
+## One tap picks one prize from the def. A second pick does nothing, and there is never an ad.
+## Re-entering shows the saved prize lit; one tap on it carries on.
 
 var _ctx: TemplateContext = null
 var _picked: String = ""
+var _continued: bool = false
+var _buttons: Dictionary = {}
 
 
 func setup(ctx: TemplateContext) -> void:
@@ -11,6 +14,16 @@ func setup(ctx: TemplateContext) -> void:
 	var saved: String = _saved()
 	if _prizes().has(saved):
 		_picked = saved
+	_build_buttons()
+	_light()
+
+
+func teardown() -> void:
+	for prize_id: String in _buttons.keys():
+		var button: TapButton = _buttons[prize_id] as TapButton
+		if is_instance_valid(button):
+			button.queue_free()
+	_buttons.clear()
 
 
 func advance(_delta: float) -> void:
@@ -18,14 +31,18 @@ func advance(_delta: float) -> void:
 
 
 func pick(prize_id: String) -> bool:
-	if not _picked.is_empty() or not Ids.is_valid(prize_id):
+	if not _picked.is_empty():
+		_continued = _picked == prize_id or _continued
 		return false
-	if not _prizes().has(prize_id):
+	if not Ids.is_valid(prize_id) or not _prizes().has(prize_id):
 		return false
-	var sink: Node = _progress()
+	var sink: Node = TemplateKit.autoload("ProgressManager")
 	if sink == null or not bool(sink.call("equip", "prize", prize_id)):
 		return false
 	_picked = prize_id
+	_continued = true
+	_light()
+	TemplateKit.play_hit(_ctx, "template.prize", {"picked": 1})
 	return true
 
 
@@ -34,11 +51,11 @@ func picked() -> String:
 
 
 func progress() -> float:
-	return 1.0 if not _picked.is_empty() else 0.0
+	return 1.0 if _continued else 0.0
 
 
-func claims_completion() -> bool:
-	return false
+func button(prize_id: String) -> TapButton:
+	return _buttons.get(prize_id) as TapButton
 
 
 func _prizes() -> PackedStringArray:
@@ -48,14 +65,25 @@ func _prizes() -> PackedStringArray:
 
 
 func _saved() -> String:
-	var sink: Node = _progress()
+	var sink: Node = TemplateKit.autoload("ProgressManager")
 	if sink == null:
 		return ""
 	return str(sink.call("equipped", "prize"))
 
 
-func _progress() -> Node:
-	var tree: SceneTree = Engine.get_main_loop() as SceneTree
-	if tree == null:
-		return null
-	return tree.root.get_node_or_null("ProgressManager")
+func _build_buttons() -> void:
+	if _ctx == null or _ctx.tray == null:
+		return
+	for prize_id: String in _prizes():
+		if _buttons.has(prize_id):
+			continue
+		var button: TapButton = TemplateKit.tap_button(prize_id, Vector2(160.0 * float(_buttons.size()), 0.0))
+		button.tapped.connect(pick.bind(prize_id))
+		_ctx.tray.add_child(button)
+		_buttons[prize_id] = button
+
+
+func _light() -> void:
+	for prize_id: String in _buttons.keys():
+		var lit: bool = _picked.is_empty() or _picked == prize_id
+		(_buttons[prize_id] as TapButton).visual.modulate = Color(1, 1, 1, 1) if lit else Color(1, 1, 1, 0.4)

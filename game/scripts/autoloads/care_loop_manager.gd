@@ -39,6 +39,7 @@ var fsm: Fsm = null
 var cycle_id: int = 0
 
 var _rewarded_cycle_id: int = -1
+var _collected_cycle_id: int = -1
 
 
 func _ready() -> void:
@@ -116,11 +117,19 @@ func reward_paid() -> bool:
 	return _rewarded_cycle_id == cycle_id
 
 
-## Pays through the same once-per-cycle ledger as entering CELEBRATE.
+## True when the child already tapped the star for this cycle. Paying happens on entry to
+## CELEBRATE; collecting is the child's tap on the reward screen, and it happens once.
+func reward_collected() -> bool:
+	return _collected_cycle_id == cycle_id
+
+
+## The child's tap. Pays through the once-per-cycle ledger when nothing paid yet, then marks the
+## cycle collected. True only on the first tap of a cycle.
 func collect_reward() -> bool:
-	if reward_paid():
+	if reward_collected():
 		return false
 	_grant_cycle_reward()
+	_collected_cycle_id = cycle_id
 	return true
 
 
@@ -129,6 +138,7 @@ func collect_reward() -> bool:
 func reset() -> void:
 	cycle_id = 0
 	_rewarded_cycle_id = -1
+	_collected_cycle_id = -1
 	_build_fsm()
 
 

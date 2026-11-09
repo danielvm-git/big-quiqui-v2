@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="step_dress"]
 script = ExtResource("2_step")
 template_id = "t45_dress_decorate"
-item_ids = PackedStringArray("scarf")
+item_ids = PackedStringArray("blue_scarf")
 slot_ids = PackedStringArray("neck")
 category_ids = PackedStringArray("warm")
 

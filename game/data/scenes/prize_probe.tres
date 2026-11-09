@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="step_prize"]
 script = ExtResource("2_step")
 template_id = "t51_prize_pick"
-item_ids = PackedStringArray("boat", "kite")
+item_ids = PackedStringArray("plush", "pinwheel")
 
 [resource]
 script = ExtResource("1_def")
