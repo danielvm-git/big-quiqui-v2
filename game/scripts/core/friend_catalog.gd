@@ -8,10 +8,10 @@ extends RefCounted
 
 const FRIEND_IDS: Array[String] = ["pato", "urso", "pinguim"]
 
-const _SCENES: Dictionary = {
-	"pato": "res://scenes/pato_danca.tscn",
-	"urso": "res://scenes/urso_puzzle.tscn",
-	"pinguim": "res://scenes/pinguim_jogo.tscn",
+const _SCENE_IDS: Dictionary = {
+	"pato": "duck_dance",
+	"urso": "bear_puzzle",
+	"pinguim": "penguin_lanes",
 }
 
 const _VOICE_KEYS: Dictionary = {
@@ -40,7 +40,8 @@ static func art_path(id: String) -> String:
 
 
 static func scene_path(id: String) -> String:
-	return str(_SCENES.get(id, ""))
+	var scene_id: String = str(_SCENE_IDS.get(id, ""))
+	return SceneCatalog.legacy_path_for_id(scene_id)
 
 
 static func voice_key(id: String) -> String:
