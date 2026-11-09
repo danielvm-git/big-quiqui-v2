@@ -17,6 +17,15 @@ func test_snap_saves_and_the_bin_clears() -> void:
 	assert_eq(tpl.call("categories").size(), 1)
 
 
+func test_binning_announces_the_change_once() -> void:
+	var tpl: RefCounted = _mount()
+	tpl.call("snap", "blue_scarf")
+	watch_signals(_progress())
+	assert_true(bool(tpl.call("bin", "blue_scarf")))
+	assert_signal_emit_count(_progress(), "progress_changed", 1, "A11 the rig repaints once")
+	assert_false(bool(_progress().call("equipped", "neck") != ""))
+
+
 func test_an_invalid_id_does_not_save() -> void:
 	var tpl: RefCounted = _mount()
 	var writes: int = int(_progress().get("write_count"))

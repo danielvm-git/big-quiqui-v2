@@ -64,11 +64,11 @@ evidence_baseline:
       Measured weight is not build order. After D6 the waves are ours, not TutoTOONS': wave 1 now
       carries 13 of the 30 used templates so that every existing room can migrate before the single
       removal commit (D1a).
-    wave_1_e12_e13: {templates: 13, scenes: 1593, share: "88.4%", added_by_d6: [t51_prize_pick, t50_lanes]}
+    wave_1_e12_e13: {templates: 11, scenes: 1071, share: "59.5%", planned_templates: 13, planned_scenes: 1593, planned_share: "88.4%", skipped: [t22_play_beat, t3_skip_beat], added_by_d6: [t51_prize_pick, t50_lanes]}
     wave_2_e15: {templates: 5, scenes: 83, share: "4.6%"}
     wave_3_e16: {templates: 10, scenes: 46, share: "2.6%"}
     retired_ads: {templates: 2, scenes: 79, share: "4.4%"}
-    check: "13 + 5 + 10 + 2 = 30 used templates; 1593 + 83 + 46 + 79 = 1801 scenes"
+    check: "Planned, before the D3 skips: 13 + 5 + 10 + 2 = 30 used templates; 1593 + 83 + 46 + 79 = 1801 scenes"
     raw_source: ".rea/report/builder-template-usage.json (gitignored, re-derivable)"
   current_code:
     godot: "4.7.stable"

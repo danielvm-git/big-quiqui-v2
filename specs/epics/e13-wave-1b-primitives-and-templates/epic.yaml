@@ -1,6 +1,6 @@
 epic_id: e13
 slug: e13-wave-1b-primitives-and-templates
-title: "Wave 1b: Rub, Tap, Pan and Steer, and the remaining twelve templates (88.4% of real scenes)"
+title: "Wave 1b: Rub, Tap, Pan and Steer, and the remaining twelve templates (59.5% of real scenes built, 88.4% planned)"
 playable_scene: "res://scenes/scene_player.tscn"
 status: planned
 bcps: 59

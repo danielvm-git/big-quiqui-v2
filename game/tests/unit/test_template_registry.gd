@@ -20,40 +20,48 @@ func test_the_skip_is_in_the_table_and_not_in_the_catalog() -> void:
 	assert_false(catalog.contains("t3_skip_beat"))
 
 
-func test_the_table_covers_eleven_built_templates() -> void:
+func test_the_computed_coverage_agrees_with_the_scope_and_the_catalog() -> void:
+	var table: String = _read("specs/product/TEMPLATE_TABLE.md")
+	var ids: Array = TemplateCatalog.SCRIPT_FOR_ID.keys()
+	var bad: PackedStringArray = TemplateTableGate.problems(table, _read("specs/product/SCOPE_LATEST.yaml"), ids)
+	assert_eq(bad, PackedStringArray(), "SC-e13s09-P1-03 P1-04: %s" % ", ".join(bad))
 	var built: int = 0
-	for line: String in _rows():
-		if _built(line):
-			built += 1
-			_assert_consumer(line)
-	assert_eq(built, 11, "SC-e13s09-P1-03")
-	assert_eq(_rows().size(), 13)
-	var share: String = "%.1f%%" % (100.0 * 1071.0 / 1801.0)
-	assert_eq(share, "59.5%", "SC-e13s09-P1-04")
-	assert_true(_read("specs/product/SCOPE_LATEST.yaml").contains("1,071"))
+	for cells: PackedStringArray in TemplateTableGate.rows(table):
+		built += 1 if cells[TemplateTableGate.STATUS] == "built" else 0
+	assert_eq(built, 11)
+	assert_eq(TemplateTableGate.rows(table).size(), 13)
 
 
-func _rows() -> PackedStringArray:
-	var found: PackedStringArray = PackedStringArray()
+func test_a_missing_row_fails_the_gate() -> void:
+	var ids: Array = TemplateCatalog.SCRIPT_FOR_ID.keys()
+	var cut: PackedStringArray = PackedStringArray()
 	for line: String in _read("specs/product/TEMPLATE_TABLE.md").split("\n"):
-		if line.begins_with("| t"):
-			found.append(line)
-	return found
+		if not line.begins_with("| t51_prize_pick"):
+			cut.append(line)
+	var bad: PackedStringArray = TemplateTableGate.problems(
+		"\n".join(cut), _read("specs/product/SCOPE_LATEST.yaml"), ids
+	)
+	assert_gt(bad.size(), 0, "a catalog id with no row is a problem")
+	assert_true(" ".join(bad).contains("t51_prize_pick"))
 
 
-func _built(line: String) -> bool:
-	var cells: PackedStringArray = line.split("|")
-	return cells.size() > 3 and cells[2].strip_edges() == "built"
+func test_a_scope_that_disagrees_fails_the_gate() -> void:
+	var ids: Array = TemplateCatalog.SCRIPT_FOR_ID.keys()
+	var scope: String = _read("specs/product/SCOPE_LATEST.yaml").replace(
+		'scenes: 1071, share: "59.5%"', 'scenes: 1593, share: "88.4%"'
+	)
+	var bad: PackedStringArray = TemplateTableGate.problems(_read("specs/product/TEMPLATE_TABLE.md"), scope, ids)
+	assert_gt(bad.size(), 0, "a claim the table does not back is a problem")
 
 
-func _assert_consumer(line: String) -> void:
-	var cells: PackedStringArray = line.split("|")
-	var id: String = cells[1].strip_edges()
-	var scene_id: String = cells[5].strip_edges()
-	var test_name: String = cells[6].strip_edges()
-	assert_true(ResourceLoader.exists("res://scripts/templates/%s.gd" % id), id)
-	assert_true(ResourceLoader.exists("res://data/scenes/%s.tres" % scene_id), scene_id)
-	assert_true(ResourceLoader.exists("res://tests/unit/%s.gd" % test_name), test_name)
+func test_a_row_that_names_a_def_without_its_template_fails_the_gate() -> void:
+	var ids: Array = TemplateCatalog.SCRIPT_FOR_ID.keys()
+	var table: String = _read("specs/product/TEMPLATE_TABLE.md").replace(
+		"| t51_prize_pick | built | One tap saves one prize from the def. | item_ids | prize_probe |",
+		"| t51_prize_pick | built | One tap saves one prize from the def. | item_ids | reward_probe |"
+	)
+	var bad: PackedStringArray = TemplateTableGate.problems(table, _read("specs/product/SCOPE_LATEST.yaml"), ids)
+	assert_true(" ".join(bad).contains("has no t51_prize_pick step"))
 
 
 func _read(rel: String) -> String:

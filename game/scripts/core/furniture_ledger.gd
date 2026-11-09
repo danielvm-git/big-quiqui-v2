@@ -33,6 +33,13 @@ static func copies(data: SaveData) -> Array[Dictionary]:
 	return entries
 
 
+static func owned_copy(data: SaveData) -> Array[String]:
+	var ids: Array[String] = []
+	if data != null:
+		ids.assign(data.owned_furniture)
+	return ids
+
+
 static func count(data: SaveData) -> int:
 	return 0 if data == null else data.placed_furniture.size()
 

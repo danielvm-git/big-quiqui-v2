@@ -53,6 +53,10 @@ static func validate(def: SceneDef) -> SceneDef:
 		if not TemplateCatalog.is_known(step.template_id):
 			_reject(scene_id, "unknown_template")
 			return null
+		var reason: String = StepParams.problem(step)
+		if not reason.is_empty():
+			_reject(scene_id, reason)
+			return null
 	return def
 
 
