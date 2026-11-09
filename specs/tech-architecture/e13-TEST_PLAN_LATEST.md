@@ -79,10 +79,10 @@ decoration).
 
 | Level | Count | Where |
 |---|---|---|
-| unit | 32 | `game/tests/unit/test_*.gd` |
+| unit | 31 | `game/tests/unit/test_*.gd` |
 | control | 8 | fails-on-injection assertions inside the owning test file |
 | e2e / geometry | 3 | `game/tests/integration/test_*_aspects.gd`, `*_scene.gd` |
-| integration | 1 | `game/tests/integration/test_*.gd` |
+| integration | 2 | `game/tests/integration/test_*.gd` |
 | **total** | **44** | P0=17 · P1=17 · P2=10 · P3=0 (four `e13s07` rows withdrawn: P1=3, P2=1) |
 
 The pyramid is deliberately bottom-heavy (unit) and the e2e rows are only the ones that need real

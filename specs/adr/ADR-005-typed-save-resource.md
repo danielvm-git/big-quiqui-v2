@@ -27,5 +27,9 @@ The audit (item E24) asked for backward-compatibility and rollback rules for dat
 | **Invalid ids on load** | dropped silently with one `save.load_failed`-adjacent log; the room stays playable (T-E05-01) |
 | **Rollback** | the save is forward-only: a downgrade reads whatever it understands and preserves the rest. There is no "restore previous save" because there is no server and no backup store — the rollback unit is the **release**, and `big-release`'s tag is the point of return |
 
+Additive fields shipped under the first row so far: `owned_furniture`, `friend_stars` and, in e13s09, `picked_prize` and
+`prize_cycle`. `SaveData.version` stays 1. `test_progress_manager` proves the round trip, the old file and the tampered value for
+the last two (SC-e13s05-P2-02), and the fuzz corpus feeds them hostile input.
+
 `user://progress.json` is written atomically (`.tmp` + rename), so a crash mid-write leaves the previous
 file intact — the practical rollback for a single device.
