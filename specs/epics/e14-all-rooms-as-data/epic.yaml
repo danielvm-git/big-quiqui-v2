@@ -31,7 +31,7 @@ stories:
   - id: e14s01
     title: "Care rooms on the player: bathroom, closet, playroom, bedroom"
     bcps: 8
-    status: failing
+    status: done
     delta: ADDED
   - id: e14s02
     title: "Hubs on the player: title, home, village, celebration"
