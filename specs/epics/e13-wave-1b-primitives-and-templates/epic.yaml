@@ -62,7 +62,7 @@ stories:
 - id: e13s08
   title: "Steer and Spawner with t50_lanes (pulled forward by D6)"
   bcps: 8
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s09
   title: "t51_prize_pick and the Wave-1 Completeness Gate"
