@@ -282,6 +282,12 @@ run_baseline:
     forward instead of inventing a story; e10 keeps its place in the ladder.
 
 gate_decisions:
+- gate: e13 review reviewer B
+  decision: >-
+    PASS, score 96, no must-fix. Should-fix noted: claims_completion missing on
+    five templates, and map destination arrays are not length-checked together.
+    Those do not fail the AND-gate. Reviewer A has not returned. e14 stays blocked.
+  reason: Dual-blind review. One pass is not enough.
 - gate: preflight after e13s09
   decision: >-
     GREEN: 109 scripts, 709 tests, 9253 asserts, trace-stories --strict pass.
