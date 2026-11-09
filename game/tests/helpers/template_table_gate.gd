@@ -32,10 +32,13 @@ static func rows(table: String) -> Array[PackedStringArray]:
 	return found
 
 
-## Every problem found, or an empty list when the table, the catalog and the scope agree.
-static func problems(table: String, scope: String, catalog_ids: Array) -> PackedStringArray:
+## Every problem found, or an empty list when the table, the catalog, the scope and the measured
+## manifest agree. The manifest is the one source of the per-template counts.
+static func problems(table: String, scope: String, catalog_ids: Array, manifest: String) -> PackedStringArray:
 	var bad: PackedStringArray = PackedStringArray()
 	var table_rows: Array[PackedStringArray] = rows(table)
+	var counts: Dictionary = _manifest_counts(manifest)
+	bad.append_array(_manifest_problems(manifest, counts, table_rows, scope))
 	var built: Array[PackedStringArray] = []
 	bad.append_array(_duplicates(table_rows))
 	for cells: PackedStringArray in table_rows:
@@ -125,6 +128,60 @@ static func _scope_problems(scope: String, built: int, built_sum: int) -> Packed
 		bad.append("scope claims %s scenes, table adds up to %d" % [claim.get_string(2), built_sum])
 	if claim.get_string(3) != share:
 		bad.append("scope claims %s%%, table gives %s%%" % [claim.get_string(3), share])
+	return bad
+
+
+## The committed record of the measured counts: template number text -> scenes. Empty when unreadable.
+static func _manifest_counts(manifest: String) -> Dictionary:
+	if manifest.strip_edges().is_empty():
+		return {}
+	var parsed: Variant = JSON.parse_string(manifest)
+	if not parsed is Dictionary or not (parsed as Dictionary).get("scenes") is Dictionary:
+		return {}
+	return (parsed as Dictionary)["scenes"] as Dictionary
+
+
+## Provenance, an honest total, one count per row, and a scope that restates the same total.
+static func _manifest_problems(
+	manifest: String, counts: Dictionary, table_rows: Array[PackedStringArray], scope: String
+) -> PackedStringArray:
+	var bad: PackedStringArray = PackedStringArray()
+	if counts.is_empty():
+		bad.append("the usage manifest is missing or unreadable")
+		return bad
+	bad.append_array(_total_problems(JSON.parse_string(manifest) as Dictionary, counts, scope))
+	for cells: PackedStringArray in table_rows:
+		bad.append_array(_row_count_problems(cells, counts))
+	return bad
+
+
+static func _total_problems(head: Dictionary, counts: Dictionary, scope: String) -> PackedStringArray:
+	var bad: PackedStringArray = PackedStringArray()
+	var hash_ok: RegExMatch = RegEx.create_from_string("^[0-9a-f]{64}$").search(str(head.get("sha256", "")))
+	if str(head.get("source", "")).is_empty() or hash_ok == null:
+		bad.append("the usage manifest names no source or no sha256")
+	var total: int = 0
+	for value: Variant in counts.values():
+		total += int(value)
+	if int(head.get("total", -1)) != total:
+		bad.append("the manifest total %s is not the sum %d of its counts" % [head.get("total"), total])
+	var claim: RegExMatch = RegEx.create_from_string(TOTAL_PATTERN).search(scope)
+	if claim != null and claim.get_string(1).to_int() != total:
+		bad.append("scope counts %s scenes, the manifest sums to %d" % [claim.get_string(1), total])
+	return bad
+
+
+static func _row_count_problems(cells: PackedStringArray, counts: Dictionary) -> PackedStringArray:
+	var bad: PackedStringArray = PackedStringArray()
+	if cells.size() != COLUMNS.size():
+		return bad
+	var number: RegExMatch = RegEx.create_from_string("^t(\\d+)_").search(cells[ID])
+	if number == null or not counts.has(number.get_string(1)):
+		bad.append("%s has no measured count in the manifest" % cells[ID])
+	elif int(counts[number.get_string(1)]) != cells[SCENES].to_int():
+		bad.append(
+			"%s says %s scenes, the manifest measured %s" % [cells[ID], cells[SCENES], counts[number.get_string(1)]]
+		)
 	return bad
 
 

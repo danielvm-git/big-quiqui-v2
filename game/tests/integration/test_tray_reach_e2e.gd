@@ -82,7 +82,11 @@ func test_a_stop_sibling_above_a_target_fails_the_check() -> void:
 	cover.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	assert_true(HitProbe.answers(host, target), "an IGNORE sibling lets it through")
 	cover.mouse_filter = Control.MOUSE_FILTER_STOP
-	cover.visible = true
+	_check_an_earlier_cover(host, target, cover)
+
+
+## An earlier sibling is under the target by tree order, and over it only by a higher z.
+func _check_an_earlier_cover(host: Control, target: Control, cover: Control) -> void:
 	host.move_child(cover, 0)
 	assert_true(HitProbe.answers(host, target), "an earlier STOP sibling is under it")
 	cover.z_index = 5

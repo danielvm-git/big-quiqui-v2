@@ -93,15 +93,23 @@ static func _shared(step: StepDef) -> String:
 		return "bad_id"
 	if not _clean_optional(step):
 		return "bad_id"
+	var reason: String = _poses(step)
+	if not reason.is_empty():
+		return reason
+	if step.repeat_count < 1 or step.repeat_count > COUNT_MAX or step.item_ids.size() > COUNT_MAX:
+		return "bad_count"
+	if not is_finite(step.hint_delay_sec) or step.hint_delay_sec < 0.0:
+		return "bad_number"
+	return ""
+
+
+## Hit poses are optional, but when present there is one per item and each is a well formed id.
+static func _poses(step: StepDef) -> String:
 	if not step.hit_poses.is_empty() and step.hit_poses.size() != step.item_ids.size():
 		return "mismatched_arrays"
 	for pose: String in step.hit_poses:
 		if not pose.is_empty() and not Ids.is_valid(pose):
 			return "bad_id"
-	if step.repeat_count < 1 or step.repeat_count > COUNT_MAX or step.item_ids.size() > COUNT_MAX:
-		return "bad_count"
-	if not is_finite(step.hint_delay_sec) or step.hint_delay_sec < 0.0:
-		return "bad_number"
 	return ""
 
 

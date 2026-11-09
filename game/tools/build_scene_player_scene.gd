@@ -52,18 +52,23 @@ func _add_background(root: Control) -> void:
 	root.add_child(bg)
 
 
+## Picture that fills its parent and never sizes it, so art bigger than the control cannot spill over.
+func _art(path: String) -> TextureRect:
+	var art: TextureRect = TextureRect.new()
+	art.name = "Art"
+	art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	art.texture = load(path) as Texture2D
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return art
+
+
 func _add_tray(root: Control) -> void:
 	var tray: Control = Control.new()
 	tray.name = "TrayZone"
 	tray.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var art: TextureRect = TextureRect.new()
-	art.name = "Art"
-	art.set_anchors_preset(Control.PRESET_FULL_RECT)
-	art.texture = load(TRAY_ART) as Texture2D
-	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tray.add_child(art)
+	tray.add_child(_art(TRAY_ART))
 	(
 		SceneBuilder
 		. pin(
@@ -127,14 +132,7 @@ func _add_home(root: Control) -> void:
 	visual.set_anchors_preset(Control.PRESET_FULL_RECT)
 	visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	button.add_child(visual)
-	var art: TextureRect = TextureRect.new()
-	art.name = "Art"
-	art.set_anchors_preset(Control.PRESET_FULL_RECT)
-	art.texture = load(HOME_ART) as Texture2D
-	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	visual.add_child(art)
+	visual.add_child(_art(HOME_ART))
 
 
 func _add_hints(root: Control) -> void:

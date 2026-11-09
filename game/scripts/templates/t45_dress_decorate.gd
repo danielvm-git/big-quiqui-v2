@@ -203,17 +203,22 @@ func _build_strip() -> void:
 	_strip.add_child(_row)
 	_ctx.tray.add_child(_strip)
 	_fill_row()
+	_add_pad()
+	_pan.view_size = _strip.size
+	_fit_row()
+	_bin = TemplateKit.tap_button(BIN_ART, Vector2(_strip.size.x + GAP, 0.0))
+	_bin.tapped.connect(bin)
+	_ctx.tray.add_child(_bin)
+
+
+## The finger slides the strip through one pad laid over the row; a tap still falls through to an item.
+func _add_pad() -> void:
 	_pad = TouchPad.new()
 	_pad.name = "StripPad"
 	_pad.pressed.connect(_on_pressed)
 	_pad.moved.connect(_on_moved)
 	_pad.released.connect(_on_released)
 	_strip.add_child(_pad)
-	_pan.view_size = _strip.size
-	_fit_row()
-	_bin = TemplateKit.tap_button(BIN_ART, Vector2(_strip.size.x + GAP, 0.0))
-	_bin.tapped.connect(bin)
-	_ctx.tray.add_child(_bin)
 
 
 func _fill_row() -> void:
