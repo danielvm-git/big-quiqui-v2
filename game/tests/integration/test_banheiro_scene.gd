@@ -281,5 +281,5 @@ func test_leaving_during_rinse_abandons_the_step_and_releases_the_devices() -> v
 func test_the_bath_voice_line_is_a_file_that_exists() -> void:
 	# BUG-059: the constant was written from the event name (`banho_…`) while the family's
 	# clip ships as `bath_…`. `_play_stream` degrades silently, so the room was simply mute.
-	var path: String = AudioManager.voice_path_for_key(BathScene.VOICE_KEY)
+	var path: String = VoiceKeyResolver.path_for_key(BathScene.VOICE_KEY)
 	assert_true(ResourceLoader.exists(path), "voice key must resolve: %s" % path)

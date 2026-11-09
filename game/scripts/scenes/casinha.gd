@@ -43,7 +43,7 @@ func _ready() -> void:
 	_connect_inputs()
 	_spawn_from_save()
 	_refresh_state()
-	AudioManager.play_voice_key(VOICE_KEY)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_restore_music()
 	_log("scene.ready", {"scene": "casinha"})
 	call_deferred("layout_props")

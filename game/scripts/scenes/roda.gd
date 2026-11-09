@@ -168,7 +168,7 @@ func _on_rig_tapped() -> void:
 
 
 func _play_voice() -> void:
-	AudioManager.play_voice_key(VOICE_KEY)
+	VoicePlayback.play_key(self, VOICE_KEY)
 
 
 func _log(ev: String, data: Dictionary) -> void:

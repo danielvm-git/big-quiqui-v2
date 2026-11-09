@@ -104,7 +104,7 @@ func _refresh_card(id: String) -> void:
 
 
 func _on_card_tapped(id: String) -> void:
-	AudioManager.play_voice_key(FriendCatalog.voice_key(id))
+	VoicePlayback.play_key(self, FriendCatalog.voice_key(id))
 	_play_stream("play_sfx", TAP_SFX)
 	var card: Control = _cards.get(id) as Control
 	if card != null:

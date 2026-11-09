@@ -49,7 +49,7 @@ func _ready() -> void:
 	fsm = Fsm.new(STATE_IDLE, LEGAL_EDGES, MAX_DWELL, Callable(self, "_fsm_clock_ms"))
 	_connect_inputs()
 	_refresh_badges()
-	AudioManager.play_voice_key(VOICE_KEY)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_restore_music()
 	_log("scene.ready", {"scene": "mercado"})
 

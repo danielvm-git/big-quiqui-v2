@@ -74,7 +74,7 @@ func _ready() -> void:
 	_setup_recycle()
 	_setup_hints()
 	_connect_inputs()
-	AudioManager.play_voice_key(VOICE_KEY)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_restore_music()
 	_log("scene.ready", {"scene": "vila"})
 

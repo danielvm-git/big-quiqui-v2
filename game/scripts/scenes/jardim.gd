@@ -58,7 +58,7 @@ func _ready() -> void:
 		tickle.tapped.connect(_on_tickled)
 	($HomeButton as TapButton).tapped.connect(_on_home_tapped)
 	_play_stream("play_music", MUSIC_PATH)
-	AudioManager.play_voice_key(VOICE_KEY)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_log("scene.ready", {"scene": "jardim"})
 
 

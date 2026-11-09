@@ -85,7 +85,7 @@ func _ready() -> void:
 	_rebuild_blobs()
 	_apply_tint()
 	_play_stream("play_music", MUSIC_PATH)
-	AudioManager.play_voice_key(VOICE_KEY)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_log("scene.ready", {"scene": "banheiro"})
 
 

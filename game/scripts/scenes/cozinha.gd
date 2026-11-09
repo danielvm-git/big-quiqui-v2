@@ -65,7 +65,7 @@ func _ready() -> void:
 	if _care_state() == CareSteps.IDLE:
 		_care_loop().call("begin_step", CareSteps.FEED)
 	_play_stream("play_music", MUSIC_PATH)
-	AudioManager.play_voice_key(VOICE_KEY)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_log("scene.ready", {"scene": "cozinha"})
 
 

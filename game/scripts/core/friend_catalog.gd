@@ -51,7 +51,7 @@ static func voice_path(id: String) -> String:
 	var key: String = voice_key(id)
 	if key.is_empty():
 		return ""
-	return AudioManager.voice_path_for_key(key)
+	return VoiceKeyResolver.path_for_key(key)
 
 
 ## FIX-05: minigame payouts are tuning data in `EconomyData`. A missing or negative

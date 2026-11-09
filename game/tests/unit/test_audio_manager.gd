@@ -187,7 +187,7 @@ func test_exit_tree_is_safe_twice_and_without_players() -> void:
 
 
 func test_voice_key_resolves_to_pt_br_stream() -> void:
-	var path: String = AudioManager.voice_path_for_key("vo.kitchen.intro")
+	var path: String = VoiceKeyResolver.path_for_key("vo.kitchen.intro")
 	assert_eq(path, "res://assets/audio/voice/pt_BR/kitchen_intro.ogg")
 	assert_true(ResourceLoader.exists(path))
 	assert_true(am.play_voice_key("vo.kitchen.intro"))
@@ -199,7 +199,7 @@ func test_an_unknown_voice_key_returns_false_and_logs_missing_key() -> void:
 
 
 func test_an_invalid_voice_key_segment_is_rejected() -> void:
-	assert_eq(AudioManager.voice_path_for_key("vo.Kitchen.intro"), "")
+	assert_eq(VoiceKeyResolver.path_for_key("vo.Kitchen.intro"), "")
 	assert_false(am.play_voice_key("vo.../../../etc.intro"))
 
 

@@ -65,7 +65,7 @@ func _ready() -> void:
 	_connect_chrome()
 	close_celebrate_if_needed()
 	_enter_state(STATE_INTRO)
-	AudioManager.play_voice_key(FriendCatalog.voice_key(FRIEND_ID))
+	VoicePlayback.play_key(self, FriendCatalog.voice_key(FRIEND_ID))
 	_restore_music()
 	_log("scene.ready", {"scene": "pinguim_jogo"})
 

@@ -17,11 +17,7 @@ const DEFAULT_BUSES: Array[String] = [BUS_MUSIC, BUS_SFX, BUS_VOICE]
 const SFX_POOL_SIZE: int = 8
 const CROSSFADE_SEC: float = 0.4
 const DUCK_DB: float = -9.0
-const VOICE_KEY_PREFIX: String = "vo."
-const VOICE_ROOT: String = "res://assets/audio/voice/"
-
 var music_db: float = -6.0
-const VOICE_LOCALES: Array[String] = ["pt_BR"]
 var voice_locale: String = "pt_BR"
 var sfx_db: float = -3.0
 var voice_db: float = 0.0
@@ -201,21 +197,7 @@ func play_voice(stream: AudioStream) -> bool:
 
 ## `vo.<scene>.<line>` → `assets/audio/voice/<locale>/<scene>_<line>.ogg`
 static func voice_path_for_key(key: String, locale: String = "pt_BR") -> String:
-	if not key.begins_with(VOICE_KEY_PREFIX):
-		return ""
-	var tail: String = key.substr(VOICE_KEY_PREFIX.length())
-	if tail.is_empty():
-		return ""
-	var parts: PackedStringArray = tail.split(".")
-	if parts.is_empty():
-		return ""
-	for part: String in parts:
-		if not Ids.is_valid(part):
-			return ""
-	if not VOICE_LOCALES.has(locale):
-		return ""
-	var file: String = "_".join(parts) + ".ogg"
-	return "%s%s/%s" % [VOICE_ROOT, locale, file]
+	return VoiceKeyResolver.path_for_key(key, locale)
 
 
 func play_voice_key(key: String) -> bool:

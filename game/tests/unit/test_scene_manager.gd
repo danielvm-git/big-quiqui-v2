@@ -1,4 +1,5 @@
 # story: e01s02
+# story: e12s02
 extends GutTest
 ## SC-E01-P1-01/02 — SceneManager walks its declared FSM, never drops a rapid
 ## request (1-slot queue), and recovers from a stuck transition at 2.0 s.
@@ -7,6 +8,8 @@ const SCENE_A: String = "res://scenes/casa.tscn"
 const SCENE_B: String = "res://scenes/cozinha.tscn"
 const SCENE_C: String = "res://scenes/banheiro.tscn"
 const SCENE_MISSING: String = "res://scenes/nao_existe_nunca.tscn"
+const DEF_DEV_SMOKE: String = "dev_smoke"
+const DEF_MISSING: String = "kitchen"
 
 var sm: Node = null
 var loaded: Array[String] = []
@@ -294,3 +297,49 @@ func test_test_mode_never_swaps_the_real_scene() -> void:
 	assert_true(production_swaps.is_empty(), "no production swap under TestReset")
 	assert_eq(sm.production_swap_path, "")
 	assert_eq(queued_signals, [false], "the request still flows — only the swap is suppressed")
+
+
+# ── e12s02: navigation by scene id ───────────────────────────────────────────
+
+
+func test_request_def_drives_the_same_fsm_as_request_scene() -> void:
+	var probe: FsmProbe = FsmProbe.new().attach(sm.fsm)
+	var started: bool = sm.request_def(DEF_DEV_SMOKE)
+	assert_true(started)
+	assert_eq(sm.fsm.state, "FADING_OUT")
+	_drive(2.0)
+	assert_eq(loaded, [SceneManager.SCENE_PLAYER_PATH])
+	assert_eq(sm.fsm.state, "IDLE")
+	assert_true(probe.is_clean(), probe.summary())
+	probe.detach()
+
+
+func test_request_def_uses_the_one_slot_pending_queue() -> void:
+	sm.request_def(DEF_DEV_SMOKE)
+	assert_false(sm.request_def("bathroom"), "second def is parked")
+	_drive(4.0)
+	assert_eq(loaded, [SceneManager.SCENE_PLAYER_PATH, SceneManager.SCENE_PLAYER_PATH])
+
+
+func test_consume_def_returns_the_def_once() -> void:
+	sm.request_def(DEF_DEV_SMOKE)
+	_drive(2.0)
+	var first: SceneDef = sm.consume_def()
+	var second: SceneDef = sm.consume_def()
+	assert_not_null(first)
+	assert_eq(first.id, DEF_DEV_SMOKE)
+	assert_null(second, "a second read must be empty")
+
+
+func test_request_def_for_a_missing_tres_is_rejected_without_swap() -> void:
+	assert_false(sm.request_def(DEF_MISSING))
+	assert_eq(loaded, [] as Array[String])
+	assert_false(sm.is_busy())
+
+
+func test_def_navigation_logs_scene_kitchen_slug() -> void:
+	assert_eq(sm.scene_slug_for_id("kitchen"), "scene.kitchen")
+
+
+func test_legacy_slug_for_cozinha_path_is_unchanged() -> void:
+	assert_eq(sm._slug("res://scenes/cozinha.tscn"), "scene.cozinha")

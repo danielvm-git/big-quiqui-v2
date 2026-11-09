@@ -107,7 +107,7 @@ func _apply_state() -> void:
 	_phase = 0.0
 	_apply_bob()
 	if dancing:
-		AudioManager.play_voice_key(VOICE_KEY)
+		VoicePlayback.play_key(self, VOICE_KEY)
 		_play_stream("play_sfx", CONFETTI_SFX)
 		rig_celebrate()
 		_log("party.dance", {"placed": _placed_count()})

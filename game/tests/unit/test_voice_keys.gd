@@ -11,6 +11,6 @@ func test_every_scene_voice_key_resolves() -> void:
 		"vo.duck.intro",
 	]
 	for key: String in keys:
-		var path: String = AudioManager.voice_path_for_key(key)
+		var path: String = VoiceKeyResolver.path_for_key(key)
 		assert_false(path.is_empty(), key)
 		assert_true(ResourceLoader.exists(path), path)

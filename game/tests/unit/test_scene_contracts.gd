@@ -1,4 +1,5 @@
 # story: e11s01
+# story: e12s02
 extends GutTest
 ## INV-07 — every shipped scene honours the house contract, read from the artifact.
 ##
@@ -12,6 +13,12 @@ const ROOT_TYPES: Array[String] = [
 # TextureRect.StretchMode.STRETCH_KEEP_ASPECT_COVERED and ExpandMode.EXPAND_IGNORE_SIZE.
 const COVERED: int = 6
 const EXPAND_IGNORE_SIZE: int = 1
+
+
+func test_is_shipped_accepts_a_legacy_path_and_a_scene_id() -> void:
+	assert_true(SceneCatalog.is_shipped("res://scenes/cozinha.tscn"))
+	assert_true(SceneCatalog.is_shipped("kitchen"))
+	assert_false(SceneCatalog.is_shipped("not_a_room"))
 
 
 func test_every_scene_has_a_control_root_that_spans_the_canvas() -> void:

@@ -44,7 +44,7 @@ func _ready() -> void:
 	confetti.global_position = rig.get_visual_global_rect().get_center()
 	confetti.restart()
 	_play_music_once()
-	AudioManager.play_voice_key(VOICE_KEY)
+	VoicePlayback.play_key(self, VOICE_KEY)
 	_log("scene.ready", {"scene": "celebracao"})
 	# Close if we can, then hold: every other room returns to the hub by itself, and a
 	# celebration that only escapes through the corner button is a trap.

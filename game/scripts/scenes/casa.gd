@@ -196,7 +196,7 @@ func _restore_music() -> void:
 
 
 func _play_voice() -> void:
-	voice_started = AudioManager.play_voice_key(VOICE_KEY)
+	voice_started = VoicePlayback.play_key(self, VOICE_KEY)
 	if voice_started:
 		_log("voice.start", {"track": "home_welcome"})
 
