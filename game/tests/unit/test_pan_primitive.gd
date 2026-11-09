@@ -24,12 +24,36 @@ func test_a_long_drag_cancels_the_tap() -> void:
 	if pan == null:
 		return
 	pan.set("tolerance", 24.0)
-	pan.call("begin", Vector2(100.0, 100.0))
+	pan.call("begin", Vector2(100.0, 100.0), 0, true)
 	pan.call("move_to", Vector2(110.0, 100.0))
 	assert_true(bool(pan.call("end_allows_tap")), "under tolerance still taps")
-	pan.call("begin", Vector2(100.0, 100.0))
+	pan.call("begin", Vector2(100.0, 100.0), 0, true)
 	pan.call("move_to", Vector2(160.0, 100.0))
 	assert_false(bool(pan.call("end_allows_tap")), "SC-e13s03-P0-02")
+
+
+func test_a_press_on_a_target_never_pans() -> void:
+	var pan: RefCounted = _new_pan()
+	pan.set("world_size", Vector2(3000.0, 1080.0))
+	pan.call("begin", Vector2(100.0, 100.0), 0, true)
+	pan.call("move_to", Vector2(160.0, 100.0))
+	assert_eq(pan.get("offset"), Vector2.ZERO, "B6 the target press holds still")
+	assert_eq(str(pan.call("state_id")), "HELD")
+
+
+func test_one_finger_owns_the_gesture_until_it_lifts() -> void:
+	var pan: RefCounted = _new_pan()
+	pan.set("world_size", Vector2(3000.0, 1080.0))
+	assert_true(bool(pan.call("begin", Vector2(100.0, 100.0), 7)))
+	assert_false(bool(pan.call("begin", Vector2(900.0, 100.0), 8)), "a second finger is refused")
+	pan.call("move_to", Vector2(900.0, 100.0), 8)
+	assert_eq(pan.get("offset"), Vector2.ZERO, "a stranger's move is ignored")
+	assert_false(bool(pan.call("end_allows_tap", 8)), "a stranger's lift is ignored")
+	assert_eq(str(pan.call("state_id")), "PANNING", "the owner still holds it")
+	pan.call("move_to", Vector2(40.0, 100.0), 7)
+	assert_almost_eq((pan.get("offset") as Vector2).x, 60.0, 0.001, "the owner pans")
+	assert_false(bool(pan.call("end_allows_tap", 7)), "a pan lift is not a tap")
+	assert_eq(str(pan.call("state_id")), "IDLE")
 
 
 func test_follow_scrolls_to_a_target_and_clamps() -> void:

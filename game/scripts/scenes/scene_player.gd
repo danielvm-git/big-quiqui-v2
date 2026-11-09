@@ -138,9 +138,7 @@ func _exit_room() -> void:
 	var target: String = "home"
 	if loaded_def != null and not loaded_def.next_scene_id.is_empty():
 		target = loaded_def.next_scene_id
-	var sm: Node = get_node_or_null("/root/SceneManager")
-	if sm != null and sm.has_method("request_def"):
-		sm.call("request_def", target)
+	SceneNav.open(get_node_or_null("/root/SceneManager"), target)
 
 
 func _sync_fsm() -> void:

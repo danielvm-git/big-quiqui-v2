@@ -64,7 +64,9 @@ func test_a_duplicate_id_builds_one_button() -> void:
 	assert_eq((tpl.get("_buttons") as Dictionary).size(), 2, "A21 no leaked twin")
 
 
-func _mount(mode_name: String, goal: int = 2, ids: PackedStringArray = PackedStringArray(["apple", "grape"])) -> RefCounted:
+func _mount(
+	mode_name: String, goal: int = 2, ids: PackedStringArray = PackedStringArray(["apple", "grape"])
+) -> RefCounted:
 	var tray: Control = Control.new()
 	add_child_autofree(tray)
 	var step: StepDef = StepDef.new()
