@@ -1,0 +1,69 @@
+story_id: e13s08
+spec: e13s08.md
+epic_id: e13
+title: "Steer and Spawner with t50_lanes (pulled forward by D6)"
+status: failing
+bcps: 8
+scenarios: ["SC-e13s08-P0-01", "SC-e13s08-P0-02", "SC-e13s08-P0-03", "SC-e13s08-P0-04", "SC-e13s08-P1-01", "SC-e13s08-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn (a lane game that collects)"
+tasks:
+- id: e13s08-t01
+  description: "Write the failing tests: lane snapping on release only, seeded spawner determinism, catch scores and miss does not"
+  verify: test -f game/tests/unit/test_steer_primitive.gd
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "modifier"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s08-t02
+  description: "Implement the Steer primitive (free + lanes) and the Spawner modifier with a seed"
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "modifier"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s08-t03
+  description: "Implement `t50_lanes` with catching and no loss, consuming both"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t50_lanes
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "modifier"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing
+- id: e13s08-t04
+  description: "Author a lane def and prove seed-determinism plus zero orphans across a long run"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_spawner
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "modifier"
+      - "template"
+      - "unit"
+      - "integration"
+  status: failing

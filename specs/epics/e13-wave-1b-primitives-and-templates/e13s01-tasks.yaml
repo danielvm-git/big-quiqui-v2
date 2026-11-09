@@ -1,0 +1,79 @@
+story_id: e13s01
+spec: e13s01.md
+epic_id: e13
+title: "Rub Primitive and t34_rub_reveal (reveal)"
+status: failing
+bcps: 8
+scenarios: ["SC-e13s01-P0-01", "SC-e13s01-P0-02", "SC-e13s01-P0-03", "SC-e13s01-P0-04", "SC-e13s01-P1-01", "SC-e13s01-P1-02", "SC-e13s01-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn (a step revealed by rubbing)"
+tasks:
+- id: e13s01-t01
+  description: "Write the failing primitive tests: hull rejection, progress ratio, one loop channel, stop on release"
+  verify: test -f game/tests/unit/test_rub_primitive.gd
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "template"
+      - "unit"
+      - "geometry"
+  status: failing
+- id: e13s01-t02
+  description: "Implement the Rub primitive over `ScrubGesture`, with the three modes as data and no self-completion"
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "template"
+      - "unit"
+      - "geometry"
+  status: failing
+- id: e13s01-t03
+  description: "Implement `t34_rub_reveal` over the layer list in the def"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t34_rub_reveal
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "template"
+      - "unit"
+      - "geometry"
+  status: failing
+- id: e13s01-t04
+  description: "Author one def that uses the template (a reveal step for the playroom, or a catalogue probe def until e14 assigns the room)"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t34_rub_reveal
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "template"
+      - "unit"
+      - "geometry"
+  status: failing
+- id: e13s01-t05
+  description: "Prove the hull agrees at `1920×1080` and `2048×1536` with `GeometryOracle`"
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_rub_primitive
+  risk: P0
+  security: none
+  allure:
+    severity: critical
+    categories:
+      - "wave-1b"
+      - "primitives"
+      - "template"
+      - "unit"
+      - "geometry"
+  status: failing

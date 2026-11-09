@@ -51,7 +51,35 @@ development_status:
   e12s04: done
   e12s05: done
   e12s06: done
+  e13: planned
+  e13s01: planned
+  e13s02: planned
+  e13s03: planned
+  e13s04: planned
+  e13s05: planned
+  e13s06: planned
+  e13s07: planned
+  e13s08: planned
+  e13s09: planned
 
 epics:
 
 stories:
+  e13s01:
+    status: planned
+  e13s02:
+    status: planned
+  e13s03:
+    status: planned
+  e13s04:
+    status: planned
+  e13s05:
+    status: planned
+  e13s06:
+    status: planned
+  e13s07:
+    status: planned
+  e13s08:
+    status: planned
+  e13s09:
+    status: planned

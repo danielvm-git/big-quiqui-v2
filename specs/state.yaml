@@ -1,10 +1,10 @@
 project: big-quiqui-v2
 version: 0.10.0
 workflow_mode: solo-git
-active_flow: null
+active_flow: build_epic
 lifecycle_phase: release
-current_epic: e12-builder-player-and-first-loop
-current_story: e12s06
+current_epic: e13-wave-1b-primitives-and-templates
+current_story: null
 review_gate:
   skill: null
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
@@ -172,7 +172,7 @@ bug_cycle:
     - BUG-011
     - BUG-012
     outcome: 11 fixed, BUG-004 wontfix (PII policy, pinned by test)
-last_updated: '2026-11-07T18:15:00-03:00'
+last_updated: '2026-11-09T15:10:00-03:00'
 release:
   ci_verified: true
   last_released: v0.10.0
@@ -197,17 +197,16 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: release-branch
-  epic: null
-  epic_wsjf: null
-  first_story: null
+  next_skill: slice-tasks
+  epic: e13-wave-1b-primitives-and-templates
+  epic_wsjf: 8.1
+  first_story: e13s01
   context: >-
-    All 11 epics (e01..e11) are built, tested and reviewed green: 17 scenes, 75 test scripts,
-    595 tests, 8782 asserts. Preflight is green *after* the close-out pass fixed a red L5c
-    (project.godot still said 0.9.1 while the tag was v0.10.0) and caught the generated docs up
-    two epics. There is **no code work left for v1.0.0**: the only remaining action is the
-    breaking release (`feat(e11)!:` on main), which is deliberately a human decision — agent
-    runs in this repo are approved to commit, push, PR and merge, never to tag or publish.
+    Worktree ../big-quiqui-v2-e13 is on epic/e13-wave-1b-primitives-and-templates cut from
+    e12 tip 803df5c. Frozen e13 capsule, threat model, test plan, and builder design page
+    are imported. SCOPE_LATEST.yaml and BUILDER_REUSE_MAP.md already matched that tip.
+    Next: preflight green on this worktree, then parallel e14/e15/e16 capsules, then
+    e13s01. Do not push, open a PR, merge, tag, or publish. D4 version rung is not taken.
   open_decisions:
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
     parses a digit, and the coin icon plus the sold badge carry the meaning. TEST_PLAN section 3
@@ -272,6 +271,30 @@ run_baseline:
     forward instead of inventing a story; e10 keeps its place in the ladder.
 
 gate_decisions:
+- gate: preflight (e13 worktree, before any story or later-epic draft)
+  decision: >-
+    GREEN on ../big-quiqui-v2-e13 at the imported tree: 91 scripts, 659 tests,
+    9016 asserts, L0 through L6 and L5b pass. PATH included ~/.pyenv/shims.
+  reason: >-
+    The plan requires a green preflight on the new worktree before e13s01 and
+    before the e14/e15/e16 spec agents write capsules.
+- gate: kickoff-branch base (standing approval, plan overrides default-branch anchor)
+  decision: >-
+    Created ../big-quiqui-v2-e13 with git worktree add -b
+    epic/e13-wave-1b-primitives-and-templates 803df5c. Did not checkout the dirty
+    primary tree and did not use main as the base. Preflight runs on the new
+    worktree before any story or later-epic spec draft.
+  reason: >-
+    Main does not contain the e12 player. The primary checkout is dirty
+    (game/project.godot) and the plan forbids checking it out. The e12 worktree
+    and its dirty .import files stay untouched.
+- gate: spec import (docs(e13))
+  decision: >-
+    Copied only the frozen e13 capsule, e13 threat model, e13 test plan, and
+    QUIQUI_BUILDER_DESIGN.html. SCOPE_LATEST.yaml and BUILDER_REUSE_MAP.md were
+    already identical at 803df5c. Scene edits, games/, and BUG-062/063 stayed in
+    the architecture worktree.
+  reason: D1-D6 stay frozen. Planning spine is not re-run for e13.
 - gate: e12s03–e12s06 develop-tdd (wave 1a player slice)
   decision: >-
     Landed ScenePlayer/StepRunner, Give→Receive + reactions, hint layer, t20_drag_snap and
@@ -569,24 +592,22 @@ decisions:
     missing bedtime voice line, rig dressing outside the closet and the per-scene
     helper twins are recorded decisions, not silent gaps.'
 epic_cycle:
-  step: 4
-  story: e10s01
-  story_bcps: 4
-  epic_epic_bcps: 14
+  step: 0
+  story: null
+  epic: e13-wave-1b-primitives-and-templates
+  story_bcps: null
+  epic_bcps: 59
   fast_mode: false
-  started_at: '2026-11-07T06:34:44-0300'
-  story_started_at: '2026-11-07T06:40:00-0300'
-  story_completed_at: '2026-11-07T07:06:17-0300'
+  started_at: '2026-11-09T15:10:00-03:00'
+  story_started_at: null
+  story_completed_at: null
   completed_at: null
   audit_result: null
   review_result: null
   notes: >-
-    e10 cycle opened in the isolated worktree ../big-quiqui-v2-e10 (branch
-    epic/e10-friends-minigames-and-album-scenes from origin/main 0bec598) while a
-    separate concurrent session finished the e09 post-epic review on
-    epic/e09-post-epic-review in the primary checkout. Shared spec files
-    (state.yaml, execution-status.yaml, registry.yaml) diverge by design; new e10
-    bug ids start at BUG-060 to avoid colliding with the review session's list.
+    e13 cycle opened in ../big-quiqui-v2-e13 on epic/e13-wave-1b-primitives-and-templates
+    from 803df5c. Threat model is already imported. Step 0 is satisfied by that file.
+    Preflight on this worktree is the next gate before e13s01 and before e14-e16 drafts.
 metrics:
   story_start: null
   story_end: null
