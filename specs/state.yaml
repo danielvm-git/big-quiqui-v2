@@ -197,7 +197,7 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: develop-tdd
+  next_skill: verify-work
   epic: e13-wave-1b-primitives-and-templates
   epic_wsjf: 8.1
   first_story: e13s01
@@ -213,7 +213,8 @@ handoff:
     e13s01 through e13s06 are done. t22 and t3 are skipped at low confidence.
     e13s01 through e13s07 are done. t22 and t3 stay skipped.
     e13s01 through e13s08 are done. Latest preflight is 108 scripts / 706 tests / 9206 asserts.
-    Next story is e13s09 (prize pick and the wave gate). Do not push, open a PR, merge, tag, or publish.
+    e13s01 through e13s09 are done. Latest preflight is 109 scripts / 709 tests / 9253 asserts.
+    Next is the e13 review (verify-work, audit-code, two reviewers). Do not push, open a PR, merge, tag, or publish.
     D4 version rung is not taken.
   open_decisions:
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
@@ -279,6 +280,12 @@ run_baseline:
     forward instead of inventing a story; e10 keeps its place in the ladder.
 
 gate_decisions:
+- gate: preflight after e13s09
+  decision: >-
+    GREEN: 109 scripts, 709 tests, 9253 asserts, trace-stories --strict pass.
+    t51_prize_pick and the 13-row template table are in. Coverage stays
+    1,071 of 1,801 (59.5%) because t22 and t3 are skipped.
+  reason: Last e13 story gate. Epic review is next. No push.
 - gate: preflight after e13s08
   decision: >-
     GREEN: 108 scripts, 706 tests, 9206 asserts. Steer, Spawner, t50_lanes,

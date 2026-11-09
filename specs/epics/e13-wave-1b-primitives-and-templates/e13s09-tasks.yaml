@@ -2,7 +2,7 @@ story_id: e13s09
 spec: e13s09.md
 epic_id: e13
 title: "t51_prize_pick and the Wave-1 Completeness Gate"
-status: failing
+status: passing
 bcps: 5
 scenarios: ["SC-e13s09-P1-01", "SC-e13s09-P1-02", "SC-e13s09-P1-03", "SC-e13s09-P1-04", "SC-e13s09-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn (a pick-one reward)"
@@ -19,7 +19,7 @@ tasks:
       - "template"
       - "gate"
       - "unit"
-  status: failing
+  status: passing
 - id: e13s09-t02
   description: "Implement `t51_prize_pick` with the prize set from the def and pay-once semantics"
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
@@ -32,7 +32,7 @@ tasks:
       - "template"
       - "gate"
       - "unit"
-  status: failing
+  status: passing
 - id: e13s09-t03
   description: "Write `TEMPLATE_TABLE.md` for all thirteen wave-1 templates, with the evidence source per row"
   verify: test -s specs/product/TEMPLATE_TABLE.md
@@ -45,7 +45,7 @@ tasks:
       - "template"
       - "gate"
       - "unit"
-  status: failing
+  status: passing
 - id: e13s09-t04
   description: "Reconcile the scope's percentage with the table and run the whole gate"
   verify: bash scripts/preflight.sh
@@ -58,4 +58,4 @@ tasks:
       - "template"
       - "gate"
       - "unit"
-  status: failing
+  status: passing

@@ -60,7 +60,7 @@ development_status:
   e13s06: done
   e13s07: done
   e13s08: done
-  e13s09: planned
+  e13s09: done
 
 epics:
 
@@ -98,4 +98,6 @@ stories:
     started_at: "2026-11-09T15:44:00-03:00"
     completed_at: "2026-11-09T15:46:00-03:00"
   e13s09:
-    status: planned
+    status: done
+    started_at: "2026-11-09T15:47:00-03:00"
+    completed_at: "2026-11-09T15:50:00-03:00"

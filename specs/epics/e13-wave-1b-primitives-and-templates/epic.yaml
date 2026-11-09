@@ -67,5 +67,5 @@ stories:
 - id: e13s09
   title: "t51_prize_pick and the Wave-1 Completeness Gate"
   bcps: 5
-  status: planned
+  status: done
   delta: ADDED
