@@ -5,6 +5,7 @@
 # story: e13s04
 # story: e13s05
 # story: e13s08
+# story: e13s09
 class_name TemplateCatalog
 extends RefCounted
 ## Closed registry from template id to script — defs name ids only (F-2).
@@ -21,6 +22,7 @@ const SCRIPT_FOR_ID: Dictionary = {
 	"t0_title": "res://scripts/templates/t0_title.gd",
 	"t32_reward": "res://scripts/templates/t32_reward.gd",
 	"t50_lanes": "res://scripts/templates/t50_lanes.gd",
+	"t51_prize_pick": "res://scripts/templates/t51_prize_pick.gd",
 }
 
 
