@@ -157,16 +157,24 @@ func _sync_fsm() -> void:
 func _begin_step(index: int) -> void:
 	if loaded_def == null or index < 0 or index >= loaded_def.steps.size():
 		return
-	if _tray == null:
-		_tray = get_node_or_null("TrayZone") as Control
-	if _rig == null:
-		_rig = get_node_or_null("QuiQuiRig") as QuiQuiRig
+	_ensure_step_nodes()
 	_active_step = index
 	_step_credited = false
 	_teardown_template()
 	var step: StepDef = loaded_def.steps[index] as StepDef
 	LogSink.emit_from(self, "step.started", {"index": index})
 	_reactions.bind(self, _rig)
+	_mount_template(step)
+
+
+func _ensure_step_nodes() -> void:
+	if _tray == null:
+		_tray = get_node_or_null("TrayZone") as Control
+	if _rig == null:
+		_rig = get_node_or_null("QuiQuiRig") as QuiQuiRig
+
+
+func _mount_template(step: StepDef) -> void:
 	var ctx: TemplateContext = TemplateContext.new()
 	ctx.host = self
 	ctx.rig = _rig
