@@ -123,16 +123,20 @@ func _build_strip() -> void:
 	_row = HBoxContainer.new()
 	_row.add_theme_constant_override("separation", int(GAP))
 	_strip.add_child(_row)
+	_fill_row()
+	_ctx.tray.add_child(_strip)
+	_bin = TemplateKit.tap_button(BIN_ART, Vector2(_strip.size.x + GAP, 0.0))
+	_bin.tapped.connect(_on_bin)
+	_ctx.tray.add_child(_bin)
+
+
+func _fill_row() -> void:
 	for item_id: String in _ctx.step_def.item_ids:
 		var item: TapButton = TemplateKit.tap_button(item_id, Vector2.ZERO)
 		item.custom_minimum_size = TapButton.MIN_HIT_SIZE
 		item.tapped.connect(snap.bind(item_id))
 		_row.add_child(item)
 		_buttons[item_id] = item
-	_ctx.tray.add_child(_strip)
-	_bin = TemplateKit.tap_button(BIN_ART, Vector2(_strip.size.x + GAP, 0.0))
-	_bin.tapped.connect(_on_bin)
-	_ctx.tray.add_child(_bin)
 
 
 func _on_bin() -> void:

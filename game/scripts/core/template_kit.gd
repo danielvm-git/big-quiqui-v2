@@ -89,3 +89,17 @@ static func release_tray(tray: Control) -> void:
 		if child is Control and child.has_meta(HELD_META):
 			(child as Control).mouse_filter = int(child.get_meta(HELD_META)) as Control.MouseFilter
 			child.remove_meta(HELD_META)
+
+
+## Puts a touch pad and the layer it moves just above the backdrop, below every button the player owns,
+## and wires the pad to the three handlers. One place for the order every pad template needs.
+static func mount_pad(host: Control, pad: TouchPad, layer: Control, handlers: Array[Callable]) -> void:
+	var backdrop: Node = host.get_node_or_null("Background")
+	var slot: int = 0 if backdrop == null else backdrop.get_index() + 1
+	host.add_child(pad)
+	host.add_child(layer)
+	host.move_child(pad, slot)
+	host.move_child(layer, slot + 1)
+	pad.pressed.connect(handlers[0])
+	pad.moved.connect(handlers[1])
+	pad.released.connect(handlers[2])

@@ -32,32 +32,36 @@ static func validate(def: SceneDef) -> SceneDef:
 	if def == null:
 		_reject("", "null_def")
 		return null
-	var scene_id: String = def.id
-	if not Ids.is_valid(scene_id):
-		_reject(scene_id, "invalid_id")
+	var reason: String = _def_problem(def)
+	if not reason.is_empty():
+		_reject(def.id, reason)
 		return null
-	if def.background_id.is_empty() or not SceneMedia.background_exists(def.background_id):
-		_reject(scene_id, "missing_background")
-		return null
-	if not def.music_id.is_empty() and not SceneMedia.music_exists(def.music_id):
-		_reject(scene_id, "missing_music")
-		return null
-	if def.steps.is_empty():
-		_reject(scene_id, "empty_steps")
-		return null
-	for step_res: Resource in def.steps:
-		if step_res == null or not step_res is StepDef:
-			_reject(scene_id, "unknown_template")
-			return null
-		var step: StepDef = step_res as StepDef
-		if not TemplateCatalog.is_known(step.template_id):
-			_reject(scene_id, "unknown_template")
-			return null
-		var reason: String = StepParams.problem(step)
-		if not reason.is_empty():
-			_reject(scene_id, reason)
-			return null
 	return def
+
+
+static func _def_problem(def: SceneDef) -> String:
+	if not Ids.is_valid(def.id):
+		return "invalid_id"
+	if def.background_id.is_empty() or not SceneMedia.background_exists(def.background_id):
+		return "missing_background"
+	if not def.music_id.is_empty() and not SceneMedia.music_exists(def.music_id):
+		return "missing_music"
+	if def.steps.is_empty():
+		return "empty_steps"
+	for step_res: Resource in def.steps:
+		var reason: String = _step_problem(step_res)
+		if not reason.is_empty():
+			return reason
+	return ""
+
+
+static func _step_problem(step_res: Resource) -> String:
+	if step_res == null or not step_res is StepDef:
+		return "unknown_template"
+	var step: StepDef = step_res as StepDef
+	if not TemplateCatalog.is_known(step.template_id):
+		return "unknown_template"
+	return StepParams.problem(step)
 
 
 static func _reject(scene_id: String, reason: String) -> void:

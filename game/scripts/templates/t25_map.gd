@@ -165,28 +165,15 @@ func _pin_at(point: Vector2) -> String:
 func _build_surface() -> void:
 	if _ctx == null or _ctx.step_def == null or not (_ctx.host is Control) or not _def.rows_match():
 		return
-	var host: Control = _ctx.host as Control
 	_pad = TouchPad.new()
 	_pad.name = "MapPad"
 	_world = Control.new()
 	_world.name = "MapWorld"
 	_world.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_world.size = _pan.world_size
-	var slot: int = _under_chrome(host)
-	host.add_child(_pad)
-	host.add_child(_world)
-	host.move_child(_pad, slot)
-	host.move_child(_world, slot + 1)
-	_pad.pressed.connect(_on_pressed)
-	_pad.moved.connect(_on_moved)
-	_pad.released.connect(_on_released)
+	TemplateKit.mount_pad(_ctx.host as Control, _pad, _world, [_on_pressed, _on_moved, _on_released])
 	_build_pins()
 	_place_world()
-
-
-func _under_chrome(host: Control) -> int:
-	var backdrop: Node = host.get_node_or_null("Background")
-	return 0 if backdrop == null else backdrop.get_index() + 1
 
 
 func _build_pins() -> void:

@@ -119,29 +119,24 @@ func _land(index: int) -> void:
 func _build_surface() -> void:
 	if _ctx == null or not (_ctx.host is Control):
 		return
-	var host: Control = _ctx.host as Control
 	_pad = TouchPad.new()
 	_pad.name = "LanePad"
 	_field = Control.new()
 	_field.name = "LaneField"
 	_field.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_field.set_anchors_preset(Control.PRESET_FULL_RECT)
-	var backdrop: Node = host.get_node_or_null("Background")
-	var slot: int = 0 if backdrop == null else backdrop.get_index() + 1
-	host.add_child(_pad)
-	host.add_child(_field)
-	host.move_child(_pad, slot)
-	host.move_child(_field, slot + 1)
-	_pad.pressed.connect(_on_pressed)
-	_pad.moved.connect(_on_moved)
-	_pad.released.connect(_on_released)
+	TemplateKit.mount_pad(_ctx.host as Control, _pad, _field, [_on_pressed, _on_moved, _on_released])
+	_add_basket()
+	_steer.position = Vector2(_steer.lane_center(0), _steer.bounds.size.y * 0.8)
+	_move_basket()
+
+
+func _add_basket() -> void:
 	_basket = ItemArt.icon(_basket_id(), TapButton.MIN_HIT_SIZE.x)
 	_basket.name = "Basket"
 	_basket.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	_basket.size = TapButton.MIN_HIT_SIZE
 	_field.add_child(_basket)
-	_steer.position = Vector2(_steer.lane_center(0), _steer.bounds.size.y * 0.8)
-	_move_basket()
 
 
 func _move_basket() -> void:

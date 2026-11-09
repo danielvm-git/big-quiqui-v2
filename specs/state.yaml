@@ -13,6 +13,24 @@ review_gate:
   max_rounds: 6
   verdict: PASS
   history:
+  - epic: e13-wave-1b-primitives-and-templates
+    round: 1
+    verdict: FAIL
+    scores:
+      reviewer_a: 79.2
+      reviewer_b: 80.0
+    reports:
+    - specs/verifications/REVIEW-A-e13-2026-11-09.md
+    - specs/verifications/REVIEW-B-e13-2026-11-09.md
+    must_fix: [A1, A2, A3, A4, A5, A6, A7, B1, B2, B3, B4, B5, B6]
+    audit: specs/verifications/AUDIT-e13-2026-11-09.md
+    outcome: >-
+      Every template passed its unit test and none could be driven by the player, because the player
+      forwards no input and the templates built no surface. Fixed: surfaces for all eleven templates
+      with player-level tests, a computed coverage gate, StepParams validation, Fsm gesture machines
+      with a touch owner, scope and epic text at 59.5%. BUG-062 and BUG-063 found on the way. Reviewer B
+      edited files and ran preflight against its instructions; the edits were folded in and are not
+      a second source of truth. Open gap: t45 category tabs need an item-to-category mapping (e14).
   - epic: e11-mbt-monkey-and-ipad-release
     round: 1
     verdict: PASS
@@ -214,8 +232,9 @@ handoff:
     e13s01 through e13s07 are done. t22 and t3 stay skipped.
     e13s01 through e13s08 are done. Latest preflight is 108 scripts / 706 tests / 9206 asserts.
     e13s01 through e13s09 are done. Latest preflight is 109 scripts / 709 tests / 9253 asserts.
-    e13 stories are done. verify-work terminal verdict is preflight at 709 tests.
-    Dual review passed. Next worktree is ../big-quiqui-v2-e14 from this tip.
+    e13 stories are done. Round 1 of the dual-blind review FAILED (A 79.2 with 7 must-fix, B 80.0 with 6):
+    the templates could not be played under the player. Round-1 fixes are in. Latest preflight is
+    114 scripts / 761 tests / 9461 asserts. Round 2 is next (specs/verifications/AUDIT-e13-2026-11-09.md).
     Party uses no t22 step. Do not push, open a PR, merge, tag, or publish.
     Do not push, open a PR, merge, tag, or publish.
     D4 version rung is not taken.

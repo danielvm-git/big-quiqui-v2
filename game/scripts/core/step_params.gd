@@ -21,8 +21,10 @@ static func problem(step: StepDef) -> String:
 	if step == null:
 		return "null_step"
 	var reason: String = _shared(step)
-	if not reason.is_empty():
-		return reason
+	return reason if not reason.is_empty() else _by_template(step)
+
+
+static func _by_template(step: StepDef) -> String:
 	match step.template_id:
 		"t20_drag_snap":
 			return "bad_mode" if not T20_MODES.has(step.mode) else ""
@@ -46,20 +48,27 @@ static func _shared(step: StepDef) -> String:
 	for ids: PackedStringArray in lists:
 		if not _clean_ids(ids):
 			return "bad_id"
-	for icon: String in step.destination_icons:
-		if not icon.is_empty() and not Ids.is_valid(icon):
-			return "bad_id"
-	for lock: String in step.destination_locks:
-		if not lock.is_empty() and not RegEx.create_from_string(LOCK_PATTERN).search(lock):
-			return "bad_id"
-	for single: String in [step.receiver_id, step.tool_id, step.loop_sfx_id, step.on_hit_sfx_id, step.on_miss_sfx_id]:
-		if not single.is_empty() and not Ids.is_valid(single):
-			return "bad_id"
+	if not _clean_optional(step):
+		return "bad_id"
 	if step.repeat_count < 1 or step.repeat_count > COUNT_MAX:
 		return "bad_count"
 	if not is_finite(step.hint_delay_sec) or step.hint_delay_sec < 0.0:
 		return "bad_number"
 	return ""
+
+
+## Icons, locks and the single ids may be empty, but an id that is there must be well formed.
+static func _clean_optional(step: StepDef) -> bool:
+	for icon: String in step.destination_icons:
+		if not icon.is_empty() and not Ids.is_valid(icon):
+			return false
+	for lock: String in step.destination_locks:
+		if not lock.is_empty() and not RegEx.create_from_string(LOCK_PATTERN).search(lock):
+			return false
+	for single: String in [step.receiver_id, step.tool_id, step.loop_sfx_id, step.on_hit_sfx_id, step.on_miss_sfx_id]:
+		if not single.is_empty() and not Ids.is_valid(single):
+			return false
+	return true
 
 
 ## Valid ids and no id twice, so a repeat can never leak a second target.
