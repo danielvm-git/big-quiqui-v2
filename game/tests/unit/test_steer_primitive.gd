@@ -24,6 +24,18 @@ func test_free_stays_where_the_finger_stopped() -> void:
 	assert_almost_eq(at.y, 0.0, 0.001)
 
 
+func test_one_finger_owns_the_steering_until_it_lifts() -> void:
+	var steer: RefCounted = _steer("lanes")
+	assert_true(bool(steer.call("begin", Vector2(10.0, 20.0), 3)))
+	assert_false(bool(steer.call("begin", Vector2(290.0, 20.0), 4)), "B6 a second finger is refused")
+	steer.call("move_to", Vector2(290.0, 20.0), 4)
+	assert_almost_eq((steer.get("position") as Vector2).x, 10.0, 0.001, "a stranger's move is ignored")
+	assert_false(bool(steer.call("release", 4)), "a stranger's lift is ignored")
+	assert_true(bool(steer.call("dragging")))
+	assert_true(bool(steer.call("release", 3)))
+	assert_false(bool(steer.call("dragging")))
+
+
 func _steer(mode_name: String) -> RefCounted:
 	var script: Script = load("res://scripts/components/steer_primitive.gd") as Script
 	var steer: RefCounted = script.new() as RefCounted

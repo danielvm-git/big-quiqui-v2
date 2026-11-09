@@ -33,8 +33,8 @@ func after_each() -> void:
 	sm.manual_step = false
 
 
-func _pad(player: ScenePlayer) -> MapPad:
-	return player.get_node("MapPad") as MapPad
+func _pad(player: ScenePlayer) -> TouchPad:
+	return player.get_node("MapPad") as TouchPad
 
 
 func _pin_point(player: ScenePlayer, dest: String) -> Vector2:

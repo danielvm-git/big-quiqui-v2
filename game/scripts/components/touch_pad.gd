@@ -1,7 +1,7 @@
 # story: e13s03
-class_name MapPad
+class_name TouchPad
 extends Control
-## The touch surface under a map. It forwards one stream of press, move and lift with the finger
+## The touch surface under a room. It forwards one stream of press, move and lift with the finger
 ## index, and drops the mouse echo Godot makes for every touch (`device == -1`).
 
 signal pressed(point: Vector2, index: int)

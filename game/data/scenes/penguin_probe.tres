@@ -6,7 +6,8 @@
 [sub_resource type="Resource" id="step_lanes"]
 script = ExtResource("2_step")
 template_id = "t50_lanes"
-item_ids = PackedStringArray("fish", "berry")
+item_ids = PackedStringArray("strawberry", "banana")
+tool_id = "bowl"
 lane_count = 3
 spawn_seed = 4
 spawn_cadence = 1

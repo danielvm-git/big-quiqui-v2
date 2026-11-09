@@ -18,7 +18,7 @@ var _open_steps: PackedStringArray = PackedStringArray()
 var _refused: bool = false
 var _pointed: String = ""
 var _plays: int = 0
-var _pad: MapPad = null
+var _pad: TouchPad = null
 var _world: Control = null
 var _pins: Dictionary = {}
 var _wish: WishBubble = null
@@ -164,7 +164,7 @@ func _build_surface() -> void:
 	if _ctx == null or _ctx.step_def == null or not (_ctx.host is Control) or not _rows_match():
 		return
 	var host: Control = _ctx.host as Control
-	_pad = MapPad.new()
+	_pad = TouchPad.new()
 	_pad.name = "MapPad"
 	_world = Control.new()
 	_world.name = "MapWorld"

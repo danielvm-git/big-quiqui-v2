@@ -12,7 +12,7 @@ func test_the_same_seed_replays() -> void:
 
 func test_a_second_consumer_uses_the_same_spawner() -> void:
 	var stub: Spawner = Spawner.new()
-	stub.seed = 9
+	stub.rng_seed = 9
 	stub.items = PackedStringArray(["cup"])
 	stub.cadence = 1
 	stub.lifetime = 3
@@ -25,9 +25,28 @@ func test_a_second_consumer_uses_the_same_spawner() -> void:
 	assert_eq(stub.live_count(), 0)
 
 
+func test_live_rows_report_age_and_misses_are_read_only() -> void:
+	var spawner: Spawner = Spawner.new()
+	spawner.rng_seed = 2
+	spawner.items = PackedStringArray(["cup"])
+	spawner.cadence = 1
+	spawner.lifetime = 2
+	spawner.lane_count = 1
+	spawner.start()
+	spawner.tick()
+	spawner.tick()
+	var rows: Array[Dictionary] = spawner.live_rows()
+	assert_eq(rows.size(), 2)
+	assert_eq(int(rows[0]["age"]), 1, "the first row has aged one tick")
+	rows[0]["age"] = 99
+	assert_eq(int(spawner.live_rows()[0]["age"]), 1, "the rows are copies")
+	spawner.tick()
+	assert_eq(spawner.misses(), 1, "a row that ran out of life is one quiet miss")
+
+
 func _run(seed_value: int) -> PackedStringArray:
 	var spawner: Spawner = Spawner.new()
-	spawner.seed = seed_value
+	spawner.rng_seed = seed_value
 	spawner.items = PackedStringArray(["fish", "berry"])
 	spawner.cadence = 1
 	spawner.lifetime = 5
