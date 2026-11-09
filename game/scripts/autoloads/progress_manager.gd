@@ -1,6 +1,7 @@
 # story: e01s03
 # story: e10s01
 # story: e11s01
+# story: e13s05
 extends Node
 ## Owns the typed save model and its atomic persistence (ADR-005).
 ##
@@ -150,6 +151,19 @@ func equip(slot: String, id: String) -> bool:
 
 func equipped(slot: String) -> String:
 	return str(data.equipped_outfits.get(slot, ""))
+
+
+## The bin path. `equip` rejects an empty id, so clearing is its own call.
+## An unknown slot changes nothing.
+func clear_slot(slot: String) -> bool:
+	if not Ids.is_valid(slot):
+		_emit("progress.invalid_equip", {"slot": "invalid"})
+		return false
+	if data == null or not data.equipped_outfits.has(slot):
+		return true
+	data.equipped_outfits.erase(slot)
+	save()
+	return true
 
 
 ## Applies the saved look to a rig without going through the closet: the room that

@@ -1,4 +1,5 @@
 # story: e02s01
+# story: e13s05
 extends Node
 ## The care cycle as an explicit machine (ADR-001 / EXPLICIT_STATE_MACHINES §2):
 ## IDLE -> FEED -> BATH -> DRESS -> PLAY -> SLEEP -> CELEBRATE -> IDLE, where
@@ -108,6 +109,19 @@ func next_step() -> String:
 	if done >= STEP_ORDER.size():
 		return ""
 	return STEP_ORDER[done]
+
+
+## True when this cycle id already paid. The reward screen reads this on entry.
+func reward_paid() -> bool:
+	return _rewarded_cycle_id == cycle_id
+
+
+## Pays through the same once-per-cycle ledger as entering CELEBRATE.
+func collect_reward() -> bool:
+	if reward_paid():
+		return false
+	_grant_cycle_reward()
+	return true
 
 
 ## TestReset entry point. The reward ledger is in-memory and per-session, so a reset in play would
