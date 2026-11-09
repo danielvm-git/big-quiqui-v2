@@ -2,7 +2,7 @@ story_id: e13s04
 spec: e13s04.md
 epic_id: e13
 title: "t23_erase and t40_draw_fill (the cleaning pair)"
-status: failing
+status: passing
 bcps: 8
 scenarios: ["SC-e13s04-P0-01", "SC-e13s04-P0-02", "SC-e13s04-P0-03", "SC-e13s04-P0-04", "SC-e13s04-P1-01", "SC-e13s04-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn (a soap-then-rinse step)"
@@ -19,7 +19,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s04-t02
   description: "Implement `t40_draw_fill` and `t23_erase` on the Rub primitive with the threshold in the def"
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
@@ -32,7 +32,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s04-t03
   description: "Author the bathroom def as three steps (soap, rinse, dry) and a test that each step names its own template"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t23_erase
@@ -45,7 +45,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s04-t04
   description: "Run the three-step chain end to end under `TouchSim`"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_bathroom_rub_e2e
@@ -58,4 +58,4 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
