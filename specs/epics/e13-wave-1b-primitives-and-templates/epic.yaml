@@ -1,0 +1,71 @@
+epic_id: e13
+slug: e13-wave-1b-primitives-and-templates
+title: "Wave 1b: Rub, Tap, Pan and Steer, and the remaining twelve templates (88.4% of real scenes)"
+playable_scene: "res://scenes/scene_player.tscn"
+status: planned
+bcps: 59
+wsjf: 8.1
+scope_ref: REQ-13
+scope_file: specs/product/SCOPE_LATEST.yaml
+release_plan: pending
+release_plan_note: >
+  Not yet listed in specs/release-plan.yaml, deliberately. traceability.py fails any planned
+  story that has no code and no test, so the plan entry lands with the first story's code, not
+  before it. plan-release must add e12-e16 and decide where the v1.0.0 rung goes (D4 in
+  SCOPE_LATEST). The epic and its stories are registered in specs/execution-status.yaml as
+  planned, which is what the dashboard reads.
+design_refs:
+  - specs/product/QUIQUI_BUILDER_DESIGN.html
+  - specs/product/BUILDER_REUSE_MAP.md
+notes: >
+  Wave 1b. Each story pairs a gesture primitive with the first template that uses it, so no story is a
+  horizontal layer: Rub ships with t34, Tap with t21, Pan with t25. D6 pulled t51_prize_pick and t50_lanes
+  forward into this wave (with Steer and Spawner) so every existing room can migrate before the single
+  removal commit in e14s05. The two guessed templates (t22, t3) get an evidence pass before they are built
+  (D3b).
+stories:
+- id: e13s01
+  title: "Rub Primitive and t34_rub_reveal (reveal)"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e13s02
+  title: "Tap Primitive and t21_touch_each (any)"
+  bcps: 6
+  status: planned
+  delta: ADDED
+- id: e13s03
+  title: "Pan Primitive and t25_map (the hub as data)"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e13s04
+  title: "t23_erase and t40_draw_fill (the cleaning pair)"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e13s05
+  title: "t45_dress_decorate, t0_title and t32_reward"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e13s06
+  title: "Evidence Pass on t22_play_beat and t3_skip_beat (D3b)"
+  bcps: 3
+  status: planned
+  delta: MODIFIED
+- id: e13s07
+  title: "t22_play_beat and t3_skip_beat to the Evidence Rule"
+  bcps: 5
+  status: planned
+  delta: ADDED
+- id: e13s08
+  title: "Steer and Spawner with t50_lanes (pulled forward by D6)"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e13s09
+  title: "t51_prize_pick and the Wave-1 Completeness Gate"
+  bcps: 5
+  status: planned
+  delta: ADDED

@@ -1,0 +1,55 @@
+epic_id: e12
+slug: e12-builder-player-and-first-loop
+title: "Builder Player and the First Loop (wave 1a): English ids, one player, Give→Receive, kitchen as data"
+playable_scene: "res://scenes/scene_player.tscn"
+status: planned
+bcps: 42
+wsjf: 9.4
+scope_ref: REQ-12
+scope_file: specs/product/SCOPE_LATEST.yaml
+release_plan: pending
+release_plan_note: >
+  Not yet listed in specs/release-plan.yaml, deliberately. traceability.py fails any planned
+  story that has no code and no test, so the plan entry lands with the first story's code, not
+  before it. plan-release must add e12-e16 and decide where the v1.0.0 rung goes (D4 in
+  SCOPE_LATEST). The epic and its stories are registered in specs/execution-status.yaml as
+  planned, which is what the dashboard reads.
+design_refs:
+  - specs/product/QUIQUI_BUILDER_DESIGN.html
+  - specs/product/BUILDER_REUSE_MAP.md
+notes: >
+  Wave 1a of the Builder restart. Ends when a pre-reading child feeds QuiQui three times with no adult
+  help and asks to play again. The English rename opens the epic (D2a) so the first scene data file is
+  written in the vocabulary the game keeps; the old 17 scenes stay playable throughout (D1a) and are removed
+  in e14s05, not here.
+stories:
+- id: e12s01
+  title: "English-First Ids and Voice-by-Key (the one-time rename)"
+  bcps: 5
+  status: planned
+  delta: RENAMED
+- id: e12s02
+  title: "Scene Data Model and Navigation by Scene Id"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e12s03
+  title: "ScenePlayer and StepRunner (Fsm) with Player Chrome"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e12s04
+  title: "Give→Receive Primitive and the Reaction Vocabulary"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e12s05
+  title: "Hint Layer: Ghost Hand After Silence"
+  bcps: 5
+  status: planned
+  delta: ADDED
+- id: e12s06
+  title: "t20_drag_snap and the Kitchen as Data (wave 1a Done)"
+  bcps: 8
+  status: planned
+  delta: ADDED
