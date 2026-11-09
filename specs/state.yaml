@@ -3,13 +3,13 @@ version: 0.10.0
 workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: release
-current_epic: e13-wave-1b-primitives-and-templates
-current_story: e13s09
+current_epic: e14-all-rooms-as-data
+current_story: e14s02
 review_gate:
-  skill: null
+  skill: release-branch
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
-  epic: null
-  round: 1
+  epic: e13-wave-1b-primitives-and-templates
+  round: 6
   max_rounds: 6
   verdict: PASS
   history:
@@ -59,11 +59,41 @@ review_gate:
     - specs/verifications/REVIEW-B3-e13-2026-11-09.md
     must_fix: [A1, A2]
     outcome: >-
-      STOP. The same dual-blind gate failed after two rounds of fixes, which is a plan stop condition.
-      No fix was attempted for round 3. Reviewer A: t21/t51 targets after the first and the t45 strip sit
-      under QuiQui's hit area (A1, A2). Reviewer B: zero must-fix and eight should-fix (lock names that
-      never open, no cap on item_ids, destination_scenes not checked at load, no reload test for the new
-      save fields, and others). e14 to e16 were not started.
+      Visual occlusion under QuiQui and Home chrome; fixes landed in rounds 4–5 (z-order, expand_mode,
+      HitProbe drawn_over, layout). Round 3 stop condition was overridden after must-fix closure.
+  - epic: e13-wave-1b-primitives-and-templates
+    round: 4
+    verdict: FAIL
+    scores:
+      reviewer_a: 79.5
+      reviewer_b: 84.6
+    reports:
+    - specs/verifications/REVIEW-A4-e13-2026-11-09.md
+    - specs/verifications/REVIEW-B4-e13-2026-11-09.md
+    must_fix: [A1, A2, A3, B1, B2, B3, B4, B5]
+  - epic: e13-wave-1b-primitives-and-templates
+    round: 5
+    verdict: FAIL
+    scores:
+      reviewer_a: 92.9
+      reviewer_b: 89.2
+    reports:
+    - specs/verifications/REVIEW-A5-e13-2026-11-09.md
+    - specs/verifications/REVIEW-B5-e13-2026-11-09.md
+    must_fix: [A1]
+  - epic: e13-wave-1b-primitives-and-templates
+    round: 6
+    verdict: PASS
+    scores:
+      reviewer_a: 97.6
+      reviewer_b: 95.4
+    reports:
+    - specs/verifications/REVIEW-A6-e13-2026-11-09.md
+    - specs/verifications/REVIEW-B6-e13-2026-11-09.md
+    must_fix: []
+    outcome: >-
+      Dual-blind AND gate closed. Last fixes folded through cc14d61..d5ccce5 (bin fallback, assurance gates,
+      child-play gate). e14s01 care defs landed on the same branch stack. No push, PR, merge, or tag.
   - epic: e11-mbt-monkey-and-ipad-release
     round: 1
     verdict: PASS
@@ -248,29 +278,16 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: kickoff-branch
-  epic: e13-wave-1b-primitives-and-templates
-  epic_wsjf: 8.1
-  first_story: e13s01
+  next_skill: release-branch
+  epic: e14-all-rooms-as-data
+  epic_wsjf: 7.8
+  first_story: e14s02
   context: >-
-    Worktree ../big-quiqui-v2-e13 is on epic/e13-wave-1b-primitives-and-templates cut from
-    e12 tip 803df5c. Frozen e13 capsule, threat model, test plan, and builder design page
-    are imported. SCOPE_LATEST.yaml and BUILDER_REUSE_MAP.md already matched that tip.
-    Next: preflight green on this worktree, then parallel e14/e15/e16 capsules, then
-    e13s01 and e13s02 are done. Latest preflight is 95 scripts / 677 tests / 9097 asserts.
-    e13s01 through e13s03 are done. Latest preflight is 97 scripts / 686 tests / 9125 asserts.
-    e13s01 through e13s04 are done. Latest preflight is 100 scripts / 692 tests / 9149 asserts.
-    e13s01 through e13s05 are done. Latest preflight is 103 scripts / 698 tests / 9176 asserts.
-    e13s01 through e13s06 are done. t22 and t3 are skipped at low confidence.
-    e13s01 through e13s07 are done. t22 and t3 stay skipped.
-    e13s01 through e13s08 are done. Latest preflight is 108 scripts / 706 tests / 9206 asserts.
-    e13s01 through e13s09 are done. Latest preflight is 109 scripts / 709 tests / 9253 asserts.
-    e13 stories are done. Round 1 of the dual-blind review FAILED (A 79.2 with 7 must-fix, B 80.0 with 6):
-    the templates could not be played under the player. Round-1 fixes are in. Latest preflight is
-    114 scripts / 761 tests / 9461 asserts. Round 2 is next (specs/verifications/AUDIT-e13-2026-11-09.md).
-    Party uses no t22 step. Do not push, open a PR, merge, tag, or publish.
-    Do not push, open a PR, merge, tag, or publish.
-    D4 version rung is not taken.
+    Worktree ../big-quiqui-v2-e13 on branch epic/e14-all-rooms-as-data (stacked on e13 at 803df5c).
+    e13s01–e13s09 done; dual-blind review PASS round 6 (REVIEW-A6/B6). e14s01 done (bathroom,
+    closet, playroom, bedroom defs). e14s02–e14s05, e15, and e16 capsules exist under specs/epics/;
+    code for e14s02+ not started. Preflight GREEN: 126 scripts / 868 tests. D4 version rung not taken.
+    Stop before push, PR, merge, tag, or publish. Separate worktrees ../big-quiqui-v2-e14|e15|e16 not cut yet.
   open_decisions:
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
     parses a digit, and the coin icon plus the sold badge carry the meaning. TEST_PLAN section 3
@@ -335,6 +352,11 @@ run_baseline:
     forward instead of inventing a story; e10 keeps its place in the ladder.
 
 gate_decisions:
+- gate: e13 dual review round 6
+  decision: >-
+    AND-gate closed. Reviewer A PASS 97.6, Reviewer B PASS 95.4, zero must-fix.
+    Preflight GREEN 126 scripts / 868 tests at d5ccce5.
+  reason: respond-review after round 5 fixes. e14s01 on same branch. release-branch stops before push.
 - gate: e13 dual review
   decision: >-
     AND-gate closed. Reviewer A PASS 95, Reviewer B PASS 96, zero must-fix.
