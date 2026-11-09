@@ -4,7 +4,7 @@ workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: release
 current_epic: e13-wave-1b-primitives-and-templates
-current_story: e13s02
+current_story: e13s03
 review_gate:
   skill: null
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
@@ -206,8 +206,9 @@ handoff:
     e12 tip 803df5c. Frozen e13 capsule, threat model, test plan, and builder design page
     are imported. SCOPE_LATEST.yaml and BUILDER_REUSE_MAP.md already matched that tip.
     Next: preflight green on this worktree, then parallel e14/e15/e16 capsules, then
-    e13s01 is done (preflight 93 scripts / 670 tests / 9068 asserts). Next story is e13s02.
-    Do not push, open a PR, merge, tag, or publish. D4 version rung is not taken.
+    e13s01 and e13s02 are done. Latest preflight is 95 scripts / 677 tests / 9097 asserts.
+    Next story is e13s03 (Pan and t25_map). Do not push, open a PR, merge, tag, or publish.
+    D4 version rung is not taken.
   open_decisions:
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
     parses a digit, and the coin icon plus the sold badge carry the meaning. TEST_PLAN section 3
@@ -281,6 +282,11 @@ gate_decisions:
   reason: >-
     Same path as e08 and e12. The guard's intent (no commit on main, Conventional
     Commits, no AI attribution) was met. The branch is epic/e13-wave-1b-primitives-and-templates.
+- gate: preflight after e13s02
+  decision: >-
+    GREEN: 95 scripts, 677 tests, 9097 asserts, trace-stories --strict pass.
+    Tap and t21_touch_each are in, with touch_each_probe.tres.
+  reason: Story gate before e13s03.
 - gate: preflight after e13s01
   decision: >-
     GREEN on ../big-quiqui-v2-e13: 93 scripts, 670 tests, 9068 asserts, L0-L6
@@ -616,7 +622,7 @@ decisions:
     helper twins are recorded decisions, not silent gaps.'
 epic_cycle:
   step: 0
-  story: e13s02
+  story: e13s03
   epic: e13-wave-1b-primitives-and-templates
   story_bcps: null
   epic_bcps: 59

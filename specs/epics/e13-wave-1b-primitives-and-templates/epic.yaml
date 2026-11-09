@@ -32,7 +32,7 @@ stories:
 - id: e13s02
   title: "Tap Primitive and t21_touch_each (any)"
   bcps: 6
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s03
   title: "Pan Primitive and t25_map (the hub as data)"
