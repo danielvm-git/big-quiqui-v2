@@ -1,4 +1,5 @@
 # story: e13s09
+# story: e14s03
 class_name TemplateTableGate
 extends RefCounted
 ## The wave-1 coverage gate. It reads the template table, adds up the built rows and compares the
@@ -176,7 +177,11 @@ static func _row_count_problems(cells: PackedStringArray, counts: Dictionary) ->
 	if cells.size() != COLUMNS.size():
 		return bad
 	var number: RegExMatch = RegEx.create_from_string("^t(\\d+)_").search(cells[ID])
-	if number == null or not counts.has(number.get_string(1)):
+	if number == null:
+		if cells[SCENES].to_int() != 0:
+			bad.append("%s has no measured count in the manifest" % cells[ID])
+		return bad
+	if not counts.has(number.get_string(1)):
 		bad.append("%s has no measured count in the manifest" % cells[ID])
 	elif int(counts[number.get_string(1)]) != cells[SCENES].to_int():
 		bad.append(

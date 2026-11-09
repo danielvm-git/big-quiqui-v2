@@ -31,8 +31,8 @@ func test_the_computed_coverage_agrees_with_the_scope_and_the_catalog() -> void:
 	var built: int = 0
 	for cells: PackedStringArray in TemplateTableGate.rows(table):
 		built += 1 if cells[TemplateTableGate.STATUS] == "built" else 0
-	assert_eq(built, 11)
-	assert_eq(TemplateTableGate.rows(table).size(), 13)
+	assert_eq(built, 13)
+	assert_eq(TemplateTableGate.rows(table).size(), 15)
 
 
 func test_a_missing_row_fails_the_gate() -> void:

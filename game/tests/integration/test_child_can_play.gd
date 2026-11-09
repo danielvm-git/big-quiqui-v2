@@ -97,19 +97,19 @@ func _play_def(player: ScenePlayer, scene_id: String) -> void:
 		"title", "title_probe":
 			_tap_verb(player)
 		"village":
-			await _play_village(player)
+			await ChildCanPlayVillageFlows.play_village(self, player)
 		"market":
-			_play_market(player)
+			await ChildCanPlayVillageFlows.play_market(self, player)
 		"playhouse":
-			_play_playhouse(player)
+			await ChildCanPlayVillageFlows.play_playhouse(self, player)
 		"bear_puzzle":
-			await _play_bear(player)
+			await ChildCanPlayVillageFlows.play_bear(self, player)
 		"duck_dance":
-			await _play_duck(player)
+			await ChildCanPlayVillageFlows.play_duck(self, player)
 		"album":
-			_play_album(player)
+			await ChildCanPlayVillageFlows.play_album(self, player)
 		"party":
-			_play_party(player)
+			await ChildCanPlayVillageFlows.play_party(self, player)
 		_:
 			assert_true(false, "no play script for %s" % scene_id)
 
@@ -120,7 +120,7 @@ func _tap_verb(player: ScenePlayer) -> void:
 
 
 func _play_touch_each(player: ScenePlayer) -> void:
-	var buttons: Array[TapButton] = _tray_taps(player)
+	var buttons: Array[TapButton] = tray_taps(player)
 	finger_tap(player, buttons[0])
 	finger_tap(player, buttons[1])
 
@@ -161,7 +161,7 @@ func _first_dress_tap(strip: Control) -> TapButton:
 
 
 func _play_playroom(player: ScenePlayer) -> void:
-	var buttons: Array[TapButton] = _tray_taps(player)
+	var buttons: Array[TapButton] = tray_taps(player)
 	assert_gte(buttons.size(), 3)
 	finger_tap(player, buttons[0])
 	finger_tap(player, buttons[1])
@@ -170,7 +170,7 @@ func _play_playroom(player: ScenePlayer) -> void:
 
 
 func _play_bedroom(player: ScenePlayer) -> void:
-	var buttons: Array[TapButton] = _tray_taps(player)
+	var buttons: Array[TapButton] = tray_taps(player)
 	assert_eq(buttons.size(), 2)
 	finger_tap(player, buttons[0])
 	finger_tap(player, buttons[1])
@@ -178,11 +178,11 @@ func _play_bedroom(player: ScenePlayer) -> void:
 
 
 func _play_reward(player: ScenePlayer) -> void:
-	finger_tap(player, _tray_taps(player)[0])
+	finger_tap(player, tray_taps(player)[0])
 
 
 func _play_prize(player: ScenePlayer) -> void:
-	finger_tap(player, _tray_taps(player)[0])
+	finger_tap(player, tray_taps(player)[0])
 
 
 func _play_penguin(player: ScenePlayer) -> void:
@@ -213,114 +213,6 @@ func _play_map(player: ScenePlayer) -> void:
 		finger_tap(player, home)
 		return
 	await _settle(player)
-
-
-func _play_market(player: ScenePlayer) -> void:
-	var progress: Node = get_node("/root/ProgressManager")
-	progress.call("add_coins", 100)
-	for tap: TapButton in _tray_taps(player):
-		finger_tap(player, tap)
-		player.advance(0.1)
-	await _settle(player)
-
-
-func _play_playhouse(player: ScenePlayer) -> void:
-	var progress: Node = get_node("/root/ProgressManager")
-	progress.call("add_coins", 100)
-	for fid: String in ["cadeira", "mesa", "tapete", "abajur", "vaso_planta"]:
-		progress.call("buy_furniture", fid, 1)
-	for _place: int in range(5):
-		var piece: TapButton = _first_dress_tap(player.get_node("TrayZone/DressStrip"))
-		if piece != null:
-			finger_tap(player, piece)
-		player.advance(0.2)
-	await _settle(player)
-
-
-func _play_bear(player: ScenePlayer) -> void:
-	for slot_index: int in range(4):
-		var recv: Control = player.get_node_or_null("slot_%d" % slot_index) as Control
-		if recv == null:
-			recv = player.find_child("slot_%d" % slot_index, true, false) as Control
-		var items: Array[TouchDraggable] = player.template_draggables()
-		if recv == null or items.is_empty():
-			continue
-		var item: TouchDraggable = items[0]
-		var to: Vector2 = recv.get_global_rect().get_center()
-		send(item, touch(item.get_global_rect().get_center(), true))
-		send(item, drag(to))
-		send(item, touch(to, false))
-		for _tick: int in range(6):
-			player.advance(0.2)
-	await _settle(player)
-
-
-func _play_duck(player: ScenePlayer) -> void:
-	for _round: int in range(6):
-		var tpl: RefCounted = player.get("_template") as RefCounted
-		if tpl == null:
-			break
-		var pose: String = str(tpl.call("pose_id"))
-		for pad_name: String in ["left", "centre", "right"]:
-			var pad: TapButton = player.find_child(pad_name, true, false) as TapButton
-			if pad != null and pad_name == pose:
-				finger_tap(player, pad)
-				break
-		for _tick: int in range(4):
-			player.advance(0.2)
-		if player.runner.template_progress() >= 1.0:
-			break
-	await _settle(player)
-
-
-func _play_album(player: ScenePlayer) -> void:
-	for tap: TapButton in _tray_taps(player):
-		finger_tap(player, tap)
-	await _settle(player)
-
-
-func _play_party(player: ScenePlayer) -> void:
-	for tap: TapButton in _tray_taps(player):
-		finger_tap(player, tap)
-		player.advance(0.1)
-	await _settle(player)
-
-
-func _play_village(player: ScenePlayer) -> void:
-	var pad: TouchPad = player.get_node("MapPad") as TouchPad
-	var start: Vector2 = Vector2(120.0, 200.0)
-	send(pad, touch(start, true))
-	send(pad, drag(start + Vector2(80.0, 0.0)))
-	send(pad, touch(start + Vector2(80.0, 0.0), false))
-	for _tick: int in range(16):
-		player.advance(0.2)
-	await wait_process_frames(3)
-	if VilaScene.recycled_this_session or player.runner.step_index >= player.loaded_def.steps.size():
-		await _settle(player)
-		return
-	var bag: TouchDraggable = rub_tool(player)
-	var bin: Control = player.find_child("RecycleBin", true, false) as Control
-	if bag == null:
-		await _settle(player)
-		return
-	var to: Vector2 = bin.get_global_rect().get_center()
-	send(bag, touch(bag.get_global_rect().get_center(), true))
-	send(bag, drag(to))
-	send(bag, touch(to, false))
-	await _settle(player)
-
-
-func _tray_taps(player: ScenePlayer) -> Array[TapButton]:
-	var found: Array[TapButton] = []
-	_collect_taps(player.get_node("TrayZone"), found)
-	return found
-
-
-func _collect_taps(node: Node, into: Array[TapButton]) -> void:
-	for child: Node in node.get_children():
-		if child is TapButton and child.is_in_group("hit_target"):
-			into.append(child as TapButton)
-		_collect_taps(child, into)
 
 
 func _lane_point(player: ScenePlayer, lane: int) -> Vector2:
