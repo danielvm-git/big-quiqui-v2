@@ -13,6 +13,25 @@ static func def_tres_path(scene_id: String) -> String:
 	return "%s%s.tres" % [DATA_DIR, scene_id]
 
 
+## Every shipped probe def under `DATA_DIR` that the child-play gate must finish.
+static func child_play_gate_ids() -> Array[String]:
+	var found: Array[String] = []
+	var dir: DirAccess = DirAccess.open(DATA_DIR)
+	if dir == null:
+		return found
+	dir.list_dir_begin()
+	var file_name: String = dir.get_next()
+	while not file_name.is_empty():
+		if file_name.ends_with(".tres"):
+			var stem: String = file_name.trim_suffix(".tres")
+			if stem.ends_with("_probe") or stem == "home_map":
+				found.append(stem)
+		file_name = dir.get_next()
+	dir.list_dir_end()
+	found.sort()
+	return found
+
+
 static func load_by_id(scene_id: String) -> SceneDef:
 	if not Ids.is_valid(scene_id):
 		_reject(scene_id, "invalid_id")
