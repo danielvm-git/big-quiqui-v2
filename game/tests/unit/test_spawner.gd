@@ -72,3 +72,26 @@ func _run(seed_value: int) -> PackedStringArray:
 	for _i: int in range(12):
 		spawner.tick()
 	return spawner.sequence()
+
+
+func test_live_rows_never_pass_the_lifetime_plus_one_over_a_long_run() -> void:
+	var spawner: Spawner = Spawner.new()
+	spawner.items = PackedStringArray(["fish"])
+	spawner.cadence = 1
+	spawner.lifetime = 4
+	spawner.lane_count = 3
+	spawner.start()
+	for tick: int in range(500):
+		spawner.tick(-1)
+		assert_lte(spawner.live_count(), spawner.lifetime + 1, "B5 tick %d: a row lives one tick past its life" % tick)
+
+
+func test_a_longer_lifetime_breaks_the_short_bound() -> void:
+	var spawner: Spawner = Spawner.new()
+	spawner.items = PackedStringArray(["fish"])
+	spawner.cadence = 1
+	spawner.lifetime = 400
+	spawner.start()
+	for _i: int in range(100):
+		spawner.tick(-1)
+	assert_gt(spawner.live_count(), 5, "B5 a spawner that keeps its rows exceeds the bound the long run asserts")

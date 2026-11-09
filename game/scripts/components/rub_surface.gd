@@ -182,6 +182,7 @@ func _build_tool(on_scrubbed: Callable) -> void:
 		return
 	tool = TouchDraggable.new()
 	tool.name = "RubTool"
+	tool.add_to_group("hit_target", true)
 	tool.custom_minimum_size = TouchDraggable.MIN_HIT_SIZE
 	tool.size = TouchDraggable.MIN_HIT_SIZE
 	tool.mode = TouchDraggable.Mode.CONTINUOUS_SCRUB

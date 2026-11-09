@@ -1,7 +1,8 @@
 # story: e13s09
 extends PlayerTestCase
-## Review round 1 (A13). Every template's tap surface is at least 120 px and reachable at the three
-## canvases we ship, read from the live player and not from one button on its own.
+## Review round 1 (A13) and round 3 (A3). Every template's tap surface is at least 120 px and a finger
+## can reach it at the three canvases we ship: it is on screen and nothing above it takes the touch
+## (`HitProbe`). Each def exposes a target of its own, so Home alone can never satisfy the check.
 
 const DEFS: Array[String] = [
 	"touch_each_probe",
@@ -24,7 +25,7 @@ func test_every_surface_is_a_full_tap_and_reachable_at_every_aspect() -> void:
 	for aspect: Vector2i in GeometryOracle.ASPECTS:
 		for def_id: String in DEFS:
 			var player: ScenePlayer = await mount(SceneDefLoader.load_by_id(def_id), aspect)
-			assert_gt(_targets(player).size(), 0, "%s at %s has targets" % [def_id, aspect])
+			assert_gt(_own_targets(player).size(), 0, "A3 %s at %s has a target besides Home" % [def_id, aspect])
 			for target: Control in _targets(player):
 				assert_true(
 					target.size.x >= GeometryOracle.MIN_HIT_SIZE.x and target.size.y >= GeometryOracle.MIN_HIT_SIZE.y,
@@ -33,6 +34,17 @@ func test_every_surface_is_a_full_tap_and_reachable_at_every_aspect() -> void:
 			assert_eq(_unreachable(player, aspect), [], "B8 %s at %s: every target can be reached" % [def_id, aspect])
 			player.queue_free()
 			await wait_process_frames(1)
+
+
+func test_a_stop_control_above_a_target_fails_the_check() -> void:
+	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("title_probe"))
+	assert_eq(_unreachable(player, GeometryOracle.DESKTOP_16_9), [], "the verb is free")
+	var cover: Control = Control.new()
+	cover.name = "cover"
+	cover.size = Vector2(1920.0, 1080.0)
+	cover.mouse_filter = Control.MOUSE_FILTER_STOP
+	player.add_child(cover)
+	assert_has(_unreachable(player, GeometryOracle.DESKTOP_16_9), "play_button", "A3 a STOP sibling above is caught")
 
 
 func test_a_target_that_no_finger_can_reach_fails_the_check() -> void:
@@ -46,33 +58,47 @@ func test_a_target_that_no_finger_can_reach_fails_the_check() -> void:
 	assert_eq(_unreachable(player, GeometryOracle.DESKTOP_16_9), ["lost_target"], "B8 the check is not vacuous")
 
 
-## Every target is on screen, or sits in a strip that scrolls, or in a map world that pans to it.
+## A target is lost when it is off screen after a scroll or a pan brings it in, or when a control above it
+## takes the touch. A pin takes no touch itself: the map pad under it does, so the pad must be what answers.
 func _unreachable(player: ScenePlayer, aspect: Vector2i) -> Array[String]:
 	var lost: Array[String] = []
 	var view: Rect2 = Rect2(Vector2.ZERO, Vector2(aspect))
 	for target: Control in _targets(player):
-		if not view.encloses(target.get_global_rect()) and not _can_scroll_to(player, target, view):
+		_bring_into_view(player, target)
+		if not view.encloses(target.get_global_rect()) or not _answers(player, target):
 			lost.append(target.name)
 	return lost
 
 
-func _can_scroll_to(player: ScenePlayer, target: Control, view: Rect2) -> bool:
-	if _inside(target, ScrollContainer):
-		return true
+func _answers(player: ScenePlayer, target: Control) -> bool:
+	if target.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		return HitProbe.answers(player, target)
+	return HitProbe.top_at(player, target.get_global_rect().get_center()) is TouchPad
+
+
+func _bring_into_view(player: ScenePlayer, target: Control) -> void:
+	var strip: Node = _ancestor(target, ScrollContainer)
+	if strip != null:
+		(strip as ScrollContainer).ensure_control_visible(target)
 	if target.get_parent() != null and target.get_parent().name == "MapWorld":
-		var tpl: RefCounted = player.get("_template")
-		tpl.call("follow", target.position + target.size * 0.5)
-		return view.encloses(target.get_global_rect())
-	return false
+		(player.get("_template") as RefCounted).call("follow", target.position + target.size * 0.5)
 
 
-func _inside(node: Node, kind: Variant) -> bool:
+func _ancestor(node: Node, kind: Variant) -> Node:
 	var parent: Node = node.get_parent()
 	while parent != null:
 		if is_instance_of(parent, kind):
-			return true
+			return parent
 		parent = parent.get_parent()
-	return false
+	return null
+
+
+func _own_targets(player: ScenePlayer) -> Array[Control]:
+	var found: Array[Control] = []
+	for target: Control in _targets(player):
+		if target.name != "HomeButton":
+			found.append(target)
+	return found
 
 
 func _targets(player: ScenePlayer) -> Array[Control]:

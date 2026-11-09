@@ -4,6 +4,8 @@ extends RefCounted
 ## Resolve declared node ids to controls; reject path-like ids (F-3).
 
 const REJECT_EV: String = "player.node_rejected"
+## Ids the player itself registers. A def may not name one as a layer of its own.
+const RESERVED: Array[String] = ["quiqui_mouth", "tray", "home", "scrub_target"]
 
 var _nodes: Dictionary = {}
 

@@ -8,10 +8,12 @@ var _tap: TapPrimitive = TapPrimitive.new()
 var _ctx: TemplateContext = null
 var _buttons: Dictionary = {}
 var _plays: int = 0
+var _rig_filter: int = -1
 
 
 func setup(ctx: TemplateContext) -> void:
 	_ctx = ctx
+	_rig_filter = TemplateKit.quiet_rig(ctx)
 	_tap.mode = _mode()
 	_tap.goal = _goal()
 	_build_buttons()
@@ -19,6 +21,8 @@ func setup(ctx: TemplateContext) -> void:
 
 
 func teardown() -> void:
+	TemplateKit.restore_rig(_ctx, _rig_filter)
+	_rig_filter = -1
 	for target_id: String in _buttons.keys():
 		var button: TapButton = _buttons[target_id] as TapButton
 		if is_instance_valid(button):

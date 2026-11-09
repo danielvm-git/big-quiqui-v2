@@ -19,10 +19,12 @@ var _strip: ScrollContainer = null
 var _row: HBoxContainer = null
 var _bin: TapButton = null
 var _buttons: Dictionary = {}
+var _rig_filter: int = -1
 
 
 func setup(ctx: TemplateContext) -> void:
 	_ctx = ctx
+	_rig_filter = TemplateKit.quiet_rig(ctx)
 	_build_strip()
 	var sink: Node = TemplateKit.autoload("ProgressManager")
 	if sink != null and _ctx != null and _ctx.rig != null:
@@ -30,6 +32,8 @@ func setup(ctx: TemplateContext) -> void:
 
 
 func teardown() -> void:
+	TemplateKit.restore_rig(_ctx, _rig_filter)
+	_rig_filter = -1
 	for node: Control in [_strip, _bin]:
 		if node != null and is_instance_valid(node):
 			node.queue_free()
@@ -93,6 +97,7 @@ func snap(item_id: String) -> bool:
 		return false
 	var before: String = str(sink.call("equipped", slot))
 	if not bool(sink.call("wear", slot, item_id)):
+		TemplateKit.play_miss(_ctx)
 		return false
 	var changed: bool = before != item_id
 	_last = item_id
@@ -112,6 +117,7 @@ func place_free(item_id: String) -> bool:
 func place(item_id: String, nx: float, ny: float) -> bool:
 	var sink: Node = TemplateKit.autoload("ProgressManager")
 	if sink == null or not Ids.is_valid(item_id) or not bool(sink.call("place_furniture", item_id, nx, ny)):
+		TemplateKit.play_miss(_ctx)
 		return false
 	_count_change(true, "place")
 	return true

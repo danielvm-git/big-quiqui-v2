@@ -48,10 +48,82 @@ func test_ids_must_use_the_grammar_and_not_repeat() -> void:
 	assert_eq(StepParams.problem(step), "")
 
 
-func test_a_lock_must_name_a_care_step_in_capitals() -> void:
+func test_a_lock_must_name_a_care_step_that_can_open_it() -> void:
+	for bad: String in ["feed; drop", "FEEED", "ZZZ", "CELEBRATE", "IDLE", "FEED\n"]:
+		var step: StepDef = _map()
+		step.destination_locks = PackedStringArray(["", bad])
+		assert_eq(StepParams.problem(step), "bad_id", "B1 %s can never open a door" % bad.c_escape())
+	for care: String in CareSteps.ORDER:
+		var step: StepDef = _map()
+		step.destination_locks = PackedStringArray(["", care])
+		assert_eq(StepParams.problem(step), "", care)
+
+
+func test_a_door_must_lead_to_a_shipped_room() -> void:
 	var step: StepDef = _map()
-	step.destination_locks = PackedStringArray(["", "feed; drop"])
+	step.destination_scenes = PackedStringArray(["kitchen", "not_a_room"])
+	assert_eq(StepParams.problem(step), "unknown_scene", "B3 a door to nowhere never loads")
+	step.destination_scenes = PackedStringArray(["kitchen", "res://scenes/casa.tscn"])
+	assert_eq(StepParams.problem(step), "bad_id", "a path is not an id")
+
+
+func test_a_pin_must_fit_inside_the_world() -> void:
+	var step: StepDef = _map()
+	step.world_size = Vector2(4000.0, 1000.0)
+	step.destination_positions = PackedVector2Array([Vector2(1.0, 1.0), Vector2(3999.0, 400.0)])
+	assert_eq(StepParams.problem(step), "bad_world", "A13 a pin 1 px from the edge shows 1 px")
+	step.destination_positions = PackedVector2Array([Vector2(1.0, 1.0), Vector2(3880.0, 880.0)])
+	assert_eq(StepParams.problem(step), "", "a whole pin fits")
+
+
+func test_a_tray_row_holds_at_most_eight_targets() -> void:
+	var ids: PackedStringArray = PackedStringArray()
+	for index: int in range(StepParams.TRAY_ITEMS_MAX + 1):
+		ids.append("item_%d" % index)
+	for template: String in ["t21_touch_each", "t51_prize_pick"]:
+		var step: StepDef = _step(template)
+		step.item_ids = ids
+		assert_eq(StepParams.problem(step), "bad_count", "A6 a ninth %s target is off screen" % template)
+		step.item_ids = ids.slice(0, StepParams.TRAY_ITEMS_MAX)
+		assert_eq(StepParams.problem(step), "", template)
+	var strip: StepDef = _step("t45_dress_decorate")
+	strip.item_ids = ids
+	assert_eq(StepParams.problem(strip), "", "the dress strip scrolls")
+
+
+func test_a_def_may_mix_worn_items_and_free_furniture() -> void:
+	var step: StepDef = _step("t45_dress_decorate")
+	step.item_ids = PackedStringArray(["blue_scarf", "crown", "vaso_planta"])
+	step.slot_ids = PackedStringArray(["neck", "head", ""])
+	assert_eq(StepParams.problem(step), "", "A5 an empty slot is a free place")
+	var def: SceneDef = SceneDefFactory.valid()
+	def.steps = [step] as Array[Resource]
+	assert_not_null(SceneDefLoader.validate(def), "A5 the loader takes the mixed def")
+	step.slot_ids = PackedStringArray(["neck", "Bad Slot", ""])
 	assert_eq(StepParams.problem(step), "bad_id")
+
+
+func test_a_rub_layer_cannot_be_a_node_the_player_owns() -> void:
+	for template: String in ["t34_rub_reveal", "t23_erase", "t40_draw_fill"]:
+		for reserved: String in PlayerNodeTable.RESERVED:
+			var step: StepDef = _step(template)
+			step.item_ids = PackedStringArray([reserved])
+			assert_eq(StepParams.problem(step), "bad_id", "A9 %s may not fade %s" % [template, reserved])
+
+
+func test_the_care_step_and_the_voice_key_use_their_own_grammar() -> void:
+	var step: StepDef = _step("t21_touch_each")
+	step.care_step_id = "FEED"
+	step.hint_voice_key = "vo.kitchen.intro"
+	assert_eq(StepParams.problem(step), "")
+	step.care_step_id = "EAT"
+	assert_eq(StepParams.problem(step), "bad_id", "C8 not a care step")
+	step.care_step_id = "FEED"
+	step.hint_voice_key = "../../etc/passwd"
+	assert_eq(StepParams.problem(step), "bad_id", "C8 not a voice key")
+	step.hint_voice_key = ""
+	step.on_hit_pose = "Bad Pose"
+	assert_eq(StepParams.problem(step), "bad_id", "C8 not a pose id")
 
 
 func test_an_unsupported_mode_is_rejected() -> void:

@@ -30,6 +30,16 @@ func send(control: Control, event: InputEvent) -> void:
 	control._gui_input(TouchSim.gui_event(control, event))
 
 
+## A finger press on `target`'s centre, delivered to whatever the player's tree really puts there.
+## The target hears it only when nothing above it takes the touch (`HitProbe`). Returns who did.
+func finger_tap(player: ScenePlayer, target: Control) -> Control:
+	var point: Vector2 = target.get_global_rect().get_center()
+	var top: Control = HitProbe.top_at(player, point)
+	if top != null:
+		send(top, touch(point, true))
+	return top
+
+
 func touch(point: Vector2, pressed: bool, index: int = 0, device: int = 0) -> InputEventScreenTouch:
 	var event: InputEventScreenTouch = InputEventScreenTouch.new()
 	event.index = index

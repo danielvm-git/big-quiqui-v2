@@ -34,6 +34,8 @@ func setup(ctx: TemplateContext) -> void:
 
 func teardown() -> void:
 	stop()
+	if _ctx != null and _ctx.host is Control and (_ctx.host as Control).resized.is_connected(_on_resized):
+		(_ctx.host as Control).resized.disconnect(_on_resized)
 	TemplateKit.restore_rig(_ctx, _rig_filter)
 	for node: Node in [_pad, _field]:
 		if node != null and is_instance_valid(node):
@@ -121,6 +123,7 @@ func _build_surface() -> void:
 		return
 	_pad = TouchPad.new()
 	_pad.name = "LanePad"
+	_pad.add_to_group("hit_target", true)
 	_field = Control.new()
 	_field.name = "LaneField"
 	_field.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -128,6 +131,13 @@ func _build_surface() -> void:
 	TemplateKit.mount_pad(_ctx.host as Control, _pad, _field, [_on_pressed, _on_moved, _on_released])
 	_add_basket()
 	_steer.position = Vector2(_steer.lane_center(0), _steer.bounds.size.y * 0.8)
+	_move_basket()
+	(_ctx.host as Control).resized.connect(_on_resized)
+
+
+## A rotation or a window change moves the lanes with the screen.
+func _on_resized() -> void:
+	_steer.bounds = Rect2(Vector2.ZERO, _field_size())
 	_move_basket()
 
 

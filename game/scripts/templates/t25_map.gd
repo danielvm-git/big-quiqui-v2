@@ -137,7 +137,7 @@ func reachable(dest_id: String) -> bool:
 		return false
 	var at: Vector2 = _def.position_at(index)
 	var box: Rect2 = Rect2(_pan.offset, _pan.view_size)
-	return box.has_point(at) or box.has_point(at + Vector2(1.0, 1.0))
+	return box.encloses(Rect2(at, TapButton.MIN_HIT_SIZE))
 
 
 func _on_pressed(point: Vector2, index: int) -> void:

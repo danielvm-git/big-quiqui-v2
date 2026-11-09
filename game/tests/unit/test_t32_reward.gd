@@ -54,6 +54,17 @@ func test_a_tap_before_the_celebration_pays_nothing_and_carries_on() -> void:
 	assert_false(bool(_progress().call("owns_furniture", "vaso_planta")))
 
 
+func test_the_star_is_three_named_states() -> void:
+	var tpl: RefCounted = _mount()
+	assert_false(bool(tpl.call("star_lit")), "UNLIT")
+	assert_eq(float(tpl.call("progress")), 0.0)
+	tpl.call("collect")
+	assert_true(bool(tpl.call("star_lit")), "LIT, then DONE on the same tap")
+	assert_eq(float(tpl.call("progress")), 1.0)
+	assert_false(bool(tpl.call("collect")), "a second tap collects nothing")
+	assert_eq(float(tpl.call("progress")), 1.0)
+
+
 func test_the_reward_template_has_no_ad_branch() -> void:
 	var body: String = SourceScanner.text("res://scripts/templates/t32_reward.gd")
 	assert_false(body.contains("video_ad"), "SC-e13s05-P2-01")

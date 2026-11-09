@@ -5,12 +5,14 @@ extends RefCounted
 ## A def that fails here is rejected with a reason id, so malformed data can never boot as a
 ## zero-position door, an open lock or a slot that is not there (threat model: the grammar perimeter).
 
-## A lock names a care step in capitals, like `FEED`; empty means open.
-const LOCK_PATTERN: String = "^[A-Z][A-Z_]{0,23}$"
 const LANE_MAX: int = 6
 const CADENCE_MAX: int = 30
 const LIFETIME_MAX: int = 60
 const COUNT_MAX: int = 99
+## A tray row is 160 px a target from x 650, so eight fit the narrowest canvas we ship.
+const TRAY_ITEMS_MAX: int = 8
+## The dress strip scrolls, so it takes more than a row does.
+const STRIP_ITEMS_MAX: int = 40
 const WORLD_MAX: float = 20000.0
 const T20_MODES: PackedStringArray = ["single", "pick_one", "slots"]
 ## `single` is the `StepDef` default, so a def that names no mode still loads and plays as `any`.
@@ -37,7 +39,7 @@ static func _by_template(step: StepDef) -> String:
 		"t20_drag_snap":
 			return "bad_mode" if not T20_MODES.has(step.mode) else ""
 		"t21_touch_each":
-			return _needs_items(step) if T21_MODES.has(step.mode) else "bad_mode"
+			return _row(step) if T21_MODES.has(step.mode) else "bad_mode"
 		"t23_erase", "t40_draw_fill", "t34_rub_reveal":
 			return _rub(step)
 		"t25_map":
@@ -47,7 +49,7 @@ static func _by_template(step: StepDef) -> String:
 		"t50_lanes":
 			return _lanes(step)
 		"t51_prize_pick":
-			return _needs_items(step)
+			return _row(step)
 	return ""
 
 
@@ -56,9 +58,20 @@ static func _needs_items(step: StepDef) -> String:
 	return "" if not step.item_ids.is_empty() else "no_items"
 
 
+## A row of tap targets: at least one, and no more than the row can show.
+static func _row(step: StepDef) -> String:
+	var reason: String = _needs_items(step)
+	if not reason.is_empty():
+		return reason
+	return "bad_count" if step.item_ids.size() > TRAY_ITEMS_MAX else ""
+
+
 static func _rub(step: StepDef) -> String:
 	if not (RUB_MODES[step.template_id] as Array).has(step.mode):
 		return "bad_mode"
+	for layer_id: String in step.item_ids:
+		if PlayerNodeTable.RESERVED.has(layer_id):
+			return "bad_id"
 	if step.param_int != 0 and (step.param_int < RubPrimitive.EDGE_MIN or step.param_int > RubPrimitive.EDGE_MAX):
 		return "bad_count"
 	var reason: String = _threshold(step)
@@ -72,9 +85,12 @@ static func _shared(step: StepDef) -> String:
 		if not _clean_ids(unique, true):
 			return "bad_id"
 	## Slots, categories and scenes repeat on purpose: two neck items share a slot, two doors one room.
-	for shared: PackedStringArray in [step.slot_ids, step.category_ids, step.destination_scenes]:
+	for shared: PackedStringArray in [step.category_ids, step.destination_scenes]:
 		if not _clean_ids(shared, false):
 			return "bad_id"
+	## An empty slot is a piece of furniture, placed free beside the worn items.
+	if not _clean_ids(step.slot_ids, false, true):
+		return "bad_id"
 	if not _clean_optional(step):
 		return "bad_id"
 	if not step.hit_poses.is_empty() and step.hit_poses.size() != step.item_ids.size():
@@ -82,7 +98,7 @@ static func _shared(step: StepDef) -> String:
 	for pose: String in step.hit_poses:
 		if not pose.is_empty() and not Ids.is_valid(pose):
 			return "bad_id"
-	if step.repeat_count < 1 or step.repeat_count > COUNT_MAX:
+	if step.repeat_count < 1 or step.repeat_count > COUNT_MAX or step.item_ids.size() > COUNT_MAX:
 		return "bad_count"
 	if not is_finite(step.hint_delay_sec) or step.hint_delay_sec < 0.0:
 		return "bad_number"
@@ -95,18 +111,36 @@ static func _clean_optional(step: StepDef) -> bool:
 		if not icon.is_empty() and not Ids.is_valid(icon):
 			return false
 	for lock: String in step.destination_locks:
-		if not lock.is_empty() and not RegEx.create_from_string(LOCK_PATTERN).search(lock):
+		if not lock.is_empty() and not CareSteps.ORDER.has(lock):
 			return false
-	for single: String in [step.receiver_id, step.tool_id, step.loop_sfx_id, step.on_hit_sfx_id, step.on_miss_sfx_id]:
+	return _clean_singles(step)
+
+
+static func _clean_singles(step: StepDef) -> bool:
+	for single: String in [
+		step.receiver_id,
+		step.tool_id,
+		step.loop_sfx_id,
+		step.on_hit_sfx_id,
+		step.on_miss_sfx_id,
+		step.on_hit_pose,
+		step.hint_from_id,
+		step.hint_to_id,
+	]:
 		if not single.is_empty() and not Ids.is_valid(single):
 			return false
-	return true
+	## The care step and the voice key have their own closed grammars, so the player never forwards a stray one.
+	if not step.care_step_id.is_empty() and not CareSteps.ORDER.has(step.care_step_id):
+		return false
+	return step.hint_voice_key.is_empty() or not VoiceKeyResolver.path_for_key(step.hint_voice_key).is_empty()
 
 
 ## Valid ids, and no id twice when `unique`, so a repeat can never leak a second target.
-static func _clean_ids(ids: PackedStringArray, unique: bool) -> bool:
+static func _clean_ids(ids: PackedStringArray, unique: bool, allow_empty: bool = false) -> bool:
 	var seen: Dictionary = {}
 	for id: String in ids:
+		if allow_empty and id.is_empty():
+			continue
 		if not Ids.is_valid(id) or (unique and seen.has(id)):
 			return false
 		seen[id] = true
@@ -127,12 +161,21 @@ static func _map(step: StepDef) -> String:
 		return "bad_number"
 	if step.destination_ids.is_empty():
 		return "no_items"
+	for scene: String in step.destination_scenes:
+		if not SceneCatalog.is_shipped(scene):
+			return "unknown_scene"
 	if not MapDef.new(step).rows_match() or _bad_icons(step):
 		return "mismatched_arrays"
 	for point: Vector2 in step.destination_positions:
-		if not point.is_finite() or not Rect2(Vector2.ZERO, size).has_point(point):
+		if not _pin_fits(point, size):
 			return "bad_world"
 	return ""
+
+
+## A pin is a whole 120 px target, so its corner stops one pin short of the world's far edge.
+static func _pin_fits(point: Vector2, world: Vector2) -> bool:
+	var limit: Vector2 = world - TapButton.MIN_HIT_SIZE
+	return point.is_finite() and point.x >= 0.0 and point.y >= 0.0 and point.x <= limit.x and point.y <= limit.y
 
 
 static func _bad_icons(step: StepDef) -> bool:
@@ -144,6 +187,8 @@ static func _dress(step: StepDef) -> String:
 		return "mismatched_arrays"
 	if not step.category_ids.is_empty() and step.category_ids.size() != step.item_ids.size():
 		return "mismatched_arrays"
+	if step.item_ids.size() > STRIP_ITEMS_MAX:
+		return "bad_count"
 	return _needs_items(step)
 
 

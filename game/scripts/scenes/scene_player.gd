@@ -222,6 +222,17 @@ func _tick_hint(delta: float) -> void:
 	_hint_mgr.advance(delta)
 
 
+## A finger down or moving anywhere counts as playing, so a hint never replays over a child who is already
+## tapping a tray row, a pad or a rub tool. The mouse echo of a touch (`device == -1`) is not a second finger.
+func _input(event: InputEvent) -> void:
+	if event.device == -1:
+		return
+	var down: bool = event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed
+	down = down or (event is InputEventMouseButton and (event as InputEventMouseButton).pressed)
+	if down or event is InputEventScreenDrag:
+		_note_input()
+
+
 func _note_input() -> void:
 	if runner != null:
 		runner.note_input()

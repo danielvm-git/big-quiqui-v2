@@ -93,6 +93,38 @@ func test_corrupt_save_recovers_to_defaults() -> void:
 	assert_eq(pm.last_error, "corrupt")
 
 
+# SC-e13s05-P2-02
+func test_a_prize_pick_survives_a_ram_reset() -> void:
+	pm.data.completed_cycles = 3
+	assert_true(pm.pick_prize("plush"), "the first pick of the cycle is taken")
+	pm.data = SaveData.new()  # RAM lost
+	pm.load_or_default()
+	assert_eq(pm.data.picked_prize, "plush", "B4 the pick is on disk")
+	assert_eq(pm.data.prize_cycle, 3, "B4 and so is the cycle it belongs to")
+	assert_eq(pm.picked_prize(), "plush", "B4 the same cycle still holds the pick")
+
+
+# SC-e13s05-P2-02
+func test_an_old_save_without_the_prize_fields_loads_unchanged() -> void:
+	var data: SaveData = SaveData.from_dictionary({"coins": 9, "completed_cycles": 2})
+	assert_eq(data.picked_prize, "", "B4 ADR-005: a new field defaults, with no version bump")
+	assert_eq(data.prize_cycle, 0)
+	assert_eq(data.coins, 9, "and the old fields are read as they were")
+	assert_eq(SaveData.new().version, 1, "ADR-005 amendment: additive fields keep version 1")
+
+
+# SC-e13s05-P2-02
+func test_a_tampered_prize_pick_is_normalised_on_read() -> void:
+	for raw: Dictionary in [
+		{"picked_prize": "../x", "prize_cycle": -5},
+		{"picked_prize": 7},
+		{"picked_prize": "x".repeat(70), "prize_cycle": 1.0e12},
+	]:
+		var data: SaveData = SaveData.from_dictionary(raw)
+		assert_eq(data.picked_prize, "", "B4 %s names no prize" % str(raw).substr(0, 24))
+		assert_between(data.prize_cycle, 0, SaveData.MAX_CYCLES, "B4 the cycle stays in range")
+
+
 func test_negative_and_out_of_range_values_are_clamped() -> void:
 	var raw: Dictionary = {
 		"coins": -50,

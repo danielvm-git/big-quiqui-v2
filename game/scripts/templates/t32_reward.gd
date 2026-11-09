@@ -3,20 +3,34 @@ extends RefCounted
 ## The reward is a star to tap. Paying belongs to the cycle ledger and the amount to the services.
 ## Re-entering after the tap finds the star already lit; one more tap carries on. Never an ad.
 
+const STATE_UNLIT: String = "UNLIT"
+const STATE_LIT: String = "LIT"
+const STATE_DONE: String = "DONE"
+## No state times out: the star waits for the child's finger as long as it takes.
+const MAX_DWELL_SEC: Dictionary = {}
+const LEGAL_EDGES: Dictionary = {
+	STATE_UNLIT: [STATE_LIT],
+	STATE_LIT: [STATE_DONE],
+}
+
 var _ctx: TemplateContext = null
 var _button: TapButton = null
-var _star: bool = false
-var _continued: bool = false
+var _rig_filter: int = -1
+var _fsm: Fsm = Fsm.new(STATE_UNLIT, LEGAL_EDGES, MAX_DWELL_SEC)
 
 
 func setup(ctx: TemplateContext) -> void:
 	_ctx = ctx
-	_star = _collected()
+	_rig_filter = TemplateKit.quiet_rig(ctx)
+	if _collected():
+		_fsm.reset(STATE_LIT)
 	_build_button()
 	_light()
 
 
 func teardown() -> void:
+	TemplateKit.restore_rig(_ctx, _rig_filter)
+	_rig_filter = -1
 	if _button != null and is_instance_valid(_button):
 		_button.queue_free()
 	_button = null
@@ -27,11 +41,11 @@ func advance(_delta: float) -> void:
 
 
 func progress() -> float:
-	return 1.0 if _continued else 0.0
+	return 1.0 if _fsm.state == STATE_DONE else 0.0
 
 
 func star_lit() -> bool:
-	return _star
+	return _fsm.state != STATE_UNLIT
 
 
 func button() -> TapButton:
@@ -42,10 +56,10 @@ func button() -> TapButton:
 ## lit star only carries on. True when this tap collected.
 func collect() -> bool:
 	var collected: bool = false
-	if not _star:
+	if _fsm.state == STATE_UNLIT:
 		collected = _collect_now()
-	_star = true
-	_continued = true
+		_fsm.transition_to(STATE_LIT)
+	_fsm.transition_to(STATE_DONE)
 	_light()
 	return collected
 
@@ -99,4 +113,4 @@ func _build_button() -> void:
 
 func _light() -> void:
 	if _button != null and is_instance_valid(_button) and _button.visual != null:
-		_button.visual.modulate = Color(1, 1, 1, 1) if _star else Color(1, 1, 1, 0.55)
+		_button.visual.modulate = Color(1, 1, 1, 1) if star_lit() else Color(1, 1, 1, 0.55)

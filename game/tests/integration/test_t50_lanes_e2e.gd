@@ -97,3 +97,38 @@ func test_leaving_the_step_frees_every_node_the_template_made() -> void:
 	assert_null(player.get_node_or_null("LanePad"))
 	assert_null(player.get_node_or_null("LaneField"))
 	assert_eq(player.get_child_count(), before - 2, "SC-e13s08-P0-04 the pad and the field left, nothing else stayed")
+
+
+func test_a_long_run_never_piles_up_nodes() -> void:
+	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id(PROBE))
+	var tpl: RefCounted = player.get("_template")
+	var field: Control = player.get_node("LaneField") as Control
+	var lifetime: int = int(player.loaded_def.steps[0].spawn_lifetime)
+	for tick: int in range(200):
+		tpl.call("tick")
+		assert_lte(
+			_pictures(field), lifetime + 2, "B5 SC-e13s08-P0-04 tick %d: a row can live one tick past its life" % tick
+		)
+		assert_eq(_pictures(field), int(tpl.call("live_count")) + 1, "every picture is a live row, plus the basket")
+	await wait_process_frames(1)
+
+
+func test_the_node_bound_can_fail() -> void:
+	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id(PROBE))
+	var tpl: RefCounted = player.get("_template")
+	var field: Control = player.get_node("LaneField") as Control
+	for _i: int in range(5):
+		tpl.call("tick")
+	var live: int = int(tpl.call("live_count"))
+	for _i: int in range(6):
+		field.add_child(Control.new())
+	assert_gt(_pictures(field), live + 1, "B5 a spawn that is never freed breaks the equality the long run asserts")
+
+
+## Pictures on the field that are not already queued to go: a freed row stays a child until the frame ends.
+func _pictures(field: Control) -> int:
+	var count: int = 0
+	for child: Node in field.get_children():
+		if not child.is_queued_for_deletion():
+			count += 1
+	return count

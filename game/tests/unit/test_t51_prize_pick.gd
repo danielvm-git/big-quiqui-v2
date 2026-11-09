@@ -28,6 +28,29 @@ func test_the_next_cycle_opens_a_fresh_wheel() -> void:
 	assert_eq(_progress().call("picked_prize"), "pinwheel")
 
 
+func test_the_step_is_three_named_states() -> void:
+	var tpl: RefCounted = _mount()
+	assert_eq(float(tpl.call("progress")), 0.0, "OPEN: nothing is picked")
+	tpl.call("pick", "plush")
+	assert_eq(float(tpl.call("progress")), 1.0, "DONE after one pick")
+	var again: RefCounted = _mount()
+	assert_eq(float(again.call("progress")), 0.0, "PICKED waits for one tap")
+	again.call("pick", "pinwheel")
+	assert_eq(float(again.call("progress")), 0.0, "a tap on the other prize does not carry on")
+	again.call("pick", "plush")
+	assert_eq(float(again.call("progress")), 1.0, "a tap on the saved prize carries on")
+
+
+func test_a_saved_prize_that_is_not_in_this_def_still_lets_one_tap_carry_on() -> void:
+	_progress().call("pick_prize", "teddy")
+	var tpl: RefCounted = _mount()
+	assert_eq(str(tpl.call("picked")), "", "A10 the saved prize is not on this wheel")
+	assert_eq(float(tpl.call("progress")), 0.0)
+	tpl.call("pick", "pinwheel")
+	assert_eq(float(tpl.call("progress")), 1.0, "A10 one tap carries on, so the step is never stuck")
+	assert_eq(_progress().call("picked_prize"), "teddy", "and the cycle's pick is not rewritten")
+
+
 func test_a_prize_never_lands_in_the_outfit_map() -> void:
 	var first: RefCounted = _mount()
 	first.call("pick", "plush")

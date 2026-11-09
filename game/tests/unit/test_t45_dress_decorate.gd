@@ -33,6 +33,15 @@ func test_an_invalid_id_does_not_save() -> void:
 	assert_eq(int(_progress().get("write_count")), writes, "SC-e13s05-P1-02")
 
 
+func test_a_refused_snap_or_place_answers_with_the_miss_sound() -> void:
+	var recorder: ReactionRecorder = ReactionRecorder.new()
+	var tpl: RefCounted = _mount_with_miss(recorder)
+	assert_false(bool(tpl.call("snap", "banana")), "a food is not wearable, so the save refuses it")
+	assert_eq(recorder.kinds(), ["sfx"], "A8 a refused snap is not silent")
+	assert_false(bool(tpl.call("place", "vaso_planta", 0.5, 0.5)), "an unowned piece is refused")
+	assert_eq(recorder.kinds(), ["sfx", "sfx"], "A8 a refused place is not silent")
+
+
 func test_an_item_with_no_art_is_not_dressed() -> void:
 	var step: StepDef = StepDef.new()
 	step.item_ids = PackedStringArray(["no_such_item"])
@@ -157,3 +166,18 @@ func _mount() -> RefCounted:
 
 func _progress() -> Node:
 	return (Engine.get_main_loop() as SceneTree).root.get_node("ProgressManager")
+
+
+func _mount_with_miss(recorder: ReactionRecorder) -> RefCounted:
+	var step: StepDef = StepDef.new()
+	step.template_id = "t45_dress_decorate"
+	step.item_ids = PackedStringArray(["blue_scarf", "banana"])
+	step.slot_ids = PackedStringArray(["neck", "neck"])
+	step.on_miss_sfx_id = "sfx_heart"
+	var tpl: RefCounted = TemplateCatalog.instantiate("t45_dress_decorate")
+	var ctx: TemplateContext = TemplateContext.new()
+	ctx.step_def = step
+	ctx.reactions = ReactionExecutor.new()
+	ctx.reactions.recorder = recorder
+	tpl.call("setup", ctx)
+	return tpl

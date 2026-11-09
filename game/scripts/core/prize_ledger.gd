@@ -3,6 +3,8 @@ class_name PrizeLedger
 extends RefCounted
 ## The wheel's one pick per care cycle. The pick is kept with the cycle it was made in, so the next
 ## cycle opens a fresh wheel. Pure functions over `SaveData`: they validate and mutate, never save.
+## The cycle is `completed_cycles`, which `CareLoopManager` raises when it pays at CELEBRATE, so the wheel
+## belongs after that pay. Reaching it earlier would let one cycle take two picks.
 
 
 ## True when the pick was recorded. A second pick in the same cycle, or an unsafe id, changes nothing.
