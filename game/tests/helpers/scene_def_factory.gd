@@ -13,7 +13,9 @@ static func valid() -> SceneDef:
 	def.background_id = "bg_kitchen"
 	def.music_id = "music_kitchen"
 	def.intro_voice_key = "vo.kitchen.intro"
-	def.steps = [step]
+	var steps: Array[Resource] = []
+	steps.append(step)
+	def.steps = steps
 	def.next_scene_id = "home"
 	return def
 

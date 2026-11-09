@@ -13,8 +13,9 @@ func test_a_valid_def_loads_and_exposes_typed_steps() -> void:
 	var def: SceneDef = SceneDefLoader.validate(SceneDefFactory.valid())
 	assert_not_null(def, "a well-formed def passes validation")
 	assert_eq(def.steps.size(), 1)
-	assert_eq(def.steps[0].template_id, "t_stub")
-	assert_eq(def.steps[0].param_int, 1)
+	var step: StepDef = def.steps[0] as StepDef
+	assert_eq(step.template_id, "t_stub")
+	assert_eq(step.param_int, 1)
 
 
 func test_an_unknown_template_id_is_rejected_with_a_reason() -> void:
@@ -51,13 +52,15 @@ func test_an_empty_step_list_is_rejected() -> void:
 
 func test_neither_def_nor_step_carries_a_path_or_script_field() -> void:
 	var forbidden: Array[String] = []
-	for property: Dictionary in SceneDef.get_property_list():
+	var scene_sample: SceneDef = SceneDef.new()
+	for property: Dictionary in scene_sample.get_property_list():
 		var name: String = str(property.get("name", ""))
 		if name in ["script", "resource_path", "resource_name"]:
 			continue
 		if name.contains("path") or name.ends_with("_script"):
 			forbidden.append("SceneDef.%s" % name)
-	for property: Dictionary in StepDef.get_property_list():
+	var step_sample: StepDef = StepDef.new()
+	for property: Dictionary in step_sample.get_property_list():
 		var name: String = str(property.get("name", ""))
 		if name in ["script", "resource_path", "resource_name"]:
 			continue
