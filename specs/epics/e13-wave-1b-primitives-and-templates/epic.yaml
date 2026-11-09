@@ -27,7 +27,7 @@ stories:
 - id: e13s01
   title: "Rub Primitive and t34_rub_reveal (reveal)"
   bcps: 8
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s02
   title: "Tap Primitive and t21_touch_each (any)"
