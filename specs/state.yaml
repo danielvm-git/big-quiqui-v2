@@ -3,8 +3,8 @@ version: 0.10.0
 workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: release
-current_epic: e14-all-rooms-as-data
-current_story: e14s02
+current_epic: e15-wave-2-care-templates
+current_story: e15s01
 review_gate:
   skill: release-branch
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
