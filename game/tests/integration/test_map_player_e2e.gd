@@ -119,6 +119,28 @@ func test_a_second_finger_cannot_open_a_door_under_the_first() -> void:
 	assert_eq(_requested.size(), 0, "B6 one finger owns the pan")
 
 
+func test_a_second_fingers_lift_does_not_cancel_the_first_fingers_tap() -> void:
+	_manager()
+	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("home_map"))
+	var at: Vector2 = _pin_point(player, "feed_door")
+	send(_pad(player), touch(at, true, 1))
+	send(_pad(player), touch(Vector2(900.0, 900.0), true, 2))
+	send(_pad(player), touch(Vector2(900.0, 900.0), false, 2))
+	send(_pad(player), touch(at, false, 1))
+	assert_eq(_requested.size(), 1, "A16 the door still opens for the finger that pressed it")
+
+
+func test_the_rig_does_not_cover_the_map_and_comes_back_after() -> void:
+	_manager()
+	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("home_map"))
+	var rig: Control = player.get_node("QuiQuiRig") as Control
+	assert_eq(rig.mouse_filter, Control.MOUSE_FILTER_IGNORE, "A14 a drag that starts on QuiQui pans the map")
+	player.runner.request_home()
+	player.advance(0.2)
+	await wait_process_frames(2)
+	assert_eq(rig.mouse_filter, Control.MOUSE_FILTER_STOP, "and she answers touches again afterwards")
+
+
 func test_teardown_removes_the_pad_the_world_and_the_wish() -> void:
 	_manager()
 	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("home_map"))

@@ -9,14 +9,21 @@ var rub: RubPrimitive = RubPrimitive.new()
 var tool: TouchDraggable = null
 var layers: Array[Control] = []
 var holding: bool = false
+## `clear`, `leave` or `reveal`: what the rub does to the layers. A def names it; the template defaults it.
+var mode: String = "clear"
+
+const KEPT: StringName = &"rub_kept"
+const FADE_SEC: float = 0.25
 
 var _ctx: TemplateContext = null
 var _owned: Array[Control] = []
 var _claimed_alpha: Dictionary = {}
 
 
-func bind(ctx: TemplateContext, on_scrubbed: Callable) -> void:
+func bind(ctx: TemplateContext, on_scrubbed: Callable, default_mode: String = "clear") -> void:
 	_ctx = ctx
+	mode = _mode_of(default_mode)
+	rub.edge = _edge()
 	rub.bind_target(TemplateKit.hull_target(ctx))
 	_bind_loop()
 	_claim_layers()
@@ -55,6 +62,17 @@ func set_alpha(index: int, alpha: float) -> void:
 		layers[index].modulate.a = alpha
 
 
+## A layer that is revealed animates away. Outside the tree there is nothing to animate, so it just goes.
+func fade_out(index: int) -> void:
+	if index < 0 or index >= layers.size():
+		return
+	var layer: Control = layers[index]
+	if not layer.is_inside_tree():
+		layer.modulate.a = 0.0
+		return
+	layer.create_tween().tween_property(layer, "modulate:a", 0.0, FADE_SEC)
+
+
 func alpha(index: int) -> float:
 	if index < 0 or index >= layers.size():
 		return 1.0
@@ -70,10 +88,31 @@ func teardown() -> void:
 		if _claimed_alpha.has(layer) and is_instance_valid(layer):
 			layer.modulate.a = float(_claimed_alpha[layer])
 	for layer: Control in _owned:
-		if is_instance_valid(layer):
-			layer.queue_free()
+		_release_layer(layer)
 	layers.clear()
 	_owned.clear()
+
+
+## A `leave` rub keeps its mark for the next step, which may claim and clear it (soap, then rinse).
+## Every other layer leaves with its step.
+func _release_layer(layer: Control) -> void:
+	if not is_instance_valid(layer):
+		return
+	if mode == "leave" and layer.modulate.a > 0.01 and _ctx != null and _ctx.nodes != null:
+		layer.set_meta(KEPT, true)
+		_ctx.nodes.register(layer.name, layer)
+		return
+	layer.queue_free()
+
+
+func _mode_of(default_mode: String) -> String:
+	var named: String = "" if _ctx == null or _ctx.step_def == null else _ctx.step_def.mode
+	return named if RubPrimitive.MODES.has(named) else default_mode
+
+
+func _edge() -> int:
+	var named: int = 0 if _ctx == null or _ctx.step_def == null else _ctx.step_def.param_int
+	return named if named >= RubPrimitive.EDGE_MIN and named <= RubPrimitive.EDGE_MAX else RubPrimitive.CELL_EDGE
 
 
 func _tray() -> Control:
@@ -104,7 +143,12 @@ func _existing(layer_id: String) -> Control:
 	if _ctx.nodes == null:
 		return null
 	var found: Control = _ctx.nodes.resolve(layer_id)
-	if found != null:
+	if found == null:
+		return null
+	if found.has_meta(KEPT):
+		found.remove_meta(KEPT)
+		_owned.append(found)
+	else:
 		_claimed_alpha[found] = found.modulate.a
 	return found
 

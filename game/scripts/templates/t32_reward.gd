@@ -77,7 +77,7 @@ func _give_gift() -> void:
 func _fly_coin() -> void:
 	if _ctx == null or not (_ctx.host is Control) or _button == null:
 		return
-	var hud: Node = (_ctx.host as Control).get_node_or_null("CoinTicketHud")
+	var hud: Node = (_ctx.host as Control).get_node_or_null("CoinHud")
 	if hud != null and hud.has_method("fly_coin"):
 		hud.call("fly_coin", _button.global_position + _button.size * 0.5)
 

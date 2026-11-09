@@ -37,7 +37,17 @@ func test_progress_reaches_one_only_when_the_area_is_done() -> void:
 	assert_lt(float(rub.call("progress")), 1.0, "SC-e13s01-P0-02 still short")
 	_rub_grid(rub, 16)
 	assert_almost_eq(float(rub.call("progress")), 1.0, 0.001, "SC-e13s01-P0-02")
-	assert_false(bool(rub.call("claims_completion")), "the primitive does not complete itself")
+
+
+func test_the_grid_edge_is_data_and_a_coarser_grid_covers_faster() -> void:
+	var rub: RefCounted = _new_rub()
+	if rub == null:
+		return
+	rub.set("edge", 2)
+	_bind_square(rub)
+	rub.call("begin", _host())
+	rub.call("rub_at", Vector2(50.0, 50.0))
+	assert_almost_eq(float(rub.call("progress")), 0.25, 0.001, "A9 one of four coarse cells")
 
 
 func test_a_first_rub_reports_a_ratio_and_does_not_complete() -> void:
@@ -50,7 +60,6 @@ func test_a_first_rub_reports_a_ratio_and_does_not_complete() -> void:
 	var ratio: float = float(rub.call("progress"))
 	assert_gt(ratio, 0.0)
 	assert_lt(ratio, 1.0)
-	assert_false(bool(rub.call("claims_completion")))
 
 
 func test_corner_cells_of_an_oval_hull_do_not_fake_coverage() -> void:

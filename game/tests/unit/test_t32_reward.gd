@@ -8,11 +8,12 @@ func before_each() -> void:
 
 
 func test_the_reward_pays_once_and_stays_lit() -> void:
+	CareWalk.to_celebrate((Engine.get_main_loop() as SceneTree).root.get_node("CareLoopManager"))
 	var first: RefCounted = _mount()
 	var before: int = int(_progress().call("get_coins"))
 	assert_true(bool(first.call("collect")))
 	var paid: int = int(_progress().call("get_coins"))
-	assert_gt(paid, before, "SC-e13s05-P1-04")
+	assert_eq(paid, before, "SC-e13s05-P1-04 the cycle paid at the celebration, the tap never pays again")
 	assert_false(bool(first.call("collect")))
 	assert_eq(int(_progress().call("get_coins")), paid)
 	var again: RefCounted = _mount()
@@ -35,12 +36,22 @@ func test_a_reward_already_paid_on_entry_still_waits_for_the_tap() -> void:
 
 
 func test_the_gift_is_free_and_owned_once() -> void:
+	CareWalk.to_celebrate((Engine.get_main_loop() as SceneTree).root.get_node("CareLoopManager"))
 	var tpl: RefCounted = _mount()
 	tpl.call("collect")
 	assert_true(bool(_progress().call("owns_furniture", "vaso_planta")))
 	assert_eq(int(_progress().call("owned_count")), 1)
 	tpl.call("collect")
 	assert_eq(int(_progress().call("owned_count")), 1)
+
+
+func test_a_tap_before_the_celebration_pays_nothing_and_carries_on() -> void:
+	var tpl: RefCounted = _mount()
+	var before: int = int(_progress().call("get_coins"))
+	assert_false(bool(tpl.call("collect")), "A7 the reward is earned by finishing the cycle")
+	assert_eq(int(_progress().call("get_coins")), before)
+	assert_eq(tpl.call("progress"), 1.0, "the step still goes on")
+	assert_false(bool(_progress().call("owns_furniture", "vaso_planta")))
 
 
 func test_the_reward_template_has_no_ad_branch() -> void:

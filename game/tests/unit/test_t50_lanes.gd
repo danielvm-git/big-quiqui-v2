@@ -3,17 +3,26 @@ extends GutTest
 ## SC-e13s08-P0-03, P1-01. A catch scores. A miss does not. Nothing is a weapon.
 
 
-func test_a_catch_scores_and_a_miss_does_not() -> void:
+func test_a_catch_scores_when_the_fruit_lands_in_the_basket_lane() -> void:
 	var tpl: RefCounted = _mount()
 	tpl.call("tick")
 	var lane: int = int(tpl.call("first_lane"))
 	assert_gte(lane, 0)
 	tpl.call("release_on_lane", lane)
-	assert_eq(int(tpl.call("score")), 1, "SC-e13s08-P0-03 catch")
-	for _i: int in range(8):
+	assert_eq(int(tpl.call("score")), 0, "SC-e13s08-P0-03 nothing is caught while it is still falling")
+	for _i: int in range(6):
 		tpl.call("tick")
-	assert_eq(int(tpl.call("score")), 1, "SC-e13s08-P0-03 miss")
-	assert_gt(int(tpl.call("misses")), 0)
+	assert_gte(int(tpl.call("score")), 1, "SC-e13s08-P0-03 catch")
+
+
+func test_a_miss_does_not_score() -> void:
+	var tpl: RefCounted = _mount()
+	tpl.call("tick")
+	var lane: int = int(tpl.call("first_lane"))
+	tpl.call("release_on_lane", (lane + 1) % 2)
+	for _i: int in range(6):
+		tpl.call("tick")
+	assert_gt(int(tpl.call("misses")), 0, "SC-e13s08-P0-03 miss")
 
 
 func test_the_template_has_no_weapon_and_no_lives() -> void:

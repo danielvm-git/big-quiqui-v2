@@ -27,6 +27,8 @@ const SLOTS: Array[String] = [SLOT_BODY, SLOT_HEAD, SLOT_NECK, SLOT_EYES]
 @export var owned_furniture: Array[String] = []
 @export var placed_furniture: Array[Dictionary] = []
 @export var friend_stars: Dictionary = {}
+@export var picked_prize: String = ""
+@export var prize_cycle: int = 0
 
 
 ## Ids come from the one owner (`Ids`), never from a local pattern.
@@ -44,6 +46,8 @@ func to_dictionary() -> Dictionary:
 		"owned_furniture": owned_furniture.duplicate(),
 		"placed_furniture": placed_furniture.duplicate(true),
 		"friend_stars": friend_stars.duplicate(true),
+		"picked_prize": picked_prize,
+		"prize_cycle": prize_cycle,
 	}
 
 
@@ -62,6 +66,8 @@ static func from_dictionary(raw: Dictionary) -> SaveData:
 	data.owned_furniture = _clean_id_array(raw.get("owned_furniture", []))
 	data.placed_furniture = _clean_placement(raw.get("placed_furniture", []), data.owned_furniture)
 	data.friend_stars = _clean_stars(raw.get("friend_stars", {}))
+	data.picked_prize = _clean_id(raw.get("picked_prize", ""))
+	data.prize_cycle = clampi(_int_of(raw.get("prize_cycle", 0), 0), 0, MAX_CYCLES)
 	return data
 
 
@@ -74,6 +80,12 @@ func clamp_to_rules() -> void:
 	# Ownership first: a placement can only be judged once we know what she owns (BUG-056).
 	placed_furniture = _clean_placement(placed_furniture, owned_furniture)
 	friend_stars = _clean_stars(friend_stars)
+	picked_prize = _clean_id(picked_prize)
+	prize_cycle = clampi(prize_cycle, 0, MAX_CYCLES)
+
+
+static func _clean_id(raw: Variant) -> String:
+	return raw as String if raw is String and is_valid_id(raw as String) else ""
 
 
 static func _clean_id_map(raw: Variant) -> Dictionary:

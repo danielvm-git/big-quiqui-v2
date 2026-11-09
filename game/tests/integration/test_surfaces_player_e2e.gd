@@ -25,6 +25,7 @@ func test_the_title_verb_is_one_tap_and_completes_the_def() -> void:
 
 
 func test_the_reward_star_collects_once_and_carries_on() -> void:
+	CareWalk.to_celebrate((Engine.get_main_loop() as SceneTree).root.get_node("CareLoopManager"))
 	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("reward_probe"))
 	var star: TapButton = _taps(player)[0]
 	var before: int = int(_progress().call("get_coins"))
@@ -32,12 +33,15 @@ func test_the_reward_star_collects_once_and_carries_on() -> void:
 	assert_eq(player.runner.step_index, 0, "the step waits for the child")
 	send(star, touch(star.get_global_rect().get_center(), true))
 	await _settle(player)
-	assert_gt(int(_progress().call("get_coins")), before, "the tap paid")
+	assert_eq(
+		int(_progress().call("get_coins")), before, "the cycle paid once at the celebration, the tap never pays again"
+	)
 	assert_true(bool(_progress().call("owns_furniture", "vaso_planta")), "and the gift is free")
 	assert_true(player.runner.fsm.state in [StepRunner.STATE_OUTRO, StepRunner.STATE_EXIT])
 
 
 func test_a_second_visit_shows_the_star_lit_and_pays_nothing() -> void:
+	CareWalk.to_celebrate((Engine.get_main_loop() as SceneTree).root.get_node("CareLoopManager"))
 	var first: ScenePlayer = await mount(SceneDefLoader.load_by_id("reward_probe"))
 	var star: TapButton = _taps(first)[0]
 	send(star, touch(star.get_global_rect().get_center(), true))
@@ -49,14 +53,37 @@ func test_a_second_visit_shows_the_star_lit_and_pays_nothing() -> void:
 	assert_eq(int(_progress().call("get_coins")), paid, "a second visit never pays")
 
 
+func test_touching_each_object_through_the_player_completes_the_step() -> void:
+	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("touch_each_probe"))
+	var buttons: Array[TapButton] = _taps(player)
+	assert_eq(buttons.size(), 2, "one target per item in the def")
+	send(buttons[0], touch(buttons[0].get_global_rect().get_center(), true))
+	assert_lt(buttons[0].visual.modulate.r, 1.0, "A11 the tapped object marks itself")
+	await _settle(player)
+	assert_true(player.runner.fsm.state in [StepRunner.STATE_OUTRO, StepRunner.STATE_EXIT], "A14 any tap ends it")
+
+
+func test_rubbing_the_reveal_layers_through_the_player_completes_the_step() -> void:
+	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("rub_reveal_probe"))
+	var tool: Control = rub_tool(player)
+	assert_not_null(tool, "A14 the brush is in the tray")
+	assert_not_null(player.get_node_or_null("crumbs"), "the layers come from the def and have art")
+	var hull: PackedVector2Array = (player.get_node("QuiQuiRig") as QuiQuiRig).scrub_hull_global()
+	rub_hull(tool, hull)
+	await _settle(player)
+	assert_true(
+		player.runner.fsm.state in [StepRunner.STATE_OUTRO, StepRunner.STATE_EXIT], "the rub reveals both layers"
+	)
+
+
 func test_one_prize_tap_saves_and_the_other_does_nothing() -> void:
 	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("prize_probe"))
 	var buttons: Array[TapButton] = _taps(player)
 	assert_eq(buttons.size(), 2, "one target per prize in the def")
 	send(buttons[0], touch(buttons[0].get_global_rect().get_center(), true))
-	assert_eq(_progress().call("equipped", "prize"), "plush")
+	assert_eq(_progress().call("picked_prize"), "plush")
 	send(buttons[1], touch(buttons[1].get_global_rect().get_center(), true))
-	assert_eq(_progress().call("equipped", "prize"), "plush", "no second pick")
+	assert_eq(_progress().call("picked_prize"), "plush", "no second pick")
 	await _settle(player)
 	assert_true(player.runner.fsm.state in [StepRunner.STATE_OUTRO, StepRunner.STATE_EXIT])
 

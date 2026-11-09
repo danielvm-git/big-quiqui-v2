@@ -4,6 +4,12 @@ extends RefCounted
 ## Covered-area ratio on top of ScrubGesture. The runner owns completion.
 
 const CELL_EDGE: int = 4
+const MODES: PackedStringArray = ["clear", "leave", "reveal"]
+const EDGE_MIN: int = 2
+const EDGE_MAX: int = 12
+
+## Cells per side of the measuring grid. Finer cells need a more even rub. The def sets it.
+var edge: int = CELL_EDGE
 
 var _gesture: ScrubGesture = ScrubGesture.new()
 var _marked: Dictionary = {}
@@ -58,10 +64,6 @@ func progress() -> float:
 	return clampf(float(covered) / float(area.size()), 0.0, 1.0)
 
 
-func claims_completion() -> bool:
-	return false
-
-
 func playing_channels() -> int:
 	return 1 if _gesture.is_playing() else 0
 
@@ -88,9 +90,9 @@ func _cell_key(point: Vector2) -> String:
 	var box: Rect2 = _bbox()
 	if box.size.x <= 1.0 or box.size.y <= 1.0:
 		return ""
-	var span: Vector2 = box.size / float(CELL_EDGE)
-	var col: int = clampi(int((point.x - box.position.x) / span.x), 0, CELL_EDGE - 1)
-	var row: int = clampi(int((point.y - box.position.y) / span.y), 0, CELL_EDGE - 1)
+	var span: Vector2 = box.size / float(edge)
+	var col: int = clampi(int((point.x - box.position.x) / span.x), 0, edge - 1)
+	var row: int = clampi(int((point.y - box.position.y) / span.y), 0, edge - 1)
 	return "%d:%d" % [col, row]
 
 
@@ -100,9 +102,9 @@ func _area_cells() -> Dictionary:
 	if box.size.x <= 1.0 or box.size.y <= 1.0:
 		return cells
 	var hull: PackedVector2Array = _gesture.hull_points()
-	var step: Vector2 = box.size / float(CELL_EDGE)
-	for col: int in range(CELL_EDGE):
-		for row: int in range(CELL_EDGE):
+	var step: Vector2 = box.size / float(edge)
+	for col: int in range(edge):
+		for row: int in range(edge):
 			var centre: Vector2 = box.position + Vector2((float(col) + 0.5) * step.x, (float(row) + 0.5) * step.y)
 			if Geometry2D.is_point_in_polygon(centre, hull):
 				cells["%d:%d" % [col, row]] = true

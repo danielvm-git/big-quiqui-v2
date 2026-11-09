@@ -16,6 +16,8 @@ extends Resource
 @export var receiver_id: String = ""
 @export var item_ids: PackedStringArray = PackedStringArray()
 @export var on_hit_pose: String = ""
+## Optional, parallel to `item_ids`: the pose each target or layer answers with. An empty entry uses `on_hit_pose`.
+@export var hit_poses: PackedStringArray = PackedStringArray()
 @export var on_hit_sfx_id: String = ""
 @export var on_miss_sfx_id: String = "sfx_soft_error"
 @export var care_step_id: String = ""

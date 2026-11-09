@@ -9,7 +9,7 @@ var _gone: Array[bool] = []
 
 func setup(ctx: TemplateContext) -> void:
 	_ctx = ctx
-	_surface.bind(ctx, _on_scrubbed)
+	_surface.bind(ctx, _on_scrubbed, "reveal")
 	for _layer: Control in _surface.layers:
 		_gone.append(false)
 
@@ -62,5 +62,5 @@ func _reveal_due() -> void:
 		if _gone[index] or ratio + 0.0001 < float(index + 1) / float(count):
 			continue
 		_gone[index] = true
-		_surface.set_alpha(index, 0.0)
-		TemplateKit.play_hit(_ctx, "template.reveal", {"layer": index})
+		_surface.fade_out(index)
+		TemplateKit.play_hit(_ctx, "template.reveal", {"layer": index}, index)

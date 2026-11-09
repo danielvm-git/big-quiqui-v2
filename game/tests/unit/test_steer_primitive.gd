@@ -43,3 +43,8 @@ func _steer(mode_name: String) -> RefCounted:
 	steer.set("bounds", Rect2(0.0, 0.0, 300.0, 100.0))
 	steer.set("lane_count", 3)
 	return steer
+
+
+func test_the_gesture_has_a_declared_empty_dwell_table() -> void:
+	assert_true(SteerPrimitive.MAX_DWELL_SEC.is_empty(), "B6 a child-owned gesture has no deadline, said on purpose")
+	assert_eq(SteerPrimitive.MAX_DWELL_SEC.size(), 0)

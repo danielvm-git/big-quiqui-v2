@@ -20,3 +20,17 @@ func test_the_title_has_one_verb() -> void:
 	var body: String = SourceScanner.text("res://scripts/templates/t0_title.gd")
 	assert_false(body.contains("subscription"))
 	assert_false(body.contains("policy"))
+
+
+func test_the_verb_glows() -> void:
+	var host: Control = Control.new()
+	host.size = Vector2(1920.0, 1080.0)
+	add_child_autofree(host)
+	var tpl: RefCounted = TemplateCatalog.instantiate("t0_title")
+	var ctx: TemplateContext = TemplateContext.new()
+	ctx.host = host
+	ctx.step_def = StepDef.new()
+	tpl.call("setup", ctx)
+	await wait_process_frames(2)
+	assert_gt(get_tree().get_processed_tweens().size(), 0, "A20 the one target pulses")
+	tpl.call("teardown")

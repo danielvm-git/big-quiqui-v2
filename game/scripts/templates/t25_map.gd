@@ -24,6 +24,7 @@ var _world: Control = null
 var _pins: Dictionary = {}
 var _wish: WishBubble = null
 var _held_pin: String = ""
+var _rig_filter: int = -1
 
 
 func setup(ctx: TemplateContext) -> void:
@@ -33,11 +34,16 @@ func setup(ctx: TemplateContext) -> void:
 	_pan.tolerance = _def.tolerance()
 	_pan.view_size = _view_size()
 	_open_steps = MapDef.open_steps_now()
+	_rig_filter = TemplateKit.quiet_rig(ctx)
+	_follow_first_open()
 	_build_surface()
+	_watch_resize()
 
 
 func teardown() -> void:
 	_hide_wish()
+	TemplateKit.restore_rig(_ctx, _rig_filter)
+	_unwatch_resize()
 	for node: Node in [_pad, _world, _wish]:
 		if node != null and is_instance_valid(node):
 			node.queue_free()
@@ -59,11 +65,13 @@ func apply_view(size: Vector2) -> void:
 	_pan.view_size = size
 
 
+## Test seam: pretend the care loop opened these steps.
 func set_open_steps(steps: PackedStringArray) -> void:
 	_open_steps = steps
 	_dim_locked()
 
 
+## Test seam: a drag without a finger.
 func drag_by(delta: Vector2) -> void:
 	_pan.drag_by(delta)
 	_place_world()
@@ -147,6 +155,8 @@ func _on_moved(point: Vector2, index: int) -> void:
 
 
 func _on_released(_point: Vector2, index: int) -> void:
+	if not _pan.owns(index):
+		return
 	var held: String = _held_pin
 	_held_pin = ""
 	if _pan.end_allows_tap(index) and not held.is_empty():
@@ -199,6 +209,31 @@ func _dim_locked() -> void:
 func _place_world() -> void:
 	if _world != null and is_instance_valid(_world):
 		_world.position = -_pan.offset
+
+
+## The room opens on the first door that is open, so the child sees where to go.
+func _follow_first_open() -> void:
+	for index: int in range(_def.count()):
+		if not _def.is_locked(index, _open_steps):
+			_pan.follow(_def.position_at(index) + TapButton.MIN_HIT_SIZE * 0.5)
+			return
+
+
+func _watch_resize() -> void:
+	if _ctx != null and _ctx.host is Control and not (_ctx.host as Control).resized.is_connected(_on_resized):
+		(_ctx.host as Control).resized.connect(_on_resized)
+
+
+func _unwatch_resize() -> void:
+	if _ctx != null and _ctx.host is Control and (_ctx.host as Control).resized.is_connected(_on_resized):
+		(_ctx.host as Control).resized.disconnect(_on_resized)
+
+
+## A rotation or a new canvas changes how much world fits, so the clamp is read again.
+func _on_resized() -> void:
+	apply_view(_view_size())
+	_pan.drag_by(Vector2.ZERO)
+	_place_world()
 
 
 func _view_size() -> Vector2:

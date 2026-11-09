@@ -14,6 +14,7 @@ var _pad: TouchPad = null
 var _field: Control = null
 var _basket: TextureRect = null
 var _items: Dictionary = {}
+var _rig_filter: int = -1
 
 
 func setup(ctx: TemplateContext) -> void:
@@ -27,11 +28,13 @@ func setup(ctx: TemplateContext) -> void:
 	_spawner.lane_count = _lanes()
 	_spawner.items = _item_ids()
 	_spawner.start()
+	_rig_filter = TemplateKit.quiet_rig(ctx)
 	_build_surface()
 
 
 func teardown() -> void:
 	stop()
+	TemplateKit.restore_rig(_ctx, _rig_filter)
 	for node: Node in [_pad, _field]:
 		if node != null and is_instance_valid(node):
 			node.queue_free()
@@ -48,11 +51,14 @@ func advance(delta: float) -> void:
 
 
 func tick() -> void:
-	_spawner.tick()
+	var caught: int = _spawner.tick(_steer.lane_index())
+	if caught > 0:
+		_score += caught
+		TemplateKit.play_hit(_ctx, "template.catch", {"count": caught})
 	_sync_items()
 
 
-## Test seam and keyboard-free shortcut: lift a finger over lane `index`.
+## Test seam: park the basket without a finger.
 func release_on_lane(index: int) -> void:
 	_steer.begin(Vector2(_steer.lane_center(index), _steer.bounds.size.y * 0.8))
 	_land(0)
@@ -106,14 +112,8 @@ func _on_released(_point: Vector2, index: int) -> void:
 
 
 func _land(index: int) -> void:
-	if not _steer.release(index):
-		return
-	var caught: int = _spawner.take_lane(_steer.lane_index())
-	_move_basket()
-	if caught > 0:
-		_score += caught
-		TemplateKit.play_hit(_ctx, "template.catch", {"count": caught})
-	_sync_items()
+	if _steer.release(index):
+		_move_basket()
 
 
 func _build_surface() -> void:

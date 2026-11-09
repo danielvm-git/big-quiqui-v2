@@ -59,6 +59,33 @@ func test_both_aspects_reach_def_destinations() -> void:
 		assert_true(bool(tpl.call("reachable", "play_door")), "far door %s" % canvas)
 
 
+func test_the_room_opens_on_the_first_open_door() -> void:
+	var step: StepDef = _step()
+	step.destination_positions = PackedVector2Array([Vector2(3600.0, 400.0), Vector2.ZERO, Vector2.ZERO, Vector2.ZERO])
+	var tpl: RefCounted = TemplateCatalog.instantiate("t25_map")
+	var ctx: TemplateContext = TemplateContext.new()
+	ctx.step_def = step
+	tpl.call("setup", ctx)
+	assert_gt((tpl.call("offset") as Vector2).x, 1000.0, "A12 follow runs when the room opens")
+
+
+func test_a_resize_clamps_the_view_again() -> void:
+	var host: Control = Control.new()
+	host.size = Vector2(1000.0, 800.0)
+	add_child_autofree(host)
+	var tpl: RefCounted = TemplateCatalog.instantiate("t25_map")
+	var ctx: TemplateContext = TemplateContext.new()
+	ctx.step_def = _step()
+	ctx.host = host
+	tpl.call("setup", ctx)
+	tpl.call("follow", Vector2(3900.0, 400.0))
+	var before: float = (tpl.call("offset") as Vector2).x
+	host.size = Vector2(3000.0, 800.0)
+	assert_lt((tpl.call("offset") as Vector2).x, before, "A12 a wider canvas shows more world, so the offset clamps")
+	tpl.call("teardown")
+	assert_false(host.resized.is_connected(tpl.get("_on_resized")), "and the listener left with the step")
+
+
 func test_probe_def_is_the_house_hub() -> void:
 	var def: SceneDef = SceneDefLoader.load_by_id("home_map")
 	assert_not_null(def)

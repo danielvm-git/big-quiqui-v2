@@ -5,6 +5,8 @@ extends RefCounted
 
 const STATE_IDLE: String = "IDLE"
 const STATE_DRAGGING: String = "DRAGGING"
+## No state times out: the gesture belongs to the child's finger and lasts as long as it does.
+const MAX_DWELL_SEC: Dictionary = {}
 const LEGAL_EDGES: Dictionary = {
 	STATE_IDLE: [STATE_DRAGGING],
 	STATE_DRAGGING: [STATE_IDLE],
@@ -16,7 +18,7 @@ var lane_count: int = 3
 var position: Vector2 = Vector2.ZERO
 
 var _owner: int = -1
-var _fsm: Fsm = Fsm.new(STATE_IDLE, LEGAL_EDGES)
+var _fsm: Fsm = Fsm.new(STATE_IDLE, LEGAL_EDGES, MAX_DWELL_SEC)
 
 
 ## Returns false when another finger already owns the steering.

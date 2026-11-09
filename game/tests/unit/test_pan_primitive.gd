@@ -75,3 +75,8 @@ func _new_pan() -> RefCounted:
 		fail_test("missing %s" % SCRIPT_PATH)
 		return null
 	return script.new() as RefCounted
+
+
+func test_the_gesture_has_a_declared_empty_dwell_table() -> void:
+	assert_true(PanPrimitive.MAX_DWELL_SEC.is_empty(), "B6 a child-owned gesture has no deadline, said on purpose")
+	assert_eq(PanPrimitive.MAX_DWELL_SEC.size(), 0)

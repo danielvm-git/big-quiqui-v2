@@ -24,27 +24,18 @@ func start() -> void:
 	_misses = 0
 
 
-func tick() -> void:
-	_age()
+## One step of time. A row that has fallen the whole way is caught when the basket is in its lane
+## and leaves quietly when it is not. Returns how many were caught on this tick.
+func tick(basket_lane: int = -1) -> int:
+	var caught: int = _age(basket_lane)
 	_tick += 1
 	if items.is_empty() or cadence <= 0 or _tick % cadence != 0:
-		return
+		return caught
 	var item: String = items[_rng.randi() % items.size()]
 	var lane: int = _rng.randi() % maxi(lane_count, 1)
 	_live.append({"item": item, "lane": lane, "born": _tick})
 	_log.append("%s:%d" % [item, lane])
-
-
-func take_lane(lane: int) -> int:
-	var kept: Array[Dictionary] = []
-	var taken: int = 0
-	for row: Dictionary in _live:
-		if int(row.get("lane", -1)) == lane:
-			taken += 1
-		else:
-			kept.append(row)
-	_live = kept
-	return taken
+	return caught
 
 
 ## Copies of the live rows with their age in ticks, so a template can draw them.
@@ -79,12 +70,15 @@ func stop() -> void:
 	_live.clear()
 
 
-func _age() -> void:
+func _age(basket_lane: int) -> int:
 	var kept: Array[Dictionary] = []
+	var caught: int = 0
 	for row: Dictionary in _live:
-		var born: int = int(row.get("born", 0))
-		if _tick - born >= lifetime:
-			_misses += 1
-		else:
+		if _tick - int(row.get("born", 0)) < lifetime:
 			kept.append(row)
+		elif int(row.get("lane", -1)) == basket_lane:
+			caught += 1
+		else:
+			_misses += 1
 	_live = kept
+	return caught

@@ -2,19 +2,17 @@
 class_name CleaningRub
 extends RefCounted
 ## Shared measured rub for t23 and t40. The threshold is data. A finished step stays finished.
-## `paints` fills the layer as the ratio grows; otherwise the layer fades out as it is cleared.
+## Mode `leave` fills the layer as the ratio grows; `clear` fades it out. Both are data, not branches.
 
 var _surface: RubSurface = RubSurface.new()
 var _ctx: TemplateContext = null
-var _paints: bool = false
 var _latched: bool = false
-var _tray_taps: int = 0
 
 
-func bind(ctx: TemplateContext, paints: bool) -> void:
+## `default_mode` is `clear` or `leave`; a def that names one of them overrides the template.
+func bind(ctx: TemplateContext, default_mode: String) -> void:
 	_ctx = ctx
-	_paints = paints
-	_surface.bind(ctx, _on_scrubbed)
+	_surface.bind(ctx, _on_scrubbed, default_mode)
 	_show(0.0)
 
 
@@ -64,23 +62,6 @@ func looks_clean() -> bool:
 	return _latched
 
 
-func tray_accepts() -> bool:
-	return not _surface.holding
-
-
-func tray_taps() -> int:
-	return _tray_taps
-
-
-func note_tray(event: InputEvent) -> void:
-	if event is InputEventMouse and event.device == -1:
-		return
-	if not tray_accepts():
-		return
-	if event is InputEventScreenTouch and event.pressed:
-		_tray_taps += 1
-
-
 func tool() -> TouchDraggable:
 	return _surface.tool
 
@@ -105,7 +86,7 @@ func _consider() -> void:
 
 
 func _show(ratio: float) -> void:
-	_surface.set_alpha(0, ratio if _paints else 1.0 - ratio)
+	_surface.set_alpha(0, ratio if _surface.mode == "leave" else 1.0 - ratio)
 
 
 func _threshold() -> float:

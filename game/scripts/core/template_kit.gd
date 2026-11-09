@@ -32,16 +32,24 @@ static func hull_target(ctx: TemplateContext) -> Control:
 	return ctx.rig
 
 
-static func play_hit(ctx: TemplateContext, diary_ev: String, data: Dictionary) -> void:
+## `index` picks the item's own pose from `hit_poses`; -1 or an empty entry uses `on_hit_pose`.
+static func play_hit(ctx: TemplateContext, diary_ev: String, data: Dictionary, index: int = -1) -> void:
 	if ctx == null or ctx.reactions == null or ctx.step_def == null:
 		return
 	var batch: Array = []
-	if not ctx.step_def.on_hit_pose.is_empty():
-		batch.append({"kind": ReactionExecutor.KIND_POSE, "id": ctx.step_def.on_hit_pose})
+	var pose: String = pose_for(ctx.step_def, index)
+	if not pose.is_empty():
+		batch.append({"kind": ReactionExecutor.KIND_POSE, "id": pose})
 	if not ctx.step_def.on_hit_sfx_id.is_empty():
 		batch.append({"kind": ReactionExecutor.KIND_SFX, "id": ctx.step_def.on_hit_sfx_id})
 	ctx.reactions.execute(batch)
 	LogSink.emit_to_diary(diary_ev, data)
+
+
+static func pose_for(step: StepDef, index: int) -> String:
+	if index >= 0 and index < step.hit_poses.size() and not step.hit_poses[index].is_empty():
+		return step.hit_poses[index]
+	return step.on_hit_pose
 
 
 static func play_miss(ctx: TemplateContext) -> void:
@@ -69,6 +77,21 @@ static func tap_button(art_id: String, at: Vector2) -> TapButton:
 	button.visual = visual
 	button.add_child(visual)
 	return button
+
+
+## QuiQui stops touches. A template whose pad covers the stage lets them through while it is mounted
+## and hands back the old filter to restore. Returns -1 when there was no rig to quiet.
+static func quiet_rig(ctx: TemplateContext) -> int:
+	if ctx == null or ctx.rig == null:
+		return -1
+	var before: int = ctx.rig.mouse_filter
+	ctx.rig.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return before
+
+
+static func restore_rig(ctx: TemplateContext, before: int) -> void:
+	if ctx != null and ctx.rig != null and is_instance_valid(ctx.rig) and before >= 0:
+		ctx.rig.mouse_filter = before as Control.MouseFilter
 
 
 ## While a gesture owns the screen the other tray children ignore touches. They stay visible.

@@ -58,6 +58,76 @@ func test_an_unsupported_mode_is_rejected() -> void:
 	var step: StepDef = _step("t21_touch_each")
 	step.mode = "teleport"
 	assert_eq(StepParams.problem(step), "bad_mode")
+	for rub: String in ["t23_erase", "t40_draw_fill"]:
+		var wrong: StepDef = _step(rub)
+		wrong.mode = "reveal"
+		assert_eq(StepParams.problem(wrong), "bad_mode", "%s does not reveal" % rub)
+	var chain: StepDef = _step("t34_rub_reveal")
+	chain.mode = "clear"
+	assert_eq(StepParams.problem(chain), "bad_mode")
+
+
+func test_every_t21_mode_loads_and_a_def_with_no_mode_is_any() -> void:
+	for mode: String in ["any", "count_n", "toggle", "single"]:
+		var step: StepDef = _step("t21_touch_each")
+		step.mode = mode
+		assert_eq(StepParams.problem(step), "", mode)
+	var def: SceneDef = SceneDef.new()
+	def.id = "mode_less"
+	def.background_id = "bg_playroom"
+	def.next_scene_id = "home"
+	var bare: StepDef = _step("t21_touch_each")
+	bare.item_ids = PackedStringArray(["apple", "grape"])
+	def.steps = [bare] as Array[Resource]
+	assert_not_null(SceneDefLoader.validate(def), "A1 a count_n or mode-less def passes the loader")
+	bare.mode = "count_n"
+	assert_not_null(SceneDefLoader.validate(def))
+
+
+func test_a_step_with_nothing_to_tap_show_or_catch_never_loads() -> void:
+	for template: String in ["t21_touch_each", "t34_rub_reveal", "t45_dress_decorate", "t50_lanes", "t51_prize_pick"]:
+		var step: StepDef = _step(template)
+		step.item_ids = PackedStringArray()
+		assert_eq(StepParams.problem(step), "no_items", template)
+
+
+func test_a_slot_may_repeat_but_an_item_may_not() -> void:
+	var step: StepDef = _step("t45_dress_decorate")
+	step.item_ids = PackedStringArray(["blue_scarf", "red_scarf"])
+	step.slot_ids = PackedStringArray(["neck", "neck"])
+	assert_eq(StepParams.problem(step), "", "A2 two neck items share one slot")
+	step.item_ids = PackedStringArray(["blue_scarf", "blue_scarf"])
+	assert_eq(StepParams.problem(step), "bad_id")
+	var map: StepDef = _map()
+	map.destination_scenes = PackedStringArray(["kitchen", "kitchen"])
+	assert_eq(StepParams.problem(map), "", "two doors may open one room")
+
+
+func test_a_door_outside_the_world_and_a_wild_tolerance_are_rejected() -> void:
+	var step: StepDef = _map()
+	step.destination_positions = PackedVector2Array([Vector2(1.0, 1.0), Vector2(99999.0, 2.0)])
+	assert_eq(StepParams.problem(step), "bad_world", "B2 a door nobody can reach")
+	step = _map()
+	step.pan_tolerance = 1.0e9
+	assert_eq(StepParams.problem(step), "bad_number", "A19 a drag must be able to cancel a tap")
+
+
+func test_per_item_poses_pair_with_items_and_use_the_grammar() -> void:
+	var step: StepDef = _step("t21_touch_each")
+	step.hit_poses = PackedStringArray(["pleased", ""])
+	assert_eq(StepParams.problem(step), "mismatched_arrays")
+	step.item_ids = PackedStringArray(["apple", "grape"])
+	assert_eq(StepParams.problem(step), "")
+	step.hit_poses = PackedStringArray(["pleased", "Bad Pose"])
+	assert_eq(StepParams.problem(step), "bad_id")
+
+
+func test_the_rub_grid_edge_is_bounded() -> void:
+	var step: StepDef = _step("t23_erase")
+	step.param_int = 500
+	assert_eq(StepParams.problem(step), "bad_count")
+	step.param_int = 3
+	assert_eq(StepParams.problem(step), "")
 
 
 func test_lane_and_spawn_numbers_are_bounded() -> void:
@@ -85,7 +155,7 @@ func test_the_loader_rejects_and_logs_a_bad_step() -> void:
 func _step(template_id: String) -> StepDef:
 	var step: StepDef = StepDef.new()
 	step.template_id = template_id
-	step.mode = "any"
+	step.item_ids = PackedStringArray(["apple"])
 	return step
 
 

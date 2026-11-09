@@ -6,7 +6,9 @@
 [sub_resource type="Resource" id="step_reveal"]
 script = ExtResource("2_step")
 template_id = "t34_rub_reveal"
-item_ids = PackedStringArray("mud", "dust")
+mode = "reveal"
+hit_poses = PackedStringArray("pleased", "")
+item_ids = PackedStringArray("crumbs", "foam_small")
 tool_id = "hair_brush"
 on_hit_pose = "pleased"
 on_hit_sfx_id = "sfx_heart"

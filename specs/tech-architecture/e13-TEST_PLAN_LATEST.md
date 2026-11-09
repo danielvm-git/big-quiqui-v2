@@ -4,7 +4,7 @@
 **Skill:** `plan-tests` · **Date:** 2026-11-08 · **Risk level:** HIGH — 13 templates and 4 primitives, 17 P0 rows, one of them (spawned orphans) able to leak
 every room. **Security row:** `SC-e13s03-P0-05` (map destinations resolve through the catalogue, F-3) comes
 from `specs/security/CODEBASE_REVIEW_2026-11-08.md` and `specs/security/epics/e13/THREAT_MODEL.md`.
-**Epic:** `specs/epics/e13-wave-1b-primitives-and-templates/` (9 stories, 48 scenarios)
+**Epic:** `specs/epics/e13-wave-1b-primitives-and-templates/` (9 stories, 44 scenarios; the four `e13s07` rows are withdrawn by the evidence-driven skip)
 **Companion:** `specs/tech-architecture/TEST_PLAN_LATEST.md` (project-level 9-layer pyramid),
 `specs/product/BUILDER_REUSE_MAP.md` (what survives the restart) and `CONVENTIONS.md` §Tests.
 
@@ -40,7 +40,7 @@ decoration).
 | SC-e13s04-P0-02 | unit | e13s04 | `t23` clears the layer and completes exactly once | erase completes repeatedly or never |
 | SC-e13s04-P0-03 | unit | e13s04 | a completed step cannot be un-completed by more rubbing | work already credited is taken back |
 | SC-e13s04-P0-04 | integration | e13s04 | soap, rinse and dry run as three steps from one def | the chain needs a scene script again |
-| SC-e13s04-P1-01 | unit | e13s04 | the tray ignores taps while a rub owns the screen | the tray steals the finger mid-gesture |
+| SC-e13s04-P1-01 | integration | e13s04 | the tray ignores taps while a rub owns the screen (`test_bathroom_rub_e2e`) | the tray steals the finger mid-gesture |
 | SC-e13s04-P2-01 | unit | e13s04 | residue left below the threshold still completes and looks clean | perfection is required to advance |
 | SC-e13s05-P1-01 | unit | e13s05 | an item snaps into its slot and the look is saved; the bin saves the empty slot | the child's look is lost |
 | SC-e13s05-P1-02 | unit | e13s05 | an invalid item id is rejected before any save call | a crafted id reaches the save |
@@ -50,10 +50,10 @@ decoration).
 | SC-e13s05-P2-02 | control | e13s05 | `ProgressManager` keeps its atomic write and its signatures | the save shape changed without a version bump |
 | SC-e13s06-P2-01 | control | e13s06 | the evidence document exists and names both templates with a confidence level | the guess is never written down |
 | SC-e13s06-P2-02 | control | e13s06 | the coverage claim in `SCOPE_LATEST.yaml` matches the build-or-skip call | prose overstates what is built |
-| SC-e13s07-P1-01 | unit | e13s07 | every object in a `t22` step answers its own touch | some objects are decoration |
-| SC-e13s07-P1-02 | unit | e13s07 | a `t22` step ends on counted touches, never when the sounds stop | an audio duration becomes a deadline |
-| SC-e13s07-P1-03 | unit | e13s07 | any input skips a `t3` beat and a declared reward is still given | skipping eats a gift |
-| SC-e13s07-P2-01 | control | e13s07 | the template registry reports a consumer for both templates | a template is built with nothing using it |
+| SC-e13s07-P1-01 | withdrawn | e13s07 | every object in a `t22` step answers its own touch | some objects are decoration |
+| SC-e13s07-P1-02 | withdrawn | e13s07 | a `t22` step ends on counted touches, never when the sounds stop | an audio duration becomes a deadline |
+| SC-e13s07-P1-03 | withdrawn | e13s07 | any input skips a `t3` beat and a declared reward is still given | skipping eats a gift |
+| SC-e13s07-P2-01 | withdrawn | e13s07 | the template registry reports a consumer for both templates | a template is built with nothing using it |
 | SC-e13s08-P0-01 | unit | e13s08 | lanes snap on release only, never mid-drag | the character jumps under the finger |
 | SC-e13s08-P0-02 | unit | e13s08 | a seeded spawner replays the same sequence | a test cannot reproduce a spawn bug |
 | SC-e13s08-P0-03 | unit | e13s08 | a caught object scores and a missed one does not | catching is invisible |
@@ -79,11 +79,11 @@ decoration).
 
 | Level | Count | Where |
 |---|---|---|
-| unit | 35 | `game/tests/unit/test_*.gd` |
-| control | 9 | fails-on-injection assertions inside the owning test file |
+| unit | 32 | `game/tests/unit/test_*.gd` |
+| control | 8 | fails-on-injection assertions inside the owning test file |
 | e2e / geometry | 3 | `game/tests/integration/test_*_aspects.gd`, `*_scene.gd` |
 | integration | 1 | `game/tests/integration/test_*.gd` |
-| **total** | **48** | P0=17 · P1=20 · P2=11 · P3=0 |
+| **total** | **44** | P0=17 · P1=17 · P2=10 · P3=0 (four `e13s07` rows withdrawn: P1=3, P2=1) |
 
 The pyramid is deliberately bottom-heavy (unit) and the e2e rows are only the ones that need real
 layout or a real child. Nothing in this epic is tested at the E2E level when a unit test could answer

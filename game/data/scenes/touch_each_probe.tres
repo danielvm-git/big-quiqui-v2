@@ -10,6 +10,7 @@ mode = "any"
 repeat_count = 1
 item_ids = PackedStringArray("apple", "grape")
 on_hit_pose = "pleased"
+hit_poses = PackedStringArray("pleased", "surprised")
 on_hit_sfx_id = "sfx_heart"
 
 [resource]

@@ -26,13 +26,11 @@ func note_tap(target_id: String) -> bool:
 
 
 func progress() -> float:
-	if mode == "any":
-		return 1.0 if _seen.size() > 0 else 0.0
 	if mode == "count_n":
 		return clampf(float(_seen.size()) / float(_goal()), 0.0, 1.0)
 	if mode == "toggle":
 		return clampf(float(_on_count()) / float(maxi(targets, 1)), 0.0, 1.0)
-	return 0.0
+	return 1.0 if _seen.size() > 0 else 0.0  # `any`, and the default for a def that names no mode
 
 
 func _goal() -> int:
@@ -49,14 +47,17 @@ func _on_count() -> int:
 	return count
 
 
+## Test seam: the primitive never completes a step; the runner does.
 func claims_completion() -> bool:
 	return false
 
 
+## Test seam: every tap answers, spent or not.
 func reaction_count() -> int:
 	return _reactions
 
 
+## Test seam: distinct targets tapped.
 func seen_count() -> int:
 	return _seen.size()
 

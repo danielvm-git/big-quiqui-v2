@@ -25,6 +25,22 @@ func test_a_second_consumer_uses_the_same_spawner() -> void:
 	assert_eq(stub.live_count(), 0)
 
 
+func test_arrival_catches_in_the_basket_lane_and_misses_elsewhere() -> void:
+	var spawner: Spawner = Spawner.new()
+	spawner.rng_seed = 2
+	spawner.items = PackedStringArray(["cup"])
+	spawner.cadence = 100
+	spawner.lifetime = 1
+	spawner.lane_count = 1
+	spawner.start()
+	spawner._live.append({"item": "cup", "lane": 0, "born": 0})
+	spawner._live.append({"item": "cup", "lane": 1, "born": 0})
+	spawner.tick(0)
+	assert_eq(spawner.tick(0), 1, "the row in the basket lane is caught on arrival")
+	assert_eq(spawner.misses(), 1, "the other row leaves quietly")
+	assert_eq(spawner.live_count(), 0)
+
+
 func test_live_rows_report_age_and_misses_are_read_only() -> void:
 	var spawner: Spawner = Spawner.new()
 	spawner.rng_seed = 2

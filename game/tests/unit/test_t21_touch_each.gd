@@ -12,6 +12,30 @@ func test_a_spent_target_replays_without_moving_progress() -> void:
 	assert_eq(int(tpl.call("play_count")), 2, "the second tap still answers")
 
 
+func test_each_target_has_its_own_pose_and_marks_itself() -> void:
+	var step: StepDef = StepDef.new()
+	step.on_hit_pose = "pleased"
+	step.item_ids = PackedStringArray(["apple", "grape"])
+	step.hit_poses = PackedStringArray(["", "surprised"])
+	assert_eq(TemplateKit.pose_for(step, 0), "pleased", "A11 an empty entry uses the step pose")
+	assert_eq(TemplateKit.pose_for(step, 1), "surprised", "A11 the grape answers in its own way")
+	assert_eq(TemplateKit.pose_for(step, -1), "pleased")
+	var tpl: RefCounted = _mount("any")
+	var apple: TapButton = tpl.get("_buttons")["apple"] as TapButton
+	assert_eq(apple.visual.modulate, Color.WHITE, "a fresh target is bright")
+	tpl.call("press", "apple")
+	assert_lt(apple.visual.modulate.r, 1.0, "A11 a spent target marks itself")
+
+
+func test_a_toggle_target_dims_only_while_it_is_on() -> void:
+	var tpl: RefCounted = _mount("toggle")
+	var apple: TapButton = tpl.get("_buttons")["apple"] as TapButton
+	tpl.call("press", "apple")
+	assert_lt(apple.visual.modulate.r, 1.0)
+	tpl.call("press", "apple")
+	assert_eq(apple.visual.modulate, Color.WHITE, "off again, bright again")
+
+
 func test_the_template_has_no_auto_end_timer() -> void:
 	var body: String = SourceScanner.text("res://scripts/templates/t21_touch_each.gd")
 	assert_false(body.contains("AddAutoEndTimer"), "SC-e13s02-P1-04")

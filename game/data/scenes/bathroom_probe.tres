@@ -7,7 +7,8 @@
 script = ExtResource("2_step")
 template_id = "t40_draw_fill"
 completion_threshold = 0.9
-item_ids = PackedStringArray("foam")
+mode = "leave"
+item_ids = PackedStringArray("foam_large")
 tool_id = "sponge"
 loop_sfx_id = "sfx_rinse"
 
@@ -15,7 +16,8 @@ loop_sfx_id = "sfx_rinse"
 script = ExtResource("2_step")
 template_id = "t23_erase"
 completion_threshold = 0.9
-item_ids = PackedStringArray("water")
+mode = "clear"
+item_ids = PackedStringArray("foam_large")
 tool_id = "shower_head"
 loop_sfx_id = "sfx_rinse"
 
@@ -23,7 +25,8 @@ loop_sfx_id = "sfx_rinse"
 script = ExtResource("2_step")
 template_id = "t23_erase"
 completion_threshold = 0.9
-item_ids = PackedStringArray("towel")
+mode = "clear"
+item_ids = PackedStringArray("droplet")
 tool_id = "towel"
 loop_sfx_id = "sfx_rinse"
 

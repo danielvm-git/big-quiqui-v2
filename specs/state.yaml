@@ -31,6 +31,23 @@ review_gate:
       with a touch owner, scope and epic text at 59.5%. BUG-062 and BUG-063 found on the way. Reviewer B
       edited files and ran preflight against its instructions; the edits were folded in and are not
       a second source of truth. Open gap: t45 category tabs need an item-to-category mapping (e14).
+  - epic: e13-wave-1b-primitives-and-templates
+    round: 2
+    verdict: FAIL
+    scores:
+      reviewer_a: 51.4
+      reviewer_b: 87.5
+    reports:
+    - specs/verifications/REVIEW-A2-e13-2026-11-09.md
+    - specs/verifications/REVIEW-B2-e13-2026-11-09.md
+    must_fix: [A1, A2, A3, A4, A5, A6, B1, B2, B3, B4]
+    audit: specs/verifications/AUDIT-e13-2026-11-09.md
+    outcome: >-
+      Round 2 found the seam between the def loader and the templates: count_n rejected, repeated slots
+      rejected, dressing that did not change QuiQui, coins that never flew, lanes that ignored where the
+      fruit was, and a gate that did not read every column. All ten must-fix and every should-fix are
+      fixed; see the round-2 section of the audit. Round 3 uses fresh reviewers. A third FAIL of the same
+      gate is a plan stop condition.
   - epic: e11-mbt-monkey-and-ipad-release
     round: 1
     verdict: PASS

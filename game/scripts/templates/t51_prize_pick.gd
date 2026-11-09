@@ -37,7 +37,7 @@ func pick(prize_id: String) -> bool:
 	if not Ids.is_valid(prize_id) or not _prizes().has(prize_id):
 		return false
 	var sink: Node = TemplateKit.autoload("ProgressManager")
-	if sink == null or not bool(sink.call("equip", "prize", prize_id)):
+	if sink == null or not bool(sink.call("pick_prize", prize_id)):
 		return false
 	_picked = prize_id
 	_continued = true
@@ -68,7 +68,7 @@ func _saved() -> String:
 	var sink: Node = TemplateKit.autoload("ProgressManager")
 	if sink == null:
 		return ""
-	return str(sink.call("equipped", "prize"))
+	return str(sink.call("picked_prize"))
 
 
 func _build_buttons() -> void:

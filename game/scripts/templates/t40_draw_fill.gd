@@ -6,7 +6,7 @@ var _clean: CleaningRub = CleaningRub.new()
 
 
 func setup(ctx: TemplateContext) -> void:
-	_clean.bind(ctx, true)
+	_clean.bind(ctx, "leave")
 
 
 func teardown() -> void:
@@ -33,20 +33,12 @@ func note_rub(point: Vector2) -> bool:
 	return _clean.note_rub(point)
 
 
-func note_tray(event: InputEvent) -> void:
-	_clean.note_tray(event)
-
-
 func raw_coverage() -> float:
 	return _clean.raw_coverage()
 
 
 func looks_clean() -> bool:
 	return _clean.looks_clean()
-
-
-func tray_taps() -> int:
-	return _clean.tray_taps()
 
 
 func layer_alpha() -> float:

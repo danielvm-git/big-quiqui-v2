@@ -22,6 +22,10 @@ func tolerance() -> float:
 	return DEFAULT_TOLERANCE if step == null else step.pan_tolerance
 
 
+func count() -> int:
+	return 0 if step == null else step.destination_ids.size()
+
+
 func index_of(dest_id: String) -> int:
 	return -1 if step == null else step.destination_ids.find(dest_id)
 

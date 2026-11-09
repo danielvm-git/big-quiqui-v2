@@ -24,7 +24,27 @@ func test_the_player_mounts_a_tool_and_a_layer_from_the_def() -> void:
 	assert_not_null(tool, "A2 the tool comes from the template")
 	assert_not_null(tool.get_node_or_null("Art"), "the tool has a picture")
 	assert_eq(tool.size, TouchDraggable.MIN_HIT_SIZE)
-	assert_not_null(player.get_node_or_null("foam"), "the layer is named by the def")
+	assert_not_null(player.get_node_or_null("foam_large"), "the layer is named by the def")
+
+
+func test_the_soap_stays_for_the_rinse_to_clear_and_the_dry_layer_comes_after() -> void:
+	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id(PROBE))
+	var hull: PackedVector2Array = (player.get_node("QuiQuiRig") as QuiQuiRig).scrub_hull_global()
+	rub_hull(rub_tool(player), hull)
+	for _tick: int in range(6):
+		player.advance(0.2)
+	await wait_process_frames(1)
+	assert_eq(player.runner.step_index, 1, "the soap step is done")
+	var foam: Control = player.get_node_or_null("foam_large") as Control
+	assert_not_null(foam, "A10 the soap is still on QuiQui for the rinse")
+	assert_gt(foam.modulate.a, 0.9)
+	rub_hull(rub_tool(player), hull)
+	for _tick: int in range(6):
+		player.advance(0.2)
+	await wait_process_frames(2)
+	assert_eq(player.runner.step_index, 2, "the rinse step is done")
+	assert_true(not is_instance_valid(foam) or foam.is_queued_for_deletion(), "the rinse took the soap off")
+	assert_not_null(player.get_node_or_null("droplet"), "the dry step has its own layer")
 
 
 func test_rubbing_the_real_tool_completes_each_step_and_chains() -> void:
@@ -50,7 +70,7 @@ func test_other_tray_children_ignore_touch_while_the_tool_is_held() -> void:
 	tray.add_child(other)
 	var tool: Control = rub_tool(player)
 	send(tool, touch(tool.get_global_rect().get_center(), true))
-	assert_eq(other.mouse_filter, Control.MOUSE_FILTER_IGNORE, "SC-e13s04 tray holds while rubbing")
+	assert_eq(other.mouse_filter, Control.MOUSE_FILTER_IGNORE, "SC-e13s04-P1-01 the tray holds while rubbing")
 	assert_true(tool.visible and other.visible, "but nothing is hidden")
 	send(tool, touch(tool.get_global_rect().get_center(), false))
 	assert_eq(other.mouse_filter, Control.MOUSE_FILTER_STOP, "and it comes back")

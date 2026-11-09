@@ -8,6 +8,8 @@ extends RefCounted
 const STATE_IDLE: String = "IDLE"
 const STATE_PANNING: String = "PANNING"
 const STATE_HELD: String = "HELD"
+## No state times out: the gesture belongs to the child's finger and lasts as long as it does.
+const MAX_DWELL_SEC: Dictionary = {}
 const LEGAL_EDGES: Dictionary = {
 	STATE_IDLE: [STATE_PANNING, STATE_HELD],
 	STATE_PANNING: [STATE_IDLE],
@@ -22,7 +24,7 @@ var tolerance: float = 24.0
 var _last: Vector2 = Vector2.ZERO
 var _travel: float = 0.0
 var _owner: int = -1
-var _fsm: Fsm = Fsm.new(STATE_IDLE, LEGAL_EDGES)
+var _fsm: Fsm = Fsm.new(STATE_IDLE, LEGAL_EDGES, MAX_DWELL_SEC)
 
 
 func drag_by(delta: Vector2) -> void:
@@ -57,6 +59,11 @@ func end_allows_tap(index: int = 0) -> bool:
 	_owner = -1
 	_fsm.transition_to(STATE_IDLE)
 	return allow
+
+
+## True while `index` is the finger that owns the gesture.
+func owns(index: int) -> bool:
+	return _fsm.state != STATE_IDLE and index == _owner
 
 
 func state_id() -> String:

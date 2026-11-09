@@ -134,9 +134,8 @@ func add_tickets(amount: int) -> void:
 	_apply(0, amount)
 
 
-## Records what she is wearing. One id per slot, validated by `Ids` before it can
-## reach disk or a `res://` path (T-E05-01). Returns false and changes nothing when
-## the slot or the id is not valid.
+## Records what she is wearing: one id per slot, validated by `Ids` before it can reach disk or a
+## `res://` path (T-E05-01). False, and nothing changes, when the slot or the id is not valid.
 func equip(slot: String, id: String) -> bool:
 	if not Ids.is_valid(slot) or not Ids.is_valid(id):
 		_emit("progress.invalid_equip", {"slot": "invalid"})
@@ -144,8 +143,7 @@ func equip(slot: String, id: String) -> bool:
 	if equipped(slot) == id:
 		return true  # idempotent: equipping the same thing twice is not an event
 	OutfitLedger.set_slot(data, slot, id)
-	if not save():
-		progress_changed.emit()
+	_commit()
 	return true
 
 
@@ -161,9 +159,28 @@ func clear_slot(slot: String) -> bool:
 		return false
 	if not OutfitLedger.clear(data, slot):
 		return true
-	if not save():
-		progress_changed.emit()
+	_commit()
 	return true
+
+
+## The dress screen's writer: only a shipped piece in its own slot is saved (`equip` stays generic).
+func wear(slot: String, id: String) -> bool:
+	if not OutfitCatalog.is_wearable(slot, id):
+		_emit("progress.not_wearable", {"slot": "invalid"})
+		return false
+	return equip(slot, id)
+
+
+## One prize pick per care cycle (e13s09): a second pick in the same cycle is refused.
+func pick_prize(id: String) -> bool:
+	if not PrizeLedger.pick(data, id):
+		return false
+	_commit()
+	return true
+
+
+func picked_prize() -> String:
+	return PrizeLedger.current(data)
 
 
 ## Applies the saved look to a rig without going through the closet: the room that
@@ -186,10 +203,7 @@ func _apply(coins_delta: int, tickets_delta: int, cycles_delta: int = 0) -> void
 	data.coins = clampi(data.coins + coins_delta, 0, SaveData.MAX_COINS)
 	data.tickets = clampi(data.tickets + tickets_delta, 0, SaveData.MAX_TICKETS)
 	data.completed_cycles = clampi(data.completed_cycles + cycles_delta, 0, SaveData.MAX_CYCLES)
-	# `save()` announces the change itself (the HUD repaints once). If the write fails,
-	# the HUD still needs to know the RAM value moved.
-	if not save():
-		progress_changed.emit()
+	_commit()  # `save()` announces the change itself, so the HUD repaints once
 
 
 ## TestReset entry point.
@@ -204,23 +218,14 @@ func reset() -> void:
 # ── furniture (e09s01) ───────────────────────────────────────────────────────
 
 
-## One atomic purchase: every refusal happens before the first mutation, so a refused
-## tap can never take coins without handing back the piece. A piece she already owns is
-## idempotent and free — the store's second tap is not a second charge.
+## One atomic purchase. A piece she already owns is idempotent and free: the store's second tap is
+## not a second charge.
 func buy_furniture(id: String, price: int) -> bool:
-	if not Ids.is_valid(id) or price < 0:
-		_emit("furniture.invalid", {"item": "invalid"})
+	var refusal: Dictionary = FurnitureLedger.buy(data, id, price)
+	if not refusal.is_empty():
+		_emit(str(refusal["ev"]), refusal["data"] as Dictionary)
 		return false
-	if owns_furniture(id):
-		_emit("furniture.already_owned", {"item": id})
-		return false
-	if data.coins < price:
-		_emit("furniture.denied", {"item": id, "reason": "coins"})
-		return false
-	data.coins = clampi(data.coins - price, 0, SaveData.MAX_COINS)
-	data.owned_furniture.append(id)
-	if not save():
-		progress_changed.emit()
+	_commit()
 	return true
 
 
@@ -248,16 +253,14 @@ func place_furniture(id: String, nx: float, ny: float) -> bool:
 	if not FurnitureLedger.upsert(data, id, nx, ny):
 		_emit("furniture.place_refused", {"item": "invalid"})
 		return false
-	if not save():
-		progress_changed.emit()
+	_commit()
 	return true
 
 
 func remove_furniture(id: String) -> bool:
 	if not FurnitureLedger.drop(data, id):
 		return false
-	if not save():
-		progress_changed.emit()
+	_commit()
 	return true
 
 
@@ -272,28 +275,24 @@ func placed_count() -> int:
 # ── friend stars (e10s01) ─────────────────────────────────────────────────────
 
 
-## +1 mastery point per friend, capped at `MAX_STARS`. Every refusal (unknown id,
-## capped friend) happens before the first mutation, so a replayed win can never
-## double-pay a star and an unsafe id never reaches the save model.
+## +1 mastery point per friend, capped at `MAX_STARS` (`StarLedger` owns the rules).
 func add_star(friend_id: String) -> bool:
-	if not FriendCatalog.is_friend(friend_id):
-		_emit("star.refused", {"friend": "invalid"})
+	var refusal: Dictionary = StarLedger.add(data, friend_id)
+	if not refusal.is_empty():
+		_emit("star.refused", refusal)
 		return false
-	var current: int = stars_of(friend_id)
-	if current >= SaveData.MAX_STARS:
-		_emit("star.refused", {"friend": friend_id, "reason": "cap"})
-		return false
-	data.friend_stars[friend_id] = current + 1
-	if not save():
-		progress_changed.emit()
+	_commit()
 	return true
 
 
-## The clamped read side: a tampered save shows what the rules allow, never more.
 func stars_of(friend_id: String) -> int:
-	if data == null or not data.friend_stars.has(friend_id):
-		return 0
-	return clampi(int(data.friend_stars[friend_id]), 0, SaveData.MAX_STARS)
+	return StarLedger.of(data, friend_id)
+
+
+## One save for a change; a failed write still tells the HUD the RAM value moved.
+func _commit() -> void:
+	if not save():
+		progress_changed.emit()
 
 
 func _emit(ev: String, data_in: Dictionary) -> void:

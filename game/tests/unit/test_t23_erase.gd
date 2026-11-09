@@ -21,21 +21,6 @@ func test_erase_completes_once_and_stays_done() -> void:
 	assert_almost_eq(float(tpl.call("progress")), 1.0, 0.001)
 
 
-func test_the_tray_ignores_taps_while_a_rub_owns_the_screen() -> void:
-	var tpl: RefCounted = _mount()
-	var pad: Control = Control.new()
-	pad.position = Vector2(0, 0)
-	pad.size = Vector2(120, 120)
-	add_child_autofree(pad)
-	tpl.call("begin_gesture")
-	for event: InputEvent in TouchSim.tap_events(pad, true):
-		tpl.call("note_tray", event)
-	assert_eq(int(tpl.call("tray_taps")), 0, "SC-e13s04-P1-01")
-	tpl.call("end_gesture")
-	tpl.call("note_tray", TouchSim.tap_events(pad, false)[0])
-	assert_eq(int(tpl.call("tray_taps")), 1)
-
-
 func _mount() -> RefCounted:
 	var step: StepDef = StepDef.new()
 	step.template_id = "t23_erase"

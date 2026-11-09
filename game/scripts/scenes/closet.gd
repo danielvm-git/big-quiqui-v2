@@ -17,15 +17,8 @@ const SNAP_MARGIN: float = 40.0
 const IDLE_WISH_SEC: float = 8.0
 
 ## The catalogue: four outfits and six accessories, all shipped art.
-const OUTFITS: Array[String] = ["floral_dress", "red_dress", "green_overalls", "pajamas"]
-const ACCESSORIES: Array[Dictionary] = [
-	{"slot": "head", "id": "flower_tiara"},
-	{"slot": "head", "id": "crown"},
-	{"slot": "head", "id": "yellow_hat"},
-	{"slot": "neck", "id": "blue_scarf"},
-	{"slot": "neck", "id": "purple_bow"},
-	{"slot": "eyes", "id": "heart_glasses"},
-]
+const OUTFITS: Array[String] = OutfitCatalog.OUTFITS
+const ACCESSORIES: Array[Dictionary] = OutfitCatalog.ACCESSORIES
 
 const STATE_DRESSING: String = "DRESSING"
 const STATE_FINISHED: String = "FINISHED"

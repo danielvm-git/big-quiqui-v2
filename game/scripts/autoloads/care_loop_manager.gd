@@ -123,10 +123,11 @@ func reward_collected() -> bool:
 	return _collected_cycle_id == cycle_id
 
 
-## The child's tap. Pays through the once-per-cycle ledger when nothing paid yet, then marks the
-## cycle collected. True only on the first tap of a cycle.
+## The child's tap. A reward is earned by finishing the cycle, so a tap before CELEBRATE collects
+## nothing. Pays through the once-per-cycle ledger when nothing paid yet, then marks the cycle
+## collected. True only on the first tap of a cycle.
 func collect_reward() -> bool:
-	if reward_collected():
+	if reward_collected() or (not reward_paid() and fsm.state != STATE_CELEBRATE):
 		return false
 	_grant_cycle_reward()
 	_collected_cycle_id = cycle_id

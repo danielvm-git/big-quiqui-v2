@@ -3,6 +3,8 @@ extends RefCounted
 ## One verb starts the game. Every other control on the host is decoration, except Home.
 
 const VERB_ART: String = "play_button"
+const GLOW: Color = Color(1.25, 1.25, 1.1, 1.0)
+const PULSE_SEC: float = 0.7
 const VERB_SIZE: Vector2 = Vector2(240.0, 240.0)
 
 var _ctx: TemplateContext = null
@@ -35,6 +37,7 @@ func progress() -> float:
 	return 1.0 if _started else 0.0
 
 
+## Test seam: a tap without a finger.
 func press() -> void:
 	if _button != null and is_instance_valid(_button):
 		_button.press()
@@ -46,6 +49,7 @@ func button() -> TapButton:
 	return _button
 
 
+## Test seam: how many host children still take touches.
 func interactive_count() -> int:
 	if _ctx == null or not (_ctx.host is Control):
 		return 1
@@ -81,6 +85,16 @@ func _add_verb() -> void:
 	_button.position = (host.size - VERB_SIZE) * 0.5 + Vector2(0.0, host.size.y * 0.2)
 	_button.tapped.connect(_on_tapped)
 	host.add_child(_button)
+	_pulse()
+
+
+## The one glowing target: the verb breathes until it is tapped.
+func _pulse() -> void:
+	if not _button.is_inside_tree():
+		return
+	var tween: Tween = _button.visual.create_tween().set_loops()
+	tween.tween_property(_button.visual, "modulate", GLOW, PULSE_SEC)
+	tween.tween_property(_button.visual, "modulate", Color.WHITE, PULSE_SEC)
 
 
 func _on_tapped() -> void:

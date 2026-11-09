@@ -6,9 +6,12 @@ extends GutTest
 func test_layers_reveal_in_order_and_never_return() -> void:
 	var tpl: RefCounted = _mount()
 	_rub_cells(tpl, 8)
+	assert_gt(float(tpl.call("layer_alpha", 0)), 0.5, "A11 the first layer is still fading when the reveal starts")
+	await wait_seconds(0.4)
 	assert_almost_eq(tpl.call("layer_alpha", 0), 0.0, 0.001, "first layer leaves")
 	assert_almost_eq(tpl.call("layer_alpha", 1), 1.0, 0.001, "second layer waits")
 	_rub_cells(tpl, 16)
+	await wait_seconds(0.4)
 	assert_almost_eq(tpl.call("layer_alpha", 0), 0.0, 0.001)
 	assert_almost_eq(tpl.call("layer_alpha", 1), 0.0, 0.001, "SC-e13s01-P1-01")
 	_rub_cells(tpl, 16)
@@ -46,23 +49,26 @@ func test_template_source_names_no_room() -> void:
 
 
 func _mount() -> RefCounted:
+	var tpl: RefCounted = TemplateCatalog.instantiate("t34_rub_reveal")
+	tpl.call("setup", _ctx())
+	tpl.call("begin_gesture")
+	return tpl
+
+
+func _ctx() -> TemplateContext:
 	var host: Control = Control.new()
 	var tray: Control = Control.new()
 	add_child_autofree(host)
 	add_child_autofree(tray)
-	var stub: Control = _square()
 	var nodes: PlayerNodeTable = PlayerNodeTable.new()
-	nodes.register("scrub_target", stub)
-	var tpl: RefCounted = TemplateCatalog.instantiate("t34_rub_reveal")
+	nodes.register("scrub_target", _square())
 	var ctx: TemplateContext = TemplateContext.new()
 	ctx.host = host
 	ctx.tray = tray
 	ctx.nodes = nodes
 	ctx.step_def = _step()
 	ctx.reactions = ReactionExecutor.new()
-	tpl.call("setup", ctx)
-	tpl.call("begin_gesture")
-	return tpl
+	return ctx
 
 
 class HullStub:

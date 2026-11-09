@@ -52,6 +52,96 @@ func test_place_saves_a_ratio() -> void:
 	assert_eq(int(_progress().call("placed_count")), 1)
 
 
+func test_only_shipped_pieces_in_their_own_slot_are_worn() -> void:
+	var writes: int = int(_progress().get("write_count"))
+	assert_false(bool(_progress().call("wear", "neck", "carrot")), "B3 a food id is not a scarf")
+	assert_false(bool(_progress().call("wear", "head", "blue_scarf")), "B3 a scarf is not a hat")
+	assert_false(bool(_progress().call("wear", "tail", "crown")), "B3 there is no tail slot")
+	assert_eq(int(_progress().get("write_count")), writes, "B3 zero writes for a refused piece")
+	assert_true(bool(_progress().call("wear", "neck", "blue_scarf")))
+
+
+func test_a_def_that_names_a_food_for_a_slot_saves_nothing() -> void:
+	var step: StepDef = StepDef.new()
+	step.item_ids = PackedStringArray(["carrot"])
+	step.slot_ids = PackedStringArray(["neck"])
+	var tpl: RefCounted = TemplateCatalog.instantiate("t45_dress_decorate")
+	var ctx: TemplateContext = TemplateContext.new()
+	ctx.step_def = step
+	tpl.call("setup", ctx)
+	assert_false(bool(tpl.call("snap", "carrot")))
+	assert_eq(_progress().call("equipped", "neck"), "")
+
+
+func test_the_same_piece_twice_is_one_change_and_the_bin_acts_on_the_worn_slot() -> void:
+	var tpl: RefCounted = _mount_with_tray()
+	tpl.call("snap", "blue_scarf")
+	tpl.call("snap", "blue_scarf")
+	assert_almost_eq(float(tpl.call("progress")), 1.0, 0.001)
+	assert_eq(_changes(tpl), 1, "A8 a repeat tap changes nothing, so it does not count")
+	var again: RefCounted = _mount_with_tray()
+	assert_true(bool(again.call("bin", "blue_scarf")), "A8 after re-entry the bin still takes the worn piece off")
+	assert_eq(_progress().call("equipped", "neck"), "")
+
+
+func test_a_category_tab_filters_the_strip_by_touch() -> void:
+	var tpl: RefCounted = _mount_with_tray()
+	assert_eq(tpl.call("visible_items").size(), 3)
+	var tab: TapButton = (tpl.call("strip") as ScrollContainer).find_child("tab_warm", true, false) as TapButton
+	assert_not_null(tab, "A8 the categories are tabs")
+	tab.press()
+	assert_eq(tpl.call("visible_items"), PackedStringArray(["blue_scarf"]), "only the warm items stay")
+	tab.press()
+	assert_eq(tpl.call("visible_items").size(), 3, "the same tab again shows everything")
+
+
+func test_a_tap_on_a_furniture_piece_places_it_free() -> void:
+	var tpl: RefCounted = _mount_with_tray()
+	assert_true(bool(_progress().call("buy_furniture", "chair", 0)))
+	var button: TapButton = tpl.call("button", "chair") as TapButton
+	assert_not_null(button)
+	button.press()
+	assert_eq(int(_progress().call("placed_count")), 1, "A8 free place is reachable by a tap")
+
+
+func test_a_worn_piece_shows_on_the_rig_at_once() -> void:
+	var rig: QuiQuiRig = QuiQuiRig.new()
+	add_child_autofree(rig)
+	var step: StepDef = StepDef.new()
+	step.item_ids = PackedStringArray(["blue_scarf"])
+	step.slot_ids = PackedStringArray(["neck"])
+	var tpl: RefCounted = TemplateCatalog.instantiate("t45_dress_decorate")
+	var ctx: TemplateContext = TemplateContext.new()
+	ctx.step_def = step
+	ctx.rig = rig
+	tpl.call("setup", ctx)
+	tpl.call("snap", "blue_scarf")
+	assert_eq(rig.accessory_id("neck"), "blue_scarf", "A3 QuiQui changes with the tap")
+	tpl.call("bin", "blue_scarf")
+	assert_eq(rig.accessory_id("neck"), "", "and changes back with the bin")
+
+
+func _changes(tpl: RefCounted) -> int:
+	return int(tpl.get("_changes"))
+
+
+func _mount_with_tray() -> RefCounted:
+	var step: StepDef = StepDef.new()
+	step.template_id = "t45_dress_decorate"
+	step.item_ids = PackedStringArray(["blue_scarf", "crown", "chair"])
+	step.slot_ids = PackedStringArray(["neck", "head", ""])
+	step.category_ids = PackedStringArray(["warm", "royal", "home"])
+	var tray: Control = Control.new()
+	tray.size = Vector2(1200.0, 160.0)
+	add_child_autofree(tray)
+	var tpl: RefCounted = TemplateCatalog.instantiate("t45_dress_decorate")
+	var ctx: TemplateContext = TemplateContext.new()
+	ctx.step_def = step
+	ctx.tray = tray
+	tpl.call("setup", ctx)
+	return tpl
+
+
 func _mount() -> RefCounted:
 	var step: StepDef = StepDef.new()
 	step.template_id = "t45_dress_decorate"
