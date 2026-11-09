@@ -24,6 +24,7 @@ extends Resource
 @export var hint_to_id: String = ""
 @export var hint_voice_key: String = ""
 @export var loop_sfx_id: String = ""
+@export var tool_id: String = ""
 @export var world_size: Vector2 = Vector2(1920.0, 1080.0)
 @export var pan_tolerance: float = 24.0
 @export var completion_threshold: float = 0.9
@@ -38,3 +39,4 @@ extends Resource
 @export var destination_scenes: PackedStringArray = PackedStringArray()
 @export var destination_locks: PackedStringArray = PackedStringArray()
 @export var destination_positions: PackedVector2Array = PackedVector2Array()
+@export var destination_icons: PackedStringArray = PackedStringArray()

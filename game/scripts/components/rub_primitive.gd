@@ -5,10 +5,12 @@ extends RefCounted
 
 const CELL_EDGE: int = 4
 
-var mode: String = "reveal"
-
 var _gesture: ScrubGesture = ScrubGesture.new()
 var _marked: Dictionary = {}
+
+
+func _init() -> void:
+	_gesture.lazy_start = true
 
 
 func bind_target(target: Control) -> void:
@@ -38,11 +40,22 @@ func release() -> void:
 	_gesture.stop()
 
 
+## Teardown: silence and free the loop node the gesture put on the host.
+func release_all() -> void:
+	_gesture.stop()
+	_gesture.release_loop()
+
+
+## Only cells whose centre is inside the hull count, in the numerator and the denominator alike.
 func progress() -> float:
-	var area: int = _area_count()
-	if area <= 0:
+	var area: Dictionary = _area_cells()
+	if area.is_empty():
 		return 0.0
-	return clampf(float(_marked.size()) / float(area), 0.0, 1.0)
+	var covered: int = 0
+	for key: String in _marked.keys():
+		if area.has(key):
+			covered += 1
+	return clampf(float(covered) / float(area.size()), 0.0, 1.0)
 
 
 func claims_completion() -> bool:
@@ -81,22 +94,16 @@ func _cell_key(point: Vector2) -> String:
 	return "%d:%d" % [col, row]
 
 
-func _area_count() -> int:
+func _area_cells() -> Dictionary:
 	var box: Rect2 = _bbox()
+	var cells: Dictionary = {}
 	if box.size.x <= 1.0 or box.size.y <= 1.0:
-		return 0
-	var total: int = 0
+		return cells
 	var hull: PackedVector2Array = _gesture.hull_points()
-	for col: int in range(CELL_EDGE):
-		total += _row_hits(box, hull, col)
-	return total
-
-
-func _row_hits(box: Rect2, hull: PackedVector2Array, col: int) -> int:
-	var hits: int = 0
 	var step: Vector2 = box.size / float(CELL_EDGE)
-	for row: int in range(CELL_EDGE):
-		var centre: Vector2 = box.position + Vector2((float(col) + 0.5) * step.x, (float(row) + 0.5) * step.y)
-		if Geometry2D.is_point_in_polygon(centre, hull):
-			hits += 1
-	return hits
+	for col: int in range(CELL_EDGE):
+		for row: int in range(CELL_EDGE):
+			var centre: Vector2 = box.position + Vector2((float(col) + 0.5) * step.x, (float(row) + 0.5) * step.y)
+			if Geometry2D.is_point_in_polygon(centre, hull):
+				cells["%d:%d" % [col, row]] = true
+	return cells

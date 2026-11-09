@@ -6,25 +6,25 @@
 [sub_resource type="Resource" id="step_soap"]
 script = ExtResource("2_step")
 template_id = "t40_draw_fill"
-mode = "leave"
 completion_threshold = 0.9
 item_ids = PackedStringArray("foam")
+tool_id = "sponge"
 loop_sfx_id = "sfx_rinse"
 
 [sub_resource type="Resource" id="step_rinse"]
 script = ExtResource("2_step")
 template_id = "t23_erase"
-mode = "clear"
 completion_threshold = 0.9
 item_ids = PackedStringArray("water")
+tool_id = "shower_head"
 loop_sfx_id = "sfx_rinse"
 
 [sub_resource type="Resource" id="step_dry"]
 script = ExtResource("2_step")
 template_id = "t23_erase"
-mode = "clear"
 completion_threshold = 0.9
 item_ids = PackedStringArray("towel")
+tool_id = "towel"
 loop_sfx_id = "sfx_rinse"
 
 [resource]

@@ -6,15 +6,15 @@ var _clean: CleaningRub = CleaningRub.new()
 
 
 func setup(ctx: TemplateContext) -> void:
-	_clean.bind(ctx, _mode(ctx))
+	_clean.bind(ctx, false)
 
 
 func teardown() -> void:
-	_clean.end_gesture()
+	_clean.teardown()
 
 
 func advance(_delta: float) -> void:
-	pass
+	_clean.advance()
 
 
 func progress() -> float:
@@ -45,11 +45,9 @@ func tray_taps() -> int:
 	return _clean.tray_taps()
 
 
-func claims_completion() -> bool:
-	return false
+func layer_alpha() -> float:
+	return _clean.layer_alpha()
 
 
-func _mode(ctx: TemplateContext) -> String:
-	if ctx == null or ctx.step_def == null or ctx.step_def.mode.is_empty():
-		return "clear"
-	return ctx.step_def.mode
+func tool() -> TouchDraggable:
+	return _clean.tool()

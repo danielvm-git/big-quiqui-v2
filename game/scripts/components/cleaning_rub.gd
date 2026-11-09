@@ -1,48 +1,55 @@
 # story: e13s04
 class_name CleaningRub
 extends RefCounted
-## Shared measured rub. The threshold is data. A finished step stays finished.
+## Shared measured rub for t23 and t40. The threshold is data. A finished step stays finished.
+## `paints` fills the layer as the ratio grows; otherwise the layer fades out as it is cleared.
 
-var _rub: RubPrimitive = RubPrimitive.new()
+var _surface: RubSurface = RubSurface.new()
 var _ctx: TemplateContext = null
+var _paints: bool = false
 var _latched: bool = false
-var _completions: int = 0
-var _holding: bool = false
 var _tray_taps: int = 0
 
 
-func bind(ctx: TemplateContext, mode: String) -> void:
+func bind(ctx: TemplateContext, paints: bool) -> void:
 	_ctx = ctx
-	_rub.mode = mode
-	_rub.bind_target(_target())
+	_paints = paints
+	_surface.bind(ctx, _on_scrubbed)
+	_show(0.0)
+
+
+func teardown() -> void:
+	_surface.teardown()
 
 
 func begin_gesture() -> void:
-	_holding = true
-	if _ctx != null and _ctx.host != null:
-		_rub.begin(_ctx.host)
+	_surface.begin_gesture()
 
 
 func end_gesture() -> void:
-	_holding = false
-	_rub.release()
+	_surface.end_gesture()
 
 
 func note_rub(point: Vector2) -> bool:
-	var hit: bool = _rub.rub_at(point)
+	var hit: bool = _surface.note_rub(point)
 	_consider()
 	return hit
+
+
+func advance() -> void:
+	_surface.fit_layers()
+	_consider()
 
 
 func progress() -> float:
 	_consider()
 	if _latched:
 		return 1.0
-	return clampf(_rub.progress() / _threshold(), 0.0, 1.0)
+	return clampf(_surface.rub.progress() / _threshold(), 0.0, 1.0)
 
 
 func raw_coverage() -> float:
-	return _rub.progress()
+	return _surface.rub.progress()
 
 
 func latched() -> bool:
@@ -50,7 +57,7 @@ func latched() -> bool:
 
 
 func completion_count() -> int:
-	return _completions
+	return 1 if _latched else 0
 
 
 func looks_clean() -> bool:
@@ -58,7 +65,7 @@ func looks_clean() -> bool:
 
 
 func tray_accepts() -> bool:
-	return not _holding
+	return not _surface.holding
 
 
 func tray_taps() -> int:
@@ -74,32 +81,34 @@ func note_tray(event: InputEvent) -> void:
 		_tray_taps += 1
 
 
-func claims_completion() -> bool:
-	return false
+func tool() -> TouchDraggable:
+	return _surface.tool
+
+
+func layer_alpha() -> float:
+	return _surface.alpha(0)
+
+
+func _on_scrubbed(point: Vector2) -> void:
+	note_rub(point)
 
 
 func _consider() -> void:
 	if _latched:
 		return
-	if _rub.progress() + 0.0001 < _threshold():
+	_show(clampf(_surface.rub.progress() / _threshold(), 0.0, 1.0))
+	if _surface.rub.progress() + 0.0001 < _threshold():
 		return
 	_latched = true
-	_completions = 1
+	_show(1.0)
+	TemplateKit.play_hit(_ctx, "template.clean", {"done": 1})
+
+
+func _show(ratio: float) -> void:
+	_surface.set_alpha(0, ratio if _paints else 1.0 - ratio)
 
 
 func _threshold() -> float:
-	if _ctx == null or _ctx.step_def == null:
-		return 0.9
-	if _ctx.step_def.completion_threshold <= 0.0:
+	if _ctx == null or _ctx.step_def == null or _ctx.step_def.completion_threshold <= 0.0:
 		return 0.9
 	return _ctx.step_def.completion_threshold
-
-
-func _target() -> Control:
-	if _ctx != null and _ctx.nodes != null:
-		var named: Control = _ctx.nodes.resolve("scrub_target")
-		if named != null:
-			return named
-	if _ctx == null:
-		return null
-	return _ctx.rig

@@ -10,9 +10,10 @@ var _plays: int = 0
 
 func setup(ctx: TemplateContext) -> void:
 	_ctx = ctx
-	_tap.mode = _mode()
+	_tap.mode = TemplateKit.mode_or(ctx, "any")
 	_tap.goal = _goal()
 	_build_buttons()
+	_tap.targets = _buttons.size()
 
 
 func teardown() -> void:
@@ -49,12 +50,6 @@ func advance(_delta: float) -> void:
 	pass
 
 
-func _mode() -> String:
-	if _ctx == null or _ctx.step_def == null or _ctx.step_def.mode.is_empty():
-		return "any"
-	return _ctx.step_def.mode
-
-
 func _goal() -> int:
 	if _ctx == null or _ctx.step_def == null:
 		return 1
@@ -64,19 +59,14 @@ func _goal() -> int:
 func _build_buttons() -> void:
 	if _ctx == null or _ctx.step_def == null or _ctx.tray == null:
 		return
-	var index: int = 0
 	for target_id: String in _ctx.step_def.item_ids:
-		_buttons[target_id] = _make_button(target_id, index)
-		index += 1
+		if _buttons.has(target_id):
+			continue
+		_buttons[target_id] = _make_button(target_id, _buttons.size())
 
 
 func _make_button(target_id: String, index: int) -> TapButton:
-	var button: TapButton = TapButton.new()
-	button.name = target_id
-	button.manual_step = true
-	button.size = TapButton.MIN_HIT_SIZE
-	button.position = Vector2(160.0 * float(index), 0.0)
-	button.add_to_group("hit_target", true)
+	var button: TapButton = TemplateKit.tap_button(target_id, Vector2(160.0 * float(index), 0.0))
 	button.tapped.connect(_on_tapped.bind(target_id))
 	_ctx.tray.add_child(button)
 	return button
@@ -89,12 +79,4 @@ func _on_tapped(target_id: String) -> void:
 
 
 func _play_reaction(target_id: String) -> void:
-	if _ctx == null or _ctx.reactions == null or _ctx.step_def == null:
-		return
-	var batch: Array = []
-	if not _ctx.step_def.on_hit_pose.is_empty():
-		batch.append({"kind": ReactionExecutor.KIND_POSE, "id": _ctx.step_def.on_hit_pose})
-	if not _ctx.step_def.on_hit_sfx_id.is_empty():
-		batch.append({"kind": ReactionExecutor.KIND_SFX, "id": _ctx.step_def.on_hit_sfx_id})
-	_ctx.reactions.execute(batch)
-	LogSink.emit_to_diary("template.tap", {"target": target_id})
+	TemplateKit.play_hit(_ctx, "template.tap", {"target": target_id})

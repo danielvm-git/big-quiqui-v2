@@ -206,6 +206,8 @@ func _on_step_completed(index: int) -> void:
 func _tick_template(delta: float) -> void:
 	if _template == null or runner.fsm.state != StepRunner.STATE_STEP:
 		return
+	if _active_step != runner.step_index:
+		return  # the runner moved on; the mounted template still belongs to the step before
 	if _template.has_method("advance"):
 		_template.call("advance", delta)
 	if _template.has_method("progress"):

@@ -15,7 +15,7 @@ class HullStub:
 
 
 func test_a_point_outside_the_hull_does_not_count() -> void:
-	var rub: RefCounted = _new_rub("leave")
+	var rub: RefCounted = _new_rub()
 	if rub == null:
 		return
 	_bind_square(rub)
@@ -25,7 +25,7 @@ func test_a_point_outside_the_hull_does_not_count() -> void:
 
 
 func test_progress_reaches_one_only_when_the_area_is_done() -> void:
-	var rub: RefCounted = _new_rub("leave")
+	var rub: RefCounted = _new_rub()
 	if rub == null:
 		return
 	_bind_square(rub)
@@ -40,23 +40,55 @@ func test_progress_reaches_one_only_when_the_area_is_done() -> void:
 	assert_false(bool(rub.call("claims_completion")), "the primitive does not complete itself")
 
 
-func test_each_mode_is_data_and_reports_a_ratio() -> void:
-	for mode_name: String in ["clear", "leave", "reveal"]:
-		var rub: RefCounted = _new_rub(mode_name)
-		if rub == null:
-			return
-		_bind_square(rub)
-		rub.call("begin", _host())
-		assert_true(bool(rub.call("rub_at", Vector2(50.0, 50.0))))
-		var ratio: float = float(rub.call("progress"))
-		assert_gt(ratio, 0.0, mode_name)
-		assert_lt(ratio, 1.0, mode_name)
-		assert_eq(str(rub.get("mode")), mode_name)
-		assert_false(bool(rub.call("claims_completion")))
+func test_a_first_rub_reports_a_ratio_and_does_not_complete() -> void:
+	var rub: RefCounted = _new_rub()
+	if rub == null:
+		return
+	_bind_square(rub)
+	rub.call("begin", _host())
+	assert_true(bool(rub.call("rub_at", Vector2(50.0, 50.0))))
+	var ratio: float = float(rub.call("progress"))
+	assert_gt(ratio, 0.0)
+	assert_lt(ratio, 1.0)
+	assert_false(bool(rub.call("claims_completion")))
+
+
+func test_corner_cells_of_an_oval_hull_do_not_fake_coverage() -> void:
+	var rub: RefCounted = _new_rub()
+	if rub == null:
+		return
+	var stub: HullStub = HullStub.new()
+	stub.hull = _oval(Vector2(200.0, 200.0), 400.0)
+	add_child_autofree(stub)
+	rub.call("bind_target", stub)
+	rub.call("begin", _host())
+	for corner: Vector2 in [Vector2(70, 70), Vector2(330, 70), Vector2(70, 330), Vector2(330, 330)]:
+		rub.call("rub_at", corner)
+	assert_lt(float(rub.call("progress")), 0.2, "A1 corner cells sit outside the oval")
+	for col: int in range(4):
+		for row: int in range(4):
+			rub.call("rub_at", Vector2(50.0 + 100.0 * float(col), 50.0 + 100.0 * float(row)))
+	assert_almost_eq(float(rub.call("progress")), 1.0, 0.001, "the area cells alone reach 1.0")
+
+
+func test_the_loop_waits_for_the_first_point_inside_the_hull() -> void:
+	var rub: RefCounted = _new_rub()
+	if rub == null:
+		return
+	_bind_square(rub)
+	rub.call("set_loop", load(LOOP_PATH) as AudioStream)
+	rub.call("begin", _host())
+	assert_eq(int(rub.call("playing_channels")), 0, "B8 pressing is silent")
+	rub.call("rub_at", Vector2(-40.0, -40.0))
+	assert_eq(int(rub.call("playing_channels")), 0, "B8 a miss is silent")
+	rub.call("rub_at", Vector2(50.0, 50.0))
+	assert_eq(int(rub.call("playing_channels")), 1, "B8 the first valid rub starts it")
+	rub.call("release_all")
+	assert_eq(int(rub.call("playing_channels")), 0)
 
 
 func test_one_loop_channel_and_silence_after_release() -> void:
-	var rub: RefCounted = _new_rub("reveal")
+	var rub: RefCounted = _new_rub()
 	if rub == null:
 		return
 	_bind_square(rub)
@@ -75,7 +107,7 @@ func test_one_loop_channel_and_silence_after_release() -> void:
 
 
 func test_the_hull_is_read_at_call_time() -> void:
-	var rub: RefCounted = _new_rub("leave")
+	var rub: RefCounted = _new_rub()
 	if rub == null:
 		return
 	var stub: HullStub = _bind_square(rub)
@@ -90,7 +122,7 @@ func test_the_hull_is_read_at_call_time() -> void:
 
 func test_the_same_centre_counts_at_both_aspects() -> void:
 	for canvas: Vector2i in [GeometryOracle.DESKTOP_16_9, GeometryOracle.IPAD_4_3]:
-		var rub: RefCounted = _new_rub("leave")
+		var rub: RefCounted = _new_rub()
 		if rub == null:
 			return
 		var stub: HullStub = HullStub.new()
@@ -107,7 +139,7 @@ func test_the_same_centre_counts_at_both_aspects() -> void:
 
 
 func test_a_missing_target_is_zero_progress_and_not_an_error() -> void:
-	var rub: RefCounted = _new_rub("clear")
+	var rub: RefCounted = _new_rub()
 	if rub == null:
 		return
 	rub.call("bind_target", null)
@@ -116,7 +148,7 @@ func test_a_missing_target_is_zero_progress_and_not_an_error() -> void:
 	assert_almost_eq(float(rub.call("progress")), 0.0, 0.001)
 
 
-func _new_rub(mode_name: String) -> RefCounted:
+func _new_rub() -> RefCounted:
 	if not ResourceLoader.exists(SCRIPT_PATH):
 		fail_test("missing %s" % SCRIPT_PATH)
 		return null
@@ -124,9 +156,7 @@ func _new_rub(mode_name: String) -> RefCounted:
 	if script == null:
 		fail_test("missing %s" % SCRIPT_PATH)
 		return null
-	var rub: RefCounted = script.new() as RefCounted
-	rub.set("mode", mode_name)
-	return rub
+	return script.new() as RefCounted
 
 
 func _host() -> Node:
@@ -152,6 +182,14 @@ func _rect_hull(rect: Rect2) -> PackedVector2Array:
 			rect.position + Vector2(0.0, rect.size.y),
 		]
 	)
+
+
+func _oval(centre: Vector2, edge: float) -> PackedVector2Array:
+	var points: PackedVector2Array = PackedVector2Array()
+	for step: int in range(12):
+		var angle: float = TAU * float(step) / 12.0
+		points.append(centre + Vector2(cos(angle), sin(angle)) * edge * 0.5)
+	return points
 
 
 func _box(origin: float) -> PackedVector2Array:
