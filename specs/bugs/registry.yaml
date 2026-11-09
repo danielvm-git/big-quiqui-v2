@@ -567,3 +567,23 @@ bugs:
   file: specs/bugs/BUG-061-pinguim-basket-and-roda-wheel-overlap.md
   status: open
   found_by: e11 post-epic review (INV-10 occlusion probe)
+- bug_id: BUG-062
+  date: '2026-11-09'
+  severity: high
+  priority: P0
+  scope: player
+  summary: 'ScenePlayer read progress from the still-mounted template of the previous step, so
+    the next step of a multi-step def completed in the tick it mounted'
+  file: specs/bugs/BUG-062-scene-player-skips-steps-on-a-stale-template.md
+  status: fixed
+  found_by: e13 review round 1 (bathroom_probe driven through the player)
+- bug_id: BUG-063
+  date: '2026-11-09'
+  severity: medium
+  priority: P1
+  scope: navigation
+  summary: 'A data room could leave only through request_def, so a map door to a legacy room did
+    nothing; SceneNav.open now picks request_def or request_scene'
+  file: specs/bugs/BUG-063-legacy-hub-exit-needs-a-scene-manager-request.md
+  status: fixed
+  found_by: e13 review round 1 (home_map mounted in the player)
