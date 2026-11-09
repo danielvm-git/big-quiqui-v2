@@ -37,7 +37,7 @@ stories:
 - id: e13s03
   title: "Pan Primitive and t25_map (the hub as data)"
   bcps: 8
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s04
   title: "t23_erase and t40_draw_fill (the cleaning pair)"
