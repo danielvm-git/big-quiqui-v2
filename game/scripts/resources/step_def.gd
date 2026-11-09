@@ -2,6 +2,7 @@
 # story: e12s04
 # story: e13s01
 # story: e13s03
+# story: e13s04
 class_name StepDef
 extends Resource
 ## One step in a data-driven scene: a template id and typed parameters only — never paths or scripts.
@@ -23,6 +24,7 @@ extends Resource
 @export var loop_sfx_id: String = ""
 @export var world_size: Vector2 = Vector2(1920.0, 1080.0)
 @export var pan_tolerance: float = 24.0
+@export var completion_threshold: float = 0.9
 @export var destination_ids: PackedStringArray = PackedStringArray()
 @export var destination_scenes: PackedStringArray = PackedStringArray()
 @export var destination_locks: PackedStringArray = PackedStringArray()
