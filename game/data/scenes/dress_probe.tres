@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_dress"]
+script = ExtResource("2_step")
+template_id = "t45_dress_decorate"
+item_ids = PackedStringArray("scarf")
+slot_ids = PackedStringArray("neck")
+category_ids = PackedStringArray("warm")
+
+[resource]
+script = ExtResource("1_def")
+id = "dress_probe"
+background_id = "bg_home"
+music_id = "music_main_theme"
+steps = Array[Resource]([SubResource("step_dress")])
+next_scene_id = "home"
