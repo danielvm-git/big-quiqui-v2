@@ -1,7 +1,7 @@
 # BUG-061 — the penguin basket and the roda prize wheel still sit behind the hero
 
 <!-- story: e11s01 -->
-- **Severity:** medium · **Priority:** P1 · **Scope:** ui · **Status:** open
+- **Severity:** medium · **Priority:** P1 · **Scope:** ui · **Status:** fixed (2026-11-08)
 - **Found by:** `INV-10` occlusion probe during the e11 post-epic review (BUG-060's sweep)
 
 ## Symptom
@@ -33,3 +33,24 @@ the debt is visible in one place. Any *new* buried control fails the gate immedi
   raised above the rig with a documented reason.
 - `roda`: exactly one wheel on screen, and the spin affordance is ≥ 90 % visible.
 - Both rows deleted from `ALLOWED` in `game/tests/integration/test_occlusion.gd`.
+
+## Closure (2026-11-08)
+
+Both symptoms were composition calls, and both were made in the builder, not in the generated
+`.tscn` (`build_pinguim_jogo_scene.gd`, `build_roda_scene.gd` — regenerate, never hand-edit).
+
+1. **`pinguim_jogo`** — the closure option the symptom list already allowed: the basket is raised
+   above every rig layer (`BASKET_Z = 60`) and the reason is written next to the constant. It is
+   the control the child must drag, so it can never be the control she cannot see. The lane and
+   the falling items keep their own order behind her.
+2. **`roda`** — one wheel, not two. The 440 px wheel is now the spin target (`SpinButton` keeps its
+   name, so no test or scene script changed) and the corner duplicate and its decoration node
+   (`WheelArt`) are gone. It sits right of her painted rect (`WHEEL_ANCHOR = 0.80, 0.46`), which is
+   clear of her at both aspects, and the first-spin badge hangs above it.
+3. **The gate got a second fix the bug did not ask for.** `INV-10` read `control.z_index` on the
+   leaf only, so the honest fix (raise the parent) still reported "50 % under the hero (z 0 <= 50)".
+   Godot composes `z_index` down the chain, so the probe now sums it (`_effective_z`), with a
+   regression test proving a control raised by its container is not reported. Without that, the
+   next fix would have been a magic number on the leaf instead of the correct parent.
+4. `test_occlusion.gd`'s `ALLOWED` map lost the `pinguim_jogo.tscn/Draggable` row; `IceLane` and
+   `TickleZone` stay (both are by design). `test_roda_scene.gd` and the full suite stay green.

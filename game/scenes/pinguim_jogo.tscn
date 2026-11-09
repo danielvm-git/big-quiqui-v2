@@ -11,14 +11,14 @@
 [ext_resource type="Texture2D" path="res://assets/art/ui/botao_casa.png" id="9_xbofy"]
 [ext_resource type="Texture2D" path="res://assets/art/efeitos/confete.png" id="10_sqgs6"]
 
-[node name="PinguimJogo" type="Control" unique_id=855537968]
+[node name="PinguimJogo" type="Control" unique_id=1763654675]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_w5gs6")
 
-[node name="Background" type="TextureRect" parent="." unique_id=1917652941 groups=["background"]]
+[node name="Background" type="TextureRect" parent="." unique_id=913623079 groups=["background"]]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -27,7 +27,7 @@ texture = ExtResource("2_hwnqw")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="QuiQuiRig" type="Control" parent="." unique_id=681424715 groups=["rig"]]
+[node name="QuiQuiRig" type="Control" parent="." unique_id=587411136 groups=["rig"]]
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.20592593
@@ -37,7 +37,7 @@ offset_left = -320.0
 offset_right = 320.0
 script = ExtResource("3_ko6hb")
 
-[node name="IceLane" type="Control" parent="." unique_id=271907078 groups=["hit_target"]]
+[node name="IceLane" type="Control" parent="." unique_id=129054953 groups=["hit_target"]]
 anchors_preset = 0
 anchor_left = 0.15
 anchor_top = 0.78
@@ -48,20 +48,21 @@ offset_bottom = 70.0
 mouse_filter = 1
 script = ExtResource("4_86h4g")
 
-[node name="Visual" type="ColorRect" parent="IceLane" unique_id=778992845]
+[node name="Visual" type="ColorRect" parent="IceLane" unique_id=274632731]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0.82, 0.92, 0.98, 0.88)
 
-[node name="ItemsContainer" type="Control" parent="." unique_id=1565641947]
+[node name="ItemsContainer" type="Control" parent="." unique_id=1546583084]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="Penguin" type="Control" parent="." unique_id=1539892334]
+[node name="Penguin" type="Control" parent="." unique_id=1516624311]
+z_index = 60
 anchors_preset = 0
 anchor_left = 0.5
 anchor_top = 0.78
@@ -73,7 +74,7 @@ offset_right = 80.0
 offset_bottom = 80.0
 mouse_filter = 1
 
-[node name="Art" type="TextureRect" parent="Penguin" unique_id=781905020]
+[node name="Art" type="TextureRect" parent="Penguin" unique_id=1152478038]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -82,13 +83,13 @@ texture = ExtResource("5_nfw3x")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Draggable" type="Control" parent="Penguin" unique_id=394572336 groups=["hit_target"]]
+[node name="Draggable" type="Control" parent="Penguin" unique_id=1181020863 groups=["hit_target"]]
 anchors_preset = 0
 offset_right = 160.0
 offset_bottom = 160.0
 script = ExtResource("6_wn4ol")
 
-[node name="CoinTicketHud" type="Control" parent="." unique_id=1472507862]
+[node name="CoinTicketHud" type="Control" parent="." unique_id=454766502]
 anchors_preset = 0
 anchor_left = 1.0
 anchor_right = 1.0
@@ -98,7 +99,7 @@ offset_right = -36.0
 offset_bottom = 124.0
 script = ExtResource("7_vxs0s")
 
-[node name="HomeButton" type="Control" parent="." unique_id=745164468 groups=["hit_target"]]
+[node name="HomeButton" type="Control" parent="." unique_id=1419810513 groups=["hit_target"]]
 anchors_preset = 0
 offset_left = 36.0
 offset_top = 36.0
@@ -106,7 +107,7 @@ offset_right = 156.0
 offset_bottom = 156.0
 script = ExtResource("8_71upq")
 
-[node name="Art" type="TextureRect" parent="HomeButton" unique_id=646996506]
+[node name="Art" type="TextureRect" parent="HomeButton" unique_id=1782581969]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -115,7 +116,7 @@ texture = ExtResource("9_xbofy")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ReplayButton" type="Control" parent="." unique_id=1885765272 groups=["hit_target"]]
+[node name="ReplayButton" type="Control" parent="." unique_id=432158198 groups=["hit_target"]]
 visible = false
 anchors_preset = 0
 anchor_left = 0.93
@@ -128,7 +129,7 @@ offset_right = 84.0
 offset_bottom = 84.0
 script = ExtResource("8_71upq")
 
-[node name="Art" type="TextureRect" parent="ReplayButton" unique_id=98077329]
+[node name="Art" type="TextureRect" parent="ReplayButton" unique_id=1924950959]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -137,7 +138,7 @@ texture = ExtResource("10_sqgs6")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Confetti" type="CPUParticles2D" parent="." unique_id=1153893516]
+[node name="Confetti" type="CPUParticles2D" parent="." unique_id=1870952146]
 z_index = 40
 position = Vector2(960, 60)
 emitting = false
