@@ -10,6 +10,22 @@ const MAX_COINS: int = 999_999
 const MAX_TICKETS: int = 9_999
 const MAX_CYCLES: int = 999_999
 const MAX_STARS: int = 5
+## ADR-005: a field this build does not know is kept and written back, so a downgrade never destroys what a
+## newer build saved. It is bounded, and a known field always wins over an unknown one of the same name.
+const KNOWN_KEYS: Array[String] = [
+	"version",
+	"coins",
+	"tickets",
+	"completed_cycles",
+	"equipped_outfits",
+	"owned_furniture",
+	"placed_furniture",
+	"friend_stars",
+	"picked_prize",
+	"prize_cycle",
+]
+const UNKNOWN_MAX_CHARS: int = 65536
+const UNKNOWN_KEY_MAX: int = 64
 
 ## The slots an outfit choice can fill. Kept here because the save is what has to stay
 ## compatible; the rig mirrors them as its layer names.
@@ -29,6 +45,8 @@ const SLOTS: Array[String] = [SLOT_BODY, SLOT_HEAD, SLOT_NECK, SLOT_EYES]
 @export var friend_stars: Dictionary = {}
 @export var picked_prize: String = ""
 @export var prize_cycle: int = 0
+## Fields written by a newer build, as plain JSON data. Never read by this build.
+var unknown_fields: Dictionary = {}
 
 
 ## Ids come from the one owner (`Ids`), never from a local pattern.
@@ -37,6 +55,12 @@ static func is_valid_id(value: String) -> bool:
 
 
 func to_dictionary() -> Dictionary:
+	var out: Dictionary = unknown_fields.duplicate(true)
+	out.merge(_known_dictionary(), true)
+	return out
+
+
+func _known_dictionary() -> Dictionary:
 	return {
 		"version": version,
 		"coins": coins,
@@ -68,6 +92,7 @@ static func from_dictionary(raw: Dictionary) -> SaveData:
 	data.friend_stars = _clean_stars(raw.get("friend_stars", {}))
 	data.picked_prize = _clean_id(raw.get("picked_prize", ""))
 	data.prize_cycle = clampi(_int_of(raw.get("prize_cycle", 0), 0), 0, MAX_CYCLES)
+	data.unknown_fields = _keep_unknown(raw)
 	return data
 
 
@@ -82,6 +107,19 @@ func clamp_to_rules() -> void:
 	friend_stars = _clean_stars(friend_stars)
 	picked_prize = _clean_id(picked_prize)
 	prize_cycle = clampi(prize_cycle, 0, MAX_CYCLES)
+
+
+## Unknown top-level keys, as JSON-safe copies. Too long a key, or too much data in all, drops the lot:
+## a file cannot grow the save without bound.
+static func _keep_unknown(raw: Dictionary) -> Dictionary:
+	var kept: Dictionary = {}
+	for key: Variant in raw.keys():
+		if not key is String or KNOWN_KEYS.has(key) or (key as String).length() > UNKNOWN_KEY_MAX:
+			continue
+		var text: String = JSON.stringify(raw[key])
+		if text.length() <= UNKNOWN_MAX_CHARS:
+			kept[key] = JSON.parse_string(text)
+	return kept if JSON.stringify(kept).length() <= UNKNOWN_MAX_CHARS else {}
 
 
 static func _clean_id(raw: Variant) -> String:

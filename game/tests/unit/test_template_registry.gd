@@ -10,10 +10,10 @@ func test_the_skip_is_in_the_table_and_not_in_the_catalog() -> void:
 	assert_true(table.contains("t3_skip_beat"))
 	assert_true(table.contains("| skip |"))
 	var evidence: String = _read("specs/product/TEMPLATE_EVIDENCE_T22_T3.md")
-	assert_true(evidence.contains("Confidence: low"))
-	assert_true(evidence.contains("Call: skip"))
+	assert_true(evidence.contains("Confidence: low"), "SC-e13s06-P2-01 the evidence names its confidence")
+	assert_true(evidence.contains("Call: skip"), "SC-e13s06-P2-01 and the call")
 	var scope: String = _read("specs/product/SCOPE_LATEST.yaml")
-	assert_true(scope.contains("59.5%"), "coverage sentence")
+	assert_true(scope.contains("59.5%"), "SC-e13s06-P2-02 the coverage sentence matches the call")
 	assert_true(scope.contains("1,071"))
 	var catalog: String = SourceScanner.text("res://scripts/core/template_catalog.gd")
 	assert_false(catalog.contains("t22_play_beat"))
@@ -24,7 +24,7 @@ func test_the_computed_coverage_agrees_with_the_scope_and_the_catalog() -> void:
 	var table: String = _read("specs/product/TEMPLATE_TABLE.md")
 	var ids: Array = TemplateCatalog.SCRIPT_FOR_ID.keys()
 	var bad: PackedStringArray = TemplateTableGate.problems(table, _read("specs/product/SCOPE_LATEST.yaml"), ids)
-	assert_eq(bad, PackedStringArray(), "SC-e13s09-P1-03 P1-04: %s" % ", ".join(bad))
+	assert_eq(bad, PackedStringArray(), "SC-e13s09-P1-03 SC-e13s09-P1-04: %s" % ", ".join(bad))
 	var built: int = 0
 	for cells: PackedStringArray in TemplateTableGate.rows(table):
 		built += 1 if cells[TemplateTableGate.STATUS] == "built" else 0

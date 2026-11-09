@@ -46,6 +46,11 @@ static func _def_problem(def: SceneDef) -> String:
 		return "missing_background"
 	if not def.music_id.is_empty() and not SceneMedia.music_exists(def.music_id):
 		return "missing_music"
+	if not def.intro_voice_key.is_empty() and VoiceKeyResolver.path_for_key(def.intro_voice_key).is_empty():
+		return "bad_voice_key"
+	## The player leaves through `next_scene_id`, so a def that names no shipped room would strand the child.
+	if not Ids.is_valid(def.next_scene_id) or not SceneCatalog.is_shipped(def.next_scene_id):
+		return "bad_next_scene"
 	if def.steps.is_empty():
 		return "empty_steps"
 	for step_res: Resource in def.steps:

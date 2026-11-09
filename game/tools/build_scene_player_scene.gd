@@ -131,6 +131,8 @@ func _add_home(root: Control) -> void:
 	art.name = "Art"
 	art.set_anchors_preset(Control.PRESET_FULL_RECT)
 	art.texture = load(HOME_ART) as Texture2D
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	visual.add_child(art)
 

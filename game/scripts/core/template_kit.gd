@@ -7,6 +7,11 @@ extends RefCounted
 ## templates stop repeating the same reaction batch, hull lookup and autoload fetch.
 
 const HELD_META: String = "template_kit_filter"
+## QuiQui's sprites draw at z 0..50 (`QuiQuiRig.Z_*`), whatever the tree order says. Rub layers draw above her
+## and every tap target, tool and pad layer a template builds draws above them, so what a finger can reach is
+## also what the child can see.
+const LAYER_Z: int = QuiQuiRig.Z_GLASSES + 10
+const SURFACE_Z: int = QuiQuiRig.Z_GLASSES + 50
 
 
 static func autoload(node_name: String) -> Node:
@@ -69,6 +74,7 @@ static func tap_button(art_id: String, at: Vector2) -> TapButton:
 	button.size = TapButton.MIN_HIT_SIZE
 	button.position = at
 	button.add_to_group("hit_target", true)
+	button.z_index = SURFACE_Z
 	var visual: Control = Control.new()
 	visual.name = "Visual"
 	visual.mouse_filter = Control.MOUSE_FILTER_IGNORE

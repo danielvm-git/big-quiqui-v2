@@ -8,12 +8,16 @@ extends RefCounted
 const STATE_IDLE: String = "IDLE"
 const STATE_PANNING: String = "PANNING"
 const STATE_HELD: String = "HELD"
+## A press on a target that may still slide the world (a strip full of targets): it pans, and a lift that
+## travelled less than the tolerance is still a tap.
+const STATE_SLIDING: String = "SLIDING"
 ## No state times out: the gesture belongs to the child's finger and lasts as long as it does.
 const MAX_DWELL_SEC: Dictionary = {}
 const LEGAL_EDGES: Dictionary = {
-	STATE_IDLE: [STATE_PANNING, STATE_HELD],
+	STATE_IDLE: [STATE_PANNING, STATE_HELD, STATE_SLIDING],
 	STATE_PANNING: [STATE_IDLE],
 	STATE_HELD: [STATE_IDLE],
+	STATE_SLIDING: [STATE_IDLE],
 }
 
 var offset: Vector2 = Vector2.ZERO
@@ -31,14 +35,16 @@ func drag_by(delta: Vector2) -> void:
 	offset = _clamp(offset + delta)
 
 
-## Returns false when another finger already owns the gesture.
-func begin(point: Vector2, index: int = 0, on_target: bool = false) -> bool:
+## Returns false when another finger already owns the gesture. `slide` lets a press on a target pan too.
+func begin(point: Vector2, index: int = 0, on_target: bool = false, slide: bool = false) -> bool:
 	if _fsm.state != STATE_IDLE:
 		return false
 	_owner = index
 	_last = point
 	_travel = 0.0
-	return _fsm.transition_to(STATE_HELD if on_target else STATE_PANNING)
+	if not on_target:
+		return _fsm.transition_to(STATE_PANNING)
+	return _fsm.transition_to(STATE_SLIDING if slide else STATE_HELD)
 
 
 func move_to(point: Vector2, index: int = 0) -> void:
@@ -47,7 +53,7 @@ func move_to(point: Vector2, index: int = 0) -> void:
 	var delta: Vector2 = point - _last
 	_travel += delta.length()
 	_last = point
-	if _fsm.state == STATE_PANNING:
+	if _fsm.state == STATE_PANNING or _fsm.state == STATE_SLIDING:
 		drag_by(-delta)  # the world follows the finger, so the camera goes the other way
 
 
@@ -55,7 +61,7 @@ func move_to(point: Vector2, index: int = 0) -> void:
 func end_allows_tap(index: int = 0) -> bool:
 	if _fsm.state == STATE_IDLE or index != _owner:
 		return false
-	var allow: bool = _fsm.state == STATE_HELD and _travel <= tolerance
+	var allow: bool = (_fsm.state == STATE_HELD or _fsm.state == STATE_SLIDING) and _travel <= tolerance
 	_owner = -1
 	_fsm.transition_to(STATE_IDLE)
 	return allow

@@ -87,8 +87,9 @@ func test_a_tray_row_holds_at_most_eight_targets() -> void:
 		step.item_ids = ids.slice(0, StepParams.TRAY_ITEMS_MAX)
 		assert_eq(StepParams.problem(step), "", template)
 	var strip: StepDef = _step("t45_dress_decorate")
-	strip.item_ids = ids
-	assert_eq(StepParams.problem(strip), "", "the dress strip scrolls")
+	strip.item_ids = PackedStringArray(FurnitureCatalog.FURNITURE_IDS)
+	assert_gt(strip.item_ids.size(), StepParams.TRAY_ITEMS_MAX, "the catalogue is longer than a tray row")
+	assert_eq(StepParams.problem(strip), "", "the dress strip slides, so it may be longer")
 
 
 func test_a_def_may_mix_worn_items_and_free_furniture() -> void:
@@ -101,6 +102,26 @@ func test_a_def_may_mix_worn_items_and_free_furniture() -> void:
 	assert_not_null(SceneDefLoader.validate(def), "A5 the loader takes the mixed def")
 	step.slot_ids = PackedStringArray(["neck", "Bad Slot", ""])
 	assert_eq(StepParams.problem(step), "bad_id")
+
+
+func test_a_dress_def_cannot_offer_a_tap_the_save_would_refuse() -> void:
+	var step: StepDef = _step("t45_dress_decorate")
+	step.item_ids = PackedStringArray(["banana"])
+	step.slot_ids = PackedStringArray(["neck"])
+	assert_eq(StepParams.problem(step), "bad_id", "B2 food is not wearable")
+	step.item_ids = PackedStringArray(["crown"])
+	step.slot_ids = PackedStringArray(["neck"])
+	assert_eq(StepParams.problem(step), "bad_id", "B2 a crown does not go on the neck")
+	step.item_ids = PackedStringArray(["banana"])
+	step.slot_ids = PackedStringArray([""])
+	assert_eq(StepParams.problem(step), "bad_id", "B2 a free piece must be furniture")
+
+
+func test_every_rub_template_needs_something_to_rub() -> void:
+	for template: String in ["t34_rub_reveal", "t23_erase", "t40_draw_fill"]:
+		var step: StepDef = _step(template)
+		step.item_ids = PackedStringArray()
+		assert_eq(StepParams.problem(step), "no_items", "B2 %s" % template)
 
 
 func test_a_rub_layer_cannot_be_a_node_the_player_owns() -> void:
@@ -165,7 +186,7 @@ func test_a_step_with_nothing_to_tap_show_or_catch_never_loads() -> void:
 
 func test_a_slot_may_repeat_but_an_item_may_not() -> void:
 	var step: StepDef = _step("t45_dress_decorate")
-	step.item_ids = PackedStringArray(["blue_scarf", "red_scarf"])
+	step.item_ids = PackedStringArray(["blue_scarf", "purple_bow"])
 	step.slot_ids = PackedStringArray(["neck", "neck"])
 	assert_eq(StepParams.problem(step), "", "A2 two neck items share one slot")
 	step.item_ids = PackedStringArray(["blue_scarf", "blue_scarf"])

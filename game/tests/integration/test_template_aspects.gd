@@ -47,6 +47,21 @@ func test_a_stop_control_above_a_target_fails_the_check() -> void:
 	assert_has(_unreachable(player, GeometryOracle.DESKTOP_16_9), "play_button", "A3 a STOP sibling above is caught")
 
 
+func test_a_picture_drawn_over_a_target_fails_the_check() -> void:
+	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("title_probe"))
+	var verb: Control = player.find_child("play_button", true, false) as Control
+	var cover: TextureRect = TextureRect.new()
+	cover.name = "cover_art"
+	cover.texture = verb.find_child("Art", true, false).get("texture") as Texture2D
+	cover.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cover.size = verb.size
+	cover.global_position = verb.global_position
+	cover.z_index = 200
+	player.add_child(cover)
+	assert_has(_unreachable(player, GeometryOracle.DESKTOP_16_9), "play_button", "A4 B4 a higher z picture is caught")
+	assert_ne(HitProbe.unseen_by(player, verb), "", "and it is named")
+
+
 func test_a_target_that_no_finger_can_reach_fails_the_check() -> void:
 	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("title_probe"))
 	var lost: Control = Control.new()
@@ -64,8 +79,12 @@ func _unreachable(player: ScenePlayer, aspect: Vector2i) -> Array[String]:
 	var lost: Array[String] = []
 	var view: Rect2 = Rect2(Vector2.ZERO, Vector2(aspect))
 	for target: Control in _targets(player):
+		if target.name == "HomeButton" and target.mouse_filter == Control.MOUSE_FILTER_IGNORE:
+			continue
 		_bring_into_view(player, target)
 		if not view.encloses(target.get_global_rect()) or not _answers(player, target):
+			lost.append(target.name)
+		elif not HitProbe.seen(player, target):
 			lost.append(target.name)
 	return lost
 
@@ -73,24 +92,13 @@ func _unreachable(player: ScenePlayer, aspect: Vector2i) -> Array[String]:
 func _answers(player: ScenePlayer, target: Control) -> bool:
 	if target.mouse_filter != Control.MOUSE_FILTER_IGNORE:
 		return HitProbe.answers(player, target)
-	return HitProbe.top_at(player, target.get_global_rect().get_center()) is TouchPad
+	var centre: Vector2 = target.get_global_rect().get_center()
+	return HitProbe.top_at(player, centre) is TouchPad and HitProbe.top_at_z(player, centre) is TouchPad
 
 
 func _bring_into_view(player: ScenePlayer, target: Control) -> void:
-	var strip: Node = _ancestor(target, ScrollContainer)
-	if strip != null:
-		(strip as ScrollContainer).ensure_control_visible(target)
 	if target.get_parent() != null and target.get_parent().name == "MapWorld":
 		(player.get("_template") as RefCounted).call("follow", target.position + target.size * 0.5)
-
-
-func _ancestor(node: Node, kind: Variant) -> Node:
-	var parent: Node = node.get_parent()
-	while parent != null:
-		if is_instance_of(parent, kind):
-			return parent
-		parent = parent.get_parent()
-	return null
 
 
 func _own_targets(player: ScenePlayer) -> Array[Control]:

@@ -180,6 +180,7 @@ func _build_surface() -> void:
 	_world = Control.new()
 	_world.name = "MapWorld"
 	_world.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_world.z_index = TemplateKit.SURFACE_Z
 	_world.size = _pan.world_size
 	TemplateKit.mount_pad(_ctx.host as Control, _pad, _world, [_on_pressed, _on_moved, _on_released])
 	_build_pins()

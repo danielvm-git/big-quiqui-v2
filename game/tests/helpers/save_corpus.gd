@@ -15,17 +15,36 @@ const ABSURD: int = 9_999_999_999
 ## Every hostile dictionary the loader must survive. Plain data, so a failure names
 ## one entry instead of hiding inside a generator.
 static func entries() -> Array[Dictionary]:
-	var entries: Array[Dictionary] = [
+	var entries: Array[Dictionary] = []
+	for group: Array[Dictionary] in [_number_cases(), _outfit_cases(), _furniture_cases(), _prize_and_star_cases()]:
+		entries.append_array(group)
+	return entries
+
+
+static func _number_cases() -> Array[Dictionary]:
+	return [
 		{},
 		{"coins": -1, "tickets": -1, "completed_cycles": -1},
 		{"coins": ABSURD, "tickets": ABSURD, "completed_cycles": ABSURD},
 		{"coins": "lots", "tickets": "many", "completed_cycles": "few"},
 		{"coins": 1.7, "tickets": 2.9, "completed_cycles": NAN},
 		{"coins": null, "tickets": null, "completed_cycles": null},
+		{"unknown_key": {"deep": [1, 2, 3]}, "version": -9},
+		{"version": "two"},
+	]
+
+
+static func _outfit_cases() -> Array[Dictionary]:
+	return [
 		{"equipped_outfits": "not a dictionary"},
 		{"equipped_outfits": {"body": 3, "head": null, "neck": ["x"], "eyes": "vestido_flor"}},
 		{"equipped_outfits": {"../etc/passwd": "mesa", "body": "a/b"}},
 		{"equipped_outfits": {"body": "x".repeat(65)}},
+	]
+
+
+static func _furniture_cases() -> Array[Dictionary]:
+	return [
 		{"owned_furniture": "not an array"},
 		{"owned_furniture": [1, 2, true, null, ["mesa"]]},
 		{"owned_furniture": ["mesa", "mesa", "MESA", "mesa\n"]},
@@ -37,6 +56,11 @@ static func entries() -> Array[Dictionary]:
 		{"placed_furniture": [{"id": "mesa", "x": -5.0, "y": 8.0}]},
 		{"placed_furniture": [{"id": "mesa", "x": NAN, "y": INF}]},
 		{"placed_furniture": [{"id": "mesa", "x": "nan", "y": "inf"}]},
+	]
+
+
+static func _prize_and_star_cases() -> Array[Dictionary]:
+	return [
 		{"picked_prize": 7, "prize_cycle": "two"},
 		{"picked_prize": "../x", "prize_cycle": -5},
 		{"picked_prize": "x".repeat(70), "prize_cycle": ABSURD},
@@ -44,10 +68,7 @@ static func entries() -> Array[Dictionary]:
 		{"friend_stars": "not a dictionary"},
 		{"friend_stars": {"pato": -3, "urso": 99, "../x": 4}},
 		{"friend_stars": {"pato": "muitas"}},
-		{"unknown_key": {"deep": [1, 2, 3]}, "version": -9},
-		{"version": "two"},
 	]
-	return entries
 
 
 ## A placement that names an id the child never bought. The room must not honour it.

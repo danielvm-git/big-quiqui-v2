@@ -1,6 +1,7 @@
 # story: e13s05
 extends RefCounted
-## One verb starts the game. Every other control on the host is decoration, except Home.
+## One verb starts the game. Every other control on the host is decoration, Home included: the title
+## has no room to go back to, and a second live target would teach a child that either one starts it.
 
 const VERB_ART: String = "play_button"
 const GLOW: Color = Color(1.25, 1.25, 1.1, 1.0)
@@ -60,17 +61,11 @@ func interactive_count() -> int:
 	return count
 
 
-func _home() -> Node:
-	if _ctx == null or _ctx.nodes == null:
-		return null
-	return _ctx.nodes.resolve("home")
-
-
 func _quiet_host() -> void:
 	if _ctx == null or not (_ctx.host is Control):
 		return
 	for child: Node in (_ctx.host as Control).get_children():
-		if child is Control and child != _home():
+		if child is Control:
 			_quieted[child] = (child as Control).mouse_filter
 			(child as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 

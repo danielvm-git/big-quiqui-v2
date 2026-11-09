@@ -16,7 +16,7 @@ func test_the_title_verb_is_one_tap_and_completes_the_def() -> void:
 	for child: Node in player.get_children():
 		if child is TapButton and (child as TapButton).mouse_filter != Control.MOUSE_FILTER_IGNORE:
 			live += 1
-	assert_eq(live, 2, "only the verb and Home take touches")
+	assert_eq(live, 1, "A5 B6 the verb is the only target on the shipped player, Home included")
 	assert_true(verb.size.x >= TapButton.MIN_HIT_SIZE.x and verb.size.y >= TapButton.MIN_HIT_SIZE.y)
 	assert_not_null(verb.get_node_or_null("Visual/Art"), "the verb has a picture")
 	finger_tap(player, verb)
@@ -59,8 +59,13 @@ func test_touching_each_object_through_the_player_completes_the_step() -> void:
 	assert_eq(buttons.size(), 2, "one target per item in the def")
 	finger_tap(player, buttons[0])
 	assert_lt(buttons[0].visual.modulate.r, 1.0, "A11 the tapped object marks itself")
+	finger_tap(player, buttons[0])
 	await _settle(player)
-	assert_true(player.runner.fsm.state in [StepRunner.STATE_OUTRO, StepRunner.STATE_EXIT], "A14 any tap ends it")
+	assert_eq(player.runner.step_index, 0, "A7 the same object twice is not each object")
+	assert_false(player.runner.fsm.state in [StepRunner.STATE_OUTRO, StepRunner.STATE_EXIT], "so the step is live")
+	finger_tap(player, buttons[1])
+	await _settle(player)
+	assert_true(player.runner.fsm.state in [StepRunner.STATE_OUTRO, StepRunner.STATE_EXIT], "A14 each one ends it")
 
 
 func test_rubbing_the_reveal_layers_through_the_player_completes_the_step() -> void:
@@ -90,8 +95,8 @@ func test_one_prize_tap_saves_and_the_other_does_nothing() -> void:
 
 func test_the_dress_strip_snaps_and_the_bin_clears() -> void:
 	var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("dress_probe"))
-	var strip: ScrollContainer = player.get_node("TrayZone").get_node_or_null("DressStrip") as ScrollContainer
-	assert_not_null(strip, "the strip is a scroll container in the tray")
+	var strip: Control = player.get_node("TrayZone").get_node_or_null("DressStrip") as Control
+	assert_not_null(strip, "the strip is in the tray")
 	var scarf: TapButton = strip.find_child("blue_scarf", true, false) as TapButton
 	assert_not_null(scarf)
 	finger_tap(player, scarf)
@@ -99,6 +104,27 @@ func test_the_dress_strip_snaps_and_the_bin_clears() -> void:
 	var bin: TapButton = player.get_node("TrayZone").get_node("trash_bag") as TapButton
 	finger_tap(player, bin)
 	assert_eq(_progress().call("equipped", "neck"), "", "the bin takes it off")
+
+
+func test_a_finger_drag_across_a_long_strip_slides_it_and_wears_nothing() -> void:
+	var step: StepDef = StepDef.new()
+	step.template_id = "t45_dress_decorate"
+	step.item_ids = PackedStringArray(FurnitureCatalog.FURNITURE_IDS)
+	var def: SceneDef = SceneDefFactory.valid()
+	def.steps = [step] as Array[Resource]
+	var player: ScenePlayer = await mount(def)
+	await wait_process_frames(2)
+	var template: RefCounted = player.get("_template") as RefCounted
+	var strip: Control = template.call("strip") as Control
+	var first: Control = template.call("button", FurnitureCatalog.FURNITURE_IDS[0]) as Control
+	var pad: Control = strip.get_node("StripPad") as Control
+	var start: Vector2 = first.get_global_rect().get_center()
+	assert_eq(HitProbe.top_at(player, start), pad, "A8 the finger lands on the strip pad")
+	send(pad, touch(start, true))
+	send(pad, drag(start + Vector2(-200.0, 0.0)))
+	send(pad, touch(start + Vector2(-200.0, 0.0), false))
+	assert_gt(float(template.call("slide_offset")), 0.0, "A8 a finger drag slides a strip longer than the tray")
+	assert_eq(int(_progress().call("placed_count")), 0, "A8 and the item under the finger is not placed")
 
 
 func _taps(player: ScenePlayer) -> Array[TapButton]:

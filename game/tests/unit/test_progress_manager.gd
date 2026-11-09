@@ -249,3 +249,26 @@ func test_completing_a_cycle_writes_the_save() -> void:
 	pm.data = SaveData.new()
 	pm.load_or_default()
 	assert_eq(pm.get_coins(), coins_after, "and a restart sees the reward")
+
+
+func test_a_field_from_a_newer_build_survives_a_load_and_a_save() -> void:
+	var raw: Dictionary = {"coins": 7, "future_stars": {"deep": [1, 2, {"k": "v"}]}, "future_flag": true}
+	var data: SaveData = SaveData.from_dictionary(raw)
+	data.coins = 9
+	var written: Dictionary = JSON.parse_string(JSON.stringify(data.to_dictionary())) as Dictionary
+	var sent: Dictionary = JSON.parse_string(JSON.stringify(raw)) as Dictionary
+	assert_eq(written.get("future_stars"), sent["future_stars"], "B5 ADR-005 a nested unknown field is written back")
+	assert_eq(written.get("future_flag"), true, "B5 a scalar one too")
+	assert_eq(int(written.get("coins")), 9, "B5 and the known fields carry the change")
+
+
+func test_an_unknown_field_never_overrides_a_known_one_and_stays_bounded() -> void:
+	var data: SaveData = SaveData.from_dictionary({"coins": 5, "junk": "x".repeat(SaveData.UNKNOWN_MAX_CHARS + 1)})
+	assert_true(data.unknown_fields.is_empty(), "B5 an oversize unknown field is dropped, not stored")
+	var keyed: SaveData = SaveData.from_dictionary({"coins": 5, "k".repeat(SaveData.UNKNOWN_KEY_MAX + 1): 1})
+	assert_true(keyed.unknown_fields.is_empty(), "B5 a long key is dropped")
+	var forged: SaveData = SaveData.new()
+	forged.unknown_fields = {"coins": 999, "extra": 1}
+	forged.coins = 3
+	assert_eq(int(forged.to_dictionary()["coins"]), 3, "B5 a known field always wins")
+	assert_eq(int(forged.to_dictionary()["extra"]), 1)

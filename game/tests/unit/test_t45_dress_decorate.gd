@@ -82,12 +82,18 @@ func test_a_def_that_names_a_food_for_a_slot_saves_nothing() -> void:
 	assert_eq(_progress().call("equipped", "neck"), "")
 
 
-func test_the_same_piece_twice_is_one_change_and_the_bin_acts_on_the_worn_slot() -> void:
+func test_a_tap_on_the_worn_piece_is_answered_and_confirms_the_look() -> void:
 	var tpl: RefCounted = _mount_with_tray()
 	tpl.call("snap", "blue_scarf")
+	var again: RefCounted = _mount_with_tray()
+	assert_true(bool(again.call("snap", "blue_scarf")), "A6 the scarf she wears on a return visit")
+	assert_eq(_changes(again), 1, "A6 it answers, it is not a dead control")
+	assert_almost_eq(float(again.call("progress")), 1.0, 0.001, "A6 and it counts, so the step can end")
+
+
+func test_the_bin_acts_on_the_worn_slot_after_re_entry() -> void:
+	var tpl: RefCounted = _mount_with_tray()
 	tpl.call("snap", "blue_scarf")
-	assert_almost_eq(float(tpl.call("progress")), 1.0, 0.001)
-	assert_eq(_changes(tpl), 1, "A8 a repeat tap changes nothing, so it does not count")
 	var again: RefCounted = _mount_with_tray()
 	assert_true(bool(again.call("bin", "blue_scarf")), "A8 after re-entry the bin still takes the worn piece off")
 	assert_eq(_progress().call("equipped", "neck"), "")
@@ -96,12 +102,58 @@ func test_the_same_piece_twice_is_one_change_and_the_bin_acts_on_the_worn_slot()
 func test_a_category_tab_filters_the_strip_by_touch() -> void:
 	var tpl: RefCounted = _mount_with_tray()
 	assert_eq(tpl.call("visible_items").size(), 3)
-	var tab: TapButton = (tpl.call("strip") as ScrollContainer).find_child("tab_warm", true, false) as TapButton
+	var tab: TapButton = (tpl.call("strip") as Control).find_child("tab_warm", true, false) as TapButton
 	assert_not_null(tab, "A8 the categories are tabs")
 	tab.press()
 	assert_eq(tpl.call("visible_items"), PackedStringArray(["blue_scarf"]), "only the warm items stay")
 	tab.press()
 	assert_eq(tpl.call("visible_items").size(), 3, "the same tab again shows everything")
+
+
+func test_a_finger_slides_the_strip_and_a_slide_over_an_item_does_not_wear_it() -> void:
+	var tpl: RefCounted = _mount_with_tray(360.0)
+	await wait_process_frames(2)
+	var strip: Control = tpl.call("strip") as Control
+	var pad: TouchPad = strip.get_node("StripPad") as TouchPad
+	var scarf: TapButton = tpl.call("button", "blue_scarf") as TapButton
+	var start: Vector2 = scarf.get_global_rect().get_center()
+	_touch(pad, start, true)
+	_drag(pad, start + Vector2(-90.0, 0.0))
+	_touch(pad, start + Vector2(-90.0, 0.0), false)
+	assert_gt(float(tpl.call("slide_offset")), 0.0, "A8 a finger drag slides the strip")
+	assert_eq(_progress().call("equipped", "neck"), "", "A8 a slide that began on an item does not wear it")
+	assert_eq(scarf.mouse_filter, Control.MOUSE_FILTER_IGNORE, "the items take no touch of their own")
+	var after: Vector2 = scarf.get_global_rect().get_center()
+	_touch(pad, after, true)
+	_touch(pad, after, false)
+	assert_eq(_progress().call("equipped", "neck"), "blue_scarf", "and a tap on the slid item still wears it")
+
+
+func test_a_slide_stops_at_the_end_of_the_row() -> void:
+	var tpl: RefCounted = _mount_with_tray(360.0)
+	await wait_process_frames(2)
+	var pad: TouchPad = (tpl.call("strip") as Control).get_node("StripPad") as TouchPad
+	var start: Vector2 = pad.get_global_rect().get_center()
+	_touch(pad, start, true)
+	_drag(pad, start + Vector2(-5000.0, 0.0))
+	_touch(pad, start, false)
+	var strip_width: float = (tpl.call("strip") as Control).size.x
+	assert_lt(float(tpl.call("slide_offset")), 5000.0, "A8 the slide is clamped to the row")
+	assert_gt(float(tpl.call("slide_offset")), 0.0)
+	assert_lt(strip_width, 360.0)
+
+
+func _touch(pad: TouchPad, point: Vector2, down: bool) -> void:
+	var event: InputEventScreenTouch = InputEventScreenTouch.new()
+	event.position = point
+	event.pressed = down
+	pad._gui_input(TouchSim.gui_event(pad, event))
+
+
+func _drag(pad: TouchPad, point: Vector2) -> void:
+	var event: InputEventScreenDrag = InputEventScreenDrag.new()
+	event.position = point
+	pad._gui_input(TouchSim.gui_event(pad, event))
 
 
 func test_a_tap_on_a_furniture_piece_places_it_free() -> void:
@@ -134,14 +186,14 @@ func _changes(tpl: RefCounted) -> int:
 	return int(tpl.get("_changes"))
 
 
-func _mount_with_tray() -> RefCounted:
+func _mount_with_tray(width: float = 1200.0) -> RefCounted:
 	var step: StepDef = StepDef.new()
 	step.template_id = "t45_dress_decorate"
 	step.item_ids = PackedStringArray(["blue_scarf", "crown", "chair"])
 	step.slot_ids = PackedStringArray(["neck", "head", ""])
 	step.category_ids = PackedStringArray(["warm", "royal", "home"])
 	var tray: Control = Control.new()
-	tray.size = Vector2(1200.0, 160.0)
+	tray.size = Vector2(width, 160.0)
 	add_child_autofree(tray)
 	var tpl: RefCounted = TemplateCatalog.instantiate("t45_dress_decorate")
 	var ctx: TemplateContext = TemplateContext.new()

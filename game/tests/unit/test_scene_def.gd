@@ -26,6 +26,14 @@ func test_an_unknown_template_id_is_rejected_with_a_reason() -> void:
 	assert_eq(str(line.get("reason", "")), "unknown_template")
 
 
+func test_a_def_that_cannot_leave_or_speak_is_rejected() -> void:
+	for variant: String in ["bad_next_scene", "no_next_scene", "bad_voice_key"]:
+		assert_null(SceneDefLoader.validate(SceneDefFactory.broken(variant)), variant)
+		assert_eq(
+			str(_last_event(REJECT_EV).get("reason", "")), variant if variant == "bad_voice_key" else "bad_next_scene"
+		)
+
+
 func test_an_invalid_scene_id_is_rejected_before_any_path_is_built() -> void:
 	assert_eq(SceneDefLoader.def_tres_path("../kitchen"), "")
 	assert_eq(SceneDefLoader.def_tres_path(""), "")

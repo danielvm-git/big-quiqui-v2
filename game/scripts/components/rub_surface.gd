@@ -27,6 +27,7 @@ func bind(ctx: TemplateContext, on_scrubbed: Callable, default_mode: String = "c
 	rub.bind_target(TemplateKit.hull_target(ctx))
 	_bind_loop()
 	_claim_layers()
+	fit_layers()
 	_build_tool(on_scrubbed)
 
 
@@ -136,6 +137,7 @@ func _claim_layers() -> void:
 		if layer == null:
 			layer = _make_layer(layer_id)
 		if layer != null:
+			layer.z_index = TemplateKit.LAYER_Z
 			layers.append(layer)
 
 
@@ -183,6 +185,7 @@ func _build_tool(on_scrubbed: Callable) -> void:
 	tool = TouchDraggable.new()
 	tool.name = "RubTool"
 	tool.add_to_group("hit_target", true)
+	tool.z_index = TemplateKit.SURFACE_Z
 	tool.custom_minimum_size = TouchDraggable.MIN_HIT_SIZE
 	tool.size = TouchDraggable.MIN_HIT_SIZE
 	tool.mode = TouchDraggable.Mode.CONTINUOUS_SCRUB

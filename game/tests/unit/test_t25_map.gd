@@ -27,7 +27,7 @@ func test_unknown_destination_is_rejected() -> void:
 	assert_eq(str(tpl.call("activate", "secret_door")), "", "SC-e13s03-P0-05")
 	assert_gt(int(log.call("write_count")), before)
 	var diary: String = FileAccess.get_file_as_string(str(log.get("log_path")))
-	assert_true(diary.contains("map.destination_rejected"))
+	assert_true(diary.contains("map.destination_rejected"), "SC-e13s03-P0-05 the rejection is logged")
 
 
 func test_a_short_lock_list_fails_closed() -> void:

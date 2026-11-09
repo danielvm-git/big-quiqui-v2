@@ -6,8 +6,8 @@
 [sub_resource type="Resource" id="step_touch"]
 script = ExtResource("2_step")
 template_id = "t21_touch_each"
-mode = "any"
-repeat_count = 1
+mode = "count_n"
+repeat_count = 2
 item_ids = PackedStringArray("apple", "grape")
 on_hit_pose = "pleased"
 hit_poses = PackedStringArray("pleased", "surprised")

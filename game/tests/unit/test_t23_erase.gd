@@ -44,13 +44,23 @@ func test_a_finished_erase_stays_finished_when_the_target_moves() -> void:
 
 
 func _mount() -> RefCounted:
+	var tpl: RefCounted = TemplateCatalog.instantiate("t23_erase")
+	tpl.call("setup", _context(_step()))
+	tpl.call("begin_gesture")
+	return tpl
+
+
+func _step() -> StepDef:
 	var step: StepDef = StepDef.new()
 	step.template_id = "t23_erase"
 	step.mode = "clear"
 	step.completion_threshold = 0.9
 	step.on_hit_pose = "pleased"
 	step.on_hit_sfx_id = "sfx_heart"
-	var tpl: RefCounted = TemplateCatalog.instantiate("t23_erase")
+	return step
+
+
+func _context(step: StepDef) -> TemplateContext:
 	var ctx: TemplateContext = TemplateContext.new()
 	ctx.step_def = step
 	ctx.host = Node.new()
@@ -64,9 +74,7 @@ func _mount() -> RefCounted:
 	var nodes: PlayerNodeTable = PlayerNodeTable.new()
 	nodes.register("scrub_target", _stub)
 	ctx.nodes = nodes
-	tpl.call("setup", ctx)
-	tpl.call("begin_gesture")
-	return tpl
+	return ctx
 
 
 func _rub_cells(tpl: RefCounted, limit: int) -> void:

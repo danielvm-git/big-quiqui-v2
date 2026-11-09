@@ -80,3 +80,20 @@ func _new_pan() -> RefCounted:
 func test_the_gesture_has_a_declared_empty_dwell_table() -> void:
 	assert_true(PanPrimitive.MAX_DWELL_SEC.is_empty(), "B6 a child-owned gesture has no deadline, said on purpose")
 	assert_eq(PanPrimitive.MAX_DWELL_SEC.size(), 0)
+
+
+func test_a_slide_that_starts_on_a_target_pans_and_a_short_one_still_taps() -> void:
+	var pan: RefCounted = _new_pan()
+	if pan == null:
+		return
+	pan.set("world_size", Vector2(3000.0, 1080.0))
+	pan.set("view_size", Vector2(1920.0, 1080.0))
+	pan.set("tolerance", 24.0)
+	pan.call("begin", Vector2(500.0, 100.0), 0, true, true)
+	pan.call("move_to", Vector2(400.0, 100.0))
+	assert_almost_eq((pan.get("offset") as Vector2).x, 100.0, 0.001, "A8 a press on a target still pans")
+	assert_false(bool(pan.call("end_allows_tap")), "A8 a long slide is not a tap")
+	pan.call("begin", Vector2(500.0, 100.0), 0, true, true)
+	pan.call("move_to", Vector2(495.0, 100.0))
+	assert_true(bool(pan.call("end_allows_tap")), "A8 a short slide is still a tap")
+	assert_eq(pan.call("state_id"), "IDLE")

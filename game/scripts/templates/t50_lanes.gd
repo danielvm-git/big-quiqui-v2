@@ -127,6 +127,7 @@ func _build_surface() -> void:
 	_field = Control.new()
 	_field.name = "LaneField"
 	_field.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_field.z_index = TemplateKit.SURFACE_Z
 	_field.set_anchors_preset(Control.PRESET_FULL_RECT)
 	TemplateKit.mount_pad(_ctx.host as Control, _pad, _field, [_on_pressed, _on_moved, _on_released])
 	_add_basket()

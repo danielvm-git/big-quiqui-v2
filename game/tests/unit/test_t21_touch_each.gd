@@ -48,7 +48,8 @@ func test_probe_def_uses_the_template() -> void:
 	assert_not_null(def)
 	var step: StepDef = def.steps[0] as StepDef
 	assert_eq(step.template_id, "t21_touch_each")
-	assert_eq(step.mode, "any")
+	assert_eq(step.mode, "count_n", "A7 the shipped probe really asks for each one")
+	assert_eq(step.repeat_count, 2)
 
 
 func test_targets_meet_the_hit_floor() -> void:

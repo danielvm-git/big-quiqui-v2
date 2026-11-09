@@ -35,7 +35,8 @@ func test_the_dress_strip_and_bin_answer_a_finger_at_every_canvas() -> void:
 		TestReset.reset_all()
 		var player: ScenePlayer = await mount(SceneDefLoader.load_by_id("dress_probe"), aspect)
 		var scarf: TapButton = player.find_child("blue_scarf", true, false) as TapButton
-		assert_eq(finger_tap(player, scarf), scarf, "A2 the scarf is under no other control at %s" % aspect)
+		assert_eq(scarf.mouse_filter, Control.MOUSE_FILTER_IGNORE, "the strip pad answers for the scarf")
+		assert_true(finger_tap(player, scarf) is TouchPad, "A2 the strip pad is what a finger lands on at %s" % aspect)
 		assert_eq(_progress().call("equipped", "neck"), "blue_scarf", "A2 a finger dresses QuiQui at %s" % aspect)
 		var bin: TapButton = player.get_node("TrayZone/trash_bag") as TapButton
 		assert_eq(finger_tap(player, bin), bin, "A2 the bin answers at %s" % aspect)
@@ -81,6 +82,13 @@ func test_a_stop_sibling_above_a_target_fails_the_check() -> void:
 	cover.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	assert_true(HitProbe.answers(host, target), "an IGNORE sibling lets it through")
 	cover.mouse_filter = Control.MOUSE_FILTER_STOP
+	cover.visible = true
+	host.move_child(cover, 0)
+	assert_true(HitProbe.answers(host, target), "an earlier STOP sibling is under it")
+	cover.z_index = 5
+	assert_false(HitProbe.answers(host, target), "B4 an earlier sibling with a higher z is caught by the z order")
+	assert_eq(HitProbe.top_at(host, Vector2(10.0, 10.0)), target, "the tree order alone would miss it")
+	cover.z_index = 0
 	cover.visible = false
 	assert_true(HitProbe.answers(host, target), "a hidden sibling lets it through")
 

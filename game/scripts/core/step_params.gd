@@ -69,15 +69,15 @@ static func _row(step: StepDef) -> String:
 static func _rub(step: StepDef) -> String:
 	if not (RUB_MODES[step.template_id] as Array).has(step.mode):
 		return "bad_mode"
+	## Every rub template needs a layer to rub; none could ever finish without one.
+	if step.item_ids.is_empty():
+		return "no_items"
 	for layer_id: String in step.item_ids:
 		if PlayerNodeTable.RESERVED.has(layer_id):
 			return "bad_id"
 	if step.param_int != 0 and (step.param_int < RubPrimitive.EDGE_MIN or step.param_int > RubPrimitive.EDGE_MAX):
 		return "bad_count"
-	var reason: String = _threshold(step)
-	if not reason.is_empty() or step.template_id != "t34_rub_reveal":
-		return reason
-	return _needs_items(step)
+	return _threshold(step)
 
 
 static func _shared(step: StepDef) -> String:
@@ -189,7 +189,26 @@ static func _dress(step: StepDef) -> String:
 		return "mismatched_arrays"
 	if step.item_ids.size() > STRIP_ITEMS_MAX:
 		return "bad_count"
-	return _needs_items(step)
+	return _dress_items(step)
+
+
+## A worn piece must be wearable in its slot and a free piece must be shipped furniture, so a def never
+## offers a tap that the save is bound to refuse.
+static func _dress_items(step: StepDef) -> String:
+	if step.item_ids.is_empty():
+		return "no_items"
+	for index: int in range(step.item_ids.size()):
+		var slot: String = step.slot_ids[index] if index < step.slot_ids.size() else ""
+		var item: String = step.item_ids[index]
+		if not _fits(slot, item):
+			return "bad_id"
+	return ""
+
+
+static func _fits(slot: String, item: String) -> bool:
+	if slot.is_empty():
+		return FurnitureCatalog.FURNITURE_IDS.has(item)
+	return OutfitCatalog.is_wearable(slot, item)
 
 
 static func _lanes(step: StepDef) -> String:
