@@ -52,7 +52,7 @@ stories:
 - id: e13s06
   title: "Evidence Pass on t22_play_beat and t3_skip_beat (D3b)"
   bcps: 3
-  status: planned
+  status: done
   delta: MODIFIED
 - id: e13s07
   title: "t22_play_beat and t3_skip_beat to the Evidence Rule"

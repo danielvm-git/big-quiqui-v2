@@ -4,7 +4,7 @@ workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: release
 current_epic: e13-wave-1b-primitives-and-templates
-current_story: e13s06
+current_story: e13s07
 review_gate:
   skill: null
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
@@ -210,7 +210,8 @@ handoff:
     e13s01 through e13s03 are done. Latest preflight is 97 scripts / 686 tests / 9125 asserts.
     e13s01 through e13s04 are done. Latest preflight is 100 scripts / 692 tests / 9149 asserts.
     e13s01 through e13s05 are done. Latest preflight is 103 scripts / 698 tests / 9176 asserts.
-    Next story is e13s06 (evidence pass). Do not push, open a PR, merge, tag, or publish.
+    e13s01 through e13s06 are done. t22 and t3 are skipped at low confidence.
+    Next story is e13s07 (record that skip). Do not push, open a PR, merge, tag, or publish.
     D4 version rung is not taken.
   open_decisions:
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
@@ -276,6 +277,13 @@ run_baseline:
     forward instead of inventing a story; e10 keeps its place in the ladder.
 
 gate_decisions:
+- gate: D3 evidence pass
+  decision: >-
+    Skip t22_play_beat and t3_skip_beat. No extract, no class methods, and no
+    scene object list are in the tree, so confidence stays low. Coverage is
+    restated as 1,071 of 1,801 scenes (59.5%). The measurement identity stays
+    1,801. Preflight after the doc change is GREEN at 103 scripts / 698 tests.
+  reason: D3 fallback. Guessing either template is the rejected option.
 - gate: preflight after e13s05
   decision: >-
     First run RED: progress_manager.gd was 313 lines, so test_size_bars failed.
@@ -642,7 +650,7 @@ decisions:
     helper twins are recorded decisions, not silent gaps.'
 epic_cycle:
   step: 0
-  story: e13s06
+  story: e13s07
   epic: e13-wave-1b-primitives-and-templates
   story_bcps: null
   epic_bcps: 59
