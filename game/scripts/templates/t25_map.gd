@@ -118,13 +118,22 @@ func _position_at(index: int) -> Vector2:
 
 
 func _is_locked(index: int) -> bool:
-	var locks: PackedStringArray = _ctx.step_def.destination_locks
-	if index < 0 or index >= locks.size():
-		return false
-	var rule: String = locks[index]
+	if not _rows_match():
+		return true
+	var rule: String = _ctx.step_def.destination_locks[index]
 	if rule.is_empty():
 		return false
 	return not _open_steps.has(rule)
+
+
+func _rows_match() -> bool:
+	var step: StepDef = _ctx.step_def
+	var count: int = step.destination_ids.size()
+	if step.destination_scenes.size() != count:
+		return false
+	if step.destination_locks.size() != count:
+		return false
+	return step.destination_positions.size() == count
 
 
 func _refuse() -> void:

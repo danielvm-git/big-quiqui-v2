@@ -21,8 +21,25 @@ func test_open_destination_resolves_a_known_scene() -> void:
 
 
 func test_unknown_destination_is_rejected() -> void:
+	var log: Node = (Engine.get_main_loop() as SceneTree).root.get_node("Log")
+	var before: int = int(log.call("write_count"))
 	var tpl: RefCounted = _mount()
 	assert_eq(str(tpl.call("activate", "secret_door")), "", "SC-e13s03-P0-05")
+	assert_gt(int(log.call("write_count")), before)
+	var diary: String = FileAccess.get_file_as_string(str(log.get("log_path")))
+	assert_true(diary.contains("map.destination_rejected"))
+
+
+func test_a_short_lock_list_fails_closed() -> void:
+	var step: StepDef = _step()
+	step.destination_locks = PackedStringArray([""])
+	var tpl: RefCounted = TemplateCatalog.instantiate("t25_map")
+	var ctx: TemplateContext = TemplateContext.new()
+	ctx.step_def = step
+	ctx.reactions = ReactionExecutor.new()
+	tpl.call("setup", ctx)
+	assert_eq(str(tpl.call("activate", "feed_door")), "")
+	assert_true(bool(tpl.call("is_dimmed", "feed_door")))
 
 
 func test_template_never_reads_the_wallet() -> void:
@@ -49,6 +66,8 @@ func test_probe_def_is_the_house_hub() -> void:
 	assert_eq(step.template_id, "t25_map")
 	assert_gt(step.world_size.x, 1920.0)
 	assert_eq(step.destination_scenes.size(), step.destination_ids.size())
+	assert_eq(step.destination_locks.size(), step.destination_ids.size())
+	assert_eq(step.destination_positions.size(), step.destination_ids.size())
 
 
 func _mount() -> RefCounted:

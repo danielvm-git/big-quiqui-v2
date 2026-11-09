@@ -197,7 +197,7 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: verify-work
+  next_skill: kickoff-branch
   epic: e13-wave-1b-primitives-and-templates
   epic_wsjf: 8.1
   first_story: e13s01
@@ -215,7 +215,8 @@ handoff:
     e13s01 through e13s08 are done. Latest preflight is 108 scripts / 706 tests / 9206 asserts.
     e13s01 through e13s09 are done. Latest preflight is 109 scripts / 709 tests / 9253 asserts.
     e13 stories are done. verify-work terminal verdict is preflight at 709 tests.
-    Dual-blind review is in flight. Do not start e14 until both reviewers return.
+    Dual review passed. Next worktree is ../big-quiqui-v2-e14 from this tip.
+    Party uses no t22 step. Do not push, open a PR, merge, tag, or publish.
     Do not push, open a PR, merge, tag, or publish.
     D4 version rung is not taken.
   open_decisions:
@@ -282,6 +283,19 @@ run_baseline:
     forward instead of inventing a story; e10 keeps its place in the ladder.
 
 gate_decisions:
+- gate: e13 dual review
+  decision: >-
+    AND-gate closed. Reviewer A PASS 95, Reviewer B PASS 96, zero must-fix.
+    Map rows that disagree in length now fail closed, home_map carries
+    positions, and the reject test reads map.destination_rejected. Preflight
+    after that fix is GREEN at 109 scripts / 710 tests / 9259 asserts.
+    Deferred should-fix: claims_completion on five templates (the runner
+    completes from progress), t50 finger-up (e14s04 owns the playable lane),
+    and the title button size (e14s02 owns the title screen). Consider items
+    accepted as recorded: the 299-line save file, the prize slot, the public
+    collect_reward, a threshold above 1, toggle progress staying 0, and the
+    e14-e16 drafts sharing this branch.
+  reason: respond-review. No must-fix, so the review is not re-run. e14 is next.
 - gate: e13 review reviewer B
   decision: >-
     PASS, score 96, no must-fix. Should-fix noted: claims_completion missing on

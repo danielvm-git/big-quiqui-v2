@@ -11,6 +11,7 @@ pan_tolerance = 24.0
 destination_ids = PackedStringArray("feed_door", "bath_door", "play_door")
 destination_scenes = PackedStringArray("kitchen", "bathroom", "playroom")
 destination_locks = PackedStringArray("", "FEED", "")
+destination_positions = PackedVector2Array(100, 400, 800, 400, 3600, 400)
 on_miss_sfx_id = "sfx_soft_error"
 
 [resource]
