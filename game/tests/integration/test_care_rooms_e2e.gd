@@ -1,17 +1,13 @@
 # story: e14s01
+# story: e14s05
 extends GutTest
-## SC-e14s01-P1-01 and P2-01 — legacy scenes stay; bathroom hull is clean at both aspects.
+## SC-e14s01-P2-01 — bathroom hull is clean at both aspects on the player.
 
 const PLAYER: String = "res://scenes/scene_player.tscn"
-const LEGACY_COUNT: int = 18
 
 
 func before_each() -> void:
 	TestReset.reset_all()
-
-
-func test_legacy_scene_files_remain() -> void:
-	assert_eq(_scene_count(), LEGACY_COUNT, "the 17 rooms plus the player still exist")
 
 
 func test_bathroom_def_geometry_at_both_aspects() -> void:

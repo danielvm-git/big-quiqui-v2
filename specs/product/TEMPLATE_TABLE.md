@@ -20,7 +20,7 @@ The `scene` column names a catalogue probe def until e14 assigns each template i
 | t34_rub_reveal | built | Reveal layers in def order. | item_ids, loop_sfx_id | rub_reveal_probe | test_t34_rub_reveal | 121 | e13s01 |
 | t40_draw_fill | built | Paint until the def threshold. Residue still looks clean. | completion_threshold | bathroom_probe | test_t40_draw_fill | 197 | e13s04 |
 | t45_dress_decorate | built | Snap or place from the def. A bad id is not saved. | item_ids, slot_ids, category_ids | dress_probe | test_t45_dress_decorate | 94 | e13s05 |
-| t50_lanes | built | Catch a spawned item. A miss is quiet. | item_ids, lane_count, spawn_seed | penguin_probe | test_t50_lanes | 14 | e13s08 |
-| t51_prize_pick | built | One tap saves one prize from the def. | item_ids | prize_probe | test_t51_prize_pick | 7 | e13s09 |
+| t50_lanes | built | Catch a spawned item. A miss is quiet. | item_ids, lane_count, spawn_seed | penguin_lanes | test_t50_lanes | 14 | e13s08 |
+| t51_prize_pick | built | One tap saves one prize from the def. | item_ids | wheel | test_t51_prize_pick | 7 | e13s09 |
 | t_rhythm_pose | built | Three pads; a miss replays; pay once. | item_ids | duck_dance | test_t_rhythm_pose | 0 | e14s03 |
 | t_album | built | Friend cards read stored stars. No photo. | item_ids | album | test_t_album | 0 | e14s03 |

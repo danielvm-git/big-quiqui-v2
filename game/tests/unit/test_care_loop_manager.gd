@@ -250,7 +250,7 @@ func test_a_detour_request_closes_the_celebrate_cycle() -> void:
 		clm.complete_step(step)
 	assert_eq(clm.state_id(), "CELEBRATE")
 
-	sm.request_scene("res://scenes/album.tscn")
+	sm.request_def("album")
 
 	assert_eq(clm.state_id(), "IDLE", "a non-Casa detour closes the cycle")
 	sm.loader = Callable()
@@ -264,8 +264,8 @@ func test_a_rejected_request_is_not_a_detour() -> void:
 	var sm: Node = get_node("/root/SceneManager")
 	sm.manual_step = true
 	sm.loader = func(_path: String) -> void: pass
-	var album: String = "res://scenes/album.tscn"
-	sm.request_scene(album)
+	var album: String = SceneCatalog.PLAYER_SCENE
+	sm.request_def("album")
 	assert_eq(sm.current_scene, album)
 	clm.begin_step("FEED")
 	for step: String in ["FEED", "BATH", "DRESS", "PLAY", "SLEEP"]:

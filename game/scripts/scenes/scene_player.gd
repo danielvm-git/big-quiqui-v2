@@ -1,5 +1,6 @@
 # story: e12s02
 # story: e12s03
+# story: e14s05
 class_name ScenePlayer
 extends Control
 ## Data-scene host: chrome, StepRunner, templates, hints.
@@ -91,7 +92,7 @@ func _load_def() -> SceneDef:
 		var consumed: SceneDef = manager.call("consume_def") as SceneDef
 		if consumed != null:
 			return SceneDefLoader.validate(consumed)
-	return null
+	return SceneDefLoader.load_by_id("title")
 
 
 func _apply_media(def: SceneDef) -> void:

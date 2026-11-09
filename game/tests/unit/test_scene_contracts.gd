@@ -1,5 +1,6 @@
 # story: e11s01
 # story: e12s02
+# story: e14s05
 extends GutTest
 ## INV-07 — every shipped scene honours the house contract, read from the artifact.
 ##
@@ -15,15 +16,15 @@ const COVERED: int = 6
 const EXPAND_IGNORE_SIZE: int = 1
 
 
-func test_is_shipped_accepts_a_legacy_path_and_a_scene_id() -> void:
-	assert_true(SceneCatalog.is_shipped("res://scenes/cozinha.tscn"))
+func test_is_shipped_accepts_catalog_ids_only() -> void:
 	assert_true(SceneCatalog.is_shipped("kitchen"))
+	assert_false(SceneCatalog.is_shipped("res://scenes/cozinha.tscn"))
 	assert_false(SceneCatalog.is_shipped("not_a_room"))
 
 
-func test_every_scene_has_a_control_root_that_spans_the_canvas() -> void:
+func test_the_player_scene_has_a_control_root_that_spans_the_canvas() -> void:
 	var scenes: Array[String] = SourceScanner.scenes()
-	assert_gte(scenes.size(), 13, "the scanner must see every scene, not a subset")
+	assert_eq(scenes, [SceneCatalog.PLAYER_SCENE] as Array[String])
 	for path: String in scenes:
 		var root: String = _root_block(path)
 		assert_ne(root, "", "%s has no root node" % path)
@@ -31,8 +32,8 @@ func test_every_scene_has_a_control_root_that_spans_the_canvas() -> void:
 		assert_true(_spans_canvas(root), "%s root does not fill the canvas" % path)
 
 
-func test_every_background_covers_the_canvas() -> void:
-	for path: String in SourceScanner.scenes():
+func test_the_player_background_covers_the_canvas() -> void:
+	for path: String in [SceneCatalog.PLAYER_SCENE]:
 		for block: String in _blocks_of_type(path, "TextureRect"):
 			if not block.contains('groups=["background"]'):
 				continue
@@ -48,7 +49,7 @@ func test_no_label_carries_a_word() -> void:
 	var pattern: RegEx = RegEx.new()
 	pattern.compile("[A-Za-zÀ-ÿ]")
 	var offenders: Array[String] = []
-	for path: String in SourceScanner.scenes():
+	for path: String in [SceneCatalog.PLAYER_SCENE]:
 		for text: String in _label_texts(path):
 			if pattern.search(text) != null:
 				offenders.append("%s: %r" % [path, text])
@@ -65,14 +66,11 @@ func test_every_scene_is_built_by_a_tool_not_by_hand() -> void:
 			for scene: String in SourceScanner.scenes():
 				if body.contains(scene.get_file()):
 					builders.append(scene.get_file())
-	for path: String in SourceScanner.scenes():
-		assert_true(
-			builders.has(path.get_file()), "%s has no builder in game/tools (hand-edited or orphaned)" % path.get_file()
-		)
+	assert_true(builders.has("scene_player.tscn"), "scene_player must be built, not hand-edited")
 
 
 func test_no_scene_reaches_outside_its_own_bundle() -> void:
-	for path: String in SourceScanner.scenes():
+	for path: String in [SceneCatalog.PLAYER_SCENE]:
 		assert_false(SourceScanner.text(path).contains("res://../"), "%s escapes res://" % path)
 
 

@@ -1,6 +1,7 @@
 # story: e13s09
 # story: e14s01
 # story: e14s02
+# story: e14s04
 extends PlayerTestCase
 ## A child can see each target, touch it through the player, finish every step, and leave through a
 ## shipped `next_scene_id`. Hub maps leave through Home when their template never reports progress.
@@ -110,6 +111,10 @@ func _play_def(player: ScenePlayer, scene_id: String) -> void:
 			await ChildCanPlayVillageFlows.play_album(self, player)
 		"party":
 			await ChildCanPlayVillageFlows.play_party(self, player)
+		"wheel":
+			await ChildCanPlayVillageFlows.play_wheel(self, player)
+		"penguin_lanes":
+			await ChildCanPlayVillageFlows.play_penguin(self, player)
 		_:
 			assert_true(false, "no play script for %s" % scene_id)
 

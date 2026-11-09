@@ -1,4 +1,5 @@
 # story: e11s01
+# story: e14s05
 class_name MbtWalk
 extends RefCounted
 ## Seeded random mount of every shipped scene for the 500-step MBT gate.
@@ -17,13 +18,14 @@ func reset() -> void:
 	_rng.seed = WALK_SEED
 
 
-func next_scene_path() -> String:
-	var index: int = _rng.randi_range(0, SceneCatalog.ALL_PATHS.size() - 1)
-	return SceneCatalog.ALL_PATHS[index]
+func next_scene_id() -> String:
+	var ids: Array[String] = SceneCatalog.all_shipped_ids()
+	var index: int = _rng.randi_range(0, ids.size() - 1)
+	return ids[index]
 
 
-func record_visit(path: String) -> void:
-	visited[path] = true
+func record_visit(scene_id: String) -> void:
+	visited[scene_id] = true
 	steps_done += 1
 
 

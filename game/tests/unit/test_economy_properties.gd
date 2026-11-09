@@ -35,21 +35,21 @@ func test_complete_cycle_and_negative_clamp() -> void:
 ## wheel with no tickets stays shut.
 func test_cycle_recycle_and_wheel_interleave_stay_non_negative() -> void:
 	var progress: Node = get_node("/root/ProgressManager")
-	var packed: PackedScene = load("res://scenes/roda.tscn") as PackedScene
-	var wheel: Control = packed.instantiate() as Control
-	add_child_autofree(wheel)
-	wheel.set("manual_step", true)
-	await wait_process_frames(2)
-	var spin: TapButton = wheel.get_node("SpinButton") as TapButton
+	var step: StepDef = SceneDefLoader.load_by_id("wheel").steps[0] as StepDef
+	var tray: Control = Control.new()
+	tray.size = Vector2(800.0, 160.0)
+	add_child_autofree(tray)
+	var tpl: RefCounted = TemplateCatalog.instantiate("t51_prize_pick")
+	var ctx: TemplateContext = TemplateContext.new()
+	ctx.step_def = step
+	ctx.tray = tray
+	tpl.call("setup", ctx)
 	progress.call("complete_cycle")
 	progress.call("add_coins", 1)
 	var tickets_at_start: int = int(progress.call("get_tickets"))
 	assert_gt(tickets_at_start, 0, "a finished cycle pays tickets")
 	for _i in range(tickets_at_start + 3):
-		for event: InputEvent in TouchSim.tap_events(spin, true):
-			spin._gui_input(event)
-		while str(wheel.get("fsm").state) != WheelScene.STATE_IDLE:
-			wheel.call("advance", 0.05)
+		tpl.call("pick", "a")
 		assert_gte(int(progress.call("get_tickets")), 0)
 		assert_gte(int(progress.call("get_coins")), 0)
 	assert_eq(int(progress.call("get_tickets")), 0, "every ticket spent exactly once, none borrowed")

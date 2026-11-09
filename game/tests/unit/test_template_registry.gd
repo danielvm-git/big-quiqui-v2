@@ -58,7 +58,7 @@ func test_a_scope_that_disagrees_fails_the_gate() -> void:
 func test_a_row_that_names_a_def_without_its_template_fails_the_gate() -> void:
 	var ids: Array = TemplateCatalog.SCRIPT_FOR_ID.keys()
 	var table: String = _read("specs/product/TEMPLATE_TABLE.md").replace(
-		"| t51_prize_pick | built | One tap saves one prize from the def. | item_ids | prize_probe |",
+		"| t51_prize_pick | built | One tap saves one prize from the def. | item_ids | wheel |",
 		"| t51_prize_pick | built | One tap saves one prize from the def. | item_ids | reward_probe |"
 	)
 	var bad: PackedStringArray = _gate(table, _read("specs/product/SCOPE_LATEST.yaml"), ids)

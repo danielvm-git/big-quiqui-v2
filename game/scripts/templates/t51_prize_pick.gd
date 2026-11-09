@@ -1,4 +1,5 @@
 # story: e13s09
+# story: e14s04
 extends RefCounted
 ## One tap picks one prize from the def. A second pick does nothing, and there is never an ad.
 ## Re-entering shows the saved prize lit; one tap on it carries on.
@@ -23,7 +24,8 @@ var _rig_filter: int = -1
 func setup(ctx: TemplateContext) -> void:
 	_ctx = ctx
 	_rig_filter = TemplateKit.quiet_rig(ctx)
-	_adopt(_saved())
+	if not _wheel_mode():
+		_adopt(_saved())
 	_build_buttons()
 	_light()
 
@@ -48,6 +50,8 @@ func pick(prize_id: String) -> bool:
 		return false
 	if not Ids.is_valid(prize_id) or not _prizes().has(prize_id):
 		return false
+	if _wheel_mode():
+		return _pick_wheel(prize_id)
 	var sink: Node = TemplateKit.autoload("ProgressManager")
 	if sink == null or not bool(sink.call("pick_prize", prize_id)):
 		return false
@@ -68,6 +72,29 @@ func progress() -> float:
 
 func button(prize_id: String) -> TapButton:
 	return _buttons.get(prize_id) as TapButton
+
+
+func _wheel_mode() -> bool:
+	return TemplateKit.mode_or(_ctx, "") == "wheel"
+
+
+func _pick_wheel(prize_id: String) -> bool:
+	var sink: Node = TemplateKit.autoload("ProgressManager")
+	if sink == null:
+		return false
+	var economy: EconomyData = EconomyData.new()
+	var cost: int = maxi(economy.wheel_spin_ticket_cost, 1)
+	if int(sink.call("get_tickets")) < cost:
+		return false
+	var coins: int = maxi(int(economy.wheel_prize_coins.get(prize_id, 0)), 0)
+	sink.call("add_tickets", -cost)
+	if coins > 0:
+		sink.call("add_coins", coins)
+	_picked = prize_id
+	_fsm.transition_to(STATE_DONE)
+	_light()
+	TemplateKit.play_hit(_ctx, "template.prize", {"picked": 1, "wheel": 1})
+	return true
 
 
 func _prizes() -> PackedStringArray:

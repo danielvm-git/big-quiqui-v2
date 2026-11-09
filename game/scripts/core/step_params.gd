@@ -1,4 +1,5 @@
 # story: e13s09
+# story: e14s04
 class_name StepParams
 extends RefCounted
 ## Closed, template-specific checks on a step's parameters, run before the player mounts anything.
@@ -51,7 +52,7 @@ static func _by_template(step: StepDef) -> String:
 		"t50_lanes":
 			return _lanes(step)
 		"t51_prize_pick":
-			return _row(step)
+			return _wheel_prizes(step) if step.mode == "wheel" else _row(step)
 		"t_rhythm_pose", "t_album":
 			return _needs_items(step)
 	return ""
@@ -192,6 +193,17 @@ static func _pin_fits(point: Vector2, world: Vector2) -> bool:
 
 static func _bad_icons(step: StepDef) -> bool:
 	return not step.destination_icons.is_empty() and step.destination_icons.size() != step.destination_ids.size()
+
+
+static func _wheel_prizes(step: StepDef) -> String:
+	var reason: String = _row(step)
+	if not reason.is_empty():
+		return reason
+	var economy: EconomyData = EconomyData.new()
+	for prize: String in step.item_ids:
+		if not economy.wheel_prize_coins.has(prize):
+			return "bad_id"
+	return ""
 
 
 static func _arcade(step: StepDef) -> String:

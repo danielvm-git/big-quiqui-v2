@@ -1,4 +1,5 @@
 # story: e10s01
+# story: e14s05
 class_name FriendCatalog
 extends RefCounted
 ## The friend table every minigame reads (e10s01): one owner for the ids and the
@@ -39,9 +40,12 @@ static func art_path(id: String) -> String:
 	return "res://assets/art/friends/%s.png" % file
 
 
+static func scene_id(id: String) -> String:
+	return str(_SCENE_IDS.get(id, ""))
+
+
 static func scene_path(id: String) -> String:
-	var scene_id: String = str(_SCENE_IDS.get(id, ""))
-	return SceneCatalog.legacy_path_for_id(scene_id)
+	return scene_id(id)
 
 
 static func voice_key(id: String) -> String:

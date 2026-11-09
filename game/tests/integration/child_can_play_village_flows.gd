@@ -1,4 +1,5 @@
 # story: e14s03
+# story: e14s04
 class_name ChildCanPlayVillageFlows
 extends RefCounted
 ## Village-room play scripts for the child-can-play gate — split to honor the 300-line bar.
@@ -68,6 +69,33 @@ static func play_album(case: PlayerTestCase, player: ScenePlayer) -> void:
 	await case._settle(player)
 
 
+static func play_wheel(case: PlayerTestCase, player: ScenePlayer) -> void:
+	var progress: Node = case.get_node("/root/ProgressManager")
+	progress.call("add_tickets", 1)
+	for tap: TapButton in case.tray_taps(player):
+		case.finger_tap(player, tap)
+		break
+	await case._settle(player)
+
+
+static func play_penguin(case: PlayerTestCase, player: ScenePlayer) -> void:
+	var pad: TouchPad = player.get_node("LanePad") as TouchPad
+	for _attempt: int in range(48):
+		player.advance(0.61)
+		var tpl: RefCounted = player.get("_template") as RefCounted
+		var lane: int = int(tpl.call("first_lane"))
+		if lane >= 0:
+			var field: Control = player.get_node("LaneField") as Control
+			var width: float = field.size.x / 3.0
+			var at: Vector2 = field.global_position + Vector2(width * (float(lane) + 0.5), 800.0)
+			case.send(pad, case.touch(at - Vector2(300.0, 0.0), true))
+			case.send(pad, case.drag(at))
+			case.send(pad, case.touch(at, false))
+		if player.runner.template_progress() >= 1.0:
+			break
+	await case._settle(player)
+
+
 static func play_party(case: PlayerTestCase, player: ScenePlayer) -> void:
 	for tap: TapButton in case.tray_taps(player):
 		case.finger_tap(player, tap)
@@ -84,7 +112,7 @@ static func play_village(case: PlayerTestCase, player: ScenePlayer) -> void:
 	for _tick: int in range(16):
 		player.advance(0.2)
 	await case.wait_process_frames(3)
-	if VilaScene.recycled_this_session or player.runner.step_index >= player.loaded_def.steps.size():
+	if VillageRecycle.recycled_this_session or player.runner.step_index >= player.loaded_def.steps.size():
 		await case._settle(player)
 		return
 	var bag: TouchDraggable = case.rub_tool(player)

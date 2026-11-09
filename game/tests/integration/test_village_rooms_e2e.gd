@@ -2,7 +2,7 @@
 extends PlayerTestCase
 ## SC-e14s03-P2-01 — village room defs lay out at both aspects.
 
-const LEGACY_COUNT: int = 18
+const LEGACY_COUNT: int = 1
 
 
 func before_each() -> void:

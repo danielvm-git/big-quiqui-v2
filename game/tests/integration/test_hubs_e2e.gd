@@ -1,8 +1,9 @@
 # story: e14s02
+# story: e14s05
 extends PlayerTestCase
-## SC-e14s02-P2-01 — hub defs lay out cleanly at both aspects; legacy count unchanged.
+## SC-e14s02-P2-01 — hub defs lay out cleanly at both aspects; one player scene ships.
 
-const LEGACY_COUNT: int = 18
+const LEGACY_COUNT: int = 1
 
 
 func before_each() -> void:

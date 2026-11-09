@@ -17,7 +17,6 @@ const GRANDFATHERED: Dictionary = {
 	"res://scripts/components/quiqui_rig.gd": 427,
 	"res://tests/unit/test_quiqui_rig.gd": 404,
 	"res://scripts/components/touch_draggable.gd": 326,
-	"res://scripts/scenes/banheiro.gd": 326,
 }
 
 

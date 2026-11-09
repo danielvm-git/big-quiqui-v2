@@ -8,11 +8,11 @@ script = ExtResource("2_step")
 template_id = "t25_map"
 world_size = Vector2(3200, 1200)
 pan_tolerance = 24.0
-destination_ids = PackedStringArray("home_door", "market_door", "playhouse_door", "party_door", "album_door")
-destination_scenes = PackedStringArray("home", "market", "playhouse", "party", "album")
-destination_locks = PackedStringArray("", "", "", "", "")
-destination_positions = PackedVector2Array(384, 528, 2688, 816, 1152, 432, 2048, 408, 768, 648)
-destination_icons = PackedStringArray("door", "watermelon", "duckling", "crown", "bookshelf")
+destination_ids = PackedStringArray("home_door", "wheel_door", "market_door", "playhouse_door", "party_door", "album_door")
+destination_scenes = PackedStringArray("home", "wheel", "market", "playhouse", "party", "album")
+destination_locks = PackedStringArray("", "", "", "", "", "")
+destination_positions = PackedVector2Array(384, 528, 2752, 480, 2688, 816, 1152, 432, 2048, 408, 768, 648)
+destination_icons = PackedStringArray("door", "fortune_wheel", "watermelon", "duckling", "crown", "bookshelf")
 on_miss_sfx_id = "sfx_soft_error"
 
 [sub_resource type="Resource" id="step_recycle"]

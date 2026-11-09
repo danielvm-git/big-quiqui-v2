@@ -2,52 +2,35 @@
 # story: e12s02
 # story: e14s01
 # story: e14s02
-# story: e14s02
+# story: e14s04
+# story: e14s05
 class_name SceneCatalog
 extends RefCounted
-## Shipped legacy scenes plus data-scene ids. Tests and tables read from here.
-
-const ALL_PATHS: Array[String] = [
-	"res://scenes/titulo.tscn",
-	"res://scenes/casa.tscn",
-	"res://scenes/cozinha.tscn",
-	"res://scenes/banheiro.tscn",
-	"res://scenes/closet.tscn",
-	"res://scenes/jardim.tscn",
-	"res://scenes/quarto_sono.tscn",
-	"res://scenes/celebracao.tscn",
-	"res://scenes/vila.tscn",
-	"res://scenes/roda.tscn",
-	"res://scenes/mercado.tscn",
-	"res://scenes/casinha.tscn",
-	"res://scenes/festa.tscn",
-	"res://scenes/pato_danca.tscn",
-	"res://scenes/urso_puzzle.tscn",
-	"res://scenes/pinguim_jogo.tscn",
-	"res://scenes/album.tscn",
-]
+## The seventeen playable room ids. Navigation always loads `scene_player.tscn` with a def.
 
 const SCENE_COUNT: int = 17
 
-const _ID_TO_LEGACY: Dictionary = {
-	"title": "res://scenes/titulo.tscn",
-	"home": "res://scenes/casa.tscn",
-	"kitchen": "res://scenes/cozinha.tscn",
-	"bathroom": "res://scenes/banheiro.tscn",
-	"closet": "res://scenes/closet.tscn",
-	"playroom": "res://scenes/jardim.tscn",
-	"bedroom": "res://scenes/quarto_sono.tscn",
-	"celebration": "res://scenes/celebracao.tscn",
-	"village": "res://scenes/vila.tscn",
-	"wheel": "res://scenes/roda.tscn",
-	"market": "res://scenes/mercado.tscn",
-	"playhouse": "res://scenes/casinha.tscn",
-	"party": "res://scenes/festa.tscn",
-	"duck_dance": "res://scenes/pato_danca.tscn",
-	"bear_puzzle": "res://scenes/urso_puzzle.tscn",
-	"penguin_lanes": "res://scenes/pinguim_jogo.tscn",
-	"album": "res://scenes/album.tscn",
-}
+const SHIPPED_IDS: Array[String] = [
+	"title",
+	"home",
+	"kitchen",
+	"bathroom",
+	"closet",
+	"playroom",
+	"bedroom",
+	"celebration",
+	"village",
+	"wheel",
+	"market",
+	"playhouse",
+	"party",
+	"duck_dance",
+	"bear_puzzle",
+	"penguin_lanes",
+	"album",
+]
+
+const PLAYER_SCENE: String = "res://scenes/scene_player.tscn"
 
 const _ID_TO_DEF: Dictionary = {
 	"dev_smoke": "res://data/scenes/dev_smoke.tres",
@@ -66,21 +49,21 @@ const _ID_TO_DEF: Dictionary = {
 	"playhouse": "res://data/scenes/playhouse.tres",
 	"bear_puzzle": "res://data/scenes/bear_puzzle.tres",
 	"party": "res://data/scenes/party.tres",
+	"wheel": "res://data/scenes/wheel.tres",
+	"penguin_lanes": "res://data/scenes/penguin_lanes.tres",
 }
 
 
 static func count() -> int:
-	return ALL_PATHS.size()
+	return SCENE_COUNT
 
 
 static func is_shipped(key: String) -> bool:
-	if ALL_PATHS.has(key):
-		return true
-	return _ID_TO_LEGACY.has(key) or _ID_TO_DEF.has(key)
+	return SHIPPED_IDS.has(key) or _ID_TO_DEF.has(key)
 
 
-static func legacy_path_for_id(scene_id: String) -> String:
-	return str(_ID_TO_LEGACY.get(scene_id, ""))
+static func legacy_path_for_id(_scene_id: String) -> String:
+	return ""
 
 
 static func def_path_for_id(scene_id: String) -> String:
@@ -93,7 +76,11 @@ static func def_path_for_id(scene_id: String) -> String:
 
 
 static func path_for_id(scene_id: String) -> String:
-	var legacy: String = legacy_path_for_id(scene_id)
-	if not legacy.is_empty():
-		return legacy
 	return def_path_for_id(scene_id)
+
+
+static func all_shipped_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for scene_id: String in SHIPPED_IDS:
+		ids.append(scene_id)
+	return ids

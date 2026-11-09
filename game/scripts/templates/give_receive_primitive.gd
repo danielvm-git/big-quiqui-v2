@@ -20,7 +20,7 @@ func setup(ctx: TemplateContext) -> void:
 	_successes = 0
 	_goal = maxi(ctx.step_def.repeat_count, 1)
 	_receiver = _resolve_receiver()
-	if _is_recycle_step() and VilaScene.recycled_this_session:
+	if _is_recycle_step() and VillageRecycle.recycled_this_session:
 		_successes = _goal
 		return
 	_spawn_items()
@@ -96,7 +96,7 @@ func _make_item(index: int, item_id: String) -> TouchDraggable:
 
 
 func _on_consumed() -> void:
-	if _is_recycle_step() and VilaScene.recycled_this_session:
+	if _is_recycle_step() and VillageRecycle.recycled_this_session:
 		return
 	_successes += 1
 	if _is_recycle_step():
@@ -141,7 +141,7 @@ func _pay_recycle_once() -> void:
 	var progress: Node = (_ctx.host as Node).get_node_or_null("/root/ProgressManager") if _ctx.host != null else null
 	if progress != null and progress.has_method("add_coins"):
 		progress.call("add_coins", 1)
-	VilaScene.recycled_this_session = true
+	VillageRecycle.recycled_this_session = true
 	LogSink.emit_to_diary("vila.recycle_earn", {"coins": 1})
 
 
