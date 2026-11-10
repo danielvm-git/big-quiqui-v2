@@ -278,8 +278,9 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: release-branch
+  next_skill: commit-message
   gate_trace_verdict: CONCERNS
+  last_audit: specs/verifications/AUDIT-full-e12-e16-2026-11-09.md
   epic: e16-wave-3-movement-templates
   epic_wsjf: 7.8
   first_story: none
