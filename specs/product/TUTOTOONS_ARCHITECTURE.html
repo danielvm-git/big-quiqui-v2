@@ -1,0 +1,471 @@
+<title>Anatomia TutoTOONS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: folha de desmontagem — coluna de leitura de 960px, cada diagrama numa prancha própria com rolagem horizontal. */
+:root{
+  --bg:#F4F5FA; --paper:#FFFFFF; --fg:#1B1F3A; --muted:#5D6382; --line:#D5D8E6;
+  --accent:#D93A73;           /* rosa-bala: o que é comum */
+  --a1:#C9871A;               /* Builder */
+  --a2:#16907F;               /* Kit próprio */
+  --a3:#6A58C9;               /* Plataforma-mundo */
+  --decline:#9AA0B8;
+  --tint-accent:#FBE4EC; --tint-a1:#FAEFD9; --tint-a2:#DDF3EF; --tint-a3:#E9E5FA; --tint-mute:#ECEEF4;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --paper:#1A1D38; --fg:#E9EAF4; --muted:#A3A8C6; --line:#33385C;
+  --accent:#F06A98; --a1:#E8AE4C; --a2:#3CC2AE; --a3:#9C8CF0; --decline:#6B7192;
+  --tint-accent:#3A1D2E; --tint-a1:#382C17; --tint-a2:#123430; --tint-a3:#272250; --tint-mute:#23274A;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --paper:#1A1D38; --fg:#E9EAF4; --muted:#A3A8C6; --line:#33385C;
+  --accent:#F06A98; --a1:#E8AE4C; --a2:#3CC2AE; --a3:#9C8CF0; --decline:#6B7192;
+  --tint-accent:#3A1D2E; --tint-a1:#382C17; --tint-a2:#123430; --tint-a3:#272250; --tint-mute:#23274A;
+  color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:960px;margin:0 auto;padding-block:40px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.75rem;font-weight:700;letter-spacing:-.01em}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0;max-width:68ch}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono);font-size:.86em}
+section{display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-direction:column;gap:16px}
+.lede{font-size:1.12rem;color:var(--muted)}
+.lede strong{color:var(--fg)}
+.facts{display:flex;flex-wrap:wrap;gap:8px 24px;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.facts b{color:var(--fg);font-weight:500}
+.plate{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.plate svg{display:block;min-width:720px;width:100%;height:auto}
+.plate.narrow svg{min-width:560px}
+svg text{font-family:var(--body);fill:var(--fg)}
+svg .m{font-family:var(--mono);fill:var(--muted)}
+svg .h{font-family:var(--display);font-weight:700}
+.cap{font-size:.9rem;color:var(--muted)}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.three{grid-template-columns:1fr}}
+.arch{background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.arch .n{font-family:var(--display);font-weight:800;font-size:2.4rem;line-height:1;color:var(--c)}
+.arch .n small{font-size:.9rem;font-weight:500;color:var(--muted);font-family:var(--body)}
+.arch ul{margin:0;padding-left:18px;font-size:.92rem;display:flex;flex-direction:column;gap:4px}
+.arch .ex{font-size:.82rem;color:var(--muted)}
+.c1{--c:var(--a1)} .c2{--c:var(--a2)} .c3{--c:var(--a3)}
+.tbl{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.9rem}
+th,td{padding:10px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+thead th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+thead th.k1{color:var(--a1)} thead th.k2{color:var(--a2)} thead th.k3{color:var(--a3)}
+tbody tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.yes{color:var(--accent);font-weight:600}
+.no{color:var(--decline)}
+.legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px;margin:0;padding:0;list-style:none;font-size:.92rem}
+@media (max-width:640px){.legend{grid-template-columns:1fr}}
+.legend li{display:flex;gap:10px;align-items:baseline;min-width:0}
+.legend .dot{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--paper);font-family:var(--mono);font-size:.75rem;display:inline-flex;align-items:center;justify-content:center;transform:translateY(4px)}
+.timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:6px;background:var(--paper);overflow:hidden}
+@media (max-width:760px){.timeline{grid-template-columns:1fr}}
+.era{padding:16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px;min-width:0}
+.era:last-child{border-right:0}
+@media (max-width:760px){.era{border-right:0;border-bottom:1px solid var(--line)}.era:last-child{border-bottom:0}}
+.era .when{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.era p{font-size:.88rem}
+.lesson{background:var(--tint-accent);border-radius:6px;padding:24px;display:flex;flex-direction:column;gap:14px}
+.lesson ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;max-width:72ch}
+.note{font-size:.85rem;color:var(--muted);border-left:3px solid var(--line);padding-left:12px}
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Engenharia reversa · 24 jogos TutoTOONS · Tab A7 Lite · nov 2026</span>
+  <h1>Como a TutoTOONS monta um jogo</h1>
+  <p class="lede">Abrimos os 24 jogos instalados com o REA. Todos têm a <strong>mesma base pequena e estável</strong> embaixo. O que muda de um jogo para outro é <strong>só a camada de jogo</strong>, e ela aparece em três formas. A forma mais comum quase não tem código: <strong>a cena é um arquivo de dados que um player genérico executa</strong>.</p>
+  <div class="facts">
+    <span><b>24/24</b> Unity IL2CPP</span>
+    <span><b>24/24</b> TutoTOONS.Base.dll</span>
+    <span><b>24/24</b> Spine</span>
+    <span><b>11/24</b> TutoTOONS.Builder.dll</span>
+    <span><b>4,5 GB</b> · 162 APKs</span>
+  </div>
+</header>
+
+<!-- 1. LAYER CAKE -->
+<section>
+  <span class="eyebrow">Diagrama 1 · Pilha</span>
+  <h2>O que é igual e o que muda</h2>
+  <p>As três camadas de baixo estão nos 24 jogos, com os mesmos nomes de classe. A camada de jogo é onde cada título é diferente. O conteúdo em cima é arte, som e dados de cena.</p>
+  <div class="plate">
+  <svg viewBox="0 0 960 470" role="img" aria-label="Pilha de camadas: motor e bibliotecas, TutoTOONS.Base, monetização, camada de jogo variável em três formas, e conteúdo">
+    <defs>
+      <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="8" height="8" fill="var(--tint-mute)"/>
+        <line x1="0" y1="0" x2="0" y2="8" stroke="var(--decline)" stroke-width="1.5" opacity=".45"/>
+      </pattern>
+    </defs>
+    <!-- brackets -->
+    <text x="28" y="50" class="m" font-size="11" letter-spacing="1">VARIA</text>
+    <line x1="60" y1="28" x2="60" y2="236" stroke="var(--a3)" stroke-width="3"/>
+    <text x="22" y="350" class="m" font-size="11" letter-spacing="1">IGUAL</text>
+    <line x1="60" y1="252" x2="60" y2="450" stroke="var(--accent)" stroke-width="3"/>
+
+    <!-- content -->
+    <rect x="80" y="28" width="860" height="56" rx="4" fill="var(--paper)" stroke="var(--line)" stroke-dasharray="5 4"/>
+    <text x="100" y="52" class="h" font-size="16">Conteúdo</text>
+    <text x="100" y="72" font-size="13">arte em camadas · esqueletos Spine · sons e vozes · dados de cena · packs de entrega por sala</text>
+
+    <!-- game layer -->
+    <rect x="80" y="96" width="860" height="140" rx="4" fill="var(--paper)" stroke="var(--line)"/>
+    <text x="100" y="120" class="h" font-size="16">Camada de jogo</text>
+    <text x="250" y="120" class="m" font-size="11">uma destas três formas por título</text>
+    <rect x="100" y="134" width="262" height="88" rx="4" fill="var(--tint-a1)" stroke="var(--a1)"/>
+    <text x="116" y="160" class="h" font-size="15">A · Player Builder</text>
+    <text x="116" y="182" font-size="12.5">cena = dados + template numerado</text>
+    <text x="116" y="204" class="m" font-size="11">11 títulos · 7–65 tipos próprios</text>
+    <rect x="378" y="134" width="262" height="88" rx="4" fill="var(--tint-a2)" stroke="var(--a2)"/>
+    <text x="394" y="160" class="h" font-size="15">B · Kit próprio</text>
+    <text x="394" y="182" font-size="12.5">código por atividade + FSM do bicho</text>
+    <text x="394" y="204" class="m" font-size="11">8 títulos · 177–1.959 tipos</text>
+    <rect x="656" y="134" width="268" height="88" rx="4" fill="var(--tint-a3)" stroke="var(--a3)"/>
+    <text x="672" y="160" class="h" font-size="15">C · Plataforma-mundo</text>
+    <text x="672" y="182" font-size="12.5">mapa + salas + avatar + serviços</text>
+    <text x="672" y="204" class="m" font-size="11">3 títulos · 1.636–3.993 tipos</text>
+
+    <!-- monetization -->
+    <rect x="80" y="252" width="860" height="62" rx="4" fill="url(#hatch)" stroke="var(--decline)"/>
+    <text x="100" y="278" class="h" font-size="16">Monetização e telemetria</text>
+    <text x="100" y="300" font-size="13">TutoAds · IronSource · AdMob · AppLovin · TutoPulse · Firebase · Purchasing · Subscription</text>
+    <text x="920" y="278" text-anchor="end" class="m" font-size="11">24/24 · QuiQui não usa</text>
+
+    <!-- base -->
+    <rect x="80" y="326" width="860" height="62" rx="4" fill="var(--tint-accent)" stroke="var(--accent)"/>
+    <text x="100" y="352" class="h" font-size="16">TutoTOONS.Base.dll</text>
+    <text x="100" y="374" font-size="13">save json + backup + temp · logger · console de debug · monitor de FPS · badges (Indicators) · ObjectPool · Observable</text>
+    <text x="920" y="352" text-anchor="end" class="m" font-size="11">24/24 · 328 tipos</text>
+
+    <!-- engine -->
+    <rect x="80" y="400" width="860" height="50" rx="4" fill="var(--tint-mute)" stroke="var(--line)"/>
+    <text x="100" y="430" class="h" font-size="16">Motor</text>
+    <text x="170" y="430" font-size="13">Unity 2022.3 / Unity 6 (IL2CPP) · spine-unity · LeanTween (tweens) · Newtonsoft.Json</text>
+    <text x="920" y="430" text-anchor="end" class="m" font-size="11">24/24</text>
+  </svg>
+  </div>
+  <p class="cap">A base comum é pequena. Quase tudo o que ela tem a QuiQui já possui ou consegue ter em Godot (save atômico, log, FSM). A monetização é igual em todos, mas fica fora por princípio.</p>
+</section>
+
+<!-- 2. THREE ARCHETYPES -->
+<section>
+  <span class="eyebrow">Diagrama 2 · As três formas</span>
+  <h2>A camada de jogo vem em três tamanhos</h2>
+  <p>O sinal mais claro é o tamanho do <span class="mono">Assembly-CSharp</span>, o código exclusivo de cada jogo. Nos jogos Builder ele quase não existe.</p>
+  <div class="three">
+    <article class="arch c1">
+      <span class="eyebrow">Forma A</span>
+      <h3>Player Builder</h3>
+      <div class="n">11 <small>de 24 títulos</small></div>
+      <ul>
+        <li>Runtime compartilhado <span class="mono">TutoTOONS.Builder.dll</span></li>
+        <li>Cenas feitas no Adobe Animate e importadas como dados</li>
+        <li>44 templates numerados (0–4 e 20–58) fazem a interação</li>
+        <li>Código próprio: 7 a 65 tipos, quase só anúncio e assinatura</li>
+      </ul>
+      <p class="ex">Sweet Baby Girl Cleanup 5/6, Summer Camp, Pop Stars, Mermaid Life · Hair Salon Austrália e Jungle 2 (dois títulos) · Princess Gloria · My Baby Unicorn · Power Girls Super City. Dois títulos mais antigos (Halloween Fun, Pandalu Baby Bear City) usam os mesmos templates compilados dentro do jogo, com 504–598 tipos próprios.</p>
+    </article>
+    <article class="arch c2">
+      <span class="eyebrow">Forma B</span>
+      <h3>Kit próprio</h3>
+      <div class="n">8 <small>de 24 títulos</small></div>
+      <ul>
+        <li>Uma pasta de código por atividade: <span class="mono">Activity.Feeding</span>, <span class="mono">Activity.Bathtub</span>, <span class="mono">TeethCleaning</span></li>
+        <li>Máquina de estados do personagem (28 estados em Giggle Babies)</li>
+        <li>Camada de dicas própria (<span class="mono">HintManager</span>, <span class="mono">HintHand</span>)</li>
+        <li>Minijogos como módulos: <span class="mono">BubbleShooter</span>, <span class="mono">DancingMinigame</span>, <span class="mono">Gardening</span></li>
+      </ul>
+      <p class="ex">Giggle Babies · Smolsies 1 e 2 · Kpopsies · L.O.L. Disco House · Power Girls Heroes · My Baby Unicorn 2 · Pandalu Friends Treehouse</p>
+    </article>
+    <article class="arch c3">
+      <span class="eyebrow">Forma C</span>
+      <h3>Plataforma-mundo</h3>
+      <div class="n">3 <small>de 24 títulos</small></div>
+      <ul>
+        <li>Mapa com salas: <span class="mono">MainMap</span>, <span class="mono">Area</span>, <span class="mono">LockedAreaPreview</span></li>
+        <li>Avatar e casa customizáveis</li>
+        <li>Uma sala = um pack de download (20 a 52 packs)</li>
+        <li>Serviços separados em DLLs (<span class="mono">Fluvsies.Services.*</span>)</li>
+      </ul>
+      <p class="ex">Dopples World (Unity 6, 52 salas) · Fluvsies (Unity 6) · Princesses (20 packs)</p>
+    </article>
+  </div>
+</section>
+
+<!-- 3. BUILDER PIPELINE -->
+<section>
+  <span class="eyebrow">Diagrama 3 · Forma A por dentro</span>
+  <h2>O player Builder: a cena é dado, não código</h2>
+  <p>É o modelo que a TutoTOONS mais repete. O artista monta a cena no Animate. Um importador transforma a timeline em objetos de dados. Um <span class="mono">GameManager</span> genérico carrega a cena e liga cada objeto a um template de interação. Regras dizem qual imagem troca, qual som toca e para onde ir depois.</p>
+  <div class="plate">
+  <svg viewBox="0 0 1000 330" role="img" aria-label="Fluxo do Builder: Animate, importador, SharedObject, GameManager, cena com template e objetos, regras de troca, som, redirecionamento e recompensas">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+      </marker>
+    </defs>
+    <g font-size="12.5">
+      <rect x="10" y="30" width="170" height="92" rx="4" fill="var(--tint-mute)" stroke="var(--line)"/>
+      <text x="24" y="56" class="h" font-size="14">Adobe Animate</text>
+      <text x="24" y="78">timeline + símbolos</text>
+      <text x="24" y="98" class="m" font-size="10.5">o artista monta a cena</text>
+
+      <rect x="210" y="30" width="180" height="92" rx="4" fill="var(--paper)" stroke="var(--a1)"/>
+      <text x="224" y="56" class="h" font-size="14">BuilderImporter</text>
+      <text x="224" y="78" class="m" font-size="10.5">ImporterTask · Resource</text>
+      <text x="224" y="96" class="m" font-size="10.5">Initializers.Particles</text>
+      <text x="224" y="112" class="m" font-size="10.5">.ScriptedAnimations</text>
+
+      <rect x="420" y="30" width="170" height="92" rx="4" fill="var(--paper)" stroke="var(--a1)"/>
+      <text x="434" y="56" class="h" font-size="14">SharedObject</text>
+      <text x="434" y="78">arquivo de dados da cena</text>
+      <text x="434" y="98" class="m" font-size="10.5">SOReader · SOHeader</text>
+      <text x="434" y="114" class="m" font-size="10.5">SOValue · SOTypes</text>
+
+      <rect x="620" y="30" width="160" height="92" rx="4" fill="var(--tint-a1)" stroke="var(--a1)" stroke-width="2"/>
+      <text x="634" y="56" class="h" font-size="14">GameManager</text>
+      <text x="634" y="78">player genérico</text>
+      <text x="634" y="98" class="m" font-size="10.5">igual em 11 jogos</text>
+
+      <rect x="810" y="30" width="180" height="92" rx="4" fill="var(--paper)" stroke="var(--a1)"/>
+      <text x="824" y="56" class="h" font-size="14">Cena</text>
+      <text x="824" y="78">Template N</text>
+      <text x="824" y="96">+ PlayObj[ ]</text>
+      <text x="824" y="114" class="m" font-size="10.5">objetos tocáveis</text>
+
+      <line x1="180" y1="76" x2="206" y2="76" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="390" y1="76" x2="416" y2="76" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="590" y1="76" x2="616" y2="76" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="780" y1="76" x2="806" y2="76" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- rules row -->
+      <path d="M900 122 V160 H120 V184" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+      <line x1="340" y1="160" x2="340" y2="182" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="560" y1="160" x2="560" y2="182" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="780" y1="160" x2="780" y2="182" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="120" y1="174" x2="120" y2="182" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <rect x="30" y="186" width="180" height="72" rx="4" fill="var(--paper)" stroke="var(--line)"/>
+      <text x="44" y="210" class="m" font-size="11">ImageChangeRule</text>
+      <text x="44" y="232">troca a imagem quando</text>
+      <text x="44" y="248">a criança acerta</text>
+
+      <rect x="250" y="186" width="180" height="72" rx="4" fill="var(--paper)" stroke="var(--line)"/>
+      <text x="264" y="210" class="m" font-size="11">ApixSound</text>
+      <text x="264" y="232">som ligado ao objeto</text>
+
+      <rect x="470" y="186" width="180" height="72" rx="4" fill="var(--paper)" stroke="var(--line)"/>
+      <text x="484" y="210" class="m" font-size="11">RedirectRule</text>
+      <text x="484" y="232">vai para a próxima cena</text>
+
+      <rect x="690" y="186" width="180" height="72" rx="4" fill="var(--paper)" stroke="var(--line)"/>
+      <text x="704" y="210" class="m" font-size="11">RewardsList · SavedAssets</text>
+      <text x="704" y="232">moedas e itens ganhos</text>
+
+      <text x="30" y="298" class="m" font-size="11">Nomes recuperados do metadata IL2CPP. O conteúdo dos métodos não foi lido, então a ordem do fluxo é inferida pelos nomes.</text>
+    </g>
+  </svg>
+  </div>
+
+  <h3>Os templates são o vocabulário de interação</h3>
+  <p>O Builder tem <span class="mono">Template0</span> até <span class="mono">Template58</span>. Cada um é um tipo de brincadeira. Exemplos com métodos conhecidos. Nas 1.801 cenas dos 13 jogos Builder, 8 templates (22, 21, 40, 20, 23, 3, 34 e 45) cobrem 82% delas, e 14 números não aparecem em nenhuma cena.</p>
+  <div class="tbl">
+  <table>
+    <thead><tr><th>Template</th><th>Brincadeira</th><th>Métodos que mostram o comportamento</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">Template47Draggable</td><td>arrastar até o alvo certo (1 cena; o comum é o Template20)</td><td class="mono">FindMyTarget · ReleasedCorrect · ReleasedWrong · WaitingForPickUp</td></tr>
+      <tr><td class="mono">Template20Draggable</td><td>arrastar, encaixar, clonar item</td><td class="mono">SnapIfMovingOver · SnappToTarget · ReturnToStartPos · SetLockState</td></tr>
+      <tr><td class="mono">Template44Layer</td><td>pintar com pincel</td><td class="mono">PaintWithPenBrush · SetBrushWidth · PlayMagicEffect</td></tr>
+      <tr><td class="mono">Template52*</td><td>salão: pente, secador, tesoura</td><td class="mono">Template52Comb · Dryer · Scissors · HairShaper · HairResetter</td></tr>
+      <tr><td class="mono">Template48Food</td><td>servir pedido de comida</td><td class="mono">SpawnFood · PlayOrderSound · MoveToTarget</td></tr>
+      <tr><td class="mono">Template46PlayCup</td><td>jogo dos copinhos</td><td class="mono">CorrectAction · WrongAction · GiveCoins</td></tr>
+      <tr><td class="mono">Template50Player</td><td>corrida em faixas</td><td class="mono">MoveToClosestLine · ShootBullet · RestartScene</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- 4. SCENE ANATOMY -->
+<section>
+  <span class="eyebrow">Diagrama 4 · Uma tela</span>
+  <h2>Anatomia de uma cena de cuidado</h2>
+  <p>As três formas montam a tela com as mesmas peças. Os componentes abaixo aparecem com os mesmos métodos em 13 dos 24 jogos.</p>
+  <div class="plate narrow">
+  <svg viewBox="0 0 640 480" role="img" aria-label="Tela de jogo 4:3 com fundo, personagem, balão de desejo, bandeja de ferramentas, ferramenta arrastada, área-alvo, moedas e botões de navegação">
+    <rect x="0" y="0" width="640" height="480" fill="var(--tint-a2)"/>
+    <rect x="0" y="330" width="640" height="150" fill="var(--tint-a1)"/>
+    <!-- character -->
+    <ellipse cx="300" cy="250" rx="90" ry="100" fill="var(--paper)" stroke="var(--fg)" stroke-width="2"/>
+    <circle cx="270" cy="220" r="8" fill="var(--fg)"/><circle cx="330" cy="220" r="8" fill="var(--fg)"/>
+    <path d="M275 265 Q300 285 325 265" fill="none" stroke="var(--fg)" stroke-width="3" stroke-linecap="round"/>
+    <!-- target zone -->
+    <ellipse cx="300" cy="300" rx="60" ry="30" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 5"/>
+    <!-- wish bubble -->
+    <rect x="370" y="90" width="78" height="62" rx="30" fill="var(--paper)" stroke="var(--fg)" stroke-width="2"/>
+    <circle cx="409" cy="121" r="14" fill="var(--a1)"/>
+    <!-- tray -->
+    <rect x="70" y="400" width="500" height="66" rx="33" fill="var(--paper)" stroke="var(--line)" stroke-width="2"/>
+    <circle cx="140" cy="433" r="22" fill="var(--a3)"/>
+    <circle cx="220" cy="433" r="22" fill="var(--a2)"/>
+    <circle cx="300" cy="433" r="22" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="4 4"/>
+    <circle cx="380" cy="433" r="22" fill="var(--a1)"/>
+    <circle cx="460" cy="433" r="22" fill="var(--decline)"/>
+    <rect x="450" y="420" width="20" height="16" rx="3" fill="var(--fg)"/>
+    <!-- dragged tool + hand -->
+    <path d="M300 411 Q330 360 380 345" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3 5"/>
+    <circle cx="395" cy="335" r="24" fill="var(--accent)"/>
+    <path d="M410 350 l18 4 l-4 18 l-10 4 z" fill="var(--paper)" stroke="var(--fg)" stroke-width="1.5"/>
+    <!-- sparkles -->
+    <g fill="var(--a1)"><path d="M210 150 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 z"/><path d="M420 230 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3 z"/></g>
+    <!-- HUD -->
+    <circle cx="44" cy="44" r="26" fill="var(--paper)" stroke="var(--fg)" stroke-width="2"/>
+    <path d="M32 48 L44 34 L56 48 V58 H32 Z" fill="var(--fg)"/>
+    <rect x="490" y="24" width="126" height="40" rx="20" fill="var(--paper)" stroke="var(--fg)" stroke-width="2"/>
+    <circle cx="512" cy="44" r="12" fill="var(--a1)"/>
+    <text x="534" y="50" class="h" font-size="18">120</text>
+    <circle cx="596" cy="340" r="26" fill="var(--paper)" stroke="var(--fg)" stroke-width="2"/>
+    <path d="M588 328 L606 340 L588 352 Z" fill="var(--fg)"/>
+    <!-- markers -->
+    <g font-family="IBM Plex Mono, monospace" font-size="12" font-weight="500">
+      <g><circle cx="110" cy="180" r="12" fill="var(--accent)"/><text x="110" y="184" text-anchor="middle" fill="var(--paper)">1</text></g>
+      <g><circle cx="300" cy="135" r="12" fill="var(--accent)"/><text x="300" y="139" text-anchor="middle" fill="var(--paper)">2</text></g>
+      <g><circle cx="462" cy="96" r="12" fill="var(--accent)"/><text x="462" y="100" text-anchor="middle" fill="var(--paper)">3</text></g>
+      <g><circle cx="60" cy="400" r="12" fill="var(--accent)"/><text x="60" y="404" text-anchor="middle" fill="var(--paper)">4</text></g>
+      <g><circle cx="440" cy="310" r="12" fill="var(--accent)"/><text x="440" y="314" text-anchor="middle" fill="var(--paper)">5</text></g>
+      <g><circle cx="230" cy="310" r="12" fill="var(--accent)"/><text x="230" y="314" text-anchor="middle" fill="var(--paper)">6</text></g>
+      <g><circle cx="480" cy="410" r="12" fill="var(--accent)"/><text x="480" y="414" text-anchor="middle" fill="var(--paper)">7</text></g>
+      <g><circle cx="470" cy="76" r="12" fill="var(--accent)"/><text x="470" y="80" text-anchor="middle" fill="var(--paper)">8</text></g>
+      <g><circle cx="200" cy="190" r="12" fill="var(--accent)"/><text x="200" y="194" text-anchor="middle" fill="var(--paper)">9</text></g>
+    </g>
+  </svg>
+  </div>
+  <ol class="legend">
+    <li><span class="dot">1</span><span>Fundo em camadas, pintado. Nada de UI desenhada por cima.</span></li>
+    <li><span class="dot">2</span><span>Personagem em Spine, que reage a cada toque.</span></li>
+    <li><span class="dot">3</span><span>Balão de desejo com ícone, sem texto. <span class="mono">HungerTimer</span> sobe a urgência em ¼, ½ e cheio.</span></li>
+    <li><span class="dot">4</span><span>Bandeja rolável de ferramentas. <span class="mono">ScrollView</span> + <span class="mono">CategoryController</span>.</span></li>
+    <li><span class="dot">5</span><span>Ferramenta arrastada, com a mão-fantasma ensinando o gesto. <span class="mono">MovableTool</span>, <span class="mono">HintHand</span>.</span></li>
+    <li><span class="dot">6</span><span>Área-alvo que mede o progresso. <span class="mono">DrawLayer</span> / <span class="mono">EraseLayer.CheckProgress</span>.</span></li>
+    <li><span class="dot">7</span><span>Item travado por moedas. <span class="mono">ToolLock</span> / <span class="mono">LockObject</span>.</span></li>
+    <li><span class="dot">8</span><span>Contador de moedas que pulsa quando ganha. <span class="mono">CoinSystem</span>.</span></li>
+    <li><span class="dot">9</span><span>Partículas de acerto. <span class="mono">ParticlesController</span>. Casa e Próximo ficam nas bordas.</span></li>
+  </ol>
+</section>
+
+<!-- 5. MICRO LOOP -->
+<section>
+  <span class="eyebrow">Diagrama 5 · O ciclo</span>
+  <h2>O micro-loop que se repete em toda cena</h2>
+  <p>Este é o núcleo de diversão. Ele é igual nas três formas. Só mudam a ferramenta, o alvo e a reação. Cada volta leva poucos segundos, e a criança sempre recebe uma resposta.</p>
+  <div class="plate narrow">
+  <svg viewBox="0 0 600 450" role="img" aria-label="Ciclo de sete passos: dica, arrastar, testar alvo, progresso, reação, recompensa, próximo">
+    <circle cx="300" cy="230" r="160" fill="none" stroke="var(--line)" stroke-width="2"/>
+    <g fill="var(--muted)">
+      <polygon points="-6,-6 7,0 -6,6" transform="translate(369 86) rotate(25.7)"/>
+      <polygon points="-6,-6 7,0 -6,6" transform="translate(456 194) rotate(77.1)"/>
+      <polygon points="-6,-6 7,0 -6,6" transform="translate(425 330) rotate(128.6)"/>
+      <polygon points="-6,-6 7,0 -6,6" transform="translate(300 390) rotate(180)"/>
+      <polygon points="-6,-6 7,0 -6,6" transform="translate(175 330) rotate(231.4)"/>
+      <polygon points="-6,-6 7,0 -6,6" transform="translate(144 194) rotate(282.9)"/>
+      <polygon points="-6,-6 7,0 -6,6" transform="translate(231 86) rotate(334.3)"/>
+    </g>
+    <g font-size="13">
+      <rect x="240" y="48" width="120" height="46" rx="6" fill="var(--paper)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="300" y="68" text-anchor="middle" font-weight="600">1 · Dica pulsa</text>
+      <text x="300" y="85" text-anchor="middle" class="m" font-size="10">HintHand</text>
+
+      <rect x="365" y="107" width="120" height="46" rx="6" fill="var(--paper)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="425" y="127" text-anchor="middle" font-weight="600">2 · Arrasta</text>
+      <text x="425" y="144" text-anchor="middle" class="m" font-size="10">MovableTool.OnDrag</text>
+
+      <rect x="396" y="243" width="120" height="46" rx="6" fill="var(--paper)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="456" y="263" text-anchor="middle" font-weight="600">3 · Testa alvo</text>
+      <text x="456" y="280" text-anchor="middle" class="m" font-size="10">FindMyTarget</text>
+
+      <rect x="309" y="351" width="120" height="46" rx="6" fill="var(--paper)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="369" y="371" text-anchor="middle" font-weight="600">4 · Progresso</text>
+      <text x="369" y="388" text-anchor="middle" class="m" font-size="10">CheckProgress</text>
+
+      <rect x="171" y="351" width="120" height="46" rx="6" fill="var(--paper)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="231" y="371" text-anchor="middle" font-weight="600">5 · Reação</text>
+      <text x="231" y="388" text-anchor="middle" class="m" font-size="10">Spine · som · fx</text>
+
+      <rect x="84" y="243" width="120" height="46" rx="6" fill="var(--paper)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="144" y="263" text-anchor="middle" font-weight="600">6 · Recompensa</text>
+      <text x="144" y="280" text-anchor="middle" class="m" font-size="10">GatherCoin</text>
+
+      <rect x="115" y="107" width="120" height="46" rx="6" fill="var(--paper)" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="175" y="127" text-anchor="middle" font-weight="600">7 · Próximo</text>
+      <text x="175" y="144" text-anchor="middle" class="m" font-size="10">RedirectRule</text>
+    </g>
+    <text x="300" y="218" text-anchor="middle" class="h" font-size="20">uma ferramenta,</text>
+    <text x="300" y="244" text-anchor="middle" class="h" font-size="20">uma volta</text>
+    <text x="300" y="272" text-anchor="middle" class="m" font-size="11">erro = volta à bandeja</text>
+    <text x="300" y="288" text-anchor="middle" class="m" font-size="11">sem castigo</text>
+  </svg>
+  </div>
+  <p class="cap">O passo 3 tem duas saídas: <span class="mono">ReleasedCorrect</span> segue o ciclo, <span class="mono">ReleasedWrong</span> e <span class="mono">ReturnToStartPosition</span> devolvem a ferramenta à bandeja.</p>
+</section>
+
+<!-- 6. MATRIX -->
+<section>
+  <span class="eyebrow">Tabela · Comum × variável</span>
+  <h2>Peça por peça</h2>
+  <div class="tbl">
+  <table>
+    <thead><tr><th>Peça</th><th class="k1">A · Builder</th><th class="k2">B · Kit</th><th class="k3">C · Mundo</th></tr></thead>
+    <tbody>
+      <tr><td>TutoTOONS.Base (save, log, console)</td><td class="yes">sim</td><td class="yes">sim</td><td class="yes">sim</td></tr>
+      <tr><td>Spine para personagens</td><td class="yes">sim</td><td class="yes">sim</td><td class="yes">sim</td></tr>
+      <tr><td>Anúncios e telemetria</td><td class="yes">sim</td><td class="yes">sim</td><td class="yes">sim</td></tr>
+      <tr><td>Código próprio do jogo (tipos)</td><td class="num">7–65</td><td class="num">177–1.959</td><td class="num">1.636–3.993</td></tr>
+      <tr><td>TutoTOONS.Builder.dll</td><td class="yes">11 de 11</td><td class="no">não</td><td class="no">não</td></tr>
+      <tr><td>Templates numerados</td><td class="yes">sim, no Builder</td><td>2 títulos antigos</td><td class="no">não</td></tr>
+      <tr><td>FSM do personagem</td><td class="no">não encontrada</td><td>Giggle Babies (28 estados)</td><td>Princesses (<span class="mono">CreatureStateMachine</span>)</td></tr>
+      <tr><td>Minijogos</td><td>como template (copinhos, corrida)</td><td>como módulo (bolhas, dança, horta)</td><td>como módulo (runner, jumper)</td></tr>
+      <tr><td>Mapa, salas, avatar</td><td class="no">não</td><td class="no">não</td><td class="yes">sim</td></tr>
+      <tr><td>Packs de download por sala</td><td class="num">0</td><td class="num">0–5</td><td class="num">20–52</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- 7. EVOLUTION -->
+<section>
+  <span class="eyebrow">Linha do tempo</span>
+  <h2>Como a arquitetura evoluiu</h2>
+  <div class="timeline">
+    <div class="era"><span class="when">mais antigo</span><h3>Imitador de MovieClip</h3><p><span class="mono">ScriptedAnimation</span> reproduz timelines do Animate dentro da Unity: piscar, quicar, deslizar.</p></div>
+    <div class="era"><span class="when">a maior parte do catálogo</span><h3>Player Builder</h3><p>Cenas importadas como dados, interação em ~50 templates. Fábrica de títulos parecidos.</p></div>
+    <div class="era"><span class="when">títulos grandes</span><h3>Kit por atividade</h3><p>Código próprio quando a brincadeira precisa de estado: bebê com fome, horta, dança.</p></div>
+    <div class="era"><span class="when">2025 · Unity 6</span><h3>Plataforma-mundo</h3><p>Mapa de salas, avatar, serviços em DLLs separadas, cada sala é um pack.</p></div>
+  </div>
+</section>
+
+<!-- 8. LESSON -->
+<section class="lesson">
+  <span class="eyebrow">O que isso diz para o recomeço da QuiQui</span>
+  <h2>A variedade vem da cena, não do motor</h2>
+  <ol>
+    <li><strong>A parte comum é pequena.</strong> Save, log, tween, animação do personagem, moedas, drag. A QuiQui já tem quase tudo isso. O problema de jogabilidade não está nessa camada.</li>
+    <li><strong>O que faz o jogo é o micro-loop.</strong> Dica, arrastar, testar, reagir, recompensar. Se uma única volta desse ciclo não é gostosa, mais cenas não resolvem.</li>
+    <li><strong>A forma A é o modelo para um jogo de cuidado pequeno.</strong> Poucos templates bem feitos (arrastar até o alvo, esfregar uma área, tocar e reagir) e cenas descritas como dados. Uma cena nova vira arte + um arquivo de dados, não código novo.</li>
+    <li><strong>As formas B e C só fazem sentido depois.</strong> Estado do personagem com várias necessidades (B) e mapa de vila (C) são camadas que a TutoTOONS só adiciona em títulos grandes.</li>
+  </ol>
+  <p class="note">Fonte: <span class="mono">specs/product/TUTOTOONS_ENGINE_REPORT.md</span> e <span class="mono">.rea/report/digest-*.json</span> (24 títulos). A evidência é só de nomes e contagens do metadata IL2CPP. O código dos métodos não foi decompilado, então o fluxo interno do Builder é inferido pelos nomes.</p>
+</section>
+
+</div>

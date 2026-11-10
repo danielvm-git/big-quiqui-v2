@@ -30,3 +30,4 @@ allure-report/
 reference/
 # REA acquisition workspace (pulled APKs and engine evidence, never committed)
 .rea/
+.cursor/

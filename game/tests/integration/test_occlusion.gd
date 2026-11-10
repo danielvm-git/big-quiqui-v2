@@ -75,7 +75,7 @@ func _buried(root: Node, painted: Rect2, scene_id: String = "", size: Vector2i =
 			continue
 		var rect: Rect2 = control.get_global_rect()
 		var burial: float = rect.intersection(painted).get_area() / maxf(rect.get_area(), 1.0)
-		if burial < BURIAL_THRESHOLD or control.z_index > top_z:
+		if burial < BURIAL_THRESHOLD or _effective_z(control) > top_z:
 			continue
 		if ALLOWED.has(control.name):
 			continue
@@ -89,10 +89,25 @@ func _buried(root: Node, painted: Rect2, scene_id: String = "", size: Vector2i =
 		findings.append(
 			(
 				"%s @%s: %s is %.0f%% under the hero (z %d <= %d)"
-				% [scene_id, size, control.name, burial * 100.0, control.z_index, top_z]
+				% [scene_id, size, control.name, burial * 100.0, _effective_z(control), top_z]
 			)
 		)
 	return findings
+
+
+## Godot composes `z_index` down the chain (`z_as_relative` is true by default), so a control
+## inside a z-raised container is above the rig even when its own `z_index` is 0 — which is
+## how BUG-061's basket was fixed in the .tscn era (raised parent, not magic number on the
+## leaf). Reading the leaf alone reports a buried control that is not buried (BUG-061
+## follow-up), and would push the next fix into a magic number instead of the honest parent.
+func _effective_z(node: CanvasItem) -> int:
+	var total: int = node.z_index
+	var parent: Node = node.get_parent()
+	while parent != null:
+		if parent is CanvasItem and (parent as CanvasItem).z_as_relative:
+			total += (parent as CanvasItem).z_index
+		parent = parent.get_parent()
+	return total
 
 
 func _rig_of(root: Node) -> Control:
@@ -114,5 +129,5 @@ func _max_rig_z(root: Node) -> int:
 	if rig == null:
 		return 0
 	for node: Node in rig.find_children("*", "Node2D", true, false):
-		top = maxi(top, (node as Node2D).z_index)
+		top = maxi(top, _effective_z(node as CanvasItem))
 	return top
