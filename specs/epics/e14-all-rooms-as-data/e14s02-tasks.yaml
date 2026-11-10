@@ -1,0 +1,75 @@
+# story: e14s02
+story_id: e14s02
+spec: e14s02.md
+epic_id: e14
+title: "Hubs on the player: title, home, village, celebration"
+status: failing
+bcps: 8
+scenarios: ["SC-e14s02-P0-01", "SC-e14s02-P0-02", "SC-e14s02-P0-03", "SC-e14s02-P0-04", "SC-e14s02-P1-01", "SC-e14s02-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn loading title, then home, village and celebration"
+tasks:
+  - id: e14s02-t01
+    description: "Write the failing hub tests (one title target, catalog rejection, recycle-once, pay-once)"
+    verify: test -f game/tests/unit/test_hub_defs.gd
+    risk: P0
+    security: none
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "hubs"
+        - "unit"
+    status: failing
+  - id: e14s02-t02
+    description: "Author the four defs and register title, home, village and celebration"
+    verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+    risk: P0
+    security: low
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "hubs"
+        - "unit"
+    status: failing
+  - id: e14s02-t03
+    description: "Prove title and home resolve ids only, and a foreign destination is logged and refused. no new security findings in affected paths"
+    verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_home_def # no new security findings in affected paths"
+    risk: P0
+    security: medium
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "hubs"
+        - "Security Review"
+    status: failing
+  - id: e14s02-t04
+    description: "Prove recycling pays once per session and celebration pays once per cycle. no new security findings in affected paths"
+    verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_village_def && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_celebration_def # no new security findings in affected paths"
+    risk: P0
+    security: medium
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "hubs"
+        - "Security Review"
+    status: failing
+  - id: e14s02-t05
+    description: "Prove both aspects and that 18 scene files remain"
+    verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_hubs_e2e
+    risk: P1
+    security: none
+    allure:
+      severity: high
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "hubs"
+        - "geometry"
+    status: failing

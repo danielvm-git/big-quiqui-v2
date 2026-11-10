@@ -1,0 +1,93 @@
+story_id: e15s01
+spec: e15s01.md
+epic_id: e15
+title: "t44_paint and t43_color_fill (the coloring pair)"
+status: failing
+bcps: 8
+scenarios: ["SC-e15s01-P0-01", "SC-e15s01-P0-02", "SC-e15s01-P0-03", "SC-e15s01-P0-04", "SC-e15s01-P1-01", "SC-e15s01-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn (the coloring scene: paint, then fill)"
+tasks:
+- id: e15s01-t01
+  description: "Write the failing paint and fill tests, including the gallery-verb source scan. No new security findings in affected paths."
+  verify: test -f game/tests/unit/test_t44_paint.gd && test -f game/tests/unit/test_t43_color_fill.gd
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s01-P0-04)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "unit"
+      - "Security Review"
+  status: failing
+- id: e15s01-t02
+  description: "Implement t44_paint and t43_color_fill on the existing Rub and Give modes, with the gallery verbs absent. No new security findings in affected paths."
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s01-P0-04)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "unit"
+      - "Security Review"
+  status: failing
+- id: e15s01-t03
+  description: "Prove paint deposits the selected color and completes at the def threshold. No new security findings in affected paths."
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t44_paint
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s01-P0-04)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "unit"
+      - "Security Review"
+  status: failing
+- id: e15s01-t04
+  description: "Prove fill accepts only the named color, and prove the gallery verbs are absent. No new security findings in affected paths."
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t43_color_fill
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s01-P0-04)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "unit"
+      - "Security Review"
+  status: failing
+- id: e15s01-t05
+  description: "Author coloring.tres, register the id, and play both steps on the player at both aspects. No new security findings in affected paths."
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_coloring_scene
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s01-P0-04)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "integration"
+      - "Security Review"
+  status: failing
+- id: e15s01-t06
+  description: "Tag the new scripts and tests, then run the story trace and the full gate. No new security findings in affected paths."
+  verify: bash scripts/trace-stories.sh --strict && bash scripts/preflight.sh
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s01-P0-04)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "integration"
+      - "Security Review"
+  status: failing

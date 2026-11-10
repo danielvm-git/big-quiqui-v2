@@ -2,7 +2,7 @@ story_id: e12s06
 spec: e12s06.md
 epic_id: e12
 title: "t20_drag_snap and the Kitchen as Data (wave 1a Done)"
-status: passing
+status: done
 bcps: 8
 scenarios: ["SC-e12s06-P0-01", "SC-e12s06-P0-02", "SC-e12s06-P0-03", "SC-e12s06-P0-04", "SC-e12s06-P0-05", "SC-e12s06-P1-01", "SC-e12s06-P1-02", "SC-e12s06-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn loading kitchen.tres"

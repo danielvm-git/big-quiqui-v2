@@ -1,69 +1,67 @@
-# Threat Model — e12 (Builder player and the first loop)
+# Threat Model — e12 (Builder player, scene data, wave 1a)
 
 <!-- story: e12s01 -->
-**Skill:** `security-review` · **Date:** 2026-11-08 · **Review:** `specs/security/CODEBASE_REVIEW_2026-11-08.md`
-**Surface:** Godot 4.7 client, 100 % offline, one local save, no accounts, no network.
-**Delta over e11:** the game gains a **data → behaviour** boundary for the first time. Until now every
-room was code; from e12 a room is a file that names a template, a background, a voice key and node
-references. That boundary is the whole security story of this epic, and it has three shapes: a key that
-becomes a path (F-1), a def that could name a script (F-2), and a node reference that becomes a
-`get_node` path (F-3).
+<!-- story: e12s02 -->
+**Skill:** `security-review` (build-epic Step 0) · **Date:** 2026-11-08
+**Surface:** Godot 4.7 client, 100 % offline, no accounts, no network.
+**Delta over e11:** first navigation by **scene id** (not path), first `SceneDef` `.tres` under
+`res://data/scenes/`, voice resolved by **key** (`vo.<scene>.<line>`), template id → preloaded script
+registry, and the English asset rename (mechanical; no new trust boundary).
 
 ## Assets
 
 | Asset | Why it matters | Where |
 |---|---|---|
-| Save (`coins`, `tickets`, `friend_stars`, owned/placed furniture, equipped look) | the only persisted state; tampering is the only economy attack that exists here | `user://progress.json` |
-| The 17 legacy scenes | must stay playable through the rename and the new navigation (D1a) | `res://scenes/*.tscn` |
-| The diary | only data the child generates; PII policy is a legal boundary | `user://logs/*.jsonl` |
-| Scene defs | **new**: the thing that decides what a room does | `res://data/scenes/*.tres` |
-| The template registry | **new**: the closed set of things a def may run | `res://scripts/templates/` |
+| Scene id → `res://data/scenes/<id>.tres` | a crafted id could reach path traversal (CWE-22) if validation is skipped | runtime loader |
+| Voice key segments | each segment becomes a path under `voice/<locale>/` | `AudioManager` |
+| `SceneDef` fields (background, music) | ids in data must not become arbitrary `res://` strings | `ScenePlayer` |
+| Template registry | template id must not dynamic-load script paths from data | const map only |
+| Save file | unchanged in e12 (kitchen credits FEED via existing `CareLoopManager`) | `user://progress.json` |
+| Diary | new `scene.*` / `step.*` families; ids only, no prose | device only |
 
 ## Trust boundaries
 
-| Boundary | Trusted side | Untrusted side | Control |
-|---|---|---|---|
-| def → player | the player and the registry | a `.tres` file | validation on load: id grammar, known template, non-empty steps, background present (`scene.def_rejected`) |
-| key → path | the resolver | a voice key, a scene id, a node id | a grammar per kind, per-segment validation, path assembled from validated segments |
-| save → model | `SaveData` | `progress.json` | clean-on-read: clamp, id filter, ownership, NaN guard |
-| value → log | the diary writer | any value the game emits | flatten + id-check + redact; `msg` is an id |
+1. Engine ↔ filesystem (`user://` only) — unchanged.
+2. Input ↔ game logic — unchanged; Give primitive reuses `TouchDraggable`.
+3. **New: scene id ↔ shipped `res://` paths.** Only ids passing `Ids.is_valid` (`\A[a-z0-9_]{1,64}\z`, CONVENTIONS § input validation) may build `res://data/scenes/<id>.tres` or voice file paths.
+4. **New: scene data ↔ runtime.** `SceneDef` holds ids and numbers only — no script paths, no expressions (frozen contract: a def cannot run code).
+5. Template id ↔ script — **registry only**: known ids map to preloaded scripts; unknown template rejected at load with `scene.def_rejected`.
 
 ## STRIDE
 
 | Category | Threat | Likelihood | Mitigation (test) |
 |---|---|---|---|
-| **T**ampering | a voice key such as `vo.kitchen../../x` resolves outside `assets/audio/voice` (F-1) | **high** — it is the natural implementation | `VO_KEY` grammar validated per segment; path built only from validated segments; `SC-e12s01-P0-01` rejects `..`, `../`, `a/../b`, `vo..kitchen` and logs `audio.missing_key` |
-| **T**ampering | a def names a script or a resource path and the registry loads it (F-2) | medium | `StepDef` has no path-shaped field; the registry is a closed `const` map id→script; `SC-e12s02-P0-08` scans both |
-| **T**ampering | a def gives a node reference that walks out of the room (`../../root/...`) (F-3) | medium | node ids resolve through a table the player registers; a `../` value is rejected and logged; `SC-e12s05-P1-04` |
-| **T**ampering | `repeat: 3` credits FEED twice (double tap, echo, re-entry) | **high** | idempotent `complete_step(expected_state)` + the mouse-echo filter; `SC-e12s06-P0-04` counts the calls; re-entry is free play (`SC-e12s06-P0-05`) |
-| **T**ampering | a tampered save inflates the reward the kitchen grants | low | the grant comes from `CareLoopManager`, not from the save; `SaveData` clamps on read |
-| **T**ampering | a scene id from a def opens a room the player did not intend | medium | `Ids.is_valid` before `res://data/scenes/<id>.tres`; unknown id is a rejection (`SC-e12s02-P0-03`) |
-| **R**epudiation | a rejected def leaves no trace, so a broken build looks fine | medium | `scene.def_rejected` with a reason id, then L3 audit |
-| **I**nformation disclosure | the rename moves assets and someone pastes a private path into a builder constant | low | the diary audit rejects absolute paths; `SC-e12s01-P2-01` scans for stale strings |
-| **I**nformation disclosure | prose or PII reaches the diary through a new event family | low | writer is stricter than the auditor; `SC-e12s03-P2-01` + L3 |
-| **D**enial of service | a def with a huge or cyclic `steps` list wedges the player | medium | validation bounds the step count and each step's parameters; no def may reference itself (`next` is a scene id, not a def chain) |
-| **D**enial of service | a step with no exit (no progress possible, home unreachable) | **high** | home exits from every state with no penalty (`SC-e12s03-P0-03`); `max_dwell_sec` on render states; the hint layer answers silence |
-| **E**levation | a def escalates to code execution (the F-2 path, taken to its end) | medium | same control as F-2: the registry is the only door and it is a constant |
+| **T**ampering | crafted scene id reaches `../` in a path | **medium** | `Ids.is_valid` before every `res://data/scenes/<id>.tres` (`test_an_id_failing_Ids_PATTERN_is_rejected`) |
+| **T**ampering | tampered `.tres` in repackaged build | low | same trust as code; reject unknown template, missing background, empty steps |
+| **T**ampering | voice key injects path segments | **medium** | split key; every segment `Ids.is_valid`; unknown → `audio.missing_key`, no crash |
+| **T**ampering | template id loads arbitrary script | **medium** | const `TEMPLATE_SCRIPTS`; never `load("res://.../%s" % id)` (`test_unknown_template_rejected`) |
+| **T**ampering | stale def shown after deferred swap | medium | `consume_def()` single-use; second read empty (`test_consume_def_clears`) |
+| **I**nformation disclosure | diary carries paths not ids | low | events use `scene.kitchen` slugs; PII audit unchanged |
+| **D**enial of service | rejected def leaves child on blank player | medium | fail closed with `scene.def_rejected`; no swap on rejection |
+| **D**enial of service | step hangs forever | low | hint layer (e12s05); no step timer (by design) |
+| **E**levation | ResourceLoader on `user://` for defs | n/a | defs live only under `res://data/scenes/` |
 
-## Abuse cases that are *not* threats here
+## Kids-specific
 
-- **A child mashing the screen** is the design target, not an attacker: `MonkeyStream` and `TouchSim`
-  already exercise it, and "no fail state" is a requirement.
-- **Editing `progress.json`** is bounded by clamping and is not a boundary this product defends
-  (§Residual risk of the codebase review).
-- **A network attacker** does not exist: there is no network API in the game binary.
+| Threat | Mitigation |
+|---|---|
+| Wrong room after a tap | same FSM, curtain, watchdog as `request_scene` |
+| Scary double music restart | reuse `AudioManager.is_music_playing` pattern from e07 |
+| Miss feels punishing | Give primitive returns item + soft SFX; no save change |
 
 ## Residual risk
 
-| Residual | Reason |
-|---|---|
-| `res://` defs are not integrity-checked inside the IPA | Godot's `.pck` is not signed separately; an attacker who can edit it owns the device. F-1/F-2/F-3 are still fixed because the resolver will later read user-writable sources. |
-| The player trusts its own defs at load time | they ship inside the app; validation protects against *our* mistakes (a typo, a stale id) as much as against an attacker, and that is the honest reason it exists |
-| The ghost hand is still a placeholder rectangle | cosmetic, recorded in the scope |
+- Hand-edited `kitchen.tres` in a dev tree is out of scope; shipped package trusts the build.
+- English rename is voluminous but not a new attack surface; grammar tests gate filenames.
 
-## Gate
+## Task security tags (sourced here)
 
-No HIGH finding without a mitigation. F-1 is `medium` and changes an acceptance criterion of e12s01
-(which becomes P0); F-2 and F-3 are `medium` and add one scan and one rejection test respectively.
-Tasks in the touched paths carry `security: medium` and their verify step asserts
-"no new security findings in affected paths".
+| Story | `security: medium` tasks | Rationale |
+|---|---|---|
+| e12s01 | t05 (voice key resolver) | path building from key segments |
+| e12s02 | t01–t05 | def loader + `request_def` + catalog paths |
+| e12s03 | t03 | `ScenePlayer` loads def assets |
+| e12s04 | t04 | reaction voice keys |
+| e12s06 | t02, t04 | template registry + `kitchen.tres` load |
+
+All other e12 tasks: `security: none`.

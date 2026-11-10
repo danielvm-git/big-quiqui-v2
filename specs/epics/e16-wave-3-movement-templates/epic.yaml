@@ -1,0 +1,44 @@
+epic_id: e16
+slug: e16-wave-3-movement-templates
+title: "Wave 3: movement and niche templates on Steer and Spawner (28-slot library)"
+playable_scene: "res://scenes/scene_player.tscn"
+status: planned
+bcps: 27
+scope_ref: REQ-16
+scope_file: specs/product/SCOPE_LATEST.yaml
+release_plan: pending
+release_plan_note: >
+  Not listed in specs/release-plan.yaml by this draft, on purpose. This capsule does not edit
+  release-plan.yaml, state.yaml or execution-status.yaml. plan-release still adds e12-e16 and
+  places the v1.0.0 rung (D4). traceability.py fails a planned story that has no code and no
+  test, so the plan entry lands with the first story's code.
+design_refs:
+  - specs/product/QUIQUI_BUILDER_DESIGN.html
+  - specs/product/BUILDER_REUSE_MAP.md
+notes: >
+  REQ-16 was confirmed against specs/product/SCOPE_LATEST.yaml on 2026-11-09. No acceptance
+  criterion changed. Steer and the Spawner already exist from wave 1b (D6); this wave only adds
+  shapes on top of them. The 14 unused template numbers and both ad templates stay unbuilt. No
+  new art, no new voice, no care-loop redesign, no save-format redesign, no network. Each story
+  is playable on res://scenes/scene_player.tscn through a probe def, and it adds no care step.
+stories:
+- id: e16s01
+  title: "t37_tap_moving, t26_ride and t41_float_pop"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e16s02
+  title: "t42_slice_cut, t46_cups and t48_serve"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e16s03
+  title: "t52_groom, t47 folded into t20, and t53_outro"
+  bcps: 6
+  status: planned
+  delta: ADDED
+- id: e16s04
+  title: "t49_progress_holder and the 28-slot completeness gate"
+  bcps: 5
+  status: planned
+  delta: ADDED

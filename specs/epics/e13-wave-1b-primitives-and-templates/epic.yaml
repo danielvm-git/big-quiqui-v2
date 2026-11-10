@@ -1,8 +1,8 @@
 epic_id: e13
 slug: e13-wave-1b-primitives-and-templates
-title: "Wave 1b: Rub, Tap, Pan and Steer, and the remaining twelve templates (88.4% of real scenes)"
+title: "Wave 1b: Rub, Tap, Pan and Steer, and the remaining twelve templates (59.5% of real scenes built, 88.4% planned)"
 playable_scene: "res://scenes/scene_player.tscn"
-status: planned
+status: done
 bcps: 59
 wsjf: 8.1
 scope_ref: REQ-13
@@ -27,45 +27,45 @@ stories:
 - id: e13s01
   title: "Rub Primitive and t34_rub_reveal (reveal)"
   bcps: 8
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s02
   title: "Tap Primitive and t21_touch_each (any)"
   bcps: 6
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s03
   title: "Pan Primitive and t25_map (the hub as data)"
   bcps: 8
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s04
   title: "t23_erase and t40_draw_fill (the cleaning pair)"
   bcps: 8
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s05
   title: "t45_dress_decorate, t0_title and t32_reward"
   bcps: 8
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s06
   title: "Evidence Pass on t22_play_beat and t3_skip_beat (D3b)"
   bcps: 3
-  status: planned
+  status: done
   delta: MODIFIED
 - id: e13s07
   title: "t22_play_beat and t3_skip_beat to the Evidence Rule"
   bcps: 5
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s08
   title: "Steer and Spawner with t50_lanes (pulled forward by D6)"
   bcps: 8
-  status: planned
+  status: done
   delta: ADDED
 - id: e13s09
   title: "t51_prize_pick and the Wave-1 Completeness Gate"
   bcps: 5
-  status: planned
+  status: done
   delta: ADDED

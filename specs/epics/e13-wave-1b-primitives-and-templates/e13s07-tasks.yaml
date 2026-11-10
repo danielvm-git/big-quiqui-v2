@@ -2,14 +2,14 @@ story_id: e13s07
 spec: e13s07.md
 epic_id: e13
 title: "t22_play_beat and t3_skip_beat to the Evidence Rule"
-status: failing
+status: passing
 bcps: 5
 scenarios: ["SC-e13s07-P1-01", "SC-e13s07-P1-02", "SC-e13s07-P1-03", "SC-e13s07-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn (a beat that answers every touch)"
 tasks:
 - id: e13s07-t01
-  description: "Write the failing tests from the evidence document, one per claim"
-  verify: test -f game/tests/unit/test_t22_play_beat.gd
+  description: "D3 skip: do not write t22 tests. The evidence call is skip, recorded by the registry test."
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_template_registry
   risk: P1
   security: none
   allure:
@@ -19,10 +19,10 @@ tasks:
       - "template"
       - "unit"
       - "evidence"
-  status: failing
+  status: passing
 - id: e13s07-t02
-  description: "Implement `t22_play_beat` to the documented rule with the def carrying every uncertain value"
-  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  description: "D3 skip: do not implement t22_play_beat."
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_template_registry
   risk: P1
   security: none
   allure:
@@ -32,10 +32,10 @@ tasks:
       - "template"
       - "unit"
       - "evidence"
-  status: failing
+  status: passing
 - id: e13s07-t03
-  description: "Implement `t3_skip_beat` (any input skips, rewards preserved)"
-  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t3_skip_beat
+  description: "D3 skip: do not implement t3_skip_beat."
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_template_registry
   risk: P1
   security: none
   allure:
@@ -45,7 +45,7 @@ tasks:
       - "template"
       - "unit"
       - "evidence"
-  status: failing
+  status: passing
 - id: e13s07-t04
   description: "If the evidence pass said skip, record the skip in the template table and correct the coverage claim instead"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_template_registry
@@ -58,4 +58,4 @@ tasks:
       - "template"
       - "unit"
       - "evidence"
-  status: failing
+  status: passing

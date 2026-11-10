@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_soap"]
+script = ExtResource("2_step")
+template_id = "t40_draw_fill"
+completion_threshold = 0.9
+mode = "leave"
+item_ids = PackedStringArray("foam_large")
+tool_id = "sponge"
+loop_sfx_id = "sfx_rinse"
+
+[sub_resource type="Resource" id="step_rinse"]
+script = ExtResource("2_step")
+template_id = "t23_erase"
+completion_threshold = 0.9
+mode = "clear"
+item_ids = PackedStringArray("foam_large")
+tool_id = "shower_head"
+loop_sfx_id = "sfx_rinse"
+
+[sub_resource type="Resource" id="step_dry"]
+script = ExtResource("2_step")
+template_id = "t23_erase"
+completion_threshold = 0.9
+mode = "clear"
+item_ids = PackedStringArray("droplet")
+tool_id = "towel"
+loop_sfx_id = "sfx_rinse"
+
+[resource]
+script = ExtResource("1_def")
+id = "bathroom_probe"
+background_id = "bg_bathroom"
+music_id = "music_main_theme"
+steps = Array[Resource]([SubResource("step_soap"), SubResource("step_rinse"), SubResource("step_dry")])
+next_scene_id = "bathroom"

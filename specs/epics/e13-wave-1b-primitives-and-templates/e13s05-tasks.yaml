@@ -2,7 +2,7 @@ story_id: e13s05
 spec: e13s05.md
 epic_id: e13
 title: "t45_dress_decorate, t0_title and t32_reward"
-status: failing
+status: passing
 bcps: 8
 scenarios: ["SC-e13s05-P1-01", "SC-e13s05-P1-02", "SC-e13s05-P1-03", "SC-e13s05-P1-04", "SC-e13s05-P2-01", "SC-e13s05-P2-02"]
 playable_scene: "res://scenes/scene_player.tscn (title → hub → reward)"
@@ -19,7 +19,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s05-t02
   description: "Implement `t45_dress_decorate` with the category strip from the def and the bin path"
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
@@ -32,7 +32,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s05-t03
   description: "Implement `t0_title` (single verb) and `t32_reward` (pay once, free gift)"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t32_reward
@@ -45,7 +45,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s05-t04
   description: "Prove re-entry never pays twice and the title has one interactive target"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t32_reward
@@ -58,4 +58,4 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing

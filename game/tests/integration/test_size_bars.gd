@@ -13,12 +13,7 @@ extends GutTest
 
 const MAX_LINES: int = 300
 const SCAN_ROOTS: Array[String] = ["res://scripts", "res://tools", "res://tests"]
-const GRANDFATHERED: Dictionary = {
-	"res://scripts/components/quiqui_rig.gd": 427,
-	"res://tests/unit/test_quiqui_rig.gd": 404,
-	"res://scripts/components/touch_draggable.gd": 326,
-	"res://scripts/scenes/banheiro.gd": 326,
-}
+const GRANDFATHERED: Dictionary = {}
 
 
 func test_no_new_file_crosses_the_three_hundred_line_bar() -> void:

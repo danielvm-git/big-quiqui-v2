@@ -1,5 +1,6 @@
 # story: e01s02
 # story: e12s02
+# story: e14s05
 extends Node
 ## Scene transitions as an explicit machine (ADR-001): IDLE → FADING_OUT →
 ## SWAPPING → FADING_IN → IDLE, with a 2.0 s watchdog and a 1-slot pending queue
@@ -18,13 +19,13 @@ const STATE_FADING_OUT: String = "FADING_OUT"
 const STATE_SWAPPING: String = "SWAPPING"
 const STATE_FADING_IN: String = "FADING_IN"
 
-const CASA_PATH: String = "res://scenes/casa.tscn"
-## The celebration is the legitimate target of a CELEBRATE cycle, not a detour.
-const CELEBRACAO_PATH: String = "res://scenes/celebracao.tscn"
 const REASON_SAME_SCENE: String = "same_scene"
 const REASON_EMPTY_PATH: String = "empty_path"
 const REASON_DEF_REJECTED: String = "def_rejected"
 const SCENE_PLAYER_PATH: String = "res://scenes/scene_player.tscn"
+## Home and celebration load through the player; detour logic keys off catalogue ids.
+const CASA_PATH: String = SCENE_PLAYER_PATH
+const CELEBRACAO_PATH: String = SCENE_PLAYER_PATH
 const ID_HOME: String = "home"
 const ID_CELEBRATION: String = "celebration"
 

@@ -1,4 +1,5 @@
 # story: e10s01
+# story: e14s05
 extends GutTest
 ## SC-E10-P0-01 / P1-07 — the friend rails every minigame stands on: the catalog owns the
 ## id->art/scene/voice mapping (including the english-named intro lines), stars climb to
@@ -31,9 +32,9 @@ func test_the_catalog_lists_exactly_the_three_friends() -> void:
 # SC-E10-P1-07
 func test_the_catalog_maps_art_scene_and_voice_for_every_friend() -> void:
 	assert_eq(FriendCatalog.art_path("pato"), "res://assets/art/friends/duck.png")
-	assert_eq(FriendCatalog.scene_path("pato"), "res://scenes/pato_danca.tscn")
-	assert_eq(FriendCatalog.scene_path("urso"), "res://scenes/urso_puzzle.tscn")
-	assert_eq(FriendCatalog.scene_path("pinguim"), "res://scenes/pinguim_jogo.tscn")
+	assert_eq(FriendCatalog.scene_path("pato"), "duck_dance")
+	assert_eq(FriendCatalog.scene_path("urso"), "bear_puzzle")
+	assert_eq(FriendCatalog.scene_path("pinguim"), "penguin_lanes")
 	# The intro lines were recorded with english names; the catalog owns that mismatch.
 	assert_eq(FriendCatalog.voice_key("pato"), "vo.duck.intro")
 	assert_eq(FriendCatalog.voice_path("pato"), "res://assets/audio/voice/pt_BR/duck_intro.ogg")

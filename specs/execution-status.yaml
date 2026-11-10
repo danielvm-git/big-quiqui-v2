@@ -51,16 +51,90 @@ development_status:
   e12s04: done
   e12s05: done
   e12s06: done
-  e13: planned
-  e13s01: planned
-  e13s02: planned
-  e13s03: planned
-  e13s04: planned
-  e13s05: planned
-  e13s06: planned
-  e13s07: planned
-  e13s08: planned
-  e13s09: planned
+  e13: done
+  e13s01: done
+  e13s02: done
+  e13s03: done
+  e13s04: done
+  e13s05: done
+  e13s06: done
+  e13s07: done
+  e13s08: done
+  e13s09: done
+  e14: done
+  e14s01: done
+  e14s02: done
+  e14s03: done
+  e14s04: done
+  e14s05: done
+  e15: done
+  e15s01: done
+  e15s02: done
+  e15s03: done
+  e15s04: done
+  e16: done
+  e16s01: done
+  e16s02: done
+  e16s03: done
+  e16s04: done
+
+gate_trace:
+  verdict: PASS
+  generated_at: "2026-11-10T09:45:00-03:00"
+  rationale: >-
+    traceability.py --check PASS; trace-stories.sh --strict PASS. release-plan e14–e16 status synced
+    to done. Child-play gate covers wave-2 rooms (coloring, find_toy, memory_match, peekaboo). Preflight green.
+  heuristic_ratio: 0.0
+  downgrade_applied: false
+
 epics:
 
 stories:
+  e13s01:
+    status: done
+    started_at: "2026-11-09T15:12:00-03:00"
+    completed_at: "2026-11-09T15:20:00-03:00"
+  e13s02:
+    status: done
+    started_at: "2026-11-09T15:21:00-03:00"
+    completed_at: "2026-11-09T15:24:00-03:00"
+  e13s03:
+    status: done
+    started_at: "2026-11-09T15:25:00-03:00"
+    completed_at: "2026-11-09T15:28:00-03:00"
+  e13s04:
+    status: done
+    started_at: "2026-11-09T15:29:00-03:00"
+    completed_at: "2026-11-09T15:32:00-03:00"
+  e13s05:
+    status: done
+    started_at: "2026-11-09T15:33:00-03:00"
+    completed_at: "2026-11-09T15:39:00-03:00"
+  e13s06:
+    status: done
+    started_at: "2026-11-09T15:39:30-03:00"
+    completed_at: "2026-11-09T15:41:00-03:00"
+  e13s07:
+    status: done
+    started_at: "2026-11-09T15:41:30-03:00"
+    completed_at: "2026-11-09T15:43:00-03:00"
+  e13s08:
+    status: done
+    started_at: "2026-11-09T15:44:00-03:00"
+    completed_at: "2026-11-09T15:46:00-03:00"
+  e13s09:
+    status: done
+    started_at: "2026-11-09T15:47:00-03:00"
+    completed_at: "2026-11-09T15:50:00-03:00"
+  e14s01:
+    status: done
+    started_at: "2026-11-09T18:14:00-03:00"
+    completed_at: "2026-11-09T18:45:00-03:00"
+  e14s04:
+    status: done
+    started_at: "2026-11-09T19:30:00-03:00"
+    completed_at: "2026-11-09T19:45:00-03:00"
+  e14s05:
+    status: done
+    started_at: "2026-11-09T19:46:00-03:00"
+    completed_at: "2026-11-09T20:15:00-03:00"

@@ -1,6 +1,7 @@
 # story: e10s04
+# story: e14s05
 extends GutTest
-## SC-E10-P0-20, SC-E10-P0-21, SC-E10-P1-23 — DoorBadge rules & AlbumScene unit tests:
+## SC-E10-P0-20, SC-E10-P0-21, SC-E10-P1-23 — DoorBadge rules & album star reads:
 ## stars rule vs placed rule, clamping, empty save, and live refresh.
 
 const LOCK_ART: String = "res://assets/art/ui/cadeado.png"
@@ -64,25 +65,30 @@ func test_album_total_stars_and_lit_stars_clamp_reads() -> void:
 	var progress: Node = get_node("/root/ProgressManager")
 	assert_eq(int(progress.call("stars_of", "pato")), 0, "fresh save has 0 stars")
 
-	var scene: AlbumScene = AlbumScene.new()
-	add_child_autofree(scene)
-	assert_eq(scene.total_stars(), 0, "empty save has 0 total stars")
-	assert_eq(scene.lit_stars("pato"), 0)
-	assert_eq(scene.lit_stars("urso"), 0)
-	assert_eq(scene.lit_stars("pinguim"), 0)
+	var tmpl: RefCounted = load("res://scripts/templates/t_album.gd").new()
+	var total: int = 0
+	for id: String in FriendCatalog.FRIEND_IDS:
+		total += int(progress.call("stars_of", id))
+	assert_eq(total, 0, "empty save has 0 total stars")
+	assert_eq(tmpl.stars_for("pato"), 0)
+	assert_eq(tmpl.stars_for("urso"), 0)
+	assert_eq(tmpl.stars_for("pinguim"), 0)
 
 	# Add stars
 	progress.call("add_star", "urso")
 	progress.call("add_star", "urso")
 	progress.call("add_star", "pinguim")
-	assert_eq(scene.total_stars(), 3)
-	assert_eq(scene.lit_stars("urso"), 2)
-	assert_eq(scene.lit_stars("pinguim"), 1)
-	assert_eq(scene.lit_stars("pato"), 0)
+	total = 0
+	for id: String in FriendCatalog.FRIEND_IDS:
+		total += int(progress.call("stars_of", id))
+	assert_eq(total, 3)
+	assert_eq(tmpl.stars_for("urso"), 2)
+	assert_eq(tmpl.stars_for("pinguim"), 1)
+	assert_eq(tmpl.stars_for("pato"), 0)
 
 	# Tampered save clamping
 	var save: SaveData = progress.get("data") as SaveData
 	save.friend_stars["urso"] = 99
 	save.friend_stars["pato"] = -10
-	assert_eq(scene.lit_stars("urso"), 5, "clamped max 5")
-	assert_eq(scene.lit_stars("pato"), 0, "clamped min 0")
+	assert_eq(StarLedger.of(save, "urso"), 5, "clamped max 5")
+	assert_eq(StarLedger.of(save, "pato"), 0, "clamped min 0")

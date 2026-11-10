@@ -1,0 +1,70 @@
+story_id: e16s03
+spec: e16s03.md
+epic_id: e16
+title: "t52_groom, t47 folded into t20, and t53_outro"
+status: failing
+bcps: 6
+scenarios: ["SC-e16s03-P0-01", "SC-e16s03-P0-02", "SC-e16s03-P0-03", "SC-e16s03-P0-04", "SC-e16s03-P1-01", "SC-e16s03-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn"
+tasks:
+- id: e16s03-t01
+  description: "Write the failing tests for tool order, the t20 release fold, no t47 script, and outro home-by-id"
+  verify: test -f game/tests/unit/test_t52_groom.gd && test -f game/tests/unit/test_t20_drag_release_fold.gd && test -f game/tests/unit/test_t53_outro.gd
+  risk: P0
+  security: low
+  allure:
+    severity: critical
+    categories:
+      - "wave-3"
+      - "template"
+      - "unit"
+  status: failing
+- id: e16s03-t02
+  description: "Implement t52_groom as Rub plus an Fsm tool order, reusing existing art ids. no new security findings in affected paths"
+  verify: "gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd # no new security findings in affected paths"
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+      - "wave-3"
+      - "template"
+      - "Security Review"
+  status: failing
+- id: e16s03-t03
+  description: "Pin the t47 rule on t20 and prove TouchDraggable is not forked. no new security findings in affected paths"
+  verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t20_drag_release_fold # no new security findings in affected paths"
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+      - "wave-3"
+      - "template"
+      - "Security Review"
+  status: failing
+- id: e16s03-t04
+  description: "Implement t53_outro as one catalog-backed home tap. no new security findings in affected paths"
+  verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t53_outro # no new security findings in affected paths"
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+      - "wave-3"
+      - "template"
+      - "Security Review"
+  status: failing
+- id: e16s03-t05
+  description: "Prove comb-before-trim and the groom probe on the player. no new security findings in affected paths"
+  verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t52_groom # no new security findings in affected paths"
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+      - "wave-3"
+      - "template"
+      - "geometry"
+      - "Security Review"
+  status: failing

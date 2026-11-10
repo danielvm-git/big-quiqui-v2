@@ -93,6 +93,50 @@ func test_corrupt_save_recovers_to_defaults() -> void:
 	assert_eq(pm.last_error, "corrupt")
 
 
+func test_every_serialised_key_is_on_the_pinned_known_list() -> void:
+	var keys: Array = SaveData.new().to_dictionary().keys()
+	keys.sort()
+	var pinned: Array = SaveData.KNOWN_KEYS.duplicate()
+	pinned.sort()
+	assert_eq(keys, pinned, "SC-e13s05-P2-02 a new field must join KNOWN_KEYS")
+
+
+func test_atomic_write_still_uses_a_temp_file() -> void:
+	pm.data.coins = 42
+	pm.save()
+	var body: String = SourceScanner.text("res://scripts/core/save_file.gd")
+	assert_true(body.contains(".tmp"), "SC-e13s05-P2-02 the atomic path is unchanged")
+
+
+func test_a_prize_pick_survives_a_ram_reset() -> void:
+	pm.data.completed_cycles = 3
+	assert_true(pm.pick_prize("plush"), "the first pick of the cycle is taken")
+	pm.data = SaveData.new()  # RAM lost
+	pm.load_or_default()
+	assert_eq(pm.data.picked_prize, "plush", "SC-e13s05-P2-02 B4 the pick is on disk")
+	assert_eq(pm.data.prize_cycle, 3, "SC-e13s05-P2-02 B4 and so is the cycle it belongs to")
+	assert_eq(pm.picked_prize(), "plush", "SC-e13s05-P2-02 B4 the same cycle still holds the pick")
+
+
+func test_an_old_save_without_the_prize_fields_loads_unchanged() -> void:
+	var data: SaveData = SaveData.from_dictionary({"coins": 9, "completed_cycles": 2})
+	assert_eq(data.picked_prize, "", "SC-e13s05-P2-02 B4 ADR-005: a new field defaults, with no version bump")
+	assert_eq(data.prize_cycle, 0, "SC-e13s05-P2-02 defaults hold")
+	assert_eq(data.coins, 9, "SC-e13s05-P2-02 and the old fields are read as they were")
+	assert_eq(SaveData.new().version, 1, "SC-e13s05-P2-02 additive fields keep version 1")
+
+
+func test_a_tampered_prize_pick_is_normalised_on_read() -> void:
+	for raw: Dictionary in [
+		{"picked_prize": "../x", "prize_cycle": -5},
+		{"picked_prize": 7},
+		{"picked_prize": "x".repeat(70), "prize_cycle": 1.0e12},
+	]:
+		var data: SaveData = SaveData.from_dictionary(raw)
+		assert_eq(data.picked_prize, "", "B4 %s names no prize" % str(raw).substr(0, 24))
+		assert_between(data.prize_cycle, 0, SaveData.MAX_CYCLES, "B4 the cycle stays in range")
+
+
 func test_negative_and_out_of_range_values_are_clamped() -> void:
 	var raw: Dictionary = {
 		"coins": -50,
@@ -217,3 +261,34 @@ func test_completing_a_cycle_writes_the_save() -> void:
 	pm.data = SaveData.new()
 	pm.load_or_default()
 	assert_eq(pm.get_coins(), coins_after, "and a restart sees the reward")
+
+
+func test_a_field_from_a_newer_build_survives_a_load_and_a_save() -> void:
+	var raw: Dictionary = {"coins": 7, "future_stars": {"deep": [1, 2, {"k": "v"}]}, "future_flag": true}
+	var data: SaveData = SaveData.from_dictionary(raw)
+	data.coins = 9
+	var written: Dictionary = JSON.parse_string(JSON.stringify(data.to_dictionary())) as Dictionary
+	var sent: Dictionary = JSON.parse_string(JSON.stringify(raw)) as Dictionary
+	assert_eq(written.get("future_stars"), sent["future_stars"], "B5 ADR-005 a nested unknown field is written back")
+	assert_eq(written.get("future_flag"), true, "B5 a scalar one too")
+	assert_eq(int(written.get("coins")), 9, "B5 and the known fields carry the change")
+
+
+func test_an_unknown_field_never_overrides_a_known_one_and_stays_bounded() -> void:
+	var data: SaveData = SaveData.from_dictionary({"coins": 5, "junk": "x".repeat(SaveData.UNKNOWN_MAX_CHARS + 1)})
+	assert_true(data.unknown_fields.is_empty(), "B5 an oversize unknown field is dropped, not stored")
+	var keyed: SaveData = SaveData.from_dictionary({"coins": 5, "k".repeat(SaveData.UNKNOWN_KEY_MAX + 1): 1})
+	assert_true(keyed.unknown_fields.is_empty(), "B5 a long key is dropped")
+	var forged: SaveData = SaveData.new()
+	forged.unknown_fields = {"coins": 999, "extra": 1}
+	forged.coins = 3
+	assert_eq(int(forged.to_dictionary()["coins"]), 3, "B5 a known field always wins")
+	assert_eq(int(forged.to_dictionary()["extra"]), 1)
+
+
+func test_too_many_unknown_fields_are_dropped_together() -> void:
+	var raw: Dictionary = {"coins": 1}
+	for index: int in range(100):
+		raw["f%02d" % index] = "x".repeat(1000)
+	var data: SaveData = SaveData.from_dictionary(raw)
+	assert_true(data.unknown_fields.is_empty(), "B4 the total bound drops the lot when exceeded")

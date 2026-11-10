@@ -1,0 +1,30 @@
+story_id: e13s09
+epic_id: e13
+mode: epic-close
+risk: P0
+branch: epic/e13-wave-1b-primitives-and-templates
+manual_uat: waived
+manual_reason: >
+  The plan's done-when for e13 is tests, preflight, and trace.
+  A parent watching a child is not a gate.
+terminal_verdict:
+  command: bash scripts/preflight.sh
+  exit: 0
+  scripts: 114
+  tests: 761
+  asserts: 9461
+  trace: pass
+audit_code:
+  result: pass
+  notes:
+    - No new dependencies.
+    - type_gate, gdlint, gdformat, and trace-stories passed inside preflight.
+    - Map template does not read the wallet and does not build scene paths.
+    - Lane template has no projectile, life, or screen-shake symbol.
+    - Prize and reward templates have no ad symbol.
+    - t22_play_beat and t3_skip_beat are skipped in the template table. Coverage is 1071 of 1801.
+    - progress_manager.gd is 300 lines after the OutfitLedger split. The size bar passed.
+review_round_1:
+  result: FAIL
+  record: specs/verifications/AUDIT-e13-2026-11-09.md
+  note: The first audit passed on the e13 gates. The dual review found that no template could be played; the counts above are after the fixes.

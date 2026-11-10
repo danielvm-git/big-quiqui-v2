@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_title"]
+script = ExtResource("2_step")
+template_id = "t0_title"
+
+[resource]
+script = ExtResource("1_def")
+id = "title_probe"
+background_id = "bg_title"
+music_id = "music_main_theme"
+steps = Array[Resource]([SubResource("step_title")])
+next_scene_id = "home"

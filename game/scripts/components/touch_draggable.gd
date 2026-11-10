@@ -30,27 +30,6 @@ enum Mode { CONSUME_ON_DROP, CONTINUOUS_SCRUB, SNAP_TO_SLOT, FREE_PLACEMENT }
 const MIN_HIT_SIZE: Vector2 = Vector2(120.0, 120.0)
 const RETURN_SEC: float = 0.25
 
-const STATE_REST: String = "REST"
-const STATE_DRAGGING: String = "DRAGGING"
-const STATE_RETURNING: String = "RETURNING"
-const STATE_CONSUMED: String = "CONSUMED"
-const STATE_SCRUBBING: String = "SCRUBBING"
-const STATE_ABORTED: String = "ABORTED"
-const LEGAL_EDGES: Dictionary = {
-	STATE_REST: [STATE_DRAGGING, STATE_SCRUBBING],
-	STATE_DRAGGING: [STATE_REST, STATE_RETURNING, STATE_CONSUMED],
-	STATE_RETURNING: [STATE_REST, STATE_DRAGGING],
-	STATE_SCRUBBING: [STATE_REST, STATE_ABORTED],
-	STATE_ABORTED: [STATE_REST],
-	STATE_CONSUMED: [],
-}
-const MAX_DWELL_SEC: Dictionary = {STATE_RETURNING: 1.0}
-## Stands in for a touch index when a real mouse holds the prop.
-const MOUSE_INDEX: int = -1
-## A control that is missing, freed or out of the tree gets a rect no point is inside.
-## A zero-size Rect2 would *contain* the origin, so the sentinel is offset instead.
-const NO_RECT: Rect2 = Rect2(Vector2(-1.0e9, -1.0e9), Vector2(1.0, 1.0))
-
 ## The single-finger lock: the one prop held in the whole game (T-E03-01).
 static var _holder: TouchDraggable = null
 
@@ -77,7 +56,7 @@ var enabled: bool = true
 var manual_step: bool = false
 var fsm: Fsm = null
 
-var _owner_touch_index: int = MOUSE_INDEX
+var _owner_touch_index: int = TouchDraggableStates.MOUSE_INDEX
 var _grab_offset: Vector2 = Vector2.ZERO
 var _rest_position: Vector2 = Vector2.ZERO
 var _return_from: Vector2 = Vector2.ZERO
@@ -86,7 +65,7 @@ var _scrub: ScrubGesture = ScrubGesture.new()
 
 
 func _init() -> void:
-	fsm = Fsm.new(STATE_REST, LEGAL_EDGES, MAX_DWELL_SEC)
+	fsm = Fsm.new(TouchDraggableStates.STATE_REST, TouchDraggableStates.LEGAL_EDGES, TouchDraggableStates.MAX_DWELL_SEC)
 
 
 func _ready() -> void:
@@ -108,7 +87,7 @@ func _exit_tree() -> void:
 	if _holder != self:
 		return
 	_holder = null
-	fsm.transition_to(STATE_REST)
+	fsm.transition_to(TouchDraggableStates.STATE_REST)
 	position = _rest_position
 	drag_ended.emit()
 
@@ -127,20 +106,20 @@ func _gui_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton:
 		var button: InputEventMouseButton = event as InputEventMouseButton
 		if button.button_index == MOUSE_BUTTON_LEFT:
-			_on_contact(MOUSE_INDEX, button.pressed, button.position)
+			_on_contact(TouchDraggableStates.MOUSE_INDEX, button.pressed, button.position)
 	elif event is InputEventMouseMotion:
-		_on_motion(MOUSE_INDEX, (event as InputEventMouseMotion).position)
+		_on_motion(TouchDraggableStates.MOUSE_INDEX, (event as InputEventMouseMotion).position)
 
 
 func advance(delta: float) -> void:
-	if fsm.state != STATE_RETURNING:
+	if fsm.state != TouchDraggableStates.STATE_RETURNING:
 		return
 	_return_elapsed += delta
 	var progress: float = minf(_return_elapsed / RETURN_SEC, 1.0)
 	position = _return_from.lerp(_rest_position, progress)
 	if progress >= 1.0 or fsm.check_dwell():
 		position = _rest_position
-		fsm.transition_from(STATE_RETURNING, STATE_REST)
+		fsm.transition_from(TouchDraggableStates.STATE_RETURNING, TouchDraggableStates.STATE_REST)
 
 
 func state_id() -> String:
@@ -163,11 +142,11 @@ func _press(index: int, local_point: Vector2) -> void:
 	if mode == Mode.CONTINUOUS_SCRUB:
 		_press_scrub(index)
 		return
-	if not fsm.can_transition_to(STATE_DRAGGING):
+	if not fsm.can_transition_to(TouchDraggableStates.STATE_DRAGGING):
 		return
-	if fsm.state == STATE_REST:
+	if fsm.state == TouchDraggableStates.STATE_REST:
 		_rest_position = position
-	fsm.transition_to(STATE_DRAGGING)
+	fsm.transition_to(TouchDraggableStates.STATE_DRAGGING)
 	_holder = self
 	_owner_touch_index = index
 	_grab_offset = _to_global(local_point) - global_position
@@ -177,9 +156,9 @@ func _press(index: int, local_point: Vector2) -> void:
 
 ## A scrub never moves the prop: the finger moves, the sponge stays under it.
 func _press_scrub(index: int) -> void:
-	if not fsm.can_transition_to(STATE_SCRUBBING):
+	if not fsm.can_transition_to(TouchDraggableStates.STATE_SCRUBBING):
 		return
-	fsm.transition_to(STATE_SCRUBBING)
+	fsm.transition_to(TouchDraggableStates.STATE_SCRUBBING)
 	_holder = self
 	_owner_touch_index = index
 	_scrub.target = scrub_target
@@ -193,7 +172,7 @@ func _on_motion(index: int, local_point: Vector2) -> void:
 	if not _owns(index):
 		return
 	var point: Vector2 = _to_global(local_point)
-	if fsm.state == STATE_SCRUBBING:
+	if fsm.state == TouchDraggableStates.STATE_SCRUBBING:
 		_scrub_move(point)
 		return
 	global_position = point - _grab_offset
@@ -208,7 +187,7 @@ func _scrub_move(point: Vector2) -> void:
 
 func _drop(point: Vector2, cancelled: bool) -> void:
 	_holder = null
-	if fsm.state == STATE_SCRUBBING:
+	if fsm.state == TouchDraggableStates.STATE_SCRUBBING:
 		_end_scrub()
 		return
 	if not cancelled and mode == Mode.CONSUME_ON_DROP and _rect_of(drop_target, drop_margin).has_point(point):
@@ -225,7 +204,7 @@ func _drop(point: Vector2, cancelled: bool) -> void:
 
 func _end_scrub() -> void:
 	_stop_loop()
-	fsm.transition_to(STATE_REST)
+	fsm.transition_to(TouchDraggableStates.STATE_REST)
 	drag_ended.emit()
 	_emit("scrub.end", {"scrubbed": _scrub.points})
 
@@ -233,12 +212,12 @@ func _end_scrub() -> void:
 ## Scene changes and resets call this: release the shared owner, stop the loop and
 ## return to rest, so an interrupted gesture can never wedge the next one (T-E04-04).
 func abort() -> void:
-	if fsm.state != STATE_SCRUBBING:
+	if fsm.state != TouchDraggableStates.STATE_SCRUBBING:
 		_stop_loop()
 		return
 	_stop_loop()
-	fsm.transition_to(STATE_ABORTED)
-	fsm.transition_to(STATE_REST)
+	fsm.transition_to(TouchDraggableStates.STATE_ABORTED)
+	fsm.transition_to(TouchDraggableStates.STATE_REST)
 	_holder = null
 	drag_ended.emit()
 	_emit("scrub.end", {"scrubbed": _scrub.points, "aborted": true})
@@ -261,7 +240,7 @@ func _stop_loop() -> void:
 
 
 func _consume() -> void:
-	fsm.transition_to(STATE_CONSUMED)
+	fsm.transition_to(TouchDraggableStates.STATE_CONSUMED)
 	drag_ended.emit()
 	_emit("drag.drop", {"outcome": "consumed"})
 	consumed.emit()
@@ -277,7 +256,7 @@ func _snap() -> void:
 
 
 func _begin_return() -> void:
-	fsm.transition_to(STATE_RETURNING)
+	fsm.transition_to(TouchDraggableStates.STATE_RETURNING)
 	_return_from = position
 	_return_elapsed = 0.0
 	drag_ended.emit()
@@ -289,33 +268,22 @@ func _owns(index: int) -> bool:
 
 ## The target's rect on the canvas, grown by `margin`: one owner for every mode.
 func _rect_of(control: Variant, margin: float) -> Rect2:
-	# `Variant` on purpose: a freed target is a miss, and a typed parameter raises first.
-	if typeof(control) != TYPE_OBJECT or not is_instance_valid(control):
-		return NO_RECT
-	var target: Control = control as Control
-	if target == null or not target.is_inside_tree():
-		return NO_RECT
-	return (target.get_global_transform_with_canvas() * Rect2(Vector2.ZERO, target.size)).grow(margin)
+	return TouchDraggableGeom.rect_of(control, margin, TouchDraggableStates.NO_RECT)
 
 
 ## FREE_PLACEMENT: the piece stays where she let go and reports the room ratio (e09).
 func _place(point: Vector2) -> bool:
 	if mode != Mode.FREE_PLACEMENT or not _rect_of(placement_area, 0.0).has_point(point):
 		return false
-	fsm.transition_to(STATE_REST)
+	fsm.transition_to(TouchDraggableStates.STATE_REST)
 	drag_ended.emit()
 	_emit("drag.drop", {"outcome": "placed"})
 	placed.emit(normalized_of(get_global_rect().get_center()))
 	return true
 
 
-## A point as a ratio of `placement_area`, clamped to 0..1. No area means the origin.
 func normalized_of(global_point: Vector2) -> Vector2:
-	var rect: Rect2 = _rect_of(placement_area, 0.0)
-	if rect == NO_RECT or rect.size.x <= 0.0 or rect.size.y <= 0.0:
-		return Vector2.ZERO
-	var ratio: Vector2 = (global_point - rect.position) / rect.size
-	return Vector2(clampf(ratio.x, 0.0, 1.0), clampf(ratio.y, 0.0, 1.0))
+	return TouchDraggableGeom.normalized_of(global_point, placement_area, TouchDraggableStates.NO_RECT)
 
 
 func _to_global(local_point: Vector2) -> Vector2:

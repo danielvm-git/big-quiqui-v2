@@ -1,0 +1,79 @@
+story_id: e15s04
+spec: e15s04.md
+epic_id: e15
+title: "t38_peekaboo on Tap and Spawner"
+status: failing
+bcps: 5
+scenarios: ["SC-e15s04-P0-01", "SC-e15s04-P0-02", "SC-e15s04-P0-03", "SC-e15s04-P1-01", "SC-e15s04-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn (friends peek, a tap giggles)"
+tasks:
+- id: e15s04-t01
+  description: "Write the failing peekaboo tests: a visible tap counts, a miss does not fail, the banned life verbs are absent, the seed replays, orphans stay at zero. No new security findings in affected paths."
+  verify: test -f game/tests/unit/test_t38_peekaboo.gd
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s04-P0-03)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "unit"
+      - "Security Review"
+  status: failing
+- id: e15s04-t02
+  description: "Implement t38_peekaboo on the existing Tap and Spawner. No new security findings in affected paths."
+  verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s04-P0-03)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "unit"
+      - "Security Review"
+  status: failing
+- id: e15s04-t03
+  description: "Prove the giggle count, the quiet miss, the seed and the orphan count. No new security findings in affected paths."
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t38_peekaboo
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s04-P0-03)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "unit"
+      - "Security Review"
+  status: failing
+- id: e15s04-t04
+  description: "Author peekaboo.tres, register the id, and play it on the player at both aspects. No new security findings in affected paths."
+  verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_peekaboo_scene
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s04-P0-03)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "integration"
+      - "Security Review"
+  status: failing
+- id: e15s04-t05
+  description: "Tag the new scripts and tests, then run the story trace and the full gate. No new security findings in affected paths."
+  verify: bash scripts/trace-stories.sh --strict && bash scripts/preflight.sh
+  risk: P0
+  security: medium
+  security_check: "no new security findings in affected paths (SC-e15s04-P0-03)"
+  allure:
+    severity: critical
+    categories:
+      - "wave-2"
+      - "template"
+      - "integration"
+      - "Security Review"
+  status: failing

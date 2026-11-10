@@ -1,11 +1,12 @@
 # story: e01s02
+# story: e14s05
 extends GutTest
 ## SC-E01-P1-01/02 — SceneManager walks its declared FSM, never drops a rapid
 ## request (1-slot queue), and recovers from a stuck transition at 2.0 s.
 
-const SCENE_A: String = "res://scenes/casa.tscn"
-const SCENE_B: String = "res://scenes/cozinha.tscn"
-const SCENE_C: String = "res://scenes/banheiro.tscn"
+const SCENE_A: String = "res://scenes/fixture_a.tscn"
+const SCENE_B: String = "res://scenes/fixture_b.tscn"
+const SCENE_C: String = "res://scenes/fixture_c.tscn"
 const SCENE_MISSING: String = "res://scenes/nao_existe_nunca.tscn"
 var sm: Node = null
 var loaded: Array[String] = []

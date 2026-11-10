@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_reward"]
+script = ExtResource("2_step")
+template_id = "t32_reward"
+item_ids = PackedStringArray("vaso_planta")
+
+[resource]
+script = ExtResource("1_def")
+id = "reward_probe"
+background_id = "bg_celebration"
+music_id = "music_main_theme"
+steps = Array[Resource]([SubResource("step_reward")])
+next_scene_id = "home"

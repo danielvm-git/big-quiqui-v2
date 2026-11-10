@@ -1,0 +1,72 @@
+story_id: e16s01
+spec: e16s01.md
+epic_id: e16
+title: "t37_tap_moving, t26_ride and t41_float_pop"
+status: failing
+bcps: 8
+scenarios: ["SC-e16s01-P0-01", "SC-e16s01-P0-02", "SC-e16s01-P0-03", "SC-e16s01-P0-04", "SC-e16s01-P1-01", "SC-e16s01-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn"
+tasks:
+- id: e16s01-t01
+  description: "Write the failing tests for tap-once, collect-only, pop-without-a-blade, and zero orphans"
+  verify: test -f game/tests/unit/test_t37_tap_moving.gd && test -f game/tests/unit/test_t26_ride.gd && test -f game/tests/unit/test_t41_float_pop.gd
+  risk: P0
+  security: low
+  allure:
+    severity: critical
+    categories:
+      - "wave-3"
+      - "template"
+      - "unit"
+  status: failing
+- id: e16s01-t02
+  description: "Implement the three templates over Tap, Steer free, and Spawner, with no new primitive. no new security findings in affected paths"
+  verify: "gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd # no new security findings in affected paths"
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+      - "wave-3"
+      - "template"
+      - "Security Review"
+  status: failing
+- id: e16s01-t03
+  description: "Prove t37 counts a moving target once and has no life and no shake. no new security findings in affected paths"
+  verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t37_tap_moving # no new security findings in affected paths"
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+      - "wave-3"
+      - "template"
+      - "unit"
+      - "Security Review"
+  status: failing
+- id: e16s01-t04
+  description: "Prove t26 collects and never crashes, and the same seed replays. no new security findings in affected paths"
+  verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t26_ride # no new security findings in affected paths"
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+      - "wave-3"
+      - "template"
+      - "unit"
+      - "Security Review"
+  status: failing
+- id: e16s01-t05
+  description: "Prove t41 pops with no blade and a long run leaves zero orphans. no new security findings in affected paths"
+  verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t41_float_pop # no new security findings in affected paths"
+  risk: P0
+  security: medium
+  allure:
+    severity: critical
+    categories:
+      - "wave-3"
+      - "template"
+      - "integration"
+      - "Security Review"
+  status: failing

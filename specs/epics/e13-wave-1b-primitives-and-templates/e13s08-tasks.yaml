@@ -2,7 +2,7 @@ story_id: e13s08
 spec: e13s08.md
 epic_id: e13
 title: "Steer and Spawner with t50_lanes (pulled forward by D6)"
-status: failing
+status: passing
 bcps: 8
 scenarios: ["SC-e13s08-P0-01", "SC-e13s08-P0-02", "SC-e13s08-P0-03", "SC-e13s08-P0-04", "SC-e13s08-P1-01", "SC-e13s08-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn (a lane game that collects)"
@@ -21,7 +21,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s08-t02
   description: "Implement the Steer primitive (free + lanes) and the Spawner modifier with a seed"
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
@@ -36,7 +36,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s08-t03
   description: "Implement `t50_lanes` with catching and no loss, consuming both"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t50_lanes
@@ -51,7 +51,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s08-t04
   description: "Author a lane def and prove seed-determinism plus zero orphans across a long run"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_spawner
@@ -66,4 +66,4 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing

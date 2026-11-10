@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_spin"]
+script = ExtResource("2_step")
+template_id = "t51_prize_pick"
+mode = "wheel"
+item_ids = PackedStringArray("a", "b", "c")
+
+[resource]
+script = ExtResource("1_def")
+id = "wheel"
+background_id = "bg_village"
+music_id = "music_main_theme"
+intro_voice_key = "vo.wheel.intro"
+steps = Array[Resource]([SubResource("step_spin")])
+next_scene_id = "village"

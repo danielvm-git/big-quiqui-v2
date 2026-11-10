@@ -1,0 +1,88 @@
+# story: e14s03
+story_id: e14s03
+spec: e14s03.md
+epic_id: e14
+title: "Market, playhouse, bear, duck, album, and party as data"
+status: done
+bcps: 8
+scenarios: ["SC-e14s03-P0-01", "SC-e14s03-P0-02", "SC-e14s03-P0-03", "SC-e14s03-P0-04", "SC-e14s03-P0-05", "SC-e14s03-P1-01", "SC-e14s03-P1-02", "SC-e14s03-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn loading market, playhouse, bear_puzzle, duck_dance, album and party"
+tasks:
+  - id: e14s03-t01
+    description: "Write the failing tests for the two new slots and the six defs"
+    verify: test -f game/tests/unit/test_t_rhythm_pose.gd
+    risk: P0
+    security: none
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "village-rooms"
+        - "unit"
+    status: done
+  - id: e14s03-t02
+    description: "Register t_rhythm_pose and t_album by id and author the six defs inside the size bars"
+    verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+    risk: P0
+    security: low
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "village-rooms"
+        - "unit"
+    status: done
+  - id: e14s03-t03
+    description: "Prove the duck miss-replays and the album writes no image. no new security findings in affected paths"
+    verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t_rhythm_pose && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t_album # no new security findings in affected paths"
+    risk: P0
+    security: medium
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "village-rooms"
+        - "Security Review"
+    status: done
+  - id: e14s03-t04
+    description: "Prove market, playhouse and bear save only valid owned results, once. no new security findings in affected paths"
+    verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_market_def && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_playhouse_def && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_bear_puzzle_def # no new security findings in affected paths"
+    risk: P0
+    security: medium
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "village-rooms"
+        - "Security Review"
+    status: done
+  - id: e14s03-t05
+    description: "Prove party uses shipped t22 or the recorded D3 skip, and friend doors are catalog ids. no new security findings in affected paths"
+    verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_party_def # no new security findings in affected paths"
+    risk: P1
+    security: medium
+    allure:
+      severity: high
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "village-rooms"
+        - "Security Review"
+    status: done
+  - id: e14s03-t06
+    description: "Prove playhouse ratios at both aspects and that 18 scene files remain"
+    verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_village_rooms_e2e
+    risk: P1
+    security: none
+    allure:
+      severity: high
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "village-rooms"
+        - "geometry"
+    status: done

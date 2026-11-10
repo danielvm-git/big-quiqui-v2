@@ -2,7 +2,7 @@ story_id: e13s02
 spec: e13s02.md
 epic_id: e13
 title: "Tap Primitive and t21_touch_each (any)"
-status: failing
+status: passing
 bcps: 6
 scenarios: ["SC-e13s02-P1-01", "SC-e13s02-P1-02", "SC-e13s02-P1-03", "SC-e13s02-P1-04", "SC-e13s02-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn (a step where everything answers)"
@@ -20,7 +20,7 @@ tasks:
       - "template"
       - "unit"
       - "input"
-  status: failing
+  status: passing
 - id: e13s02-t02
   description: "Implement the Tap primitive on `TapButton` without touching `touch_draggable.gd`"
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
@@ -34,7 +34,7 @@ tasks:
       - "template"
       - "unit"
       - "input"
-  status: failing
+  status: passing
 - id: e13s02-t03
   description: "Implement `t21_touch_each` with per-object reactions from the def"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t21_touch_each
@@ -48,7 +48,7 @@ tasks:
       - "template"
       - "unit"
       - "input"
-  status: failing
+  status: passing
 - id: e13s02-t04
   description: "Author one def that uses it, and prove 120 px targets and no-timer behaviour at both aspects"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t21_touch_each
@@ -62,4 +62,4 @@ tasks:
       - "template"
       - "unit"
       - "input"
-  status: failing
+  status: passing

@@ -16,7 +16,7 @@ static func reset_all() -> void:
 		push_warning("TestReset is only meaningful in debug builds (T-E01-02)")
 		return
 	delete_test_save()
-	VilaScene.reset_session()
+	VillageRecycle.reset_session()
 	for manager: String in MANAGERS:
 		var node: Node = manager_node(manager)
 		if node == null:

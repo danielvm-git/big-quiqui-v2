@@ -1,0 +1,62 @@
+# story: e14s04
+story_id: e14s04
+spec: e14s04.md
+epic_id: e14
+title: "Wheel on t51_prize_pick and penguin on t50_lanes"
+status: failing
+bcps: 6
+scenarios: ["SC-e14s04-P0-01", "SC-e14s04-P0-02", "SC-e14s04-P0-03", "SC-e14s04-P1-01", "SC-e14s04-P1-02", "SC-e14s04-P2-01"]
+playable_scene: "res://scenes/scene_player.tscn loading wheel, then penguin_lanes"
+tasks:
+  - id: e14s04-t01
+    description: "Write the failing wheel and penguin def tests"
+    verify: test -f game/tests/unit/test_wheel_def.gd
+    risk: P0
+    security: none
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "d6-rooms"
+        - "unit"
+    status: failing
+  - id: e14s04-t02
+    description: "Author wheel.tres and penguin_lanes.tres and point the village and party doors at those ids"
+    verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
+    risk: P0
+    security: low
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "d6-rooms"
+        - "unit"
+    status: failing
+  - id: e14s04-t03
+    description: "Prove one wheel pick, no second payment, and no ad verb. no new security findings in affected paths"
+    verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_wheel_def # no new security findings in affected paths"
+    risk: P0
+    security: medium
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "d6-rooms"
+        - "Security Review"
+    status: failing
+  - id: e14s04-t04
+    description: "Prove catch, quiet miss, seeded replay, zero orphans, and 18 scene files still present. no new security findings in affected paths"
+    verify: "godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_penguin_lanes_def && godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_penguin_lanes_e2e # no new security findings in affected paths"
+    risk: P0
+    security: medium
+    allure:
+      severity: critical
+      categories:
+        - "e14"
+        - "rooms-as-data"
+        - "d6-rooms"
+        - "Security Review"
+    status: failing

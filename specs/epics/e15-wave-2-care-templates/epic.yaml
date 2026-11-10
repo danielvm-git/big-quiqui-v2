@@ -1,0 +1,48 @@
+epic_id: e15
+slug: e15-wave-2-care-templates
+title: "Wave 2: Pairs, Sequence, and the five care-extension templates"
+playable_scene: "res://scenes/scene_player.tscn"
+status: planned
+bcps: 24
+scope_ref: REQ-15
+scope_file: specs/product/SCOPE_LATEST.yaml
+release_plan: pending
+release_plan_note: >
+  This capsule does not edit specs/release-plan.yaml. traceability.py fails any planned story
+  that has no code and no test, so the plan entry lands with the first story's code. plan-release
+  still owns adding e12-e16 and placing the v1.0.0 rung (D4).
+design_refs:
+  - specs/product/QUIQUI_BUILDER_DESIGN.html
+  - specs/product/BUILDER_REUSE_MAP.md
+  - specs/tech-architecture/e13-TEST_PLAN_LATEST.md
+notes: >
+  REQ-15 was confirmed and no acceptance criterion changed. The requirement still asks for the
+  Pairs and Sequence modifiers and five templates (t44_paint, t43_color_fill, t55_find,
+  t27_memory, t38_peekaboo), each with a written adaptation rule, a unit test, and one playable
+  Care scene. maps_to stays e15s01-e15s04. done_when is unchanged. D6 already moved
+  t51_prize_pick into e13 with Steer and Spawner, so this epic builds the five templates that
+  remain (83 scenes, 4.6% in build_waves) and does not rebuild Tap or Spawner. D1's removal
+  commit stays in e14. These four scene ids are extra play scenes on the one player; they do
+  not add a CareLoopManager step and they do not retarget the 17 migrated rooms. No new
+  package. No acceptance criterion in SCOPE was edited.
+stories:
+- id: e15s01
+  title: "t44_paint and t43_color_fill (the coloring pair)"
+  bcps: 8
+  status: planned
+  delta: ADDED
+- id: e15s02
+  title: "Sequence and t55_find"
+  bcps: 6
+  status: planned
+  delta: ADDED
+- id: e15s03
+  title: "Pairs and t27_memory"
+  bcps: 5
+  status: planned
+  delta: ADDED
+- id: e15s04
+  title: "t38_peekaboo on Tap and Spawner"
+  bcps: 5
+  status: planned
+  delta: ADDED

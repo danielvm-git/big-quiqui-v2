@@ -31,7 +31,7 @@ release:
     v1.0.0: e11 (still to come — the only remaining rung)
 title: "Coelinha QuiQui — Greenfield TutoTOONS Vertical-Slice Release Plan"
 slicing_strategy: "scene_by_scene_vertical"
-total_epics: 11
+total_epics: 16
 total_stories: 43
 total_bcps: 138
 
@@ -183,19 +183,55 @@ epics:
 
   - id: e12
     slug: e12-builder-player-and-first-loop
-    title: "Restart 1/5: Builder Player and the First Loop (wave 1a) — English ids, one player, kitchen as data"
-    playable_scene: "res://scenes/scene_player.tscn + res://data/scenes/kitchen.tres"
-    status: shipped
-    released: "(not tagged — the restart is docs/feat, see D4 in SCOPE_LATEST)"
-    bcps: 42
-    wsjf: 9.4
+    title: "Builder player, SceneDef, and kitchen data slice"
+    playable_scene: "res://scenes/scene_player.tscn"
+    status: done
+    release_plan: pending
+    bcps: 14
+    wsjf: 8.0
     stories: [e12s01, e12s02, e12s03, e12s04, e12s05, e12s06]
-    summary: >
-      Replaces the scene-per-epic shape with the one TutoTOONS repeats: a single ScenePlayer that runs a room
-      written as data. Ships the one-time English rename with voice addressed by key, the SceneDef/StepDef
-      model and navigation by scene id on SceneManager's existing machine, the player chrome and StepRunner
-      Fsm, the Give->Receive primitive with the closed reaction vocabulary, the hint layer, and t20_drag_snap
-      with kitchen.tres. The 17 legacy scenes stay playable throughout (D1a); they are removed in one commit
-      at e14s05.
-    deferred:
-      - "P1-02 child playtest for e12s06 (specs/verifications/PLAYTEST-e12s06.md) — needs a pre-reading child on the iPad"
+    summary: Player host, SceneDef loader, Give→Receive navigation, and the first kitchen def on data.
+
+  - id: e13
+    slug: e13-wave-1b-primitives-and-templates
+    title: "Wave 1b: primitives, templates, and child-play gate"
+    playable_scene: "res://scenes/scene_player.tscn"
+    status: done
+    release_plan: pending
+    bcps: 36
+    wsjf: 8.1
+    stories: [e13s01, e13s02, e13s03, e13s04, e13s05, e13s06, e13s07, e13s08, e13s09]
+    summary: Eleven wave-1 templates, StepParams grammar, HitProbe reach/seen gate, and test_child_can_play.
+
+  - id: e14
+    slug: e14-all-rooms-as-data
+    title: "All 17 rooms as data, then one removal of the legacy scene layer"
+    playable_scene: "res://scenes/scene_player.tscn"
+    status: done
+    release_plan: pending
+    bcps: 38
+    wsjf: 7.9
+    stories: [e14s01, e14s02, e14s03, e14s04, e14s05]
+    summary: Care and hub defs, market/minigames, then a single commit leaving only scene_player.tscn.
+
+  - id: e15
+    slug: e15-wave-2-care-templates
+    title: "Wave 2: paint, find, memory, peekaboo"
+    playable_scene: "res://scenes/scene_player.tscn"
+    status: done
+    release_plan: pending
+    bcps: 24
+    wsjf: 6.8
+    stories: [e15s01, e15s02, e15s03, e15s04]
+    summary: Five care-extension templates with playable probe defs.
+
+  - id: e16
+    slug: e16-wave-3-movement-templates
+    title: "Wave 3: movement templates and 28-slot library gate"
+    playable_scene: "res://scenes/scene_player.tscn"
+    status: done
+    release_plan: pending
+    bcps: 27
+    wsjf: 6.6
+    stories: [e16s01, e16s02, e16s03, e16s04]
+    summary: Ten niche templates on Steer/Spawner plus completeness gate for a future title.

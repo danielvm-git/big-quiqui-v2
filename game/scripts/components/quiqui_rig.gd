@@ -16,8 +16,6 @@ const BLINK_MAX_SEC: float = 5.2
 const BLINK_HOLD_SEC: float = 0.130
 ## Accessory slots live in `AccessorySlots` (vocabulary + placement maths); the rig
 ## owns only the layers and the art loading.
-const ACCESSORY_ROOT: String = "res://assets/art/items/"
-
 const Z_BODY: int = 0
 const Z_OUTFIT: int = 10
 const Z_EXPRESSION: int = 20
@@ -59,13 +57,15 @@ var _blink_until: float = -1.0
 var _face_before_anticipation: String = ""
 var _opaque: Dictionary = {}
 var _scrub_hull_local: PackedVector2Array = PackedVector2Array()
+var _accessories: QuiQuiRigAccessory = null
 
 
 func _ready() -> void:
+	_accessories = QuiQuiRigAccessory.new(self)
 	_rng.seed = seed_value
 	_next_blink_at = _rng.randf_range(BLINK_MIN_SEC, BLINK_MAX_SEC)
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	_build_rig()
+	QuiQuiRigBuild.assemble(self)
 	set_expression(NEUTRAL_EXPRESSION)
 	_refit()
 
@@ -163,79 +163,15 @@ func set_expression(id: String) -> bool:
 ## Equips an accessory in its slot. One item per slot: the previous one is replaced,
 ## never stacked, so the character stays readable (T-E05-05).
 func set_accessory(slot: String, id: String) -> bool:
-	var sprite: Sprite2D = _accessory_sprite(slot)
-	if sprite == null:
-		LogSink.emit_from(self, "rig.invalid_slot", {"slot": "invalid"})
-		return false
-	if id.is_empty():
-		_take_accessory_off(sprite, slot)
-		return true
-	return _equip_accessory(sprite, slot, id)
-
-
-func _equip_accessory(sprite: Sprite2D, slot: String, id: String) -> bool:
-	if not Ids.is_valid(id):
-		LogSink.emit_from(self, "rig.invalid_accessory", {"slot": slot, "accessory": "invalid"})
-		return false
-	var texture: Texture2D = _load_accessory_art(id)
-	if texture == null:
-		LogSink.emit_from(self, "rig.missing_art", {"accessory": id})
-		return false
-	sprite.texture = texture
-	sprite.visible = true
-	accessory_ids[slot] = id
-	_place_accessory(sprite, slot)
-	LogSink.emit_from(self, "rig.accessory_on", {"slot": slot, "accessory": id})
-	return true
-
-
-func _take_accessory_off(sprite: Sprite2D, slot: String) -> void:
-	sprite.visible = false
-	sprite.texture = null
-	accessory_ids.erase(slot)
-	LogSink.emit_from(self, "rig.accessory_off", {"slot": slot})
+	return _accessories.set_slot(slot, id)
 
 
 func accessory_id(slot: String) -> String:
-	return str(accessory_ids.get(slot, ""))
+	return _accessories.id_for(slot)
 
 
 func clear_accessories() -> void:
-	for slot: String in AccessorySlots.NAMES:
-		set_accessory(slot, "")
-
-
-## An accessory is placed relative to the **mouth zone**, not at a fixed height: the
-## mouth is a drag target (e03) and the face is the feedback channel (T-E05-06), so
-## every slot is offset by its own art height plus a margin. That makes "does not
-## cover the mouth" true by construction instead of by tuning.
-func _place_accessory(sprite: Sprite2D, slot: String) -> void:
-	if sprite == null or sprite.texture == null or mouth_zone == null:
-		return
-	var character: float = size.y if size.y > 1.0 else 620.0
-	var art: Vector2 = sprite.texture.get_size()
-	var factor: float = AccessorySlots.scale_for(slot, art.x, character)
-	sprite.scale = Vector2.ONE * factor
-	sprite.position = AccessorySlots.position_for(slot, art, factor, character, size.y - mouth_zone.position.y)
-
-
-func _accessory_sprite(slot: String) -> Sprite2D:
-	match slot:
-		AccessorySlots.SLOT_HEAD:
-			return headwear
-		AccessorySlots.SLOT_NECK:
-			return neck
-		AccessorySlots.SLOT_EYES:
-			return glasses
-		_:
-			return null
-
-
-func _load_accessory_art(id: String) -> Texture2D:
-	var path: String = "%s%s.png" % [ACCESSORY_ROOT, id]
-	if not ResourceLoader.exists(path):
-		return null
-	return load(path) as Texture2D
+	_accessories.clear_all()
 
 
 func set_outfit(id: String) -> bool:
@@ -266,57 +202,24 @@ func _take_outfit_off() -> void:
 
 ## Union of every visible sprite's opaque pixels in global coordinates.
 func get_visual_global_rect() -> Rect2:
-	var rect: Rect2 = Rect2()
-	var started: bool = false
-	for sprite: Sprite2D in [body, outfit, expression, headwear, neck, glasses]:
-		if sprite == null or not sprite.visible or sprite.texture == null:
-			continue
-		var used: Rect2 = opaque_rect(sprite.texture)
-		if not used.has_area():
-			continue
-		var top_left: Vector2 = sprite.global_position - sprite.texture.get_size() * 0.5 * sprite.global_scale
-		var sprite_rect: Rect2 = Rect2(top_left + used.position * sprite.global_scale, used.size * sprite.global_scale)
-		rect = sprite_rect if not started else rect.merge(sprite_rect)
-		started = true
-	return rect
+	return QuiQuiRigOpaque.union_sprite_rect([body, outfit, expression, headwear, neck, glasses] as Array, _opaque)
 
 
 ## Opaque box in frame pixels, cached by `get_instance_id()` (logs once per unreadable texture).
 func opaque_rect(texture: Texture2D) -> Rect2:
-	if texture == null:
-		return Rect2()
-	var key: int = texture.get_instance_id()
-	if _opaque.has(key):
-		return _opaque[key] as Rect2
-	var used: Rect2 = Rect2()
-	var image: Image = texture.get_image()
-	if image != null and not image.is_empty():
-		var opaque: Rect2i = image.get_used_rect()
-		if opaque.size.x > 0 and opaque.size.y > 0:
-			used = Rect2(Vector2(opaque.position), Vector2(opaque.size))
-	if not used.has_area():
-		LogSink.emit_from(self, "rig.opaque_unreadable", {"art": texture.resource_path.get_file()})
-	_opaque[key] = used
-	return used
+	return QuiQuiRigOpaque.used_pixels(texture, _opaque)
 
 
 func mouth_global_center() -> Vector2:
-	return global_position if mouth_zone == null else mouth_zone.get_global_rect().get_center()
+	return QuiQuiRigMouth.global_center(self)
 
 
 func update_food_proximity(global_point: Vector2) -> void:
-	if global_point.distance_to(mouth_global_center()) >= MOUTH_ANTICIPATION_PX:
-		clear_food_proximity()
-	elif _face_before_anticipation.is_empty():
-		_face_before_anticipation = NEUTRAL_EXPRESSION if expression_id == BLINK_EXPRESSION else expression_id
-		set_expression(ANTICIPATION_EXPRESSION)
+	QuiQuiRigMouth.update_food_proximity(self, global_point)
 
 
 func clear_food_proximity() -> void:
-	var face: String = _face_before_anticipation
-	_face_before_anticipation = ""
-	if not face.is_empty() and expression_id == ANTICIPATION_EXPRESSION:
-		set_expression(face)
+	QuiQuiRigMouth.clear_food_proximity(self)
 
 
 func reset() -> void:
@@ -333,34 +236,6 @@ func reset() -> void:
 	set_expression(NEUTRAL_EXPRESSION)
 
 
-func _build_rig() -> void:
-	pivot = Node2D.new()
-	pivot.name = "Pivot"
-	pivot.position = Vector2(size.x * 0.5, size.y)
-	add_child(pivot)
-	body = _make_sprite("Body", Z_BODY)
-	outfit = _make_sprite("Outfit", Z_OUTFIT)
-	expression = _make_sprite("Expression", Z_EXPRESSION)
-	headwear = _make_sprite("Headwear", Z_HEADWEAR)
-	neck = _make_sprite("Neck", Z_NECK)
-	glasses = _make_sprite("Glasses", Z_GLASSES)
-	for layer: Sprite2D in [outfit, headwear, neck, glasses]:
-		layer.visible = false
-	mouth_zone = Control.new()
-	mouth_zone.name = "MouthZone"
-	mouth_zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(mouth_zone)
-
-
-func _make_sprite(sprite_name: String, layer: int) -> Sprite2D:
-	var sprite: Sprite2D = Sprite2D.new()
-	sprite.name = sprite_name
-	sprite.z_index = layer
-	sprite.centered = true
-	pivot.add_child(sprite)
-	return sprite
-
-
 func _apply_expression(id: String) -> void:
 	var texture: Texture2D = _load_art(id)
 	if texture == null or expression == null:
@@ -373,21 +248,7 @@ func _apply_expression(id: String) -> void:
 
 
 func _update_layout() -> void:
-	if expression == null or expression.texture == null:
-		return
-	var art: Vector2 = expression.texture.get_size()
-	var used: Rect2 = opaque_rect(expression.texture)
-	var seen: Vector2 = used.size if used.has_area() else art
-	var factor: float = (size.y if size.y > 1.0 else seen.y) / seen.y if seen.y > 0.0 else 1.0
-	var shift: Vector2 = (art - used.size) * Vector2(0.5, 1.0) - used.position if used.has_area() else Vector2.ZERO
-	for sprite: Sprite2D in [body, outfit, expression, headwear, neck, glasses]:
-		if sprite != null:
-			sprite.scale = Vector2.ONE * factor
-			sprite.position = (Vector2(0.0, -art.y * 0.5) + shift) * factor
-	_rebuild_scrub_hull(get_visual_global_rect())
-	if mouth_zone != null:
-		mouth_zone.size = seen * factor * 0.18
-		mouth_zone.position = Vector2(size.x * 0.5 - mouth_zone.size.x * 0.5, size.y - seen.y * factor * 0.62)
+	QuiQuiRigLayout.update(self)
 
 
 ## The scrub hull in rig-local coordinates: an ellipse inscribed in the visible
@@ -408,18 +269,9 @@ func scrub_hull_global() -> PackedVector2Array:
 
 
 func _rebuild_scrub_hull(seen_global: Rect2) -> void:
-	var origin: Vector2 = get_global_rect().position
-	var box: Rect2 = Rect2(seen_global.position - origin, seen_global.size).grow(-SCRUB_HULL_INSET)
-	if box.size.x <= 1.0 or box.size.y <= 1.0:
-		_scrub_hull_local = PackedVector2Array()
-		return
-	var centre: Vector2 = box.get_center()
-	var radii: Vector2 = box.size * 0.5
-	var hull: PackedVector2Array = PackedVector2Array()
-	for index: int in range(SCRUB_HULL_POINTS):
-		var angle: float = TAU * float(index) / float(SCRUB_HULL_POINTS)
-		hull.append(centre + Vector2(cos(angle) * radii.x, sin(angle) * radii.y))
-	_scrub_hull_local = hull
+	_scrub_hull_local = QuiQuiScrubHull.local_polygon(
+		seen_global, get_global_rect(), SCRUB_HULL_POINTS, SCRUB_HULL_INSET
+	)
 
 
 func _load_art(id: String) -> Texture2D:

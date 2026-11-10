@@ -51,7 +51,7 @@ func test_miss_leaves_item_enabled() -> void:
 	var item: TouchDraggable = prim.active_draggables()[0]
 	item.drag_ended.emit()
 	assert_true(item.enabled)
-	assert_eq(item.state_id(), TouchDraggable.STATE_REST)
+	assert_eq(item.state_id(), TouchDraggableStates.STATE_REST)
 
 
 func test_slots_accepts_one_payload_per_slot() -> void:

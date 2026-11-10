@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_touch"]
+script = ExtResource("2_step")
+template_id = "t21_touch_each"
+mode = "count_n"
+repeat_count = 2
+item_ids = PackedStringArray("apple", "grape")
+on_hit_pose = "pleased"
+hit_poses = PackedStringArray("pleased", "surprised")
+on_hit_sfx_id = "sfx_heart"
+
+[resource]
+script = ExtResource("1_def")
+id = "touch_each_probe"
+background_id = "bg_playroom"
+music_id = "music_playroom"
+steps = Array[Resource]([SubResource("step_touch")])
+next_scene_id = "home"

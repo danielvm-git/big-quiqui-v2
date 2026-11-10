@@ -1,5 +1,6 @@
 # story: e12s02
 # story: e12s03
+# story: e14s05
 class_name ScenePlayer
 extends Control
 ## Data-scene host: chrome, StepRunner, templates, hints.
@@ -13,6 +14,7 @@ var _reactions: ReactionExecutor = null
 var _hint: HintLayer = null
 var _nodes: PlayerNodeTable = null
 var _template: RefCounted = null
+var _holder: RefCounted = null
 var _exited: bool = false
 var _booted: bool = false
 var _fsm_prev: String = ""
@@ -91,7 +93,7 @@ func _load_def() -> SceneDef:
 		var consumed: SceneDef = manager.call("consume_def") as SceneDef
 		if consumed != null:
 			return SceneDefLoader.validate(consumed)
-	return null
+	return SceneDefLoader.load_by_id("title")
 
 
 func _apply_media(def: SceneDef) -> void:
@@ -138,9 +140,7 @@ func _exit_room() -> void:
 	var target: String = "home"
 	if loaded_def != null and not loaded_def.next_scene_id.is_empty():
 		target = loaded_def.next_scene_id
-	var sm: Node = get_node_or_null("/root/SceneManager")
-	if sm != null and sm.has_method("request_def"):
-		sm.call("request_def", target)
+	SceneNav.open(get_node_or_null("/root/SceneManager"), target)
 
 
 func _sync_fsm() -> void:
@@ -186,6 +186,7 @@ func _mount_template(step: StepDef) -> void:
 	_template = TemplateCatalog.instantiate(step.template_id)
 	if _template != null and _template.has_method("setup"):
 		_template.call("setup", ctx)
+	_mount_holder()
 	if _hint != null and _hint_mgr != null and _drag_hint != null:
 		_hint.bind(_hint_mgr, _drag_hint, _nodes)
 		_hint.begin_step(step)
@@ -206,10 +207,13 @@ func _on_step_completed(index: int) -> void:
 func _tick_template(delta: float) -> void:
 	if _template == null or runner.fsm.state != StepRunner.STATE_STEP:
 		return
+	if _active_step != runner.step_index:
+		return  # the runner moved on; the mounted template still belongs to the step before
 	if _template.has_method("advance"):
 		_template.call("advance", delta)
 	if _template.has_method("progress"):
 		runner.report_template_progress(float(_template.call("progress")))
+	ProgressHolderMount.tick(_holder, delta)
 	if runner.template_progress() >= 1.0 and not _step_credited:
 		_on_step_completed(_active_step)
 
@@ -220,6 +224,17 @@ func _tick_hint(delta: float) -> void:
 	runner.idle_sec = _hint.idle_sec
 	_hint.advance(delta)
 	_hint_mgr.advance(delta)
+
+
+## A finger down or moving anywhere counts as playing, so a hint never replays over a child who is already
+## tapping a tray row, a pad or a rub tool. The mouse echo of a touch (`device == -1`) is not a second finger.
+func _input(event: InputEvent) -> void:
+	if event.device == -1:
+		return
+	var down: bool = event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed
+	down = down or (event is InputEventMouseButton and (event as InputEventMouseButton).pressed)
+	if down or event is InputEventScreenDrag:
+		_note_input()
 
 
 func _note_input() -> void:
@@ -247,7 +262,15 @@ func _register_nodes() -> void:
 		_nodes.register("home", _home)
 
 
+func _mount_holder() -> void:
+	if loaded_def == null or not loaded_def.show_progress_holder:
+		return
+	_holder = ProgressHolderMount.mount(self, runner, _nodes)
+
+
 func _teardown_template() -> void:
+	ProgressHolderMount.clear(_holder)
+	_holder = null
 	if _template != null and _template.has_method("teardown"):
 		_template.call("teardown")
 	_template = null

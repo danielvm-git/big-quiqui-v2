@@ -1,4 +1,5 @@
 # story: e02s01
+# story: e13s05
 extends Node
 ## The care cycle as an explicit machine (ADR-001 / EXPLICIT_STATE_MACHINES §2):
 ## IDLE -> FEED -> BATH -> DRESS -> PLAY -> SLEEP -> CELEBRATE -> IDLE, where
@@ -38,6 +39,7 @@ var fsm: Fsm = null
 var cycle_id: int = 0
 
 var _rewarded_cycle_id: int = -1
+var _collected_cycle_id: int = -1
 
 
 func _ready() -> void:
@@ -110,11 +112,34 @@ func next_step() -> String:
 	return STEP_ORDER[done]
 
 
+## True when this cycle id already paid. The reward screen reads this on entry.
+func reward_paid() -> bool:
+	return _rewarded_cycle_id == cycle_id
+
+
+## True when the child already tapped the star for this cycle. Paying happens on entry to
+## CELEBRATE; collecting is the child's tap on the reward screen, and it happens once.
+func reward_collected() -> bool:
+	return _collected_cycle_id == cycle_id
+
+
+## The child's tap. A reward is earned by finishing the cycle, so a tap before CELEBRATE collects
+## nothing. Pays through the once-per-cycle ledger when nothing paid yet, then marks the cycle
+## collected. True only on the first tap of a cycle.
+func collect_reward() -> bool:
+	if reward_collected() or (not reward_paid() and fsm.state != STATE_CELEBRATE):
+		return false
+	_grant_cycle_reward()
+	_collected_cycle_id = cycle_id
+	return true
+
+
 ## TestReset entry point. The reward ledger is in-memory and per-session, so a reset in play would
 ## replay a cycle; nothing but tests calls this (ADR-009).
 func reset() -> void:
 	cycle_id = 0
 	_rewarded_cycle_id = -1
+	_collected_cycle_id = -1
 	_build_fsm()
 
 

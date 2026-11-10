@@ -9,7 +9,7 @@ config_version=5
 config/name="Coelinha QuiQui"
 config/version="0.10.1"
 config/features=PackedStringArray("4.7", "Mobile")
-run/main_scene="res://scenes/titulo.tscn"
+run/main_scene="res://scenes/scene_player.tscn"
 config/icon="res://assets/art/ui/coin.png"
 
 [display]

@@ -23,11 +23,11 @@ func test_a_loaded_save_round_trips_byte_for_byte() -> void:
 		assert_eq(twice.to_dictionary(), once.to_dictionary(), "normalising twice != once")
 
 
-func test_unknown_keys_never_reach_disk() -> void:
+func test_unknown_keys_are_kept_but_never_read_as_game_state() -> void:
 	var loaded: SaveData = SaveData.from_dictionary({"cheat": true, "coins": 5, "extra": [1, 2]})
-	assert_false(loaded.to_dictionary().has("cheat"))
-	assert_false(loaded.to_dictionary().has("extra"))
 	assert_eq(loaded.coins, 5, "a known key next to junk still loads")
+	assert_true(loaded.to_dictionary().has("cheat"), "ADR-005 a downgrade keeps what a newer build wrote")
+	assert_eq(loaded.unknown_fields.keys().size(), 2)
 
 
 func test_absurd_magnitudes_saturate_instead_of_overflowing() -> void:

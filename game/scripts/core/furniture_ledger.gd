@@ -8,6 +8,20 @@ extends RefCounted
 ## the owner decides persistence and telemetry.
 
 
+## `{}` when the piece was bought, else `{"ev": ..., "data": ...}` for the refusal. Every refusal
+## happens before the first mutation, so a refused tap can never take coins without the piece.
+static func buy(data: SaveData, id: String, price: int) -> Dictionary:
+	if data == null or not Ids.is_valid(id) or price < 0:
+		return {"ev": "furniture.invalid", "data": {"item": "invalid"}}
+	if data.owned_furniture.has(id):
+		return {"ev": "furniture.already_owned", "data": {"item": id}}
+	if data.coins < price:
+		return {"ev": "furniture.denied", "data": {"item": id, "reason": "coins"}}
+	data.coins = clampi(data.coins - price, 0, SaveData.MAX_COINS)
+	data.owned_furniture.append(id)
+	return {}
+
+
 static func upsert(data: SaveData, id: String, nx: float, ny: float) -> bool:
 	if data == null or not Ids.is_valid(id) or not data.owned_furniture.has(id):
 		return false
@@ -31,6 +45,13 @@ static func copies(data: SaveData) -> Array[Dictionary]:
 	for entry: Dictionary in data.placed_furniture:
 		entries.append(entry.duplicate(true))
 	return entries
+
+
+static func owned_copy(data: SaveData) -> Array[String]:
+	var ids: Array[String] = []
+	if data != null:
+		ids.assign(data.owned_furniture)
+	return ids
 
 
 static func count(data: SaveData) -> int:

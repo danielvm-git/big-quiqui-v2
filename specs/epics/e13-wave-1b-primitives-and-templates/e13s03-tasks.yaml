@@ -2,9 +2,9 @@ story_id: e13s03
 spec: e13s03.md
 epic_id: e13
 title: "Pan Primitive and t25_map (the hub as data)"
-status: failing
+status: passing
 bcps: 8
-scenarios: ["SC-e13s03-P0-01", "SC-e13s03-P0-02", "SC-e13s03-P0-03", "SC-e13s03-P0-04", "SC-e13s03-P1-01", "SC-e13s03-P2-01"]
+scenarios: ["SC-e13s03-P0-01", "SC-e13s03-P0-02", "SC-e13s03-P0-03", "SC-e13s03-P0-04", "SC-e13s03-P0-05", "SC-e13s03-P1-01", "SC-e13s03-P2-01"]
 playable_scene: "res://scenes/scene_player.tscn (a pannable map with locked destinations)"
 tasks:
 - id: e13s03-t01
@@ -21,7 +21,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s03-t02
   description: "Implement the Pan primitive with clamping, follow and the tap tolerance"
   verify: gdlint game/ && gdformat --check game/ && godot --headless --path game -s tools/type_gate.gd
@@ -36,7 +36,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s03-t03
   description: "Implement `t25_map` reading destinations and lock rules from the def"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t25_map
@@ -51,7 +51,7 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing
 - id: e13s03-t04
   description: "Author a map def (the house hub) and verify it at both aspects with no letterbox bars"
   verify: godot --headless --path game -s addons/gut/gut_cmdln.gd -gexit -gselect=test_t25_map
@@ -66,4 +66,4 @@ tasks:
       - "template"
       - "unit"
       - "integration"
-  status: failing
+  status: passing

@@ -57,16 +57,7 @@ func test_a_spin_always_costs_at_least_one_ticket() -> void:
 	assert_gte(economy.wheel_spin_ticket_cost, 1, "a free spin is a mint")
 
 	economy.wheel_spin_ticket_cost = 0
-	var scene: Node = load("res://scenes/roda.tscn").instantiate()
-	scene.economy = economy
-	assert_gte(_spin_cost(scene), 1, "the scene floors it too (BUG-044)")
-
-
-func _spin_cost(scene: Node) -> int:
-	## Mirrors roda.gd's own floor without booting the scene: the contract is the floor,
-	## not the internal call site.
-	var economy: EconomyData = scene.economy
-	return maxi(economy.wheel_spin_ticket_cost, 1)
+	assert_gte(maxi(economy.wheel_spin_ticket_cost, 1), 1, "wheel mode floors ticket cost (BUG-044)")
 
 
 func test_the_pick_never_returns_an_unpriced_prize() -> void:

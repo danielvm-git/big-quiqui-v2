@@ -29,6 +29,12 @@ static func broken(variant: String) -> SceneDef:
 			def.background_id = ""
 		"empty_steps":
 			def.steps = []
+		"bad_next_scene":
+			def.next_scene_id = "nowhere_at_all"
+		"no_next_scene":
+			def.next_scene_id = ""
+		"bad_voice_key":
+			def.intro_voice_key = "kitchen intro"
 		_:
 			push_error("SceneDefFactory: unknown variant %s" % variant)
 	return def

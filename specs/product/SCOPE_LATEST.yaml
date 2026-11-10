@@ -64,11 +64,11 @@ evidence_baseline:
       Measured weight is not build order. After D6 the waves are ours, not TutoTOONS': wave 1 now
       carries 13 of the 30 used templates so that every existing room can migrate before the single
       removal commit (D1a).
-    wave_1_e12_e13: {templates: 13, scenes: 1593, share: "88.4%", added_by_d6: [t51_prize_pick, t50_lanes]}
+    wave_1_e12_e13: {templates: 13, scenes: 1071, share: "59.5%", planned_templates: 13, planned_scenes: 1593, planned_share: "88.4%", skipped: [t22_play_beat, t3_skip_beat], added_by_d6: [t51_prize_pick, t50_lanes], library_slots: [t_rhythm_pose, t_album]}
     wave_2_e15: {templates: 5, scenes: 83, share: "4.6%"}
     wave_3_e16: {templates: 10, scenes: 46, share: "2.6%"}
     retired_ads: {templates: 2, scenes: 79, share: "4.4%"}
-    check: "13 + 5 + 10 + 2 = 30 used templates; 1593 + 83 + 46 + 79 = 1801 scenes"
+    check: "Planned, before the D3 skips: 13 + 5 + 10 + 2 = 30 used templates; 1593 + 83 + 46 + 79 = 1801 scenes"
     raw_source: ".rea/report/builder-template-usage.json (gitignored, re-derivable)"
   current_code:
     godot: "4.7.stable"
@@ -110,7 +110,7 @@ in_scope:
       A child feeds QuiQui three times with no adult help, and asks to play again — and no asset or voice
       id in the tree is Portuguese any more.
   - id: REQ-13
-    title: "The remaining gesture primitives and the rest of wave 1 (87% of real scenes)"
+    title: "The remaining gesture primitives and the rest of wave 1 (59.5% of real scenes built, 88.4% planned)"
     what: >
       The other three gesture primitives — Rub (clear / leave / reveal), Tap (any / count_n / toggle)
       and Pan — plus the twelve remaining wave-1 templates: t21_touch_each, t23_erase, t34_rub_reveal,
@@ -127,9 +127,10 @@ in_scope:
       initializers and the scene objects those two templates carry, and write the rule down with a
       confidence level. A wrong guess on the most used template costs more than the pass.
     done_when: >
-      All 13 wave-1 templates have a written rule, a unit test and one scene that exercises them, and
-      the library covers 1,593 of the 1,801 template scenes we measured (or the lower number the T22/T3
-      pass justifies, stated explicitly).
+      11 wave-1 templates have a written rule, a unit test and one scene that exercises them.
+      t22_play_beat and t3_skip_beat are skipped: the e13s06 pass could not raise confidence
+      (specs/product/TEMPLATE_EVIDENCE_T22_T3.md). The library covers 1,071 of the 1,801
+      template scenes we measured (59.5%).
   - id: REQ-14
     title: "All 17 rooms as data, and one-commit retirement of the old scene layer"
     what: >
@@ -230,7 +231,7 @@ success_criteria:
   - "Wave 1a: a pre-reading child feeds QuiQui three times with no adult help, in one sitting, and asks to play again — observed, not asserted in a test."
   - "Wave 1a: the kitchen room is one data file plus the player scene; no kitchen-specific script exists."
   - "Wave 1a: zero Portuguese asset or voice ids remain under game/ (135 files renamed, 208 script references and 111 regenerated .tscn references updated, preflight green)."
-  - "After wave 1b: all 13 wave-1 templates have a unit test and a scene, representing 1,593 of the 1,801 measured template scenes (88.4%)."
+  - "After wave 1b: 11 wave-1 templates have a unit test and a scene, representing 1,071 of the 1,801 measured template scenes (59.5%). t22_play_beat (392) and t3_skip_beat (130) are skipped; the evidence pass could not raise confidence."
   - "After the migration: `find game/scenes -name '*.tscn'` returns exactly one scene (the player), and the 17 scene scripts and 17 builders are deleted in a single commit."
   - "After wave 3: 28 library slots have a written adaptation rule and a test scene; 14 numbers remain reserved with no implementation."
   - "Continuously: preflight green, no scene root that is not a Control at PRESET_FULL_RECT, no input handler that ignores the device == -1 mouse echo, and no step that can time out or punish."

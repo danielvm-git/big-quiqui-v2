@@ -1,0 +1,55 @@
+epic_id: e14
+slug: e14-all-rooms-as-data
+title: "All 17 rooms as data, then one removal of the old scene layer"
+playable_scene: "res://scenes/scene_player.tscn"
+status: planned
+bcps: 38
+scope_ref: REQ-14
+scope_file: specs/product/SCOPE_LATEST.yaml
+release_plan: pending
+release_plan_note: >
+  Not yet listed in specs/release-plan.yaml, deliberately. traceability.py fails any planned
+  story that has no code and no test, so the plan entry lands with the first story's code, not
+  before it. plan-release must add e12-e16 and decide where the v1.0.0 rung goes (D4 in
+  SCOPE_LATEST). This capsule does not edit the release plan.
+design_refs:
+  - specs/product/QUIQUI_BUILDER_DESIGN.html
+  - specs/product/BUILDER_REUSE_MAP.md
+  - specs/product/SCOPE_LATEST.yaml
+notes: >
+  REQ-14 was confirmed against specs/product/SCOPE_LATEST.yaml (the what, the maps_to list
+  e14s01-e14s05, the dependency_note, and the done_when) and against decisions D1, D1a and D6.
+  No acceptance criterion was changed. Kitchen is already data from e12 and is not rewritten here.
+  t22_play_beat and t3_skip_beat are consumed only as e13 shipped them, or as the D3 skip; this
+  epic does not invent their behaviour. No shipped room in BUILDER_REUSE_MAP §4 uses t3_skip_beat,
+  so no def names it. festa (scene id party) is the seventeenth room in SceneCatalog.ALL_PATHS and
+  in that map. The requested cut named the other rooms and left party unlisted. Party is e14s03
+  so the removal commit can delete festa.gd and festa.tscn while the whole game still runs, which
+  is the done_when already written for REQ-14. D6 pulled t51_prize_pick and t50_lanes into wave 1b,
+  so e14s04 is scene data on those templates and e14s05 does not wait for a later wave.
+stories:
+  - id: e14s01
+    title: "Care rooms on the player: bathroom, closet, playroom, bedroom"
+    bcps: 8
+    status: done
+    delta: ADDED
+  - id: e14s02
+    title: "Hubs on the player: title, home, village, celebration"
+    bcps: 8
+    status: failing
+    delta: ADDED
+  - id: e14s03
+    title: "Market, playhouse, bear, duck, album, and party as data"
+    bcps: 8
+    status: failing
+    delta: ADDED
+  - id: e14s04
+    title: "Wheel on t51_prize_pick and penguin on t50_lanes"
+    bcps: 6
+    status: failing
+    delta: ADDED
+  - id: e14s05
+    title: "One removal commit: 17 scripts, 17 builders, 17 scenes"
+    bcps: 8
+    status: failing
+    delta: REMOVED

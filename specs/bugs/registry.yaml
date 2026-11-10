@@ -567,8 +567,54 @@ bugs:
   file: specs/bugs/BUG-061-pinguim-basket-and-roda-wheel-overlap.md
   status: fixed
   found_by: e11 post-epic review (INV-10 occlusion probe)
-  fixed_by: 'builder z/composition fix + a recursive-z model in the probe; allowlist row deleted'
+  fixed_by: 'composition fix, then the data-driven rewrite removed both nodes; the probe now
+    composes z down the chain (_effective_z) so a raised parent counts'
+  note: 'The two lineages both used BUG-062/063 for different bugs. The ids this branch never
+    used were renumbered: the archived-capsule gate defect is BUG-066 and the project-version
+    drift is BUG-067, so all five records survive with unique ids.'
 - bug_id: BUG-062
+  date: '2026-11-09'
+  severity: high
+  priority: P0
+  scope: player
+  summary: 'ScenePlayer read progress from the still-mounted template of the previous step, so
+    the next step of a multi-step def completed in the tick it mounted'
+  file: specs/bugs/BUG-062-scene-player-skips-steps-on-a-stale-template.md
+  status: fixed
+  found_by: e13 review round 1 (bathroom_probe driven through the player)
+- bug_id: BUG-063
+  date: '2026-11-09'
+  severity: medium
+  priority: P1
+  scope: navigation
+  summary: 'A data room could leave only through request_def, so a map door to a legacy room did
+    nothing; SceneNav.open now picks request_def or request_scene'
+  file: specs/bugs/BUG-063-legacy-hub-exit-needs-a-scene-manager-request.md
+  status: fixed
+  found_by: e13 review round 1 (home_map mounted in the player)
+- bug_id: BUG-064
+  date: '2026-11-10'
+  severity: high
+  priority: P0
+  scope: player
+  summary: 'Wave-2 and wave-3 review must-fixes: ride, slice, serve, outro, paint, groom,
+    progress holder, and the 28-slot gate. The child-play helper no longer writes progress.'
+  file: specs/bugs/BUG-064-wave3-steps-do-not-finish.md
+  status: fixed
+  found_by: request-review round 1 (REVIEW-A-e15e16, REVIEW-B-e15e16)
+- bug_id: BUG-065
+  date: '2026-11-10'
+  severity: low
+  priority: P2
+  scope: core
+  summary: Split QuiQuiRig, TouchDraggable, and test_quiqui_rig under the 300-line bar; cleared
+    grandfather map in test_size_bars.
+  file: specs/bugs/BUG-064-wave3-steps-do-not-finish.md
+  status: fixed
+  found_by: audit-code full e12-e16 2026-11-09
+  note: 'Shares BUG-064''s document: both were closed in the same commit and the line splits
+    exist to serve the review fixes recorded there.'
+- bug_id: BUG-066
   date: '2026-11-08'
   severity: low
   priority: P2
@@ -576,16 +622,20 @@ bugs:
   summary: 'Two pre-build compliance checks assumed every epic capsule lives at the top of
     specs/epics/; after e01-e09 were archived the capsule check failed outright and the story
     verify extractor silently returned 33 of 154 records'
-  file: specs/bugs/BUG-062-archived-capsules-break-two-gates.md
+  file: specs/bugs/BUG-066-archived-capsules-break-two-gates.md
   status: fixed
   found_by: scope-work for the Builder restart (compliance-pre-build ran red)
-- bug_id: BUG-063
+  note: 'Originally filed as BUG-062 on main; renumbered here because this branch used
+    BUG-062 for the stale-template step skip.'
+- bug_id: BUG-067
   date: '2026-11-08'
   severity: low
   priority: P2
   scope: release
   summary: 'project.godot advertised 0.10.0 while the latest tag was v0.10.1; the drift was
     committed on main because the release job only checks the sync and never writes it'
-  file: specs/bugs/BUG-063-project-version-drift-recurrence.md
+  file: specs/bugs/BUG-067-project-version-drift-recurrence.md
   status: fixed
   found_by: preflight L5c at the start of the Builder restart
+  note: 'Originally filed as BUG-063 on main; renumbered here because this branch used
+    BUG-063 for the legacy hub exit.'

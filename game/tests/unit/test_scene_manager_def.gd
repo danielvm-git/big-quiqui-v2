@@ -1,8 +1,9 @@
 # story: e12s02
+# story: e14s05
 extends GutTest
 ## SC-e12s02-P0-05/06 — SceneManager opens the player and hands off the def once.
 
-const SCENE_C: String = "res://scenes/banheiro.tscn"
+const SCENE_C: String = SceneCatalog.PLAYER_SCENE
 const DEF_DEV_SMOKE: String = "dev_smoke"
 const DEF_MISSING: String = "room_missing"
 
@@ -51,9 +52,9 @@ func test_request_def_drives_the_same_fsm_as_request_scene() -> void:
 
 func test_request_def_uses_the_one_slot_pending_queue() -> void:
 	sm.request_def(DEF_DEV_SMOKE)
-	assert_false(sm.request_scene(SCENE_C), "second request is parked")
+	assert_false(sm.request_def("kitchen"), "second def is parked")
 	_drive(4.0)
-	assert_eq(loaded, [SceneManager.SCENE_PLAYER_PATH, SCENE_C])
+	assert_eq(loaded, [SceneManager.SCENE_PLAYER_PATH, SceneManager.SCENE_PLAYER_PATH])
 
 
 func test_consume_def_returns_the_def_once() -> void:
