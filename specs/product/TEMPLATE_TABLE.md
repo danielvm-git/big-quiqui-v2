@@ -24,3 +24,18 @@ The `scene` column names a catalogue probe def until e14 assigns each template i
 | t51_prize_pick | built | One tap saves one prize from the def. | item_ids | wheel | test_t51_prize_pick | 7 | e13s09 |
 | t_rhythm_pose | built | Three pads; a miss replays; pay once. | item_ids | duck_dance | test_t_rhythm_pose | 0 | e14s03 |
 | t_album | built | Friend cards read stored stars. No photo. | item_ids | album | test_t_album | 0 | e14s03 |
+| t43_color_fill | built | Fill areas with named colors. No gallery. | slot_ids, category_ids | coloring | test_t43_color_fill | 11 | e15s01 |
+| t44_paint | built | Palette rub deposits color. | item_ids, completion_threshold | coloring | test_t44_paint | 38 | e15s01 |
+| t55_find | built | Tap targets in sequence. | item_ids | find_toy | test_t55_find | 12 | e15s02 |
+| t27_memory | built | Seeded pairs board. | item_ids, spawn_seed | memory_match | test_t27_memory | 12 | e15s03 |
+| t38_peekaboo | built | Spawner peek; tap giggles. | spawn_* | peekaboo | test_t38_peekaboo | 10 | e15s04 |
+| t26_ride | built | Steer free; overlap collects. | spawn_*, goal_count | ride_probe | test_t26_ride | 4 | e16s01 |
+| t37_tap_moving | built | Tap moving spawns once. | spawn_*, goal_count | tap_moving_probe | test_t37_tap_moving | 21 | e16s01 |
+| t41_float_pop | built | Float spawn; tap pops. | spawn_*, goal_count | float_pop_probe | test_t41_float_pop | 5 | e16s01 |
+| t42_slice_cut | built | Rub along polyline. No blade. | destination_positions | slice_probe | test_t42_slice_cut | 5 | e16s02 |
+| t46_cups | built | Find prize under cups. | item_ids, spawn_seed | cups_probe | test_t46_cups | 5 | e16s02 |
+| t48_serve | built | Give stack to one guest. | item_ids, receiver_id | serve_probe | test_t48_serve | 2 | e16s02 |
+| t52_groom | built | Comb, dry, then trim. | completion_threshold | groom_probe | test_t52_groom | 1 | e16s03 |
+| t47_drag_release | built | Release rule on t20 only. | mode | kitchen | test_t20_drag_snap | 1 | e16s03 |
+| t53_outro | built | One tap navigates home. | none | outro_probe | test_t53_outro | 1 | e16s03 |
+| t49_progress_holder | built | Shows runner progress. | none | progress_probe | test_t49_progress_holder | 1 | e16s04 |

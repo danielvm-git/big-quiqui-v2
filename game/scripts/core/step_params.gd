@@ -1,5 +1,8 @@
 # story: e13s09
 # story: e14s04
+# story: e15s01
+# story: e15s02
+# story: e15s03
 class_name StepParams
 extends RefCounted
 ## Closed, template-specific checks on a step's parameters, run before the player mounts anything.
@@ -55,6 +58,30 @@ static func _by_template(step: StepDef) -> String:
 			return _wheel_prizes(step) if step.mode == "wheel" else _row(step)
 		"t_rhythm_pose", "t_album":
 			return _needs_items(step)
+		"t44_paint":
+			return StepParamsWave.paint(step)
+		"t43_color_fill":
+			return StepParamsWave.color_fill(step)
+		"t55_find":
+			return _row(step)
+		"t27_memory":
+			return StepParamsWave.memory(step)
+		"t38_peekaboo", "t37_tap_moving", "t41_float_pop":
+			return StepParamsWave.spawn_goal(step)
+		"t26_ride":
+			return StepParamsWave.spawn_goal(step)
+		"t42_slice_cut":
+			return StepParamsWave.slice(step)
+		"t46_cups":
+			return StepParamsWave.cups(step)
+		"t48_serve":
+			return _row(step) if step.mode.is_empty() or T20_MODES.has(step.mode) else "bad_mode"
+		"t52_groom":
+			return ""
+		"t53_outro":
+			return ""
+		"t49_progress_holder":
+			return ""
 	return ""
 
 
@@ -87,7 +114,8 @@ static func _rub(step: StepDef) -> String:
 
 static func _shared(step: StepDef) -> String:
 	for unique: PackedStringArray in [step.item_ids, step.destination_ids]:
-		if not _clean_ids(unique, true):
+		var pairs: bool = step.template_id == "t27_memory" and unique == step.item_ids
+		if not _clean_ids(unique, not pairs):
 			return "bad_id"
 	## Slots, categories and scenes repeat on purpose: two neck items share a slot, two doors one room.
 	for shared: PackedStringArray in [step.category_ids, step.destination_scenes]:

@@ -2,11 +2,23 @@
 # story: e14s01
 # story: e14s02
 # story: e14s04
+# story: e16s04
 extends PlayerTestCase
 ## A child can see each target, touch it through the player, finish every step, and leave through a
 ## shipped `next_scene_id`. Hub maps leave through Home when their template never reports progress.
 
 const ASPECTS: Array[Vector2i] = [GeometryOracle.DESKTOP_16_9, GeometryOracle.IPAD_4_3]
+const WAVE3_PROBES: Array[String] = [
+	"tap_moving_probe",
+	"ride_probe",
+	"float_pop_probe",
+	"slice_probe",
+	"cups_probe",
+	"serve_probe",
+	"groom_probe",
+	"outro_probe",
+	"progress_probe",
+]
 
 
 func before_each() -> void:
@@ -74,6 +86,9 @@ func _finished(player: ScenePlayer) -> bool:
 
 
 func _play_def(player: ScenePlayer, scene_id: String) -> void:
+	if scene_id in WAVE3_PROBES:
+		await ChildCanPlayWave3Flows.play_probe(self, player, scene_id)
+		return
 	match scene_id:
 		"touch_each_probe":
 			_play_touch_each(player)

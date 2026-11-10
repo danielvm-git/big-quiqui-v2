@@ -4,6 +4,8 @@
 # story: e14s02
 # story: e14s04
 # story: e14s05
+# story: e15s01
+# story: e16s01
 class_name SceneCatalog
 extends RefCounted
 ## The seventeen playable room ids. Navigation always loads `scene_player.tscn` with a def.
@@ -51,6 +53,19 @@ const _ID_TO_DEF: Dictionary = {
 	"party": "res://data/scenes/party.tres",
 	"wheel": "res://data/scenes/wheel.tres",
 	"penguin_lanes": "res://data/scenes/penguin_lanes.tres",
+	"coloring": "res://data/scenes/coloring.tres",
+	"find_toy": "res://data/scenes/find_toy.tres",
+	"memory_match": "res://data/scenes/memory_match.tres",
+	"peekaboo": "res://data/scenes/peekaboo.tres",
+	"tap_moving_probe": "res://data/scenes/tap_moving_probe.tres",
+	"ride_probe": "res://data/scenes/ride_probe.tres",
+	"float_pop_probe": "res://data/scenes/float_pop_probe.tres",
+	"slice_probe": "res://data/scenes/slice_probe.tres",
+	"cups_probe": "res://data/scenes/cups_probe.tres",
+	"serve_probe": "res://data/scenes/serve_probe.tres",
+	"groom_probe": "res://data/scenes/groom_probe.tres",
+	"outro_probe": "res://data/scenes/outro_probe.tres",
+	"progress_probe": "res://data/scenes/progress_probe.tres",
 }
 
 

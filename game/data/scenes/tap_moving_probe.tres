@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SceneDef" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/scene_def.gd" id="1_def"]
+[ext_resource type="Script" path="res://scripts/resources/step_def.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_probe"]
+script = ExtResource("2_step")
+template_id = "t37_tap_moving"
+goal_count = 2
+spawn_seed = 3
+spawn_cadence = 2
+spawn_lifetime = 6
+item_ids = PackedStringArray("ball", "pinwheel")
+
+[resource]
+script = ExtResource("1_def")
+id = "tap_moving_probe"
+background_id = "bg_playroom"
+music_id = "music_playroom"
+steps = Array[Resource]([SubResource("step_probe")])
+next_scene_id = "home"

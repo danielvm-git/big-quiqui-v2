@@ -309,7 +309,6 @@ func _place(point: Vector2) -> bool:
 	return true
 
 
-## A point as a ratio of `placement_area`, clamped to 0..1. No area means the origin.
 func normalized_of(global_point: Vector2) -> Vector2:
 	var rect: Rect2 = _rect_of(placement_area, 0.0)
 	if rect == NO_RECT or rect.size.x <= 0.0 or rect.size.y <= 0.0:

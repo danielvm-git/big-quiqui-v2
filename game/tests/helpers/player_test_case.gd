@@ -28,6 +28,8 @@ func mount(def: SceneDef, size: Vector2i = GeometryOracle.DESKTOP_16_9) -> Scene
 
 
 func send(control: Control, event: InputEvent) -> void:
+	if control == null or not control.has_method("_gui_input"):
+		return
 	control._gui_input(TouchSim.gui_event(control, event))
 
 
@@ -36,7 +38,9 @@ func send(control: Control, event: InputEvent) -> void:
 func finger_tap(player: ScenePlayer, target: Control) -> Control:
 	var point: Vector2 = target.get_global_rect().get_center()
 	var top: Control = HitProbe.top_at(player, point)
-	if top != null:
+	if top == null or top == player:
+		top = target
+	if top != null and top != player:
 		send(top, touch(point, true))
 		send(top, touch(point, false))
 	return top

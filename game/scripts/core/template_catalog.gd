@@ -7,6 +7,8 @@
 # story: e13s08
 # story: e13s09
 # story: e14s03
+# story: e15s01
+# story: e16s01
 class_name TemplateCatalog
 extends RefCounted
 ## Closed registry from template id to script — defs name ids only (F-2).
@@ -26,6 +28,20 @@ const SCRIPT_FOR_ID: Dictionary = {
 	"t51_prize_pick": "res://scripts/templates/t51_prize_pick.gd",
 	"t_rhythm_pose": "res://scripts/templates/t_rhythm_pose.gd",
 	"t_album": "res://scripts/templates/t_album.gd",
+	"t43_color_fill": "res://scripts/templates/t43_color_fill.gd",
+	"t44_paint": "res://scripts/templates/t44_paint.gd",
+	"t55_find": "res://scripts/templates/t55_find.gd",
+	"t27_memory": "res://scripts/templates/t27_memory.gd",
+	"t38_peekaboo": "res://scripts/templates/t38_peekaboo.gd",
+	"t37_tap_moving": "res://scripts/templates/t37_tap_moving.gd",
+	"t26_ride": "res://scripts/templates/t26_ride.gd",
+	"t41_float_pop": "res://scripts/templates/t41_float_pop.gd",
+	"t42_slice_cut": "res://scripts/templates/t42_slice_cut.gd",
+	"t46_cups": "res://scripts/templates/t46_cups.gd",
+	"t48_serve": "res://scripts/templates/t48_serve.gd",
+	"t52_groom": "res://scripts/templates/t52_groom.gd",
+	"t53_outro": "res://scripts/templates/t53_outro.gd",
+	"t49_progress_holder": "res://scripts/templates/t49_progress_holder.gd",
 }
 
 
