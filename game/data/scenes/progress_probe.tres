@@ -16,3 +16,4 @@ background_id = "bg_playroom"
 music_id = "music_playroom"
 steps = Array[Resource]([SubResource("step_tap")])
 next_scene_id = "home"
+show_progress_holder = true

@@ -12,7 +12,7 @@ func setup(ctx: TemplateContext) -> void:
 	_bar.name = "ProgressHolder"
 	_bar.custom_minimum_size = Vector2(400.0, 40.0)
 	_bar.position = Vector2(260.0, 80.0)
-	_bar.show_percentage = true
+	_bar.show_percentage = false
 	if ctx.host != null:
 		(ctx.host as Control).add_child(_bar)
 

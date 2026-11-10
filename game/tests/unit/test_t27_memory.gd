@@ -10,6 +10,23 @@ func test_seeded_shuffle_is_stable() -> void:
 	assert_eq(a.call("_shuffled"), b.call("_shuffled"))
 
 
+func test_matching_pair_advances_progress() -> void:
+	var tpl: RefCounted = _tpl(7)
+	var ctx: TemplateContext = _ctx(7)
+	tpl.call("setup", ctx)
+	var order: PackedStringArray = tpl.call("_shuffled") as PackedStringArray
+	var by_art: Dictionary = {}
+	for index: int in range(order.size()):
+		var art: String = order[index]
+		var bucket: Array = by_art.get(art, []) as Array
+		bucket.append("card_%d" % index)
+		by_art[art] = bucket
+	var pair: Array = by_art[order[0]] as Array
+	tpl.call("press", pair[0])
+	tpl.call("press", pair[1])
+	assert_almost_eq(float(tpl.call("progress")), 0.5, 0.01)
+
+
 func test_odd_card_count_rejects_at_load() -> void:
 	var step: StepDef = StepDef.new()
 	step.template_id = "t27_memory"

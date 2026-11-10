@@ -15,6 +15,7 @@ func setup(ctx: TemplateContext) -> void:
 	_active = _palette[0] if not _palette.is_empty() else ""
 	var rub_ctx: TemplateContext = _rub_context(ctx)
 	_clean.bind(rub_ctx, "leave")
+	_show_canvas()
 	_build_palette()
 	_apply_tint()
 
@@ -111,11 +112,29 @@ func _on_chip(paint_id: String) -> void:
 
 
 func _apply_tint() -> void:
-	if _ctx == null or _ctx.nodes == null or _active.is_empty():
-		return
-	var layer: Control = _ctx.nodes.resolve(_canvas_id())
-	if layer == null:
+	var layer: Control = _canvas()
+	if layer == null or _active.is_empty():
 		return
 	var tint: Color = PaintCatalog.color_of(_active)
-	tint.a = _clean.layer_alpha()
+	tint.a = maxf(_clean.layer_alpha(), 0.35)
 	layer.modulate = tint
+
+
+func _show_canvas() -> void:
+	var layer: Control = _canvas()
+	if layer == null:
+		return
+	layer.custom_minimum_size = Vector2(520.0, 400.0)
+	layer.size = Vector2(520.0, 400.0)
+	layer.position = Vector2(200.0, 180.0)
+	layer.z_index = TemplateKit.LAYER_Z
+
+
+func _canvas() -> Control:
+	if _ctx == null or _ctx.host == null:
+		return null
+	var layer_id: String = _canvas_id()
+	var found: Node = (_ctx.host as Node).find_child(layer_id, true, false)
+	if found is Control and _ctx.nodes != null:
+		_ctx.nodes.register(layer_id, found as Control)
+	return found as Control

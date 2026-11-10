@@ -23,4 +23,8 @@ func test_progress_counts_giggles() -> void:
 	add_child_autofree(ctx.host)
 	tpl.call("setup", ctx)
 	tpl.call("tick")
-	assert_gte(float(tpl.call("progress")), 0.0)
+	var button: TapButton = ctx.host.get_child(0) as TapButton
+	assert_not_null(button, "a friend is on screen")
+	var before: float = float(tpl.call("progress"))
+	tpl.call("_on_giggle", button.name)
+	assert_gt(float(tpl.call("progress")), before)

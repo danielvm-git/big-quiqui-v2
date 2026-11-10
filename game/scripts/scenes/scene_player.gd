@@ -14,6 +14,7 @@ var _reactions: ReactionExecutor = null
 var _hint: HintLayer = null
 var _nodes: PlayerNodeTable = null
 var _template: RefCounted = null
+var _holder: RefCounted = null
 var _exited: bool = false
 var _booted: bool = false
 var _fsm_prev: String = ""
@@ -185,6 +186,7 @@ func _mount_template(step: StepDef) -> void:
 	_template = TemplateCatalog.instantiate(step.template_id)
 	if _template != null and _template.has_method("setup"):
 		_template.call("setup", ctx)
+	_mount_holder()
 	if _hint != null and _hint_mgr != null and _drag_hint != null:
 		_hint.bind(_hint_mgr, _drag_hint, _nodes)
 		_hint.begin_step(step)
@@ -211,6 +213,7 @@ func _tick_template(delta: float) -> void:
 		_template.call("advance", delta)
 	if _template.has_method("progress"):
 		runner.report_template_progress(float(_template.call("progress")))
+	ProgressHolderMount.tick(_holder, delta)
 	if runner.template_progress() >= 1.0 and not _step_credited:
 		_on_step_completed(_active_step)
 
@@ -259,7 +262,15 @@ func _register_nodes() -> void:
 		_nodes.register("home", _home)
 
 
+func _mount_holder() -> void:
+	if loaded_def == null or not loaded_def.show_progress_holder:
+		return
+	_holder = ProgressHolderMount.mount(self, runner, _nodes)
+
+
 func _teardown_template() -> void:
+	ProgressHolderMount.clear(_holder)
+	_holder = null
 	if _template != null and _template.has_method("teardown"):
 		_template.call("teardown")
 	_template = null

@@ -34,6 +34,11 @@ func test_paint_selects_color_and_completes_at_threshold() -> void:
 	tpl.call("setup", ctx)
 	tpl.call("select_color", "paint_blue")
 	assert_eq(tpl.call("active_color"), "paint_blue")
+	_rub_grid(tpl)
+	assert_gte(float(tpl.call("progress")), 0.5)
+
+
+func _rub_grid(tpl: RefCounted) -> void:
 	tpl.call("begin_gesture")
 	var filled: int = 0
 	for col: int in range(4):
@@ -44,7 +49,6 @@ func test_paint_selects_color_and_completes_at_threshold() -> void:
 			filled += 1
 	tpl.call("end_gesture")
 	tpl.call("advance", 0.0)
-	assert_gte(float(tpl.call("progress")), 0.5)
 
 
 func test_template_source_has_no_room_noun() -> void:

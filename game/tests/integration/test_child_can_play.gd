@@ -130,6 +130,8 @@ func _play_def(player: ScenePlayer, scene_id: String) -> void:
 			await ChildCanPlayVillageFlows.play_wheel(self, player)
 		"penguin_lanes":
 			await ChildCanPlayVillageFlows.play_penguin(self, player)
+		"find_toy", "coloring", "memory_match", "peekaboo":
+			await ChildCanPlayWave2Flows.play_room(self, player, scene_id)
 		_:
 			assert_true(false, "no play script for %s" % scene_id)
 

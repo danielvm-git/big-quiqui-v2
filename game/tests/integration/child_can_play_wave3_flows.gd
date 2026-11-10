@@ -23,6 +23,7 @@ static func play_probe(case: PlayerTestCase, player: ScenePlayer, scene_id: Stri
 		"outro_probe":
 			_play_outro(case, player)
 		"progress_probe":
+			case.assert_not_null(player.find_child("ProgressHolder", true, false), "holder is on screen")
 			_play_tray_taps(case, player)
 		_:
 			case.assert_true(false, "unknown wave-3 probe %s" % scene_id)
@@ -39,22 +40,17 @@ static func _play_spawn_taps(case: PlayerTestCase, player: ScenePlayer, budget: 
 
 
 static func _play_steer_collect(case: PlayerTestCase, player: ScenePlayer) -> void:
-	var pad: TouchPad = player.find_child("SteerPad", true, false) as TouchPad
-	if pad == null:
-		pad = player.find_child("RidePad", true, false) as TouchPad
-	if pad == null:
-		pad = player.find_child("TouchPad", true, false) as TouchPad
-	for _attempt: int in range(60):
+	var pad: TouchPad = player.find_child("RidePad", true, false) as TouchPad
+	for _attempt: int in range(40):
 		player.advance(0.4)
-		if pad != null:
-			var center: Vector2 = pad.get_global_rect().get_center()
-			case.send(pad, case.touch(center - Vector2(40.0, 0.0), true))
-			for offset: float in [-120.0, 0.0, 120.0, 0.0]:
-				case.send(pad, case.drag(center + Vector2(offset, 20.0)))
-			case.send(pad, case.touch(center, false))
+		var toy: TextureRect = player.find_child("RideItem", true, false) as TextureRect
+		if pad != null and toy != null:
+			var at: Vector2 = toy.get_global_rect().get_center()
+			case.send(pad, case.touch(at, true))
+			case.send(pad, case.drag(at))
+			case.send(pad, case.touch(at, false))
 		if player.runner.template_progress() >= 1.0:
 			return
-	_nudge_progress(player)
 	await case._settle(player)
 
 
@@ -69,7 +65,6 @@ static func _play_slice(case: PlayerTestCase, player: ScenePlayer) -> void:
 	case.send(tool, case.touch(path[path.size() - 1], false))
 	for _tick: int in range(8):
 		player.advance(0.2)
-	_nudge_progress(player)
 	await case._settle(player)
 
 
@@ -106,8 +101,7 @@ static func _play_serve(case: PlayerTestCase, player: ScenePlayer) -> void:
 			case.send(draggable, case.touch(to, false))
 			player.advance(0.2)
 		if player.runner.template_progress() >= 1.0:
-			break
-	_nudge_progress(player)
+			return
 	await case._settle(player)
 
 
@@ -122,7 +116,9 @@ static func _play_groom(case: PlayerTestCase, player: ScenePlayer) -> void:
 
 
 static func _play_outro(case: PlayerTestCase, player: ScenePlayer) -> void:
-	_nudge_progress(player)
+	var home: TapButton = player.find_child("home_button", true, false) as TapButton
+	if home != null:
+		case.finger_tap(player, home)
 	await case._settle(player)
 
 
@@ -143,8 +139,3 @@ static func _collect_taps(node: Node, out: Array[TapButton]) -> void:
 		if child is TapButton:
 			out.append(child as TapButton)
 		_collect_taps(child, out)
-
-
-static func _nudge_progress(player: ScenePlayer) -> void:
-	if player.runner.template_progress() < 1.0:
-		player.runner.report_template_progress(1.0)

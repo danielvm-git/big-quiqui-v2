@@ -107,7 +107,7 @@ func _on_consumed() -> void:
 
 
 func _on_drag_ended(item: TouchDraggable) -> void:
-	if item.state_id() == TouchDraggable.STATE_CONSUMED:
+	if item.state_id() == TouchDraggableStates.STATE_CONSUMED:
 		return
 	_play_miss_reactions()
 

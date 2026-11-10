@@ -587,3 +587,23 @@ bugs:
   file: specs/bugs/BUG-063-legacy-hub-exit-needs-a-scene-manager-request.md
   status: fixed
   found_by: e13 review round 1 (home_map mounted in the player)
+- bug_id: BUG-064
+  date: '2026-11-10'
+  severity: high
+  priority: P0
+  scope: player
+  summary: 'Wave-2 and wave-3 review must-fixes: ride, slice, serve, outro, paint, groom,
+    progress holder, and the 28-slot gate. The child-play helper no longer writes progress.'
+  file: specs/bugs/BUG-064-wave3-steps-do-not-finish.md
+  status: fixed
+  found_by: request-review round 1 (REVIEW-A-e15e16, REVIEW-B-e15e16)
+- bug_id: BUG-065
+  date: '2026-11-10'
+  severity: low
+  priority: P2
+  scope: core
+  summary: Split QuiQuiRig, TouchDraggable, and test_quiqui_rig under the 300-line bar; cleared
+    grandfather map in test_size_bars.
+  file: specs/bugs/BUG-064-wave3-steps-do-not-finish.md
+  status: fixed
+  found_by: audit-code full e12-e16 2026-11-09

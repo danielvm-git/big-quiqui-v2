@@ -14,7 +14,6 @@ const LEGAL: Dictionary = {
 var _fsm: Fsm = Fsm.new(STATE_COMB, LEGAL, {})
 var _rub: CleaningRub = CleaningRub.new()
 var _ctx: TemplateContext = null
-var _phase_done: Dictionary = {STATE_COMB: false, STATE_DRY: false, STATE_TRIM: false}
 
 
 func setup(ctx: TemplateContext) -> void:
@@ -32,15 +31,18 @@ func advance(_delta: float) -> void:
 
 
 func progress() -> float:
-	var done: int = 0
-	for key: String in _phase_done.keys():
-		done += 1 if _phase_done[key] else 0
-	return clampf(float(done) / 3.0, 0.0, 1.0)
+	var base: int = 0
+	if _fsm.state == STATE_DRY:
+		base = 1
+	elif _fsm.state == STATE_TRIM:
+		base = 2
+	if _fsm.state == STATE_TRIM and _rub.progress() >= 0.99:
+		return 1.0
+	var slice: float = 1.0 if _rub.progress() >= 0.99 else 0.0
+	return clampf((float(base) + slice) / 3.0, 0.0, 1.0)
 
 
 func begin_gesture() -> void:
-	if _fsm.state == STATE_TRIM and not _phase_done[STATE_DRY]:
-		return
 	_rub.begin_gesture()
 
 
@@ -49,8 +51,6 @@ func end_gesture() -> void:
 
 
 func note_rub(point: Vector2) -> bool:
-	if _fsm.state == STATE_TRIM and not _phase_done[STATE_DRY]:
-		return false
 	return _rub.note_rub(point)
 
 
@@ -71,15 +71,9 @@ func _bind_rub() -> void:
 
 
 func _check_phase() -> void:
-	if _rub.progress() < 0.99:
+	if _rub.progress() < 0.99 or _fsm.state == STATE_TRIM:
 		return
-	if _fsm.state == STATE_COMB and not _phase_done[STATE_COMB]:
-		_phase_done[STATE_COMB] = true
-		_fsm.transition_to(STATE_DRY)
-		return
-	if _fsm.state == STATE_DRY and not _phase_done[STATE_DRY]:
-		_phase_done[STATE_DRY] = true
-		_fsm.transition_to(STATE_TRIM)
-		return
-	if _fsm.state == STATE_TRIM:
-		_phase_done[STATE_TRIM] = true
+	var nxt: String = STATE_DRY if _fsm.state == STATE_COMB else STATE_TRIM
+	_fsm.transition_to(nxt)
+	_rub.teardown()
+	_bind_rub()

@@ -18,7 +18,8 @@ var _fsm: Fsm = null
 var _ctx: TemplateContext = null
 var _cards: Dictionary = {}
 var _order: PackedStringArray = PackedStringArray()
-var _first: String = ""
+var _first_card: String = ""
+var _first_art: String = ""
 var _matched: Dictionary = {}
 var _resolve_at: int = 0
 var _clock: int = 0
@@ -28,7 +29,8 @@ func setup(ctx: TemplateContext) -> void:
 	_ctx = ctx
 	_clock = 0
 	_matched.clear()
-	_first = ""
+	_first_card = ""
+	_first_art = ""
 	_fsm = Fsm.new(STATE_IDLE, LEGAL, DWELL, Callable(self, "_clock_ms"))
 	_order = _shuffled()
 	_build_cards()
@@ -93,28 +95,44 @@ func _build_cards() -> void:
 
 
 func _on_card(card_id: String, art_id: String) -> void:
-	if _fsm.state == STATE_DONE or _matched.has(art_id):
+	if _blocked(art_id):
 		TemplateKit.play_hit(_ctx, "template.tap", {"target": card_id})
 		return
 	var button: TapButton = _cards.get(card_id) as TapButton
 	if button == null:
 		return
 	_set_face(button, true)
-	match _fsm.state:
-		STATE_IDLE:
-			_first = art_id
-			_fsm.transition_to(STATE_ONE_UP)
-		STATE_ONE_UP:
-			if art_id == _first:
-				_matched[art_id] = true
-				_fsm.transition_to(STATE_DONE if _matched.size() >= _pair_count() else STATE_IDLE)
-				_first = ""
-				if _ctx.runner != null:
-					_ctx.runner.report_template_progress(progress())
-			else:
-				_resolve_at = _clock
-				_fsm.transition_to(STATE_RESOLVING)
+	if _fsm.state == STATE_IDLE:
+		_open(card_id, art_id)
+	else:
+		_second(card_id, art_id)
 	TemplateKit.play_hit(_ctx, "template.tap", {"target": card_id})
+
+
+func _blocked(art_id: String) -> bool:
+	return _fsm.state == STATE_DONE or _fsm.state == STATE_RESOLVING or _matched.has(art_id)
+
+
+func _open(card_id: String, art_id: String) -> void:
+	_first_card = card_id
+	_first_art = art_id
+	_fsm.transition_to(STATE_ONE_UP)
+
+
+func _second(card_id: String, art_id: String) -> void:
+	if card_id == _first_card:
+		return
+	if art_id != _first_art:
+		_resolve_at = _clock
+		_fsm.transition_to(STATE_RESOLVING)
+		return
+	_matched[art_id] = true
+	_first_card = ""
+	_first_art = ""
+	var done: bool = _matched.size() >= _pair_count()
+	_fsm.transition_to(STATE_DONE if done else STATE_IDLE)
+	if _ctx.runner != null:
+		_ctx.runner.report_template_progress(progress())
 
 
 func _flip_back() -> void:
@@ -123,7 +141,8 @@ func _flip_back() -> void:
 		var art_id: String = str(button.get_meta("art_id"))
 		if not _matched.has(art_id):
 			_set_face(button, false)
-	_first = ""
+	_first_card = ""
+	_first_art = ""
 	TemplateKit.play_miss(_ctx)
 
 

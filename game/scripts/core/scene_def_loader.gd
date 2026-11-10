@@ -17,6 +17,10 @@ const CHILD_GATE_ROOMS: Array[String] = [
 	"village",
 	"celebration",
 	"playhouse",
+	"coloring",
+	"find_toy",
+	"memory_match",
+	"peekaboo",
 ]
 
 

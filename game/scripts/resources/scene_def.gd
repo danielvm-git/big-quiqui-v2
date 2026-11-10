@@ -10,3 +10,5 @@ extends Resource
 @export var steps: Array[Resource] = []
 @export var next_scene_id: String = ""
 @export var reward_coins: int = 0
+## When true, the player draws t49 beside the step. The holder never completes the step.
+@export var show_progress_holder: bool = false

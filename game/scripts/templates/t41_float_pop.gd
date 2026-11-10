@@ -19,6 +19,7 @@ func setup(ctx: TemplateContext) -> void:
 	_spawner.rng_seed = maxi(ctx.step_def.spawn_seed, 5)
 	_spawner.cadence = maxi(ctx.step_def.spawn_cadence, 1)
 	_spawner.lifetime = maxi(ctx.step_def.spawn_lifetime, 10)
+	_spawner.lane_count = maxi(ctx.step_def.item_ids.size(), 1)
 	_spawner.items = ctx.step_def.item_ids
 	_spawner.start()
 
@@ -48,26 +49,48 @@ func progress() -> float:
 
 
 func _sync() -> void:
+	var live: Array[String] = []
 	for row: Dictionary in _spawner.live_rows():
-		var item_id: String = str(row.get("item", ""))
-		var age: int = int(row.get("age", 0))
-		if _floats.has(item_id):
-			(_floats[item_id] as TapButton).position.y = 200.0 - float(age) * 12.0
+		live.append(_key(row))
+	_drop_dead(live)
+	for row: Dictionary in _spawner.live_rows():
+		_place(row)
+
+
+func _drop_dead(live: Array[String]) -> void:
+	for key: String in _floats.keys():
+		if live.has(key):
 			continue
-		var button: TapButton = TemplateKit.tap_button(item_id, Vector2(320.0, 200.0))
-		button.tapped.connect(_on_pop.bind(item_id))
-		if _ctx.host != null:
-			(_ctx.host as Control).add_child(button)
-		_floats[item_id] = button
+		(_floats[key] as TapButton).queue_free()
+		_floats.erase(key)
 
 
-func _on_pop(item_id: String) -> void:
-	if not _floats.has(item_id):
+func _place(row: Dictionary) -> void:
+	var key: String = _key(row)
+	var lane: int = int(row.get("lane", 0))
+	var age: int = int(row.get("age", 0))
+	var at: Vector2 = Vector2(180.0 * float(lane) + 80.0, 520.0 - float(age) * 18.0)
+	if _floats.has(key):
+		(_floats[key] as TapButton).position = at
 		return
-	_tap.note_tap(item_id)
+	var button: TapButton = TemplateKit.tap_button(str(row.get("item", "")), at)
+	button.tapped.connect(_on_pop.bind(key))
+	if _ctx.host != null:
+		(_ctx.host as Control).add_child(button)
+	_floats[key] = button
+
+
+func _key(row: Dictionary) -> String:
+	return "%s:%s" % [str(row.get("item", "")), str(row.get("born", 0))]
+
+
+func _on_pop(key: String) -> void:
+	if not _floats.has(key):
+		return
+	_tap.note_tap(key)
 	_pops += 1
-	TemplateKit.play_hit(_ctx, "template.pop", {"target": item_id})
-	(_floats[item_id] as TapButton).queue_free()
-	_floats.erase(item_id)
+	TemplateKit.play_hit(_ctx, "template.pop", {"target": key})
+	(_floats[key] as TapButton).queue_free()
+	_floats.erase(key)
 	if _ctx.runner != null:
 		_ctx.runner.report_template_progress(progress())

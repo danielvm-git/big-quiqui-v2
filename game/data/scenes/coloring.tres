@@ -8,7 +8,7 @@ script = ExtResource("2_step")
 template_id = "t44_paint"
 mode = "leave"
 completion_threshold = 0.5
-tool_id = "color_canvas"
+tool_id = "sponge"
 item_ids = PackedStringArray("paint_red", "paint_blue")
 slot_ids = PackedStringArray("color_canvas")
 

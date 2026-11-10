@@ -19,6 +19,7 @@ func setup(ctx: TemplateContext) -> void:
 	_spawner.rng_seed = maxi(ctx.step_def.spawn_seed, 1)
 	_spawner.cadence = maxi(ctx.step_def.spawn_cadence, 1)
 	_spawner.lifetime = maxi(ctx.step_def.spawn_lifetime, 4)
+	_spawner.lane_count = maxi(ctx.step_def.item_ids.size(), 1)
 	_spawner.items = ctx.step_def.item_ids
 	_spawner.start()
 
@@ -60,7 +61,9 @@ func _sync() -> void:
 		if _actors.has(item_id):
 			continue
 		var lane: int = int(row.get("lane", 0))
-		var button: TapButton = TemplateKit.tap_button(item_id, Vector2(180.0 * float(lane), 360.0))
+		var age: int = int(row.get("age", 0))
+		var at: Vector2 = Vector2(160.0 * float(lane) + 80.0, 280.0 + float(age) * 10.0)
+		var button: TapButton = TemplateKit.tap_button(item_id, at)
 		button.tapped.connect(_on_tap.bind(item_id))
 		if _ctx.host != null:
 			(_ctx.host as Control).add_child(button)

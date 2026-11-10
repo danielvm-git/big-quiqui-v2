@@ -46,7 +46,7 @@ func _build_cups() -> void:
 	var ids: PackedStringArray = _ctx.step_def.item_ids if _ctx.step_def else PackedStringArray()
 	for index: int in range(ids.size()):
 		var cup_id: String = ids[index]
-		var cup: TapButton = TemplateKit.tap_button("bowl", Vector2(200.0 * float(index), 400.0))
+		var cup: TapButton = TemplateKit.tap_button(cup_id, Vector2(200.0 * float(index), 400.0))
 		cup.tapped.connect(_on_cup.bind(cup_id))
 		if _ctx.host != null:
 			(_ctx.host as Control).add_child(cup)

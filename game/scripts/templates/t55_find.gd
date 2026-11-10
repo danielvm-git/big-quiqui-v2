@@ -16,6 +16,7 @@ func setup(ctx: TemplateContext) -> void:
 	_tap.goal = 1
 	_tap.targets = order.size()
 	_build_buttons(order)
+	_refresh_highlight()
 	_play_prompt()
 
 
@@ -59,8 +60,18 @@ func _on_tapped(target_id: String) -> void:
 	_tap.note_tap(target_id)
 	var index: int = _ctx.step_def.item_ids.find(target_id) if _ctx.step_def else -1
 	TemplateKit.play_hit(_ctx, "template.tap", {"target": target_id}, index)
-	if _seq.note_correct(target_id) and _ctx.runner != null:
-		_ctx.runner.report_template_progress(progress())
+	if _seq.note_correct(target_id):
+		_refresh_highlight()
+		if _ctx.runner != null:
+			_ctx.runner.report_template_progress(progress())
+
+
+func _refresh_highlight() -> void:
+	var active: String = _seq.active_id()
+	for id: String in _buttons.keys():
+		var button: TapButton = _buttons[id] as TapButton
+		if button != null and button.visual != null:
+			button.visual.modulate = Color(1.0, 0.95, 0.45) if id == active else Color.WHITE
 
 
 func _play_prompt() -> void:

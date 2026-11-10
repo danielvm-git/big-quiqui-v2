@@ -278,8 +278,16 @@ project_cycle:
     plan: specs/release-plan.yaml
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
-  next_skill: commit-message
-  gate_trace_verdict: CONCERNS
+  next_skill: release-branch
+  review_round: 1
+  review_and_gate: FAIL
+  review_scores:
+    reviewer_a: 41.4
+    reviewer_b: 40
+  review_reports:
+  - specs/verifications/REVIEW-A-e15e16-2026-11-09.md
+  - specs/verifications/REVIEW-B-e15e16-2026-11-09.md
+  gate_trace_verdict: PASS
   last_audit: specs/verifications/AUDIT-full-e12-e16-2026-11-09.md
   epic: e16-wave-3-movement-templates
   epic_wsjf: 7.8
@@ -288,8 +296,9 @@ handoff:
     Worktree ../big-quiqui-v2-e13 on branch epic/e14-all-rooms-as-data. e13 review PASS round 6;
     e14s01–e14s05 done (only scene_player.tscn); AUDIT-e14 PASS. e15s01–e15s04 and e16s01–e16s04
     landed at 6b2a661 with child-play gate and test_template_library_gate. Preflight GREEN on tip.
-    D4 version rung not taken. STOP before push, PR, merge, tag, or publish — see
-    specs/verifications/RELEASE-BRANCH-e15-e16-2026-11-09.md.
+    D4 version rung not taken. BUG-064 and BUG-065 fixed; wave-2 child-play flows added;
+    preflight green (717 tests). Review round 2 not re-run this session. Merge to main still
+    blocked: release job on main publishes a tag.
   open_decisions:
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
     parses a digit, and the coin icon plus the sold badge carry the meaning. TEST_PLAN section 3
@@ -723,6 +732,19 @@ gate_decisions:
     or future stories in the review bodies
   reason: closure of the dual-blind gate before any outward git operations
 decisions:
+- id: GATE-2026-11-10-no-main-merge
+  summary: >-
+    Ship step stopped before merge. Merging epic/e14-all-rooms-as-data to main runs the
+    release job, which tags and publishes. Approval forbids tag and publish. CONVENTIONS
+    also require one squash-merge per epic. The branch is pushed; it is not merged.
+- id: GATE-2026-11-10-no-tracker-issue
+  summary: >-
+    gh issue list returned no issues. Creating a GitHub issue is forbidden, so the batch
+    table lives in specs/bugs/BUG-064 and the registry, not on a tracker comment.
+- id: GATE-2026-11-10-file-size-bar
+  summary: >-
+    BUG-065 stays open. Splitting QuiQuiRig and TouchDraggable would change shared
+    component boundaries beyond the review acceptance criteria.
 - id: ADR-012
   summary: >-
     Friends minigames and sticker album trade-offs: minigames return to Festa, album returns to

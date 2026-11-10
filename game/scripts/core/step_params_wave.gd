@@ -7,6 +7,25 @@ class_name StepParamsWave
 extends RefCounted
 
 
+static func dispatch(step: StepDef) -> String:
+	match step.template_id:
+		"t44_paint":
+			return paint(step)
+		"t43_color_fill":
+			return color_fill(step)
+		"t27_memory":
+			return memory(step)
+		"t38_peekaboo", "t37_tap_moving", "t41_float_pop", "t26_ride":
+			return spawn_goal(step)
+		"t42_slice_cut":
+			return slice(step)
+		"t46_cups":
+			return cups(step)
+		"t52_groom", "t53_outro", "t49_progress_holder":
+			return ""
+	return "core"
+
+
 static func paint(step: StepDef) -> String:
 	if step.item_ids.is_empty():
 		return "no_items"

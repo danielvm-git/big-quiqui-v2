@@ -39,13 +39,16 @@ static func problem(step: StepDef) -> String:
 
 
 static func _by_template(step: StepDef) -> String:
+	var wave: String = StepParamsWave.dispatch(step)
+	return wave if wave != "core" else _core(step)
+
+
+static func _core(step: StepDef) -> String:
 	match step.template_id:
 		"t20_drag_snap":
 			return "bad_mode" if not T20_MODES.has(step.mode) else ""
 		"t21_touch_each":
-			if step.mode == "arcade":
-				return _arcade(step)
-			return _row(step) if T21_MODES.has(step.mode) else "bad_mode"
+			return _touch(step)
 		"t23_erase", "t40_draw_fill", "t34_rub_reveal":
 			return _rub(step)
 		"t25_map":
@@ -58,31 +61,21 @@ static func _by_template(step: StepDef) -> String:
 			return _wheel_prizes(step) if step.mode == "wheel" else _row(step)
 		"t_rhythm_pose", "t_album":
 			return _needs_items(step)
-		"t44_paint":
-			return StepParamsWave.paint(step)
-		"t43_color_fill":
-			return StepParamsWave.color_fill(step)
-		"t55_find":
-			return _row(step)
-		"t27_memory":
-			return StepParamsWave.memory(step)
-		"t38_peekaboo", "t37_tap_moving", "t41_float_pop":
-			return StepParamsWave.spawn_goal(step)
-		"t26_ride":
-			return StepParamsWave.spawn_goal(step)
-		"t42_slice_cut":
-			return StepParamsWave.slice(step)
-		"t46_cups":
-			return StepParamsWave.cups(step)
-		"t48_serve":
-			return _row(step) if step.mode.is_empty() or T20_MODES.has(step.mode) else "bad_mode"
-		"t52_groom":
-			return ""
-		"t53_outro":
-			return ""
-		"t49_progress_holder":
-			return ""
+		"t55_find", "t48_serve":
+			return _serve_or_row(step)
 	return ""
+
+
+static func _touch(step: StepDef) -> String:
+	if step.mode == "arcade":
+		return _arcade(step)
+	return _row(step) if T21_MODES.has(step.mode) else "bad_mode"
+
+
+static func _serve_or_row(step: StepDef) -> String:
+	if step.template_id == "t48_serve" and not step.mode.is_empty() and not T20_MODES.has(step.mode):
+		return "bad_mode"
+	return _row(step)
 
 
 ## A step with nothing to tap, show or catch could never finish, so it never loads.

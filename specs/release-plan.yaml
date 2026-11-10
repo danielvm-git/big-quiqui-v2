@@ -207,7 +207,7 @@ epics:
     slug: e14-all-rooms-as-data
     title: "All 17 rooms as data, then one removal of the legacy scene layer"
     playable_scene: "res://scenes/scene_player.tscn"
-    status: planned
+    status: done
     release_plan: pending
     bcps: 38
     wsjf: 7.9
@@ -218,7 +218,7 @@ epics:
     slug: e15-wave-2-care-templates
     title: "Wave 2: paint, find, memory, peekaboo"
     playable_scene: "res://scenes/scene_player.tscn"
-    status: planned
+    status: done
     release_plan: pending
     bcps: 24
     wsjf: 6.8
@@ -229,7 +229,7 @@ epics:
     slug: e16-wave-3-movement-templates
     title: "Wave 3: movement templates and 28-slot library gate"
     playable_scene: "res://scenes/scene_player.tscn"
-    status: planned
+    status: done
     release_plan: pending
     bcps: 27
     wsjf: 6.6
