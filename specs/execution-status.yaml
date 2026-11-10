@@ -78,6 +78,17 @@ development_status:
   e16s03: done
   e16s04: done
 
+gate_trace:
+  verdict: CONCERNS
+  generated_at: "2026-11-09T22:32:00-03:00"
+  rationale: >-
+    traceability.py --check PASS (0 dark stories on done epics; 71 stories, 45 COVERED = 63%).
+    trace-stories.sh --strict PASS. Bigpowers blind-spots/matrix/critic scripts absent (partial WAIVED).
+    Release-plan still marks e14–e16 planned while execution-status is done — index drift before merge.
+    Adversarial refute: that drift is real and blocks a rubber-stamp PASS. Completeness critic not vendored.
+  heuristic_ratio: 0.0
+  downgrade_applied: false
+
 epics:
 
 stories:
