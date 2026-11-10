@@ -3,8 +3,8 @@ version: 0.10.0
 workflow_mode: solo-git
 active_flow: build_epic
 lifecycle_phase: release
-current_epic: e15-wave-2-care-templates
-current_story: e15s01
+current_epic: e16-wave-3-movement-templates
+current_story: e16s04
 review_gate:
   skill: release-branch
   method: 'dual-blind AND gate: 2 reviewers, different agents, no shared context'
@@ -279,15 +279,15 @@ project_cycle:
   next_phase_artifact: specs/EVALS-e01.md
 handoff:
   next_skill: release-branch
-  epic: e14-all-rooms-as-data
+  epic: e16-wave-3-movement-templates
   epic_wsjf: 7.8
-  first_story: e14s02
+  first_story: none
   context: >-
-    Worktree ../big-quiqui-v2-e13 on branch epic/e14-all-rooms-as-data (stacked on e13 at 803df5c).
-    e13s01–e13s09 done; dual-blind review PASS round 6 (REVIEW-A6/B6). e14s01 done (bathroom,
-    closet, playroom, bedroom defs). e14s02–e14s05, e15, and e16 capsules exist under specs/epics/;
-    code for e14s02+ not started. Preflight GREEN: 126 scripts / 868 tests. D4 version rung not taken.
-    Stop before push, PR, merge, tag, or publish. Separate worktrees ../big-quiqui-v2-e14|e15|e16 not cut yet.
+    Worktree ../big-quiqui-v2-e13 on branch epic/e14-all-rooms-as-data. e13 review PASS round 6;
+    e14s01–e14s05 done (only scene_player.tscn); AUDIT-e14 PASS. e15s01–e15s04 and e16s01–e16s04
+    landed at 6b2a661 with child-play gate and test_template_library_gate. Preflight GREEN on tip.
+    D4 version rung not taken. STOP before push, PR, merge, tag, or publish — see
+    specs/verifications/RELEASE-BRANCH-e15-e16-2026-11-09.md.
   open_decisions:
   - 'INV-07 allows numerals in Labels (the store prices) and forbids words: a pre-reader never
     parses a digit, and the coin icon plus the sold badge carry the meaning. TEST_PLAN section 3
